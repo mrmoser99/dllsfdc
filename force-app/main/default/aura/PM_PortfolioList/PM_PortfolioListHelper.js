@@ -47,8 +47,9 @@
                 
                 
                 for (var i in records.data){
-                    console.log(records.data[i].contractNumber);
-                    console.log(records.data[i].assetDetail);
+                    console.log(records.data[i]);
+                    //console.log(records.data[i].contractNumber);
+                    //console.log(records.data[i].assetDetail);
                     
                 }
                 

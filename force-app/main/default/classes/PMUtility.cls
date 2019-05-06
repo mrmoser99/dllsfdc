@@ -5,6 +5,7 @@
 *	Change Log: 
 *	3/15/19 - MRM Created
 *   4/17/19 - Started mapping for all services
+*   5/2/19 - matched all message fields with datamappingv1.0 document 
 *
 ********************************************************************************************************************/
 public without sharing class PMUtility {
@@ -37,10 +38,10 @@ public without sharing class PMUtility {
 
     public class Meta{
 
-         @AuraEnabled public Integer itemTotal;
-         @AuraEnabled public Integer size;
-         @AuraEnabled public Integer page;
-         @AuraEnabled public Integer pageTotal;
+         @AuraEnabled public String itemTotal;
+         @AuraEnabled public String size;
+         @AuraEnabled public String page;
+         @AuraEnabled public String pageTotal;
          @AuraEnabled public List<String> sortableFields;
 
     }
@@ -48,44 +49,47 @@ public without sharing class PMUtility {
      
 
     public class Data{
-        
+        /* missing */
+        @AuraEnabled public String advancedPaymentStructure;  //m-11
+
         /* portfolio */
 
-        @AuraEnabled public String contractNumber;
-        @AuraEnabled public String contractType;
-        @AuraEnabled public String contractTerm;
+        @AuraEnabled public String contractNumber; //m-42
+        @AuraEnabled public String contractType;  //m-44
+        @AuraEnabled public String contractTerm;  //m-41
         @AuraEnabled public String contractPeriodicity;
         @AuraEnabled public String contractPurchaseOption;
         @AuraEnabled public String contractProgramId;
         @AuraEnabled public String contractProgramName;
-        @AuraEnabled public String contractStartDate;
+        @AuraEnabled public String contractStartDate; //m-43
         @AuraEnabled public String contractExpireDate;
         @AuraEnabled public String contractOriginalCost;
-        @AuraEnabled public String contractPayment;
+        @AuraEnabled public String contractPayment;  //m-14
         @AuraEnabled public String contractAverageDaysToPay;
-        @AuraEnabled public String contractSigner;
-        @AuraEnabled public String contractSignerTitle;
-        @AuraEnabled public String daysPastDue; //next sprint
+        @AuraEnabled public String contractSigner; //m-6
+        @AuraEnabled public String contractSignerTitle;  //m-7
+        //@AuraEnabled public String daysPastDue; //next sprint
         @AuraEnabled public String equipmentDescription;
-        @AuraEnabled public Integer nbrOfAssets;
+        @AuraEnabled public String nbrOfAssets;  //m-13
         @AuraEnabled public String leaseSignerTitle;
-        @AuraEnabled public String numberOfRemainingPayments;
+        @AuraEnabled public String numberOfRemainingPayments; //m-40
         @AuraEnabled public String lastPaymentReceivedDate;
         @AuraEnabled public String businessSegment;
         @AuraEnabled public String subBusinessSegment;
-        @AuraEnabled public String customerName;
-        @AuraEnabled public String olmCustomerNumber;  //next sprint
+        @AuraEnabled public String customerName;  //map id 1
+        @AuraEnabled public String olmCustomerNumber;  //next sprint  m-8
         @AuraEnabled public String customerNumber;
-        @AuraEnabled public String customerAddressLine1;
-        @AuraEnabled public String customerAddressline2;
-        @AuraEnabled public String customerCity;
-        @AuraEnabled public String customerState;
-        @AuraEnabled public String customerZipCode;
-        @AuraEnabled public String billingAddressLine1;
-        @AuraEnabled public String billingAddresslilne2;
-        @AuraEnabled public String billingCity;
-        @AuraEnabled public String billingState;
-        @AuraEnabled public String billingZipCode;
+        @AuraEnabled public String customerPhoneNumber;  //m-3
+        @AuraEnabled public String customerAddressLine1; //m-5
+        @AuraEnabled public String customerAddressline2;  //m-5
+        @AuraEnabled public String customerCity; //m-5
+        @AuraEnabled public String customerState;  //m-5
+        @AuraEnabled public String customerZipCode; //m-5
+        @AuraEnabled public String billingAddressLine1; //m-4
+        @AuraEnabled public String billingAddresslilne2; //m-4
+        @AuraEnabled public String billingCity; //m-4
+        @AuraEnabled public String billingState; //m-4
+        @AuraEnabled public String billingZipCode; //m-4
         @AuraEnabled public String vendorSiteCode;
         @AuraEnabled public String vendorNumber1;
         @AuraEnabled public String vendorNumber2;
@@ -96,10 +100,10 @@ public without sharing class PMUtility {
         @AuraEnabled public String vendorCity;
         @AuraEnabled public String vendorState;
         @AuraEnabled public String vendorZipCode;
-        @AuraEnabled public Boolean newcoReady;
+        @AuraEnabled public String newcoReady; //true or false
         
         
-        /* Contract Inquiry */
+        /* XXD_KHR_REC_TYPE Contract Select Inquiry */
 
         @AuraEnabled public String Arrears;
         @AuraEnabled public String Assignable_Yn;
@@ -109,7 +113,8 @@ public without sharing class PMUtility {
         @AuraEnabled public String Billing_Group_Number;
         @AuraEnabled public String Code_Sales_Rep;
         @AuraEnabled public String Contract_Number;
-        @AuraEnabled public String Contract_Status;
+        @AuraEnabled public String Contract_Status;  //m-12
+        @AuraEnabled public String Contract_Application_Number;  //m-9 did not see it in xsd
         @AuraEnabled public String x_Currency;
         @AuraEnabled public String Cust_Address;
         @AuraEnabled public String Cust_City;
@@ -117,7 +122,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String Cust_County;
         @AuraEnabled public String Cust_First_Name;
         @AuraEnabled public String Cust_Last_Name;
-        @AuraEnabled public String Cust_Legal_Name;
+        @AuraEnabled public String Cust_Legal_Name; //m-2
         @AuraEnabled public String Cust_Middle_Name;
         @AuraEnabled public String Cust_Postal_Code;
         @AuraEnabled public String Cust_State;
@@ -142,7 +147,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String Payment_Method;
         @AuraEnabled public String Periodicity;
         @AuraEnabled public String Print_Lead_Days;
-        @AuraEnabled public String Product;
+        @AuraEnabled public String Product;  //m-10
         @AuraEnabled public String Reference_Lessee;
         @AuraEnabled public String Remaining_Pymnts;
         @AuraEnabled public String Sb_Unit;
@@ -152,29 +157,31 @@ public without sharing class PMUtility {
         @AuraEnabled public String Termination_Date;
         @AuraEnabled public String Total_Fin_Amnt;
 
-        /* general contract info call  can be merged into contract select with ecs in source system */
+        /* invfmt:GetGeneralContractInfoResponse */
 
-        @AuraEnabled public String Financialproduct;
-        @AuraEnabled public String Purchaseoption;
-        @AuraEnabled public String Numberofassets;
-        @AuraEnabled public String Statetax;
-        @AuraEnabled public String Countytax;
-        @AuraEnabled public String Citytax;
-        @AuraEnabled public String Districttax;
-        @AuraEnabled public String Totalassetpayment;
-        @AuraEnabled public String Paymentfrequency;
-        @AuraEnabled public String Dayspastdue;
+        @AuraEnabled public String Financialproduct;  //m-10
+        @AuraEnabled public String Purchaseoption;    //m-25  
+        @AuraEnabled public String Numberofassets;  //m-13   copy this to nbrOfAssets above.
+        @AuraEnabled public String Statetax;  //m-15
+        @AuraEnabled public String Countytax;  //m-16
+        @AuraEnabled public String Citytax; //m-17
+        @AuraEnabled public String Districttax; //m-18
+        @AuraEnabled public String Totalassetpayment; //m-19
+        @AuraEnabled public String Paymentfrequency; //m-20
+        @AuraEnabled public String Dayspastdue; //m-24
 
 
         /* end contract Extension */
 
-        /* contract search */
-        @AuraEnabled public String PaymentReceivedDate;
-        @AuraEnabled public String PaymentAmountReceived;
-        @AuraEnabled public String PaymentNumber;  //check number
-
+        /* contract search inquiry */
+        @AuraEnabled public String PaymentReceivedDate; //m-21
+        @AuraEnabled public String PaymentAmountReceived;  //m-22
+        @AuraEnabled public String PaymentNumber;  //check number  m-23
+ 
 
         /* end contract search */
+
+        @AuraEnabled public Receivable receivable;
 
         @AuraEnabled public List<assetDetail> assetDetail;
 
@@ -184,21 +191,23 @@ public without sharing class PMUtility {
      //wrapper classs for detail of a single asset
 
     public class assetDetail{
+        
+        /* Portfolio */
 
-        @AuraEnabled public Integer assetSequenceNumber;
-        @AuraEnabled public String assetDescription;
+        @AuraEnabled public String assetSequenceNumber;  //m-26
+        @AuraEnabled public String assetDescription; //m-29
         @AuraEnabled public String assetManufacturer;
-        @AuraEnabled public String assetMake;
-        @AuraEnabled public String assetModel;
-        @AuraEnabled public String assetSerialNumber;
+        @AuraEnabled public String assetMake; //m-27
+        @AuraEnabled public String assetModel;  //m-28
+        @AuraEnabled public String assetSerialNumber; //m-30
         @AuraEnabled public String assetAddressLine1;
         @AuraEnabled public String assetAddressLine2;
         @AuraEnabled public String assetCity;
         @AuraEnabled public String assetState;
         @AuraEnabled public String assetZipCode;
-        @AuraEnabled public Decimal assetPayment;
+        @AuraEnabled public String assetPayment;
 
-        /* contract select  */
+        /* XXD_ASSET_TBL_TYPE in Select Inquiry */
         @AuraEnabled public String Asset_Category;
         @AuraEnabled public String Asset_Cndtn;
         @AuraEnabled public String Asset_Number;
@@ -207,12 +216,12 @@ public without sharing class PMUtility {
         @AuraEnabled public String Billing_Country;
         @AuraEnabled public String Billing_County;
         @AuraEnabled public String Billing_Group_Id;
-        @AuraEnabled public String Billing_Location;
+        @AuraEnabled public String Billing_Location; //m-38
         @AuraEnabled public String Billing_State;
         @AuraEnabled public String Billing_Zip;
         @AuraEnabled public String Calc_Residual_Amnt;
         @AuraEnabled public String Calc_Residual_Prcnt;
-        @AuraEnabled public String Cost_Center;
+        @AuraEnabled public String Cost_Center; //m-37
         @AuraEnabled public String Description;
         @AuraEnabled public String First_Payment_Date;
         @AuraEnabled public String Guaranteed_Amount;
@@ -220,8 +229,8 @@ public without sharing class PMUtility {
         @AuraEnabled public String Install_City;
         @AuraEnabled public String Install_Country;
         @AuraEnabled public String Install_County;
-        @AuraEnabled public String Install_Date;
-        @AuraEnabled public String Install_Location;
+        @AuraEnabled public String Install_Date;  //m-31
+        @AuraEnabled public String Install_Location; //m-39
         @AuraEnabled public String Install_Site_Id;
         @AuraEnabled public String Install_State;
         @AuraEnabled public String Install_Zip;
@@ -236,7 +245,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String Organization_Id;
         @AuraEnabled public String Parent_Asset_Num;
         @AuraEnabled public String Payment_Amount;
-        @AuraEnabled public String Po_Number;
+        @AuraEnabled public String Po_Number;  //m-36
         @AuraEnabled public String Residual_Amnt;
         @AuraEnabled public String Residual_Prcnt;
         @AuraEnabled public String Uba_Flag;
@@ -264,26 +273,34 @@ public without sharing class PMUtility {
         @AuraEnabled public String quoteMessage;
         @AuraEnabled public String quoteNumber;
         @AuraEnabled public String quoteCalculationDescription;
-        @AuraEnabled public Decimal remainingRentalPayments;
-        @AuraEnabled public Decimal discount;
-        @AuraEnabled public Decimal equipmentPrice;
-        @AuraEnabled public Decimal salesTax;
-        @AuraEnabled public Decimal propertyTax;
-        @AuraEnabled public Decimal leaseCharges;
-        @AuraEnabled public Decimal securityDeposit;
-        @AuraEnabled public Decimal pastDueService;
-        @AuraEnabled public Decimal amount;
+        @AuraEnabled public String remainingRentalPayments;
+        @AuraEnabled public String discount;
+        @AuraEnabled public String equipmentPrice;
+        @AuraEnabled public String salesTax;
+        @AuraEnabled public String propertyTax;
+        @AuraEnabled public String leaseCharges;
+        @AuraEnabled public String securityDeposit;
+        @AuraEnabled public String pastDueService;
+        @AuraEnabled public String amount;
         
     }
 
+    public class Receivable  {
 
-    public class Receivables {
+        @AuraEnabled public String PastAmountDue;
+        @AuraEnabled public String CurrentAmountDue;
+        @AuraEnabled public String TotalAmountDue;
+        @AuraEnabled public List<ReceivableDetail> receivables;
+    }    
+    public class ReceivableDetail {
+        
         /* receivables */
+
         @AuraEnabled public String Assetnumber;
-        @AuraEnabled public String Receivabletype;
-        @AuraEnabled public String Arconsolidatedinvoicenumber;
-        @AuraEnabled public String Duedate;
-        @AuraEnabled public String Amountdue;
+        @AuraEnabled public String Receivabletype; //m-32
+        @AuraEnabled public String Arconsolidatedinvoicenumber;  //m-35
+        @AuraEnabled public String Duedate;  //m-34
+        @AuraEnabled public String Amountdue;  //m-33
         @AuraEnabled public String Amountreceived;
         @AuraEnabled public String Latechargesdue;
         @AuraEnabled public String Latechargesreceived;
@@ -449,10 +466,10 @@ public without sharing class PMUtility {
         ServiceContractData response = new ServiceContractData();
 
         Meta m = new Meta();
-        m.itemTotal = 50;
-        m.size = 50;
-        m.page = page;
-        m.pageTotal = 0;
+        m.itemTotal = '50';
+        m.size = '50';
+        m.page = string.valueOf(page);
+        m.pageTotal = '0';
         m.sortableFields = null;
 
         Common cm = new Common();
@@ -471,8 +488,8 @@ public without sharing class PMUtility {
             d.contractOriginalCost = c.contractOriginalCost__c;
             d.contractPayment = c.contractPayment__c;
             d.contractType = c.contractType__c;
-            d.newcoReady = true;
-            d.nbrOfAssets = integer.valueOf(c.nbrOfAssets__c);
+            d.newcoReady = 'true';
+            d.nbrOfAssets = string.valueOf(c.nbrOfAssets__c);
             d.equipmentDescription = 'Equipment Count: ' + c.nbrOfAssets__c;
 
 
@@ -484,7 +501,7 @@ public without sharing class PMUtility {
                 assetDetail a = new assetDetail();
                 for (Portfolio_Equipment__c e: eMap.get(c.id)){
                     a = new assetDetail();
-                    a.assetSequenceNumber = integer.valueOf(e.assetSequenceNumber__c);
+                    a.assetSequenceNumber = e.assetSequenceNumber__c;
                     a.assetDescription = e.assetDescription__c;
                     a.assetManufacturer = e.assetManufacturer__c;
                     a.assetMake = e.assetMake__c;
@@ -495,7 +512,7 @@ public without sharing class PMUtility {
                     a.assetCity = e.assetCity__c;
                     a.assetState = e.assetState__c;
                     a.assetZipCode = e.assetZipCode__c;
-                    a.assetPayment = 121.12;
+                    a.assetPayment = '121.12';
                    
                     aList.add(a);
                 }
@@ -503,6 +520,142 @@ public without sharing class PMUtility {
             }
 
             d.assetDetail = aList;
+
+            /* general contract info data pop */
+            d.Financialproduct = 'DLL_US_DFL_NON_TAX';  
+            d.Purchaseoption = 'Fair Market Value';      
+            d.Numberofassets= '25';
+            d.Statetax = '254.92';
+            d.Countytax = '5.44';
+            d.Citytax = '71.74';
+            d.Districttax = '4.41';
+            d.Totalassetpayment = '4079';
+            d.Paymentfrequency = 'M';
+            d.Dayspastdue = '258';
+            
+           
+            d.receivable = new receivable();
+            d.receivable.PastAmountDue = '3956.85';
+            d.receivable.CurrentAmountDue = '454.83';
+            d.receivable.TotalAmountDue = '4411.68';
+
+            d.receivable.receivables = new List<ReceivableDetail>();
+            ReceivableDetail r = new ReceivableDetail();
+
+             
+            r.Assetnumber = '25479814_1';
+            r.Receivabletype = 'RENT';
+            r.Arconsolidatedinvoicenumber = '62182621';
+            r.Duedate = '2019-03-15T00:00:00';
+            r.Amountdue = '315.01';
+            r.Amountreceived = '0';
+            r.Latechargesdue = '0';
+            r.Latechargesreceived = '0';
+            r.Financechargesdue = '0';
+            r.Financechargesreceived = '0';
+            r.Balancedue = '315.01';
+            r.Adjustment = '0';
+            d.receivable.receivables.add(r);
+
+            r.Assetnumber = '25479814_1';
+            r.Receivabletype = 'PASS THROUGH MAINTENANCE - BUNDLED';
+            r.Arconsolidatedinvoicenumber = '62182621';
+            r.Duedate = '2019-03-15T00:00:00';
+            r.Amountdue = '96.34';
+            r.Amountreceived = '0';
+            r.Latechargesdue = '0';
+            r.Latechargesreceived = '0';
+            r.Financechargesdue = '0';
+            r.Financechargesreceived = '0';
+            r.Balancedue = '96.34';
+            r.Adjustment = '0';
+            d.receivable.receivables.add(r);
+
+            r.Assetnumber = '';
+            r.Receivabletype = 'LATE FEE';
+            r.Arconsolidatedinvoicenumber = '62182621';
+            r.Duedate = '2019-03-15T00:00:00';
+            r.Amountdue = '20.57';
+            r.Amountreceived = '0';
+            r.Latechargesdue = '0';
+            r.Latechargesreceived = '0';
+            r.Financechargesdue = '0';
+            r.Financechargesreceived = '0';
+            r.Balancedue = '20.57';
+            r.Adjustment = '0';
+            d.receivable.receivables.add(r);
+
+             r.Assetnumber = '';
+            r.Receivabletype = 'INSURANCE';
+            r.Arconsolidatedinvoicenumber = '62182621';
+            r.Duedate = '2019-03-15T00:00:00';
+            r.Amountdue = '22.91';
+            r.Amountreceived = '0';
+            r.Latechargesdue = '0';
+            r.Latechargesreceived = '0';
+            r.Financechargesdue = '0';
+            r.Financechargesreceived = '0';
+            r.Balancedue = '22.91';
+            r.Adjustment = '0';
+            d.receivable.receivables.add(r);
+
+            /* next receivable */
+
+            r.Assetnumber = '25479814_1';
+            r.Receivabletype = 'RENT';
+            r.Arconsolidatedinvoicenumber = '61809793';
+            r.Duedate = '2019-03-15T00:00:00';
+            r.Amountdue = '315.01';
+            r.Amountreceived = '0';
+            r.Latechargesdue = '0';
+            r.Latechargesreceived = '0';
+            r.Financechargesdue = '0';
+            r.Financechargesreceived = '0';
+            r.Balancedue = '315.01';
+            r.Adjustment = '0';
+            d.receivable.receivables.add(r);
+
+            r.Assetnumber = '25479814_1';
+            r.Receivabletype = 'PASS THROUGH MAINTENANCE - BUNDLED';
+            r.Arconsolidatedinvoicenumber = '61809793';
+            r.Duedate = '2019-03-15T00:00:00';
+            r.Amountdue = '96.34';
+            r.Amountreceived = '0';
+            r.Latechargesdue = '0';
+            r.Latechargesreceived = '0';
+            r.Financechargesdue = '0';
+            r.Financechargesreceived = '0';
+            r.Balancedue = '96.34';
+            r.Adjustment = '0';
+            d.receivable.receivables.add(r);
+
+            r.Assetnumber = '';
+            r.Receivabletype = 'LATE FEE';
+            r.Arconsolidatedinvoicenumber = '61809793';
+            r.Duedate = '2019-03-15T00:00:00';
+            r.Amountdue = '20.57';
+            r.Amountreceived = '0';
+            r.Latechargesdue = '0';
+            r.Latechargesreceived = '0';
+            r.Financechargesdue = '0';
+            r.Financechargesreceived = '0';
+            r.Balancedue = '20.57';
+            r.Adjustment = '0';
+            d.receivable.receivables.add(r);
+
+             r.Assetnumber = '';
+            r.Receivabletype = 'INSURANCE';
+            r.Arconsolidatedinvoicenumber = '61809793';
+            r.Duedate = '2019-03-15T00:00:00';
+            r.Amountdue = '22.91';
+            r.Amountreceived = '0';
+            r.Latechargesdue = '0';
+            r.Latechargesreceived = '0';
+            r.Financechargesdue = '0';
+            r.Financechargesreceived = '0';
+            r.Balancedue = '22.91';
+            r.Adjustment = '0';
+            d.receivable.receivables.add(r);
 
             dList.add(d);
 
@@ -548,14 +701,14 @@ public without sharing class PMUtility {
         q.terminationQuoteType = 'MRMType2';
         q.quoteValidityDate = '2019-10-31';
         q.quoteMessage = 'Hello2';
-        q.remainingRentalPayments = 9;
-        q.discount = 0.00;
-        q.equipmentPrice = 564.88;
-        q.salesTax = 50.01;
-        q.propertyTax = 5.00;
-        q.leaseCharges = 13003.11;
-        q.securityDeposit = 100.00;
-        q.amount = randomNumber * .76;
+        q.remainingRentalPayments = '9';
+        q.discount = '0.00';
+        q.equipmentPrice = '564.88';
+        q.salesTax = '50.01';
+        q.propertyTax = '5.00';
+        q.leaseCharges = '13003.11';
+        q.securityDeposit = '100.00';
+        q.amount = string.valueOf(randomNumber * .76);
         qList.add(q);
 
         Lease_OLM_Quote__c lq = new Lease_OLM_Quote__c();
@@ -564,14 +717,14 @@ public without sharing class PMUtility {
         lq.termination_quote_type__c = q.terminationQuoteType;
         lq.quote_validity_date__c = date.valueOf(q.quoteValidityDate);
         lq.quote_message__c = q.quoteMessage;
-        lq.remaining_rental_payments__c = q.remainingRentalPayments;
-        lq.discount__c = q.discount;
-        lq.equipment_price__c = q.equipmentPrice;
-        lq.sales_tax__c = q.salesTax;
-        lq.property_tax__c = q.propertyTax;      
-        lq.lease_charges__c = q.leaseCharges;
-        lq.security_deposit__c = q.securityDeposit;
-        lq.amount__c = q.amount;
+        lq.remaining_rental_payments__c = decimal.valueOf(q.remainingRentalPayments);
+        lq.discount__c = decimal.valueOf(q.discount);
+        lq.equipment_price__c = decimal.valueOf(q.equipmentPrice);
+        lq.sales_tax__c = decimal.valueOf(q.salesTax);
+        lq.property_tax__c = decimal.valueOf(q.propertyTax);      
+        lq.lease_charges__c = decimal.valueOf(q.leaseCharges);
+        lq.security_deposit__c = decimal.valueOf(q.securityDeposit);
+        lq.amount__c = decimal.valueOf(q.amount);
         lq.contract_number__c = response.contractNumber;
         newQuotes.add(lq);
 
@@ -582,14 +735,14 @@ public without sharing class PMUtility {
         q.terminationQuoteType = 'MRMType3';
         q.quoteValidityDate = '2019-10-31';
         q.quoteMessage = 'Hello 3';
-        q.remainingRentalPayments = 9;
-        q.discount = 0.00;
-        q.equipmentPrice = 64.88;
-        q.salesTax = 5.01;
-        q.propertyTax = 1.00;
-        q.leaseCharges = 133.11;
-        q.securityDeposit = 10.00;
-        q.amount = randomNumber * .56;
+        q.remainingRentalPayments = '9';
+        q.discount = '0.00';
+        q.equipmentPrice = '64.88';
+        q.salesTax = '5.01';
+        q.propertyTax = '1.00';
+        q.leaseCharges = '133.11';
+        q.securityDeposit = '10.00';
+        q.amount = string.valueOf(randomNumber * .56);
         qList.add(q);
 
         
@@ -599,14 +752,14 @@ public without sharing class PMUtility {
         lq.termination_quote_type__c = q.terminationQuoteType;
         lq.quote_validity_date__c = date.valueOf(q.quoteValidityDate);
         lq.quote_message__c = q.quoteMessage;
-        lq.remaining_rental_payments__c = q.remainingRentalPayments;
-        lq.discount__c = q.discount;
-        lq.equipment_price__c = q.equipmentPrice;
-        lq.sales_tax__c = q.salesTax;
-        lq.property_tax__c = q.propertyTax;      
-        lq.lease_charges__c = q.leaseCharges;
-        lq.security_deposit__c = q.securityDeposit;
-        lq.amount__c = q.amount;
+        lq.remaining_rental_payments__c = decimal.valueOf(q.remainingRentalPayments);
+        lq.discount__c = decimal.valueOf(q.discount);
+        lq.equipment_price__c = decimal.valueOf(q.equipmentPrice);
+        lq.sales_tax__c = decimal.valueOf(q.salesTax);
+        lq.property_tax__c = decimal.valueOf(q.propertyTax);      
+        lq.lease_charges__c = decimal.valueOf(q.leaseCharges);
+        lq.security_deposit__c = decimal.valueOf(q.securityDeposit);
+        lq.amount__c = decimal.valueOf(q.amount);
         lq.contract_number__c = response.contractNumber;
         newQuotes.add(lq);
  
@@ -640,14 +793,14 @@ public without sharing class PMUtility {
         q.terminationQuoteType = 'MRMType2';
         q.quoteValidityDate = '2019-10-31';
         q.quoteMessage = 'Hello2';
-        q.remainingRentalPayments = 9;
-        q.discount = 0.00;
-        q.equipmentPrice = 564.88;
-        q.salesTax = 50.01;
-        q.propertyTax = 5.00;
-        q.leaseCharges = 13003.11;
-        q.securityDeposit = 100.00;
-        q.amount = randomNumber * .76;
+        q.remainingRentalPayments = '9';
+        q.discount = '0.00';
+        q.equipmentPrice = '564.88';
+        q.salesTax = '50.01';
+        q.propertyTax = '5.00';
+        q.leaseCharges = '13003.11';
+        q.securityDeposit = '100.00';
+        q.amount = string.valueOf(randomNumber * .76);
         qList.add(q);
 
         Lease_OLM_Quote__c lq = new Lease_OLM_Quote__c();
@@ -656,14 +809,14 @@ public without sharing class PMUtility {
         lq.termination_quote_type__c = q.terminationQuoteType;
         lq.quote_validity_date__c = date.valueOf(q.quoteValidityDate);
         lq.quote_message__c = q.quoteMessage;
-        lq.remaining_rental_payments__c = q.remainingRentalPayments;
-        lq.discount__c = q.discount;
-        lq.equipment_price__c = q.equipmentPrice;
-        lq.sales_tax__c = q.salesTax;
-        lq.property_tax__c = q.propertyTax;      
-        lq.lease_charges__c = q.leaseCharges;
-        lq.security_deposit__c = q.securityDeposit;
-        lq.amount__c = q.amount;
+        lq.remaining_rental_payments__c = decimal.valueOf(q.remainingRentalPayments);
+        lq.discount__c = decimal.valueOf(q.discount);
+        lq.equipment_price__c = decimal.valueOf(q.equipmentPrice);
+        lq.sales_tax__c = decimal.valueOf(q.salesTax);
+        lq.property_tax__c = decimal.valueOf(q.propertyTax);      
+        lq.lease_charges__c = decimal.valueOf(q.leaseCharges);
+        lq.security_deposit__c = decimal.valueOf(q.securityDeposit);
+        lq.amount__c = decimal.valueOf(q.amount);
         lq.contract_number__c = response.contractNumber;
         newQuotes.add(lq);
 
@@ -674,14 +827,14 @@ public without sharing class PMUtility {
         q.terminationQuoteType = 'MRMType3';
         q.quoteValidityDate = '2019-10-31';
         q.quoteMessage = 'Hello 3';
-        q.remainingRentalPayments = 9;
-        q.discount = 0.00;
-        q.equipmentPrice = 64.88;
-        q.salesTax = 5.01;
-        q.propertyTax = 1.00;
-        q.leaseCharges = 133.11;
-        q.securityDeposit = 10.00;
-        q.amount = randomNumber * .56;
+        q.remainingRentalPayments = '9';
+        q.discount = '0.00';
+        q.equipmentPrice = '64.88';
+        q.salesTax = '5.01';
+        q.propertyTax = '1.00';
+        q.leaseCharges = '133.11';
+        q.securityDeposit = '10.00'; 
+        q.amount = string.valueOf(randomNumber * .56);
         qList.add(q);
 
         
@@ -691,14 +844,14 @@ public without sharing class PMUtility {
         lq.termination_quote_type__c = q.terminationQuoteType;
         lq.quote_validity_date__c = date.valueOf(q.quoteValidityDate);
         lq.quote_message__c = q.quoteMessage;
-        lq.remaining_rental_payments__c = q.remainingRentalPayments;
-        lq.discount__c = q.discount;
-        lq.equipment_price__c = q.equipmentPrice;
-        lq.sales_tax__c = q.salesTax;
-        lq.property_tax__c = q.propertyTax;      
-        lq.lease_charges__c = q.leaseCharges;
-        lq.security_deposit__c = q.securityDeposit;
-        lq.amount__c = q.amount;
+        lq.remaining_rental_payments__c = decimal.valueOf(q.remainingRentalPayments);
+        lq.discount__c = decimal.valueOf(q.discount);
+        lq.equipment_price__c = decimal.valueOf(q.equipmentPrice);
+        lq.sales_tax__c = decimal.valueOf(q.salesTax);
+        lq.property_tax__c = decimal.valueOf(q.propertyTax);      
+        lq.lease_charges__c = decimal.valueOf(q.leaseCharges);
+        lq.security_deposit__c = decimal.valueOf(q.securityDeposit);
+        lq.amount__c = decimal.valueOf(q.amount);
         lq.contract_number__c = response.contractNumber;
         newQuotes.add(lq);
  
@@ -711,8 +864,24 @@ public without sharing class PMUtility {
 
         response.quotes = qList;
         
-        newQuoteResponse = [SELECT Amount__c,Contract_Number__c,CreatedById,CreatedDate,Discount__c,Equipment_Price__c
-                            ,Id,IsDeleted,LastActivityDate,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Lease_Charges__c,LS_Contract__c,Name,OwnerId,Past_Due_Service__c,Property_Tax__c,Quote_Calculation_Description__c,Quote_Message__c,Quote_Validity_Date__c,Remaining_Rental_Payments__c,Sales_Tax__c,Security_Deposit__c,SystemModstamp,Termination_Quote_Type__c 
+        newQuoteResponse = [SELECT Amount__c
+                            ,Contract_Number__c
+                            ,Discount__c
+                            ,Equipment_Price__c
+                            ,Id
+                            ,Lease_Charges__c
+                            ,LS_Contract__c
+                            ,Name,OwnerId
+                            ,Past_Due_Service__c
+                            ,Property_Tax__c
+                            ,Quote_Calculation_Description__c
+                            ,Quote_Message__c
+                            ,Quote_Validity_Date__c
+                            ,Remaining_Rental_Payments__c
+                            ,Sales_Tax__c
+                            ,Security_Deposit__c
+                            ,SystemModstamp
+                            ,Termination_Quote_Type__c 
                             FROM Lease_OLM_Quote__c
                             where id in :newQuoteSet
         ];

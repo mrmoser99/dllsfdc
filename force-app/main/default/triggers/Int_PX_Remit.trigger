@@ -16,8 +16,8 @@ trigger Int_PX_Remit on Int_PX_Remit__c (before insert, after insert) {
 	public class CommonException extends Exception {}
 	
 	
-	//if (AP_ManualPayment.manualPayment == true)  
-	//	return;
+	if (AP_ManualPayment.manualPayment == true)  
+		return;
 
 	List<Int_Batch_Status__c> bList = [	select id
 										from Int_Batch_Status__c
@@ -60,6 +60,7 @@ trigger Int_PX_Remit on Int_PX_Remit__c (before insert, after insert) {
 				r.line_data__c = null;
 			}
 			else{
+				r.committed__C = true;
 				r.invoice_number__c = 'Delete Record';
 			}
 		}

@@ -17,12 +17,13 @@
         action.setParams({
             recordId: recordId,
             checkNumber: checkNumber,
-            checkAmount: checkAmount,
+            checkAmount: checkAmount, 
             paymentDate: paymentDate
         });
        
         action.setCallback(this,function(response) {
             var state = response.getState();
+            console.log(state);
             var validationError = JSON.parse(response.getReturnValue());
             if (state == 'SUCCESS'){
                 if (validationError.Message){
