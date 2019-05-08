@@ -15,7 +15,7 @@ global with sharing class AP_InvoiceSimulator {
    	* get adjustments
    	* 
    	********************************************************************************************/
-    @AuraEnabled
+    @AuraEnabled 
     public static List<resultLine> getAdjustments(String recordId){
         
         List<resultLIne> results= new List<resultLine>();
@@ -27,11 +27,11 @@ global with sharing class AP_InvoiceSimulator {
                 ,debit__c
                 ,charge__c
                 ,Charge__r.Name  
-                ,Due_Detail_Line__r.Name  
+                ,Due_Detail_Line__r.Name   
                 ,Due_Detail_Line__c
                 ,tax_amount__c
-                ,equipment__c
-                from adjustment__c
+                ,equipment__c 
+                from adjustment__c 
                 where invoice__c = :recordId
                 order by equipment__c, charge_bill_name__C
           ];
@@ -180,6 +180,9 @@ global with sharing class AP_InvoiceSimulator {
         Invoice__c i = [select Previous_Balance_Due__c from Invoice__c where id = :recordId];
         r = new resultLine();
         r.fee = 'PREVIOUS BALANCE';
+        if (i.previous_balance_due__c == null)
+            i.previous_balance_due__c = 0.0;
+
         r.totalAmount = string.valueOf(i.Previous_Balance_Due__c);
         totalTotal = totalTotal + i.Previous_Balance_Due__c;
         results.add(r);
@@ -381,6 +384,8 @@ global with sharing class AP_InvoiceSimulator {
         Invoice__c i = [select Previous_Balance_Due__c from Invoice__c where id = :recordId];
         
         r.fee = 'PREVIOUS BALANCE';
+        if (i.Previous_Balance_Due__c == null)
+            i.Previous_Balance_Due__c = 0.0;
         r.totalAmount = string.valueOf(i.Previous_Balance_Due__c);
         totalTotal = totalTotal + i.Previous_Balance_Due__c;
         results.add(r);

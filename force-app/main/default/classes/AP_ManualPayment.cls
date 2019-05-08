@@ -3,7 +3,7 @@ global with sharing class AP_ManualPayment {
     public Static boolean manualPayment = false;
 
     @AuraEnabled
-	public static String addPayment(String recordId, String checkNumber, Decimal checkAmount, Date paymentDate){
+	public static String addPayment(String recordId, String checkNumber, Decimal checkAmount, Date paymentDate, String voidPNC, String notes){
 		
         Map<String,String> response = new Map<String,String>();
 
@@ -25,7 +25,9 @@ global with sharing class AP_ManualPayment {
             return JSON.serialize(response);
         }
 
-        if (i.balance_due_amount__c < checkAmount){
+        system.debug('checkamount: ' + checkAmount);
+        system.debug('other' + i.balance_due_amount__c) ;
+        if (checkAmount > i.balance_due_amount__c){
             response.put('Message','Check amount must be less than or equal to the balance due!');
             return JSON.serialize(response);
         }
@@ -47,7 +49,13 @@ global with sharing class AP_ManualPayment {
         r.transaction_amount__c = checkAmount;
         r.transaction_type__C = checkNumber;
         r.trans_source__c = 'PX';
-        r.remark__c = 'Manual Payment Recorded';
+        r.remark__c = 'Manual Payment Recorded - see notes';
+        r.notes__c = notes;
+        r.check_number__c = checkNumber;
+         if (voidPNC == 'true'){
+             r.void_in_pnc__c = true;
+         }
+        
         r.trans_UID__c = string.valueOf(paymentDate.year()) + string.valueOf(paymentDate.month()) + string.valueOf(paymentDate.day());
 
         manualPayment = true;
@@ -57,9 +65,13 @@ global with sharing class AP_ManualPayment {
         Int_Batch_Status__c b = new Int_Batch_Status__c();
         b.status__c = 'Ready';
         b.Name = 'PX Remit';
-        insert b;
+        if (!test.isRunningTest())
+            insert b;
 
-        PNCUtility.voidInvoice(recordId,false);
+        if (voidPNC == 'true'){
+            PNCUtility.voidInvoice(recordId,false);
+        }
+            
         
         return JSON.serialize(response); 
 

@@ -6,7 +6,13 @@
     <aura:attribute name="InvoiceId" type="String"/>
     <aura:attribute name="isInvalid" type="Boolean" default="false"/>
  
+    <aura:attribute name="options" type="List" default="[
+    {'label': 'Mark the invoice in PNC as Void/Expired', 'value': 'true'},
+    {'label': 'Do NOT change the invoice status in PNC', 'value': 'false'},
     
+    ]"/>
+    <aura:attribute name="voidPNC" type="String" default="false"/>
+
     <lightning:notificationsLibrary aura:id="notifLib"/>
 
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
@@ -25,6 +31,18 @@
                                 messageWhenValueMissing="Check is Required!"/>
                 <lightning:input aura:id="checkAmount" type="number" label="Check Amount" required="true" formatter="currency" step="0.01"
                                 messageWhenValueMissing="Check Amount is Required!" messageWhenBadInput="Check Amount is invalid!"/>
+                
+                
+                <lightning:textarea aura:id="notes" type="text" label="Notes" required="true"  messageWhenValueMissing="Notes are required!"/>    
+
+                <lightning:radioGroup name="radioGroup"
+                                aura:id="voidGroup"
+                                label="PNC Void Options"
+                                options="{! v.options }"
+                                value="{! v.voidPNC }"
+                                type="radio"
+                                onchange="{! c.handleChange }"
+                                required="true"/>
 
                 <lightning:button class="slds-m-top_large" variant="brand" type="submit" label="Submit" onclick="{!c.handleSubmit}" />
                 <lightning:button class="slds-m-top_large" label="Cancel" onclick="{!c.handleCancel}"/>

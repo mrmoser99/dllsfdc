@@ -10,15 +10,20 @@
         var checkNumber = component.find("checkNumber").get("v.value");
         var checkAmount= component.find("checkAmount").get("v.value");
         var paymentDate = component.find("paymentDate").get("v.value"); 
+        var voidPNC = component.find("voidGroup").get("v.value"); 
+        var notes = component.find("notes").get("v.value"); 
         console.log(checkNumber);
         console.log(checkAmount);
         console.log(paymentDate);
+        
         //String recordId, String checkNumber, Decimal checkAmount Date paymentDate)
         action.setParams({
             recordId: recordId,
             checkNumber: checkNumber,
             checkAmount: checkAmount, 
-            paymentDate: paymentDate
+            paymentDate: paymentDate,
+            voidPNC:voidPNC,
+            notes:notes
         });
        
         action.setCallback(this,function(response) {
@@ -74,6 +79,11 @@
     handleCancel: function(component, event, helper) {
         let dismiss = $A.get('e.force:closeQuickAction');
         dismiss.fire();
+    },
+    handleChange: function (component, event) {
+        var changeValue = event.getParam("value");
+        component.set('v.voidPNC',changeValue);
+        
     }
     
 })
