@@ -5,7 +5,7 @@
 *
 *   5/4/18 - MRM Created
 *   10/1/18 - MRM Added line to call icv booking flow
-*
+*   5/8/19 - MRM fix send welcome packet error when processing payment
 * This trigger sends off a welcome packet when the contract is booked
 *   
 *
@@ -24,10 +24,13 @@ trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
             trigger.new[0].welcome_package_requested__c == true)
             )
         { 
-            system.debug('welcome packet on the way');
-            trigger.new[0].welcome_package_requested__c = false;
-            leaseMap.put(trigger.new[0].id,'Welcome');
-            NewCoUtility.sendWelcomePacket(leaseMap);
+            if(trigger.old[0].welcome_package_requested__c == false 
+            &&  trigger.new[0].welcome_package_requested__c == true){
+               system.debug('welcome packet on the way');
+                trigger.new[0].welcome_package_requested__c = false;
+                leaseMap.put(trigger.new[0].id,'Welcome');
+                NewCoUtility.sendWelcomePacket(leaseMap);
+            }
         }
         
         if  (!trigger.old[0].cllease__Lease_Status__c.contains('ACTIVE') 

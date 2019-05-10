@@ -5,6 +5,7 @@
 *  log:
 *
 * 	6/25/18 - MRM Created Class 
+    5/9/2019 - MRM Added force change password feature so i can see it change....expirations were occurning
 *
 ****************************************************************************************************************/
 public with sharing class Bridger {
@@ -57,6 +58,7 @@ public with sharing class Bridger {
 			, b.Division__c
 			, b.Client_Id__c 
 			, b.account_endpoint__c
+			, b.force_password_change__c
 			From Bridger_Setting__c b
 			limit 1
 		
@@ -81,15 +83,19 @@ public with sharing class Bridger {
 		if (!Test.isRunningTest())
 			daysUntilExpiration =AccountClient.GetDaysUntilPasswordExpires(Context);
 		
+		system.debug('Days to Expiration = ' + daysUntilExpiration);
 		system.debug(daysUntilExpiration);
-		if (daysUntilExpiration < 5 ){  //NewCo2018!
+		system.debug('pass is:' + bridgerSettings.password__c);
+		
+		if (daysUntilExpiration < 5 || bridgerSettings.force_password_change__c == true){  //NewCo2018!
 			String part1 = 'NewCo';
 			Integer sequence = integer.valueOf(bridgerSettings.password__c.mid(5,4));
 			sequence ++;
 			String part2 = '!';
 			String newPassword = part1 + sequence + part2;
-			system.debug(newPassword);
-			
+		
+			system.debug('New Password = ' + newPassword);
+			 
 			Boolean result;
 			
 			if (!Test.isRunningTest())
@@ -97,7 +103,7 @@ public with sharing class Bridger {
 				
 			bridgerSettings.password__c = newPassword;
 			update bridgerSettings;
-			system.debug('password chagned');
+			system.debug('password chagned to:' + newPassword);
 		} 
 		else{
 			system.debug('no password change required');

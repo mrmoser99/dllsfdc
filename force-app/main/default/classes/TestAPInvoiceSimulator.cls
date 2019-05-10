@@ -159,7 +159,7 @@ public  class TestAPInvoiceSimulator {
         insert r;
 
 
-         AP_ManualPayment.addPayment(string.valueOf(inv.id),'check100',100.00,date.today());
+         AP_ManualPayment.addPayment(string.valueOf(inv.id),'check100',100.00,date.today(),null,null);
 
 
         //addAdjustment(String recordId, String aType,  Decimal credit, String chargeId, String dueId){

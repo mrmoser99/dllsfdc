@@ -1,9 +1,9 @@
 ({
-	 doInit: function(component, event, helper) {
+	doInit: function(component, event, helper) {
         var recordId = component.get('v.recordId');
          
     }, 
-     handleSubmit: function(component,event,helper){
+    handleSubmit: function(component,event,helper){
         var recordId = component.get('v.recordId');
         var action = component.get('c.addPayment'); 
         console.log('record id ' + recordId);

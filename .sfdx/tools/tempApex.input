@@ -1,2 +1,10 @@
-pncutility.voidinvoice('a7c550000005Qmy');
+ 
 
+			String part1 = 'NewCo';
+            String pw= 'NewCo2021!';
+			Integer sequence = integer.valueOf(pw.mid(5,4));
+			sequence ++;
+			String part2 = '!';
+			String newPassword = part1 + sequence + part2;
+			system.debug(newPassword);
+			
