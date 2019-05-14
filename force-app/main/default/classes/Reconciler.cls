@@ -178,7 +178,10 @@ global class Reconciler implements Messaging.InboundEmailHandler {
         d.Confirmation_Number__c = fieldList[i+2];
         d.Reversal_Reason__c = fieldList[i+3];
 
-        if (fieldList[i+4] != null)
+        system.debug(fieldList[i+4]);
+        if (fieldList[i+4] == '0')
+            d.fee__c = 0;
+        else
             d.Fee__c = decimal.valueOf(fieldList[i+4]);
 
         insertList.add(d);

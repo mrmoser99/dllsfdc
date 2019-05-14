@@ -1,10 +1,13 @@
  
+ /*
+                                    String customerName
+                                    , String customerNumber
+                                    , String assetSerialNumber
+                                    , Integer size
+                                    , String sortOrder
+                                    , Boolean assetDetail
+                                    , Integer page){
+ */
 
-			String part1 = 'NewCo';
-            String pw= 'NewCo2021!';
-			Integer sequence = integer.valueOf(pw.mid(5,4));
-			sequence ++;
-			String part2 = '!';
-			String newPassword = part1 + sequence + part2;
-			system.debug(newPassword);
-			
+ system.debug(PMCalloutUtility.searchPortfolio('*Amer*',null,null,50,'numberOfRemainingPayments',null,1));
+ 

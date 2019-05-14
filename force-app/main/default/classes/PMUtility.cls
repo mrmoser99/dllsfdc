@@ -15,18 +15,13 @@ public without sharing class PMUtility {
     
     public class ServiceContractData{
 
-        @AuraEnabled public Common common;
+        @AuraEnabled public Links links;
+        @AuraEnabled public Meta meta;
         @AuraEnabled public List<Data> data;
         
     }
 
-    public class Common{
-
-         @AuraEnabled public Links links;
-         @AuraEnabled public Meta meta;
-    }
-
-     public class Links{
+    public class Links{
  
         @AuraEnabled public String self;
         @AuraEnabled public String first;
@@ -335,7 +330,19 @@ public without sharing class PMUtility {
     *
     *
     *************************************************************************************************************************************************************/
+    public static ServiceContractData searchPortfolio2(String customerName
+                                    , String customerNumber
+                                    , String assetSerialNumber
+                                    , Integer size
+                                    , String sortOrder
+                                    , Boolean assetDetail
+                                    , Integer page){
 
+        ServiceContractData response;
+
+        return response;
+    }
+        
     public static ServiceContractData searchPortfolio(String customerName
                                     , String customerNumber
                                     , String assetSerialNumber
@@ -472,8 +479,7 @@ public without sharing class PMUtility {
         m.pageTotal = '0';
         m.sortableFields = null;
 
-        Common cm = new Common();
-        cm.meta = m;
+        response.meta = m;
 
         for (Portfolio_Contract__c c:cList){
 
@@ -661,7 +667,7 @@ public without sharing class PMUtility {
 
         }
         
-        response.common = cm;  
+      
         response.data = dList;
         
         return response;
@@ -941,5 +947,47 @@ public without sharing class PMUtility {
         
        return true;
 
+    }
+
+    /*************************************************************************************************
+    * 
+    * PM Get access token
+	*	
+    *************************************************************************************************/
+    public static string getAccessToken(){     
+    	
+    	system.debug('******** getting access token');
+    	if (Test.isRunningTest())
+    		return string.valueOf(system.now());
+    		
+    	String client = 'b5dfbf6f-06a7-46c0-aa70-3b3eea4f4052';
+    	String secret = 'd1ae6328-159e-43af-9bec-fe213cf9bda0';
+		HttpRequest req_token = new HttpRequest();        
+		
+		String tokenEndpoint = System.Label.ICV_tokenendpoint;  
+		req_token.setEndpoint(tokenEndpoint);
+        req_token.setMethod('POST');        
+        req_token.setHeader('content-type', 'application/x-www-form-urlencoded');
+        req_token.setHeader('cache-control', 'no-cache');        
+        req_token.setBody('client_id='+client+'&client_secret='+secret+'&grant_type=client_credentials');
+      
+        Http http = new Http(); 
+        HTTPResponse res = http.send(req_token);
+        //System.debug(res.getBody());
+		
+		String access_token;
+
+		JSONParser parser = JSON.createParser(res.getBody());
+            
+        while (parser.nextToken() != null) {
+        	if (parser.getCurrentName() == 'access_token') {
+            	access_token = parser.getText();
+            	//system.debug(parser.getText());
+            }
+        }
+        
+       	//system.debug('******** returning access token' + access_token);
+        return access_token;
+         
     }
 }

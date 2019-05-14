@@ -13,7 +13,7 @@
             component.set('v.enableInfiniteLoading',true);
         }
 
-        var action = component.get("c.searchPortfolio");
+        var action = component.get("c.searchPortfolioS");
         action.setParams({
             "customerName": searchCustomerName ,
             "customerNumber":searchCustomerNumber,
