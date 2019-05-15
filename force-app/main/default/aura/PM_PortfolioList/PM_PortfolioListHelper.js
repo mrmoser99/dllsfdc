@@ -13,7 +13,7 @@
             component.set('v.enableInfiniteLoading',true);
         }
 
-        var action = component.get("c.searchPortfolioS");
+        var action = component.get("c.searchPortfolio");
         action.setParams({
             "customerName": searchCustomerName ,
             "customerNumber":searchCustomerNumber,
@@ -25,14 +25,16 @@
         }); 
        
         action.setCallback(this, function(response) {
-            
+            console.log('here');
             var state = response.getState();
+            console.log(state);
             if (state === "SUCCESS") {
                 var records = response.getReturnValue();
-                
-                var currentData = component.get('v.data');       
-                component.set('v.data', currentData.concat(records.data));
-
+                console.log(records);
+                var currentData = component.get('v.data');  
+                if (records.data != null){     
+                    component.set('v.data', currentData.concat(records.data));
+                }        
                 event.getSource().set("v.isLoading", false);
 
                 /* here are samples of accessing the response message */

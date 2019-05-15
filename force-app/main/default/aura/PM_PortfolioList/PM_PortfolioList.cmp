@@ -67,7 +67,7 @@
     
     <div style="height: 800px">
     <lightning:datatable
-                keyField="id"
+                keyField="contractNumber"
                 data="{! v.data }"
                 columns="{! v.columns }"
                 enableInfiniteLoading="{! v.enableInfiniteLoading}"

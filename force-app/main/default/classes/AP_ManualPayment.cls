@@ -8,7 +8,7 @@ global with sharing class AP_ManualPayment {
         Map<String,String> response = new Map<String,String>();
 
         /* grab the account number */
-        Invoice__c i = [SELECT name, balance_due_amount__c, LS_Contract__r.cllease__Account__r.account_number__c
+        Invoice__c i = [SELECT name, balance_due_amount__c, LS_Contract__r.cllease__Account__r.account_number__c, paid_invoice_amount__c
                       FROM Invoice__c
                       where id = :recordId
                       ];
@@ -18,10 +18,22 @@ global with sharing class AP_ManualPayment {
         paymentsPending = [select id 
                             from Int_PX_Remit__c 
                             where Invoice_number__c = :i.name
+                            and committed__c = false
                             ];
+        
+        if (i.balance_due_amount__c == 0)   {
+            response.put('Message','This invoice has been paid, cannot make an additional payment on this invoice!');
+            return JSON.serialize(response);
+        } 
+
+        if (checkAmount > i.balance_due_amount__c)   {
+            response.put('Message','Payment cannot be greater than the balance due!');
+            return JSON.serialize(response);
+        } 
+
 
         if (paymentsPending.size() > 0){
-             response.put('Message','There is already a payment pending for this invoice!');
+            response.put('Message','There is already a payment pending for this invoice!');
             return JSON.serialize(response);
         }
 

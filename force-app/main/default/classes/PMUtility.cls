@@ -330,18 +330,6 @@ public without sharing class PMUtility {
     *
     *
     *************************************************************************************************************************************************************/
-    public static ServiceContractData searchPortfolio2(String customerName
-                                    , String customerNumber
-                                    , String assetSerialNumber
-                                    , Integer size
-                                    , String sortOrder
-                                    , Boolean assetDetail
-                                    , Integer page){
-
-        ServiceContractData response;
-
-        return response;
-    }
         
     public static ServiceContractData searchPortfolio(String customerName
                                     , String customerNumber

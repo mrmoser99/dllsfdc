@@ -33,20 +33,30 @@ public with sharing class PMCalloutUtility {
   
         String requestParms = '?assetDetail=TRUE';
         
-        if (customerName != null)
-            requestParms +='&customerName=' + customerName;
+        customerName = customerName.trim();
+        customerNumber = customerNumber.trim();
+        assetSerialNumber = assetSerialNumber.trim();
+        sortOrder = sortOrder.trim();
+
+        if (customerName != null && customerName != ''){
+            customerName = '*' + customerName + '*';
+            customerName = customerName.replace(' ','*');
+            requestParms +=  '&customerName=' +  customerName;
+        }
         
-        
-        if (customerNumber != null)
+        if (customerNumber != null && customerNumber != '')
             requestParms +='&customerNumber=' + customerNumber;                  
         
 
-        if (assetSerialNumber != null)
+        if (assetSerialNumber != null && assetSerialNumber != '')
             requestParms +='&assetSerialNumber=' + assetSerialNumber;     
         
-        
-        if (sortOrder !=null)
+         
+        if (sortOrder !=null && sortOrder != '')
             requestParms += '&sort=' + sortOrder;
+        else {
+            requestParms += '&sort=' + 'numberOfRemainingPayments,customerName';
+        }
 
         if (page != null)
             requestParms += '&page=' + page;
@@ -54,6 +64,7 @@ public with sharing class PMCalloutUtility {
         if (size != null)
             requestParms += '&size=' + size;
 
+        
         request.setEndpoint(System.Label.PM_Endpoint + '/americas/v1/partnerportfolio' + requestParms);
     	request.setHeader('Content-Type', 'application/json'); 
         request.setHeader('Authorization', 'Bearer '+ PMUtility.getAccessToken());
@@ -64,7 +75,15 @@ public with sharing class PMCalloutUtility {
         if (response.getStatusCode() == 200){ 
 
             myResponse = (PMUtility.ServiceContractData) System.JSON.deserialize(response.getBody(),PMUtility.ServiceContractData.class);
+            
+            for (PMUtility.Data d:myResponse.data){
+                d.newCoReady = 'true';
 
+                if (d.assetDetail.size() == 1)
+                    d.equipmentDescription = d.assetDetail.size() + ' Line of Equipment';
+                else
+                    d.equipmentDescription = d.assetDetail.size() + ' Lines of Equipment';
+            }
         }   
        
 	    system.debug(System.Label.PM_Endpoint + '/americas/v1/partnerportfolio' + requestParms);

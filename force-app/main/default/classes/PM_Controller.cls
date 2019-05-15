@@ -36,7 +36,7 @@ public without sharing class PM_Controller {
                                     , Boolean assetDetail
                                     , Integer page){   
         
-        return PMUtility.searchPortfolio(customerName
+        return PMCalloutUtility.searchPortfolio(customerName
                                         ,customerNumber
                                         ,assetSerialNumber
                                         ,size
