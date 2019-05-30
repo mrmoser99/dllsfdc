@@ -235,16 +235,101 @@ public with sharing class PMCalloutUtility {
 
     public static String getLeaseDetails(String leaseInfo){
         
-        String response;
-
         system.debug(leaseInfo); 
+  
+        PMUtility.Data currentData = (PMUtility.Data) System.JSON.deserialize(leaseInfo,PMUtility.Data.class);
 
+        system.debug(currentData);
+        system.debug('searching for contract nbr:  ' + currentdata.contractNumber);
         
-        PMUtility.Data myResponse = (PMUtility.Data) System.JSON.deserialize(leaseInfo,PMUtility.Data.class);
+        
+        System.HttpResponse response;
+        System.HttpRequest request = new System.HttpRequest();
+        
+        request.setTimeout(120000);
+    	request.setEndpoint(System.Label.PM_Endpoint + '/americas/v1/contractdetail');
+    	request.setHeader('Content-Type', 'application/json'); 
+        request.setHeader('Authorization', 'Bearer '+ PMUtility.getAccessToken());
+        request.setHeader('dllContractNumber', currentData.contractNumber);
+    	request.setMethod('GET');
+    	
+        response = new System.Http().send(request); 
+        
+        PMUtility.contractDetail contractDetail;
 
-        system.debug(myResponse);
+        if (response.getStatusCode() == 200){ 
+            system.debug(response.getBody());
+            contractDetail = (PMUtility.contractDetail) System.JSON.deserialize(response.getBody(),PMUtility.ContractDetail.class);
+            system.debug(contractDetail);
+            system.debug(contractDetail.assets); 
+        }
 
-        return JSON.serialize(myResponse); 
+        /* add extra gathered data to currentdata */
+        currentData.Cust_Legal_Name = contractDetail.customerLegalName;
+
+        //find assets[i].serialNumber in data
+        //then update
+       
+        for (Integer i=0;i < contractDetail.assets.size(); i++){
+           
+            for (Integer j=0;j < currentData.assetDetail.size();j++){
+               
+                if (currentData.assetDetail[j].assetSerialNumber == contractDetail.assets[i].serialNumber){
+                    system.debug('Before:' + currentData.assetDetail[j]);
+                    currentData.assetDetail[j].Billing_City = contractDetail.assets[i].billingCity;
+                    currentData.assetDetail[j].Billing_Location = contractDetail.assets[i].billingLocation;
+                    currentData.assetDetail[j].Billing_State = contractDetail.assets[i].billingState;
+                    currentData.assetDetail[j].Billing_Zip = contractDetail.assets[i].billingPostalCode;
+
+                    currentData.assetDetail[j].Install_City = contractDetail.assets[i].installCity;
+                    currentData.assetDetail[j].Install_Location = contractDetail.assets[i].installLocation;
+                    currentData.assetDetail[j].Install_State = contractDetail.assets[i].installState;
+                    currentData.assetDetail[j].Install_Zip = contractDetail.assets[i].installPostalCode;
+                    system.debug('After:' + currentData.assetDetail[j]);
+                    continue;
+                }
+            }
+        } 
+        
+
+
+        System.HttpResponse response2;
+        System.HttpRequest request2 = new System.HttpRequest();
+        
+        request2.setTimeout(120000);
+    	request2.setEndpoint(System.Label.PM_Endpoint + '/americas/v1/contractsummary');
+    	request2.setHeader('Content-Type', 'application/json'); 
+        request2.setHeader('Authorization', 'Bearer '+ PMUtility.getAccessToken());
+        request2.setHeader('dllContractNumber', currentData.contractNumber);
+    	request2.setMethod('GET');
+    	
+        response2 = new System.Http().send(request2); 
+        
+        if (response2.getStatusCode() == 200){ 
+            system.debug(response2.getBody());
+            PMUtility.contractSummary contractSummary = (PMUtility.contractSummary) System.JSON.deserialize(response2.getBody(),PMUtility.ContractSummary.class);
+            system.debug('Before: '  + currentData);
+
+            currentData.Contract_Status = contractSummary.contractStatus;
+            currentData.Contract_Application_Number = contractSummary.creditApplicationNumber;
+            currentData.Product = contractSummary.financialProduct;
+            currentData.Financialproduct = contractSummary.financialProduct;
+            currentData.PurchaseOption = contractSummary.purchaseOption;
+            currentData.Statetax = contractSummary.stateTax;
+            currentData.CityTax = contractSummary.cityTax;
+            currentData.DistrictTax = contractSummary.districtTax;
+            currentData.Totalassetpayment = contractSummary.contractRent;
+            currentData.PaymentFrequency = contractSummary.paymentFrequency;
+            currentData.Dayspastdue = contractSummary.dayspastDue;
+            currentData.PaymentReceivedDate = contractSummary.paymentAppliedDate;
+            currentData.PaymentAmountReceived = contractSummary.lastPaymentAmount;
+            currentData.PaymentNumber = contractSummary.lastPaymentNumber;
+
+            system.debug('After: '  + currentData);
+
+        }
+
+        return JSON.serialize(currentData); 
 
     }
 }

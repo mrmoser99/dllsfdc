@@ -41,7 +41,7 @@ public without sharing class PMUtility {
 
     }
 
-    public class assset{
+    public class asset{
         @AuraEnabled public String manufacturer;
         @AuraEnabled public String model;
         @AuraEnabled public String description;
