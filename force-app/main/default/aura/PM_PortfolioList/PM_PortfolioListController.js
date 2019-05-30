@@ -3,6 +3,7 @@
         component.set('v.page',0);
 
         var actions = [
+            { label: 'Get Lease Details', name: 'leaseDetails' },
             { label: 'Get Quote', name: 'quote' },
             { label: 'Equipment Detail', name: 'equipment' }
         ];
@@ -76,6 +77,7 @@
         
         var rowAction = event.getParam('action');
         var row = event.getParam('row');
+       
         component.set('v.quoteData',[]);
         component.set('v.equipmentData',[]);
        
@@ -142,21 +144,53 @@
                 break;
             case 'equipment':
                 console.log('************************ start');
-                console.log(row.assetDetail);
+                
                 component.set('v.equipmentData', []);
                 component.set('v.equipmentData', row.assetDetail);
 
                 
                 for (var i in row.assetDetail){
+                    console.log('in loop');
+                   
                     console.log(row.assetDetail[i].assetSequenceNumber);
-                    console.log(row.assetDetail[i].assetMake);
-                    
-                    
+                    console.log(row.assetDetail[i].assetDescription);
                 }
-                console.log('end');
+                console.log('end1');
                  
 
                 break;
+
+            case 'leaseDetails':
+
+                console.log(JSON.stringify(row));
+                var action = component.get("c.getLeaseDetails");
+                
+                action.setParams({
+                  "leaseInfo": JSON.stringify(row)
+                });
+                
+                action.setCallback(this, function(response) {
+                    var state = response.getState();
+                    if (state === "SUCCESS") {
+                        var records = response.getReturnValue();
+                        console.log(records);
+                        
+                        var msg='Details Gathered!';
+                        component.find('notifLib').showToast({
+                                      'variant': 'success',
+                                      'message': msg,
+                                      'mode': 'sticky'
+                        });
+                        //$A.get('e.force:refreshView').fire();  
+                    }
+                    
+                    //$A.get('e.force:refreshView').fire();
+                });
+                
+                $A.enqueueAction(action);
+                break; 
+                
+                
                 
         }
     }     

@@ -89,6 +89,7 @@ Global Class CongaGenerateInvoice{
         String AD              = CongaURL_Settings__c.getInstance().AD__c;
         String Equipment       = CongaURL_Settings__c.getInstance().Equipment_contact__c;
         
+        Conga_Query__c charges = [select id from Conga_Query__c where name = 'Charges'];
         
             //Change for EOL=002 Ticket
             //Based on the Count of States we assigning the template id 
@@ -121,7 +122,7 @@ Global Class CongaGenerateInvoice{
      congaUrl =Label.Conga_URL+userinfo.getsessionId()+'&serverUrl='+partnerUrl+'&QueryId=[INV]'+Invo+',[DueDetailsLines]'
               +DueDetailsLines+'?pv0='+BillId+',[AD]'+AD+'?pv0='+contId+',[INSFEE]'+INSFEE+'?pv0='+recordId+',[OrigFee]'
               +OrigFee+'?pv0='+recordId+',[InterimRent]'+InterimRent+'?pv0='+recordId+',[LateFee]'+LateFee+'?pv0='
-              +recordId+',[FinanceFee]'+FinanceFee+',[EC]'+Equipment+'?pv0='+contId+'&TemplateId='
+              +recordId+',[Charges]' + Charges + '?pv0='recordId +',[FinanceFee]'+FinanceFee+',[EC]'+Equipment+'?pv0='+contId+'&TemplateId='
               +InvTempId+'&DS7=1&OFN=InvoiceStatement&id='+recordId.subString(0,15);
       return getCalloutToConga(congaUrl);
       }

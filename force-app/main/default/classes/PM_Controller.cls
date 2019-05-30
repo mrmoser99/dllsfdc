@@ -51,9 +51,10 @@ public without sharing class PM_Controller {
    	* 
    	********************************************************************************************/
     @AuraEnabled
-    public static String getLeaseDetails(String leaseNumber){   
-         
-        return PMUtility.getLeaseDetails(leaseNumber);
+    public static String getLeaseDetails(String leaseInfo){   
+        
+        
+        return PMCalloutUtility.getLeaseDetails(leaseInfo);
     } 
 
     /********************************************************************************************
@@ -62,8 +63,8 @@ public without sharing class PM_Controller {
    	********************************************************************************************/
     @AuraEnabled
     public static PMUtility.TerminationQuoteResponse generateQuotes(String leaseNumber){   
-        
-        return PMUtility.generateQuotes(leaseNumber);
+         
+        return PMCallOutUtility.generateQuotes(leaseNumber);
         
          
     } 

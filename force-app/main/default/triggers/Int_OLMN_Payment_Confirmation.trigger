@@ -5,10 +5,19 @@
 * Change Log:
 *
 * 2/15/18 - MRM Created
+* 5/16/19 - MRM Added logic to mark a payment request as confirmed;;; guard rail effort
 *
 **********************************************************************************************/
 trigger Int_OLMN_Payment_Confirmation on Int_OLMN_Payment_Confirmation__c (before insert) {
 	
+	Set<String> invoiceSet = new Set<String>();
+	for (Int_OLMN_Payment_Confirmation__c r:trigger.new){
+		invoiceSet.add(r.invoice_number__c);
+	}	 
+
+	List<Int_OLMN_AP__c> pList = new list<Int_OLMN_AP__c>();
+	pList = [select id from Int_OLMN_AP__c where invoice_number__c in :invoiceSet];
+
 	for (Int_OLMN_Payment_Confirmation__c r:trigger.new){
 				/*
 				0Contract number
@@ -51,6 +60,13 @@ trigger Int_OLMN_Payment_Confirmation on Int_OLMN_Payment_Confirmation__c (befor
 				}
 				
 			
-		}
+	}
+
+	for (Int_OLMN_AP__c a:pList){
+		a.ap_confirmed__c = true;
+	}
+
+	if (!pList.isEmpty())
+		update pList;
     
 }

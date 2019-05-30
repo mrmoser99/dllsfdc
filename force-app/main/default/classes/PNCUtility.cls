@@ -5,6 +5,7 @@
 *	Change Log: 
 *	4/4/19 - MRM Created
     4/5/19 - added void invoice method
+*   5/20/19 - changesd 120 days to 365 days to look back on history.     
 *
 ********************************************************************************************************************/
 public with sharing class PNCUtility { 
@@ -69,7 +70,7 @@ public with sharing class PNCUtility {
 
         lineList = [Select line_data__c
                                         from Int_PX_Billing__c 
-                                        where createdDate = last_n_days: 120
+                                        where createdDate = last_n_days: 365 
                                         and committed__c = true
                                     ];
 

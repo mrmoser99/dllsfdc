@@ -33,15 +33,89 @@ public without sharing class PMUtility {
 
     public class Meta{
 
-         @AuraEnabled public String itemTotal;
-         @AuraEnabled public String size;
-         @AuraEnabled public String page;
-         @AuraEnabled public String pageTotal;
-         @AuraEnabled public List<String> sortableFields;
+        @AuraEnabled public String itemTotal;
+        @AuraEnabled public String size;
+        @AuraEnabled public String page;
+        @AuraEnabled public String pageTotal;
+        @AuraEnabled public List<String> sortableFields;
 
     }
 
-     
+    public class assset{
+        @AuraEnabled public String manufacturer;
+        @AuraEnabled public String model;
+        @AuraEnabled public String description;
+        @AuraEnabled public String cost;
+        @AuraEnabled public String installLocation;
+        @AuraEnabled public String installCity;
+        @AuraEnabled public String installState;
+        @AuraEnabled public String installPostalCode;
+        @AuraEnabled public String billingLocation;
+        @AuraEnabled public String billingCity;
+        @AuraEnabled public String billingState;
+        @AuraEnabled public String billingPostalCode;
+        @AuraEnabled public String serialNumber;
+
+    }
+    public class leaseSigner{
+        @AuraEnabled public String leaseSigner;  
+        @AuraEnabled public String leaseSignerTitle;     
+        @AuraEnabled public String leaseSignerPhone;           
+    }
+    public class contractDetail{
+
+        @AuraEnabled public String dllContractNumber;
+        @AuraEnabled public String contractEndDate;
+        @AuraEnabled public String customerLegalName;
+        @AuraEnabled public String customerAddress;
+        @AuraEnabled public String customerCity;
+        @AuraEnabled public String customerState;
+        @AuraEnabled public String customerPostalCode;
+        @AuraEnabled public String customerCounty;
+        @AuraEnabled public String contractPaymentMethod;
+
+        @AuraEnabled public List<leaseSigner> leaseSigners;
+
+        @AuraEnabled public String billingAddress;
+        @AuraEnabled public String billingCity;
+        @AuraEnabled public String billingState;
+        @AuraEnabled public String billingPostalCode;
+        @AuraEnabled public String billingPhoneNumber;
+
+        @AuraEnabled public List<asset> assets;
+
+    }
+    public class contractSummary{
+
+        @AuraEnabled public String dllContractNumber;
+        @AuraEnabled public String contractStatus;
+        @AuraEnabled public String customerName;
+        @AuraEnabled public String leaseSignerPhone;
+        @AuraEnabled public String contractStartDate;
+        @AuraEnabled public String contractTerm;
+        @AuraEnabled public String originalCost;
+        @AuraEnabled public String contractRent;
+        @AuraEnabled public String bookedDate;
+        @AuraEnabled public String remainingPayments;
+        @AuraEnabled public String equipmentDescription;
+        @AuraEnabled public String numberOfAssets;
+        @AuraEnabled public String financialProduct;
+        @AuraEnabled public String purchaseOption;
+        @AuraEnabled public String stateTax;
+        @AuraEnabled public String countyTax;
+        @AuraEnabled public String cityTax;
+        @AuraEnabled public String districtTax;
+        @AuraEnabled public String paymentFrequency;
+        @AuraEnabled public String dateLastPayment;
+        @AuraEnabled public String lastPaymentAmount;
+        @AuraEnabled public String lastPaymentNumber;
+        @AuraEnabled public String daysPastDue;
+        @AuraEnabled public String paymentAppliedDate;
+        @AuraEnabled public String creditApplicationNumber;
+        @AuraEnabled public String currentAmount;
+        @AuraEnabled public String pastAmount;
+          
+    }
 
     public class Data{
         /* missing */
@@ -63,7 +137,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String contractAverageDaysToPay;
         @AuraEnabled public String contractSigner; //m-6
         @AuraEnabled public String contractSignerTitle;  //m-7
-        //@AuraEnabled public String daysPastDue; //next sprint
+        //@AuraEnabled public String daysPastDue; //dayspastdue
         @AuraEnabled public String equipmentDescription;
         @AuraEnabled public String nbrOfAssets;  //m-13
         @AuraEnabled public String leaseSignerTitle;
@@ -109,7 +183,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String Code_Sales_Rep;
         @AuraEnabled public String Contract_Number;
         @AuraEnabled public String Contract_Status;  //m-12
-        @AuraEnabled public String Contract_Application_Number;  //m-9 did not see it in xsd
+        @AuraEnabled public String Contract_Application_Number;  //m-9 credit appliction number
         @AuraEnabled public String x_Currency;
         @AuraEnabled public String Cust_Address;
         @AuraEnabled public String Cust_City;
@@ -159,9 +233,9 @@ public without sharing class PMUtility {
         @AuraEnabled public String Numberofassets;  //m-13   copy this to nbrOfAssets above.
         @AuraEnabled public String Statetax;  //m-15
         @AuraEnabled public String Countytax;  //m-16
-        @AuraEnabled public String Citytax; //m-17
+        @AuraEnabled public String Citytax; //m-17 missing
         @AuraEnabled public String Districttax; //m-18
-        @AuraEnabled public String Totalassetpayment; //m-19
+        @AuraEnabled public String Totalassetpayment; //m-19 contract rent
         @AuraEnabled public String Paymentfrequency; //m-20
         @AuraEnabled public String Dayspastdue; //m-24
 
@@ -169,9 +243,9 @@ public without sharing class PMUtility {
         /* end contract Extension */
 
         /* contract search inquiry */
-        @AuraEnabled public String PaymentReceivedDate; //m-21
-        @AuraEnabled public String PaymentAmountReceived;  //m-22
-        @AuraEnabled public String PaymentNumber;  //check number  m-23
+        @AuraEnabled public String PaymentReceivedDate; //m-21 payment applied date
+        @AuraEnabled public String PaymentAmountReceived;  //m-22 lastpayment amount
+        @AuraEnabled public String PaymentNumber;  //check number  m-23 lastpayment number
  
 
         /* end contract search */
@@ -216,14 +290,14 @@ public without sharing class PMUtility {
         @AuraEnabled public String Billing_Zip;
         @AuraEnabled public String Calc_Residual_Amnt;
         @AuraEnabled public String Calc_Residual_Prcnt;
-        @AuraEnabled public String Cost_Center; //m-37
+        @AuraEnabled public String Cost_Center; //m-37 missing
         @AuraEnabled public String Description;
         @AuraEnabled public String First_Payment_Date;
         @AuraEnabled public String Guaranteed_Amount;
         @AuraEnabled public String Guarantor_Name;
         @AuraEnabled public String Install_City;
         @AuraEnabled public String Install_Country;
-        @AuraEnabled public String Install_County;
+        @AuraEnabled public String Install_County; //missing
         @AuraEnabled public String Install_Date;  //m-31
         @AuraEnabled public String Install_Location; //m-39
         @AuraEnabled public String Install_Site_Id;
@@ -240,7 +314,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String Organization_Id;
         @AuraEnabled public String Parent_Asset_Num;
         @AuraEnabled public String Payment_Amount;
-        @AuraEnabled public String Po_Number;  //m-36
+        @AuraEnabled public String Po_Number;  //m-36 missing
         @AuraEnabled public String Residual_Amnt;
         @AuraEnabled public String Residual_Prcnt;
         @AuraEnabled public String Uba_Flag;
@@ -255,7 +329,13 @@ public without sharing class PMUtility {
 
         @AuraEnabled public String partnerTransactionReference;
         @AuraEnabled public String contractNumber;
+        @AuraEnabled public String quoteNumber;
+        @AuraEnabled public String quoteValidityDate;
+        @AuraEnabled public String quoteMessage;
+        @AuraEnabled public String terminationQuoteType;
+
         @AuraEnabled public List<Quote> quotes;
+        @AuraEnabled public String partnerOrderId;
     }
 
 
@@ -277,6 +357,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String securityDeposit;
         @AuraEnabled public String pastDueService;
         @AuraEnabled public String amount;
+       
         
     }
 
