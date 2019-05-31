@@ -137,6 +137,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String contractOriginalCost;
         @AuraEnabled public String contractPayment;  //m-14
         @AuraEnabled public String contractAverageDaysToPay;
+                               
         @AuraEnabled public String contractSigner; //m-6
         @AuraEnabled public String contractSignerTitle;  //m-7
         //@AuraEnabled public String daysPastDue; //dayspastdue

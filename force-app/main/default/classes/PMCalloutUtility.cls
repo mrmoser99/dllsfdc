@@ -79,10 +79,31 @@ public with sharing class PMCalloutUtility {
             for (PMUtility.Data d:myResponse.data){
                 d.newCoReady = 'true';
 
-                if (d.assetDetail.size() == 1)
+                if (d.assetDetail.size() == 1){
                     d.equipmentDescription = d.assetDetail.size() + ' Line of Equipment';
-                else
+                    d.nbrOfAssets = '1';
+                }
+                else{
+                    d.nbrOfAssets = string.valueOf(d.assetDetail.size());
                     d.equipmentDescription = d.assetDetail.size() + ' Lines of Equipment';
+                }
+                String periodocity = d.contractPeriodicity;
+
+                if (periodocity == '1')
+                    d.contractPeriodicity = 'Monthly';
+                else
+                if (periodocity == '2')
+                    d.contractPeriodicity = 'Bi-Monthly';
+                else 
+                if (periodocity == '3')
+                    d.contractPeriodicity = 'Quarterly';
+                else
+                if (periodocity == '6')
+                    d.contractPeriodicity = 'Semi-Annually';
+                else
+                if (periodocity == '12')
+                    d.contractPeriodicity = 'Annually';
+                
             }
         }   
        
