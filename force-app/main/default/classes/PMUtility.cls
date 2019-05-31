@@ -6,6 +6,8 @@
 *	3/15/19 - MRM Created
 *   4/17/19 - Started mapping for all services
 *   5/2/19 - matched all message fields with datamappingv1.0 document 
+*   5/30/19 - added all services; a few fields remain
+*   5/31/19 - added client/secret from account for the user
 *
 ********************************************************************************************************************/
 public without sharing class PMUtility {
@@ -1025,13 +1027,36 @@ public without sharing class PMUtility {
     *************************************************************************************************/
     public static string getAccessToken(){     
     	
-    	system.debug('******** getting access token');
     	if (Test.isRunningTest())
     		return string.valueOf(system.now());
     		
-    	String client = 'b5dfbf6f-06a7-46c0-aa70-3b3eea4f4052';
+        User u = [select contactId
+                  from User
+                  where id = :userInfo.getUserId()
+                 ];
+
+        /* default for testing; this is south west office */
+
+        String client = 'b5dfbf6f-06a7-46c0-aa70-3b3eea4f4052';
     	String secret = 'd1ae6328-159e-43af-9bec-fe213cf9bda0';
-		HttpRequest req_token = new HttpRequest();        
+
+        if (u.contactId != null){
+            Contact c = [select  id
+                                ,account.client__c
+                                ,account.secret__c
+                         from Contact 
+                         where id = :u.contactId];
+
+            if (c.account.client__c == null || c.account.secret__c == null){
+                Integer i=0;  //use default
+            }
+            else{
+                client = c.account.client__c;
+                secret = c.account.secret__c;
+            }
+        }
+
+    	HttpRequest req_token = new HttpRequest();        
 		
 		String tokenEndpoint = System.Label.ICV_tokenendpoint;  
 		req_token.setEndpoint(tokenEndpoint);
@@ -1042,8 +1067,7 @@ public without sharing class PMUtility {
       
         Http http = new Http(); 
         HTTPResponse res = http.send(req_token);
-        //System.debug(res.getBody());
-		
+        
 		String access_token;
 
 		JSONParser parser = JSON.createParser(res.getBody());
@@ -1051,12 +1075,10 @@ public without sharing class PMUtility {
         while (parser.nextToken() != null) {
         	if (parser.getCurrentName() == 'access_token') {
             	access_token = parser.getText();
-            	//system.debug(parser.getText());
             }
         }
         
-       	//system.debug('******** returning access token' + access_token);
-        return access_token;
+       	return access_token;
          
     }
 }
