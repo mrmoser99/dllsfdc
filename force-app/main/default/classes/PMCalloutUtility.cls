@@ -4,15 +4,15 @@
 * 
 *	Change Log: 
 *	5/14/19 - Created
-*
-*   Implements callouts for tradeups,false,false) ;
- 
+*   5/31/19 - completed upgrade to use callouts
 * 
 ********************************************************************************************************************/
 public with sharing class PMCalloutUtility {
 
+    public class myException extends Exception {}
+    
    	/********************************************************************************************
-   	* Send Request to ICS
+   	* Search Portfolio
    	* 
    	********************************************************************************************/
    	public static  PMUtility.ServiceContractData searchPortfolio(String customerName
@@ -33,6 +33,9 @@ public with sharing class PMCalloutUtility {
   
         String requestParms = '?assetDetail=TRUE';
         
+        if (assetDetail == false)
+            requestParms = '?assetDetail=FALSE';
+            
         customerName = customerName.trim();
         customerNumber = customerNumber.trim();
         assetSerialNumber = assetSerialNumber.trim();
@@ -70,45 +73,52 @@ public with sharing class PMCalloutUtility {
         request.setHeader('Authorization', 'Bearer '+ PMUtility.getAccessToken());
     	request.setMethod('GET');
     	
-    	response = new System.Http().send(request); 
+        try{
+            response = new System.Http().send(request); 
     
-        if (response.getStatusCode() == 200){ 
+            if (response.getStatusCode() == 200){ 
 
-            myResponse = (PMUtility.ServiceContractData) System.JSON.deserialize(response.getBody(),PMUtility.ServiceContractData.class);
+                myResponse = (PMUtility.ServiceContractData) System.JSON.deserialize(response.getBody(),PMUtility.ServiceContractData.class);
             
-            for (PMUtility.Data d:myResponse.data){
-                d.newCoReady = 'true';
+                for (PMUtility.Data d:myResponse.data){
+                    d.newCoReady = 'true';
 
-                if (d.assetDetail.size() == 1){
-                    d.equipmentDescription = d.assetDetail.size() + ' Line of Equipment';
-                    d.nbrOfAssets = '1';
-                }
-                else{
-                    d.nbrOfAssets = string.valueOf(d.assetDetail.size());
-                    d.equipmentDescription = d.assetDetail.size() + ' Lines of Equipment';
-                }
-                String periodocity = d.contractPeriodicity;
+                    if (d.assetDetail.size() == 1){
+                        d.equipmentDescription = d.assetDetail.size() + ' Line of Equipment';
+                        d.nbrOfAssets = '1';
+                    }
+                    else{
+                        d.nbrOfAssets = string.valueOf(d.assetDetail.size());
+                        d.equipmentDescription = d.assetDetail.size() + ' Lines of Equipment';
+                    }
+                    String periodocity = d.contractPeriodicity;
 
-                if (periodocity == '1')
-                    d.contractPeriodicity = 'Monthly';
-                else
-                if (periodocity == '2')
-                    d.contractPeriodicity = 'Bi-Monthly';
-                else 
-                if (periodocity == '3')
-                    d.contractPeriodicity = 'Quarterly';
-                else
-                if (periodocity == '6')
-                    d.contractPeriodicity = 'Semi-Annually';
-                else
-                if (periodocity == '12')
-                    d.contractPeriodicity = 'Annually';
+                    if (periodocity == '1')
+                        d.contractPeriodicity = 'Monthly';
+                    else
+                    if (periodocity == '2')
+                        d.contractPeriodicity = 'Bi-Monthly';
+                    else 
+                    if (periodocity == '3')
+                        d.contractPeriodicity = 'Quarterly';
+                    else
+                    if (periodocity == '6')
+                        d.contractPeriodicity = 'Semi-Annually';
+                    else
+                    if (periodocity == '12')
+                        d.contractPeriodicity = 'Annually';
                 
-            }
-        }   
+                }
+            } 
+            else{
+                throw new myException('Callouts unavailable at this time!');
+            } 
+        }
+        catch (Exception e){
+             throw new myException('Callouts unavailable at this time!',e);    
+        } 
        
-	    system.debug(System.Label.PM_Endpoint + '/americas/v1/partnerportfolio' + requestParms);
-        return myResponse;
+	    return myResponse;
    	}
 
     /************************************************************************************************************************************************************
@@ -140,7 +150,7 @@ public with sharing class PMCalloutUtility {
         Datetime dt = system.now();
        	gen.writeStringField('transmissionDate', dt.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss\'Z\''));
 	  	gen.writeStringField('partnerOrderId', '22684111');
-	  	gen.writeStringField('contractNumber', leaseNumber);
+        gen.writeStringField('contractNumber', leaseNumber);
         gen.writeStringField('terminationQuoteType', 'TRADEUP_WITHOUT_PURCHASE');
         
         List<String> sList = new List<String>();
@@ -150,22 +160,32 @@ public with sharing class PMCalloutUtility {
 		gen.writeEndObject();
         	
 		request.setBody(gen.getAsString());  
-        response = new System.Http().send(request); 
         
-        if (response.getStatusCode() == 200){ 
+        try{
+            response = new System.Http().send(request); 
+        
+            if (response.getStatusCode() == 200){ 
 
-            qResponse = (PMUtility.TerminationQuoteResponse) System.JSON.deserialize(response.getBody(),PMUtility.TerminationQuoteResponse.class);
-            system.debug('qresponse is:    ' + qResponse);
-            qResponse.quotes[0].quoteNumber =  qResponse.quoteNumber;
-            qResponse.quotes[0].quoteCalculationDescription = 'Trade Up w/Equipment Return';
-            qResponse.quotes[0].terminationQuoteType = qResponse.quotes[0].quoteCalculationDescription;
-            qResponse.quotes[0].quoteValidityDate = qResponse.quoteValidityDate;
-            qResponse.quotes[0].quoteMessage = qResponse.quoteMessage;
-            qResponse.quoteMessage = null;
-            qResponse.quoteNumber = null;
-            qResponse.quoteValidityDate = null;
-            qResponse.terminationQuoteType = null; 
+                qResponse = (PMUtility.TerminationQuoteResponse) System.JSON.deserialize(response.getBody(),PMUtility.TerminationQuoteResponse.class);
+                qResponse.quotes[0].quoteNumber =  qResponse.quoteNumber;
+                qResponse.quotes[0].quoteCalculationDescription = 'Trade Up w/Equipment Return';
+                qResponse.quotes[0].terminationQuoteType = qResponse.quotes[0].quoteCalculationDescription;
+                qResponse.quotes[0].quoteValidityDate = qResponse.quoteValidityDate;
+                qResponse.quotes[0].quoteMessage = qResponse.quoteMessage;
+                qResponse.quoteMessage = null;
+                qResponse.quoteNumber = null;
+                qResponse.quoteValidityDate = null;
+                qResponse.terminationQuoteType = null; 
+            }
+            else{  
+               throw new myException('Callouts unavailable at this time!');
+            }
+        }
+        catch (Exception e) {
+           throw new myException('Callouts unavailable at this time!',e);
+        }  
         
+        try{
             System.HttpResponse response2;
             System.HttpRequest request2 = new System.HttpRequest();
             JSONGenerator gen2 = JSON.createGenerator(true);
@@ -177,37 +197,40 @@ public with sharing class PMCalloutUtility {
             gen2.writeObjectField('quoteCalculationOption', sList);
 		    gen2.writeEndObject();
         	
-		    request2.setBody(gen2.getAsString()); 
+            request2.setBody(gen2.getAsString()); 
             request2.setTimeout(120000);
     	    request2.setEndpoint(System.Label.PM_Endpoint + '/americas/v2/terminationquote?messageId=' + 'newco');
     	    request2.setHeader('Content-Type', 'application/json'); 
             request2.setHeader('Authorization', 'Bearer '+ PMUtility.getAccessToken());
     	    request2.setMethod('POST');
-    	
             response2 = new System.Http().send(request2); 
 
             if (response2.getStatusCode() == 200){ 
+                    system.debug(response2.getStatusCode());
 
-                qResponse2 = (PMUtility.TerminationQuoteResponse) System.JSON.deserialize(response2.getBody(),PMUtility.TerminationQuoteResponse.class);
-                system.debug('qresponse2 is:    ' + qResponse2);
-                qResponse2.quotes[0].quoteNumber =  qResponse2.quoteNumber;
-                qResponse2.quotes[0].quoteCalculationDescription = 'Trade Up w/Equipment Purchase';
-                qResponse2.quotes[0].terminationQuoteType = qResponse2.quotes[0].quoteCalculationDescription;
-                qResponse2.quotes[0].quoteValidityDate = qResponse2.quoteValidityDate;
-                qResponse2.quotes[0].quoteMessage = qResponse2.quoteMessage;
-                qResponse2.quoteMessage = null;
-                qResponse2.quoteNumber = null;
-                qResponse2.quoteValidityDate = null;
-                qResponse2.terminationQuoteType = null;
-
-                qResponse.quotes.add(qResponse2.quotes[0]);
+                    qResponse2 = (PMUtility.TerminationQuoteResponse) System.JSON.deserialize(response2.getBody(),PMUtility.TerminationQuoteResponse.class);
+                    qResponse2.quotes[0].quoteNumber =  qResponse2.quoteNumber;
+                    qResponse2.quotes[0].quoteCalculationDescription = 'Trade Up w/Equipment Purchase';
+                    qResponse2.quotes[0].terminationQuoteType = qResponse2.quotes[0].quoteCalculationDescription;
+                    qResponse2.quotes[0].quoteValidityDate = qResponse2.quoteValidityDate;
+                    qResponse2.quotes[0].quoteMessage = qResponse2.quoteMessage;
+                    qResponse2.quoteMessage = null;
+                    qResponse2.quoteNumber = null;
+                    qResponse2.quoteValidityDate = null;
+                    qResponse2.terminationQuoteType = null;
+                    qResponse.quotes.add(qResponse2.quotes[0]);
             }
-        }  
+            else{
+                throw new myException('Callouts unavailable at this time!');
+            }
+        }
+        catch (Exception e){
+            throw new myException('Callouts unavailable at this time!',e);
+        } 
         
         List< Lease_OLM_Quote__c> lList = new List< Lease_OLM_Quote__c>();
         lList = [select id from  Lease_OLM_Quote__c  where contract_number__c = :leaseNumber];
         
-
         Lease_OLM_Quote__c lq = new Lease_OLM_Quote__c();
         lq.quote_calculation_description__c = qResponse.quotes[0].quoteCalculationDescription;
         lq.name = qResponse.quotes[0].quoteNumber;
@@ -256,14 +279,8 @@ public with sharing class PMCalloutUtility {
 
     public static String getLeaseDetails(String leaseInfo){
         
-        system.debug(leaseInfo); 
-  
         PMUtility.Data currentData = (PMUtility.Data) System.JSON.deserialize(leaseInfo,PMUtility.Data.class);
 
-        system.debug(currentData);
-        system.debug('searching for contract nbr:  ' + currentdata.contractNumber);
-        
-        
         System.HttpResponse response;
         System.HttpRequest request = new System.HttpRequest();
         
@@ -274,15 +291,21 @@ public with sharing class PMCalloutUtility {
         request.setHeader('dllContractNumber', currentData.contractNumber);
     	request.setMethod('GET');
     	
-        response = new System.Http().send(request); 
-        
         PMUtility.contractDetail contractDetail;
 
-        if (response.getStatusCode() == 200){ 
-            system.debug(response.getBody());
-            contractDetail = (PMUtility.contractDetail) System.JSON.deserialize(response.getBody(),PMUtility.ContractDetail.class);
-            system.debug(contractDetail);
-            system.debug(contractDetail.assets); 
+        try{ 
+         
+            response = new System.Http().send(request); 
+            
+            if (response.getStatusCode() == 200){ 
+                contractDetail = (PMUtility.contractDetail) System.JSON.deserialize(response.getBody(),PMUtility.ContractDetail.class);
+            }
+            else{
+                throw new myException('Callouts unavailable at this time!');
+            }
+        }
+        catch (Exception e){
+            throw new myException('Callouts unavailable at this time!',e);
         }
 
         /* add extra gathered data to currentdata */
@@ -296,7 +319,6 @@ public with sharing class PMCalloutUtility {
             for (Integer j=0;j < currentData.assetDetail.size();j++){
                
                 if (currentData.assetDetail[j].assetSerialNumber == contractDetail.assets[i].serialNumber){
-                    system.debug('Before:' + currentData.assetDetail[j]);
                     currentData.assetDetail[j].Billing_City = contractDetail.assets[i].billingCity;
                     currentData.assetDetail[j].Billing_Location = contractDetail.assets[i].billingLocation;
                     currentData.assetDetail[j].Billing_State = contractDetail.assets[i].billingState;
@@ -306,13 +328,10 @@ public with sharing class PMCalloutUtility {
                     currentData.assetDetail[j].Install_Location = contractDetail.assets[i].installLocation;
                     currentData.assetDetail[j].Install_State = contractDetail.assets[i].installState;
                     currentData.assetDetail[j].Install_Zip = contractDetail.assets[i].installPostalCode;
-                    system.debug('After:' + currentData.assetDetail[j]);
                     continue;
                 }
             }
         } 
-        
-
 
         System.HttpResponse response2;
         System.HttpRequest request2 = new System.HttpRequest();
@@ -324,30 +343,35 @@ public with sharing class PMCalloutUtility {
         request2.setHeader('dllContractNumber', currentData.contractNumber);
     	request2.setMethod('GET');
     	
-        response2 = new System.Http().send(request2); 
+        try{
+            response2 = new System.Http().send(request2); 
         
-        if (response2.getStatusCode() == 200){ 
-            system.debug(response2.getBody());
-            PMUtility.contractSummary contractSummary = (PMUtility.contractSummary) System.JSON.deserialize(response2.getBody(),PMUtility.ContractSummary.class);
-            system.debug('Before: '  + currentData);
+            if (response2.getStatusCode() == 200){ 
 
-            currentData.Contract_Status = contractSummary.contractStatus;
-            currentData.Contract_Application_Number = contractSummary.creditApplicationNumber;
-            currentData.Product = contractSummary.financialProduct;
-            currentData.Financialproduct = contractSummary.financialProduct;
-            currentData.PurchaseOption = contractSummary.purchaseOption;
-            currentData.Statetax = contractSummary.stateTax;
-            currentData.CityTax = contractSummary.cityTax;
-            currentData.DistrictTax = contractSummary.districtTax;
-            currentData.Totalassetpayment = contractSummary.contractRent;
-            currentData.PaymentFrequency = contractSummary.paymentFrequency;
-            currentData.Dayspastdue = contractSummary.dayspastDue;
-            currentData.PaymentReceivedDate = contractSummary.paymentAppliedDate;
-            currentData.PaymentAmountReceived = contractSummary.lastPaymentAmount;
-            currentData.PaymentNumber = contractSummary.lastPaymentNumber;
+                PMUtility.contractSummary contractSummary = (PMUtility.contractSummary) System.JSON.deserialize(response2.getBody(),PMUtility.ContractSummary.class);
+     
+                currentData.Contract_Status = contractSummary.contractStatus;
+                currentData.Contract_Application_Number = contractSummary.creditApplicationNumber;
+                currentData.Product = contractSummary.financialProduct;
+                currentData.Financialproduct = contractSummary.financialProduct;
+                currentData.PurchaseOption = contractSummary.purchaseOption;
+                currentData.Statetax = contractSummary.stateTax;
+                currentData.CityTax = contractSummary.cityTax;
+                currentData.DistrictTax = contractSummary.districtTax;
+                currentData.Totalassetpayment = contractSummary.contractRent;
+                currentData.PaymentFrequency = contractSummary.paymentFrequency;
+                currentData.Dayspastdue = contractSummary.dayspastDue;
+                currentData.PaymentReceivedDate = contractSummary.paymentAppliedDate;
+                currentData.PaymentAmountReceived = contractSummary.lastPaymentAmount;
+                currentData.PaymentNumber = contractSummary.lastPaymentNumber;
 
-            system.debug('After: '  + currentData);
-
+            }
+            else{
+                throw new myException('Callouts unavailable at this time!');
+            }
+        }
+        catch (Exception e){
+            throw new myException('Callouts unavailable at this time!',e);
         }
 
         return JSON.serialize(currentData); 

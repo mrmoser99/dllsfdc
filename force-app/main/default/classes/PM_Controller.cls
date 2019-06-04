@@ -21,8 +21,6 @@
 public without sharing class PM_Controller {
      
    
-    @AuraEnabled
-    public static String searchResults {get;set;} 
     /********************************************************************************************
    	* Search  
    	* 
@@ -68,39 +66,7 @@ public without sharing class PM_Controller {
         
          
     } 
-    /********************************************************************************************
-   	* Quote List - high level info about generated quotes except list of quotes returned instead
-    *       of message
-   	* 
-   	********************************************************************************************/
-    @AuraEnabled
-    public static List<Lease_OLM_Quote__c> generateQuotesSOQL(String leaseNumber){   
-        
-        return PMUtility.generateQuotesSOQL(leaseNumber);
-        
-         
-    } 
-
-    /********************************************************************************************
-   	* Quote Detail - detail inquiry information for a single quote
-   	* 
-   	********************************************************************************************/
-    @AuraEnabled
-    public static Lease_OLM_Quote__c getQuoteDetail(String quoteNumber){   
-        
-        return PMUtility.getQuoteDetail(quoteNumber);
-    } 
-
-    /********************************************************************************************
-   	* Book Lease - calls the olm book lease process
-   	* 
-   	********************************************************************************************/
-    @AuraEnabled
-    public static boolean processOLMBooking(String leaseNumber, String quoteNumber, Decimal amount) {   
-        
-        return PMUtility.processOLMBooking(leaseNumber,quoteNumber,amount);
-         
-    } 
-
     
+
+   
 }

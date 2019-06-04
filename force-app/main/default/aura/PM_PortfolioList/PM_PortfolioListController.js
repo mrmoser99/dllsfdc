@@ -91,6 +91,7 @@
                 
                 action.setCallback(this, function(response) {
                     var state = response.getState();
+                    console.log('State is: ' + state);
                     if (state === "SUCCESS") {
                         var records = response.getReturnValue();
                         console.log(records.quotes);
@@ -106,6 +107,15 @@
                                       'mode': 'sticky'
                         });
                         //$A.get('e.force:refreshView').fire();  
+                    }
+                    else if (state === 'ERROR') {
+                        let toast = $A.get('e.force:showToast');
+                        toast.setParams({
+                            title: 'Error',
+                            message: 'Exception in callout!',
+                            type: 'error'
+                        });
+                        toast.fire();
                     }
                     
                     //$A.get('e.force:refreshView').fire();
@@ -130,11 +140,11 @@
                                 
                             }
                         })
-                    } else if (status === 'ERROR') {
+                    } else if (state === 'ERROR') {
                         let toast = $A.get('e.force:showToast');
                         toast.setParams({
                             title: 'Error',
-                            message: errorMessage,
+                            message: 'Exception in callout!',
                             type: 'error'
                         });
                         toast.fire();
