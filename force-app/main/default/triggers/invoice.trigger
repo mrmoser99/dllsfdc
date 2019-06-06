@@ -27,6 +27,7 @@ trigger invoice on Invoice__c (after update, after insert) {
     String AD              = CongaURL_Settings__c.getInstance().AD__c;
     String Equipment       = CongaURL_Settings__c.getInstance().Equipment_contact__c;
     String InvTempId       = CongaURL_Settings__c.getInstance().InvTempId__c;
+	String Charges         = CongaURL_Settings__c.getInstance().Charges__c;
   
  	Set<ID> idSet = new Set<ID>();
  	for (Invoice__c i:trigger.new)
@@ -71,9 +72,9 @@ trigger invoice on Invoice__c (after update, after insert) {
      		String part2 = 
              		DueDetailsLines+'?pv0='+BillId+',[AD]'+AD+'?pv0='+i.LS_Contract__c+',[INSFEE]'+INSFEE+'?pv0='+ i.id +',[OrigFee]';
             String part3 =
-              		OrigFee+'?pv0='+i.id +',[InterimRent]'+InterimRent+'?pv0='+i.id+',[LateFee]'+LateFee+'?pv0=';
+              		OrigFee+'?pv0='+i.id +',[InterimRent]'+InterimRent+'?pv0='+i.id+',[LateFee]'+LateFee+'?pv0=' + i.id + ',[Charges]' + Charges + '?pv0=' + i.id;
             String part4 = 
-              		i.id+',[FinanceFee]'+FinanceFee+',[EC]'+Equipment+'?pv0=' +  i.LS_Contract__c +'&TemplateId='
+              		',[FinanceFee]'+FinanceFee+',[EC]'+Equipment+'?pv0=' +  i.LS_Contract__c +'&TemplateId='
               		+InvTempId+'&OFN=' + i.name +'&DefaultPDF=1&MFTS0=invoice_emailed__c&MFTSValue0=true&UF0=1';
                	
             system.debug('i is: ' + i);  	

@@ -19,6 +19,7 @@
             {label: 'Cost', fieldName: 'contractOriginalCost', type: 'currency', typeAttributes: { currencyCode: 'USD'}},
             {label: 'Payment', fieldName: 'contractPayment', type: 'currency', typeAttributes: { currencyCode: 'USD'}},
             {label: 'Type', fieldName: 'contractType', type: 'text'},
+            {label: 'Account Link', fieldName: 'customerName', type: 'url', typeAttributes: {label: { fieldName: 'customerName' }, target: '_asaablank'}},
             {label: 'Newco Ready?', fieldName: 'newcoReady', type: 'boolean'},
             {type: 'action', typeAttributes: { rowActions: actions } }
            

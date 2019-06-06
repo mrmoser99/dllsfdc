@@ -1,3 +1,5 @@
+//you can tell this class is from cls since there are no comments and the logic is wrong
+
 Global Class CongaGenerateInvoice{
    
  static String version = DLLNewCoConstants.SOAP_VERSION;
@@ -10,9 +12,9 @@ Global Class CongaGenerateInvoice{
  
    // this  method is used to generate Credit Approval Document
   Webservice static string generateInvoiceDocument(string recordId){
-    
+      system.debug('******** enter.....the cluster....');
       string BillId       = '';
-      string contId       = '';
+      string contId       = '';  
       countSpecificStates = 0;
       countOfRIstate      = 0;
       countOfOtherStates  = 0;
@@ -44,7 +46,7 @@ Global Class CongaGenerateInvoice{
       if(inv.size()>0)
       {
          
-      
+      system.debug('here');
       if(inv[0].Invoice_Bills__r.size()>0)
       {
           BillId = inv[0].Invoice_Bills__r[0].Id;
@@ -64,6 +66,8 @@ Global Class CongaGenerateInvoice{
         {
             for(cllease__Contract_Equipment__c CE : ContractEquipmentList)
             {
+                system.debug( 'mature: ' + CE.cllease__Contract__r.Number_of_Days_TO_Mature__c);
+
                 if(Oth.contains(CE.state__c) && CE.cllease__Contract__r.Number_of_Days_TO_Mature__c <= Days120)
                 {
                     countSpecificStates++;
@@ -90,36 +94,39 @@ Global Class CongaGenerateInvoice{
         String Equipment       = CongaURL_Settings__c.getInstance().Equipment_contact__c;
         String Charges         = CongaURL_Settings__c.getInstance().Charges__c;
         
-         
-            //Change for EOL=002 Ticket
-            //Based on the Count of States we assigning the template id 
-            if(inv[0].LS_Contract__r.cllease__Lease_Status__c != 'EVERGREEN')
-            {
+        system.debug('countSpecific States: ' + countSpecificStates);
+        system.debug('countofotherstates : ' + countOfOtherStates);
+        system.debug('countofristates : ' + countOfRIstate);
+        //Change for EOL=002 Ticket
+        //Based on the Count of States we assigning the template id 
+        if(inv[0].LS_Contract__r.cllease__Lease_Status__c != 'EVERGREEN')
+        {
              
-               if(countOfRIstate > 0 && (countSpecificStates > 0 || countOfOtherStates > 0)){
+            if(countOfRIstate > 0 && (countSpecificStates > 0 || countOfOtherStates > 0)){
 
                    InvTempId       = CongaURL_Settings__c.getInstance().MutipleStatesCommTempID__c;
-               }
-               else if(countOfRIstate > 0 && countSpecificStates == 0 && countOfOtherStates == 0){
+            }
+            else if(countOfRIstate > 0 && countSpecificStates == 0 && countOfOtherStates == 0){
                    
                    InvTempId       = CongaURL_Settings__c.getInstance().Specific_RI_TempID__c;   
-               }
-               else if(countOfRIstate == 0 && (countSpecificStates > 0 || countOfOtherStates > 0)){
+            }
+            else if(countOfRIstate == 0 && (countSpecificStates > 0 || countOfOtherStates > 0)){
                    
                    InvTempId       = CongaURL_Settings__c.getInstance().Comm_TempID__c;
-               }
-               else if(countOfRIstate == 0 &&  countSpecificStates == 0 && countOfOtherStates == 0){
+            }
+            else if(countOfRIstate == 0 &&  countSpecificStates == 0 && countOfOtherStates == 0){
                    
                    InvTempId     = CongaURL_Settings__c.getInstance().InvoiceEverGreenTempID__c; 
-               }
-            }           
-            else
-            {
+            }
+        }           
+        else
+        {
                 InvTempId       = CongaURL_Settings__c.getInstance().InvoiceEverGreenTempID__c;
                 System.debug('*****i entered into the other states  else block*******');
-            }
-     System.debug('*****InvTempId****'+invTempId);
-     congaUrl =Label.Conga_URL+userinfo.getsessionId()+'&serverUrl='+partnerUrl+
+        }
+        
+        System.debug('*****InvTempId****'+invTempId);
+        congaUrl =Label.Conga_URL+userinfo.getsessionId()+'&serverUrl='+partnerUrl+
               '&QueryId=[INV]'+ Invo+
               ',[DueDetailsLines]' + DueDetailsLines+ '?pv0='+ BillId +
               ',[AD]'+AD+'?pv0='+contId+
@@ -132,10 +139,10 @@ Global Class CongaGenerateInvoice{
               ',[EC]'+Equipment+'?pv0='+contId+'&TemplateId=' +InvTempId+
               '&DS7=1&OFN=InvoiceStatement&id='+recordId.subString(0,15);
  
-      return getCalloutToConga(congaUrl);
+        return getCalloutToConga(congaUrl);
       }
       else{
-       return 'There is no bill for this invoice';
+        return 'There is no bill for this invoice';
 
       }
     }
