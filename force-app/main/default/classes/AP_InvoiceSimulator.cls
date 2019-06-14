@@ -91,11 +91,12 @@ global with sharing class AP_InvoiceSimulator {
         cList = [select Id
                 ,name
                 ,cllease__Original_Amount__c
-                ,cllease__Tax_Due__c
+                ,cllease__original_tax_amount__c
                 ,cllease__Fee_Definition__r.name
                 ,cllease__Contract_Equipment__r.Equipment_Description1__c
                 from cllease__Charge__c
                 where invoiced_In__c = :recordId
+                and cllease__Fee_Definition__r.name not in ('Service Fees','Estimated Property Tax')
                 order by cllease__Contract_Equipment__r.Equipment_Description1__c
                 ];
         
@@ -115,6 +116,26 @@ global with sharing class AP_InvoiceSimulator {
         
         results.add(r);  
         */
+         Invoice__c i = [select Payment_Amount__c
+                                ,Previous_Balance_Due__c
+                                ,Payment_Sales_Tax__c
+                                ,Payment_Amount_Total__c	
+                        from Invoice__c 
+                        where id = :recordId];
+         
+          r = new resultLine();
+          r.equipmentName = '';
+          r.recordName = '';
+            
+          r.fee = 'PAYMENT';
+
+          r.feeAmount =  string.valueOf(i.Payment_Amount__c);
+          feeTotal = feeTotal + i.Payment_Amount__c;
+          r.taxAmount = string.valueOf(i.Payment_Sales_Tax__c);
+          taxTotal = taxTotal + i.Payment_Sales_Tax__c;
+          r.totalAmount = string.valueOf(i.Payment_Amount_Total__c);
+          totalTotal = totalTotal +i.Payment_Amount_Total__c;
+          results.add(r);
 
         for (cllease__charge__c c:cList){
             r = new resultLine();
@@ -122,12 +143,12 @@ global with sharing class AP_InvoiceSimulator {
             r.recordName = c.name;
             r.fee =  c.cllease__Fee_Definition__r.name;
             feeTotal = feeTotal + c.cllease__Original_Amount__c;
-            taxtotal = taxTotal  + c.cllease__Tax_Due__c;
-            totalTotal = totalTotal + c.cllease__Original_Amount__c +  c.cllease__Tax_Due__c;
+            taxtotal = taxTotal  + c.cllease__original_tax_amount__c;
+            totalTotal = totalTotal + c.cllease__Original_Amount__c +  c.cllease__original_tax_amount__c;
             r.className = 'rightJustify';
             r.feeAmount =  string.valueOf(c.cllease__Original_Amount__c);
-            r.taxAmount = string.valueOf(c.cllease__Tax_Due__c);
-            Decimal total = c.cllease__Original_Amount__c + c.cllease__Tax_Due__c;
+            r.taxAmount = string.valueOf(c.cllease__original_tax_amount__c);
+            Decimal total = c.cllease__Original_Amount__c + c.cllease__original_tax_amount__c;
             r.totalAmount = string.valueOf(total);
             results.add(r);
         }
@@ -158,8 +179,8 @@ global with sharing class AP_InvoiceSimulator {
                 order by cllease__Contract_Equipment__r.Equipment_Description1__c
 
                 ];
-
-
+        
+        /*
          for (cllease__Due_Detail_Lines__c e:eList){
             r = new resultLine();
             r.equipmentName = e.cllease__Contract_Equipment__r.Equipment_Description1__c;
@@ -175,9 +196,10 @@ global with sharing class AP_InvoiceSimulator {
             totalTotal = totalTotal + e.cllease__total_due_amount__c;
             system.debug('REsult is ' + r);
             results.add(r);
-        }
+        }   
+        */
 
-        Invoice__c i = [select Previous_Balance_Due__c from Invoice__c where id = :recordId];
+        //Invoice__c i = [select Previous_Balance_Due__c from Invoice__c where id = :recordId];
         r = new resultLine();
         r.fee = 'PREVIOUS BALANCE';
         if (i.previous_balance_due__c == null)
@@ -205,10 +227,32 @@ global with sharing class AP_InvoiceSimulator {
    	********************************************************************************************/
     @AuraEnabled
     public static List<resultLine> getNewBillsAndCharges(String recordId){
-        
+        List<resultLine> results = new List<resultLine>();
         Decimal feeTotal = 0;
         Decimal taxTotal =  0;
         Decimal totalTotal = 0;
+
+        Invoice__c i = [select Payment_Amount__c
+                                ,Previous_Balance_Due__c
+                                ,Payment_Sales_Tax__c
+                                ,Payment_Amount_Total__c	
+                        from Invoice__c 
+                        where id = :recordId];
+         
+        resultLine r = new resultLine();
+        r.equipmentName = '';
+        r.recordName = '';
+            
+        r.fee = 'PAYMENT';
+
+        r.feeAmount =  string.valueOf(i.Payment_Amount__c);
+        feeTotal = feeTotal + i.Payment_Amount__c;
+        r.taxAmount = string.valueOf(i.Payment_Sales_Tax__c);
+        taxTotal = taxTotal + i.Payment_Sales_Tax__c;
+        r.totalAmount = string.valueOf(i.Payment_Amount_Total__c);
+          totalTotal = totalTotal +i.Payment_Amount_Total__c;
+          results.add(r);
+
 
          /* get original charges */
 
@@ -216,11 +260,12 @@ global with sharing class AP_InvoiceSimulator {
          cList = [select Id
                 ,name
                 ,cllease__Original_Amount__c
-                ,cllease__Tax_Due__c
+                ,cllease__original_tax_amount__c
                 ,cllease__Fee_Definition__r.name
                 ,cllease__Contract_Equipment__r.Equipment_Description1__c
                 from cllease__Charge__c
                 where invoiced_In__c = :recordId
+                and cllease__Fee_Definition__r.name not in ('Service Fees','Estimated Property Tax')
                 order by cllease__Contract_Equipment__r.Equipment_Description1__c
                 ];
 
@@ -300,9 +345,9 @@ global with sharing class AP_InvoiceSimulator {
 
         /* now we have a map with all adjustments */
 
-        resultLine  r = new resultLine();
+        r = new resultLine();
 
-        List<resultLine> results = new List<resultLine>();
+        
 
          /* go through charges and adjust */
 
@@ -311,7 +356,7 @@ global with sharing class AP_InvoiceSimulator {
             system.debug('map is: ' + adjMap.get(c.id));
             List<Adjustment__c> adjList = adjMap.get(c.id);  //list of adjustments to this bill
             Decimal amount = c.cllease__Original_Amount__c;
-            Decimal tax = c.cllease__Tax_Due__c;
+            Decimal tax = c.cllease__original_tax_amount__c;
             Decimal total = amount + tax;
 
             if (adjList != Null){
@@ -343,7 +388,7 @@ global with sharing class AP_InvoiceSimulator {
         }
 
 
-        /* go through bills and adjust */
+        /* go through bills and adjust 
         for (cllease__Due_Detail_Lines__c e:elist){
 
             List<Adjustment__c> adjList = adjMap.get(e.id);  //list of adjustments to this bill
@@ -377,12 +422,10 @@ global with sharing class AP_InvoiceSimulator {
         
         }
 
-         
+        */ 
 
          r = new resultLine();
 
-        Invoice__c i = [select Previous_Balance_Due__c from Invoice__c where id = :recordId];
-        
         r.fee = 'PREVIOUS BALANCE';
         if (i.Previous_Balance_Due__c == null)
             i.Previous_Balance_Due__c = 0.0;

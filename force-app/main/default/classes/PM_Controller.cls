@@ -27,20 +27,24 @@ public without sharing class PM_Controller {
    	********************************************************************************************/
     @AuraEnabled
     public static PMUtility.ServiceContractData searchPortfolio(String customerName
-                                    , String customerNumber
+                                    , String contractNumber
                                     , String assetSerialNumber
                                     , Integer size
                                     , String sortOrder
                                     , Boolean assetDetail
-                                    , Integer page){   
+                                    , Integer page
+                                    , Boolean disableLogging){   
+        
+        system.debug('contract number is: ' + contractNumber);
         
         return PMCalloutUtility.searchPortfolio(customerName
-                                        ,customerNumber
+                                        ,contractNumber
                                         ,assetSerialNumber
                                         ,size
                                         ,sortOrder
                                         ,assetDetail
-                                        ,page);
+                                        ,page
+                                        ,disableLogging);
         
     }
 

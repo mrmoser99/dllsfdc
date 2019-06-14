@@ -158,7 +158,7 @@
         let modalBody;
         var recordId = component.get('v.recordId');
         var row = event.getParam('row');
-         
+           
        
         $A.createComponent('c:AP_AddAdjustment', {recordId :recordId, rowId :row.id, fee: row.fee, amountDue: row.feeAmount},
             function(content, status, errorMessage) {

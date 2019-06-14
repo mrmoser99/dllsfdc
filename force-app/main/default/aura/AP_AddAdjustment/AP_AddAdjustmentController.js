@@ -20,7 +20,7 @@
            }
 
            component.find("aType").set("v.value", fee);    
-           component.find("credit").set("v.value", '100');     
+           component.find("credit").set("v.value", amountDue);     
 
             
         }, 

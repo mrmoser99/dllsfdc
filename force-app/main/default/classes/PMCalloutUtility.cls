@@ -5,6 +5,7 @@
 *	Change Log: 
 *	5/14/19 - Created
 *   5/31/19 - completed upgrade to use callouts
+*   6/7/19 - removed the delete of old quotes
 * 
 ********************************************************************************************************************/
 public with sharing class PMCalloutUtility {
@@ -16,14 +17,17 @@ public with sharing class PMCalloutUtility {
    	* 
    	********************************************************************************************/
    	public static  PMUtility.ServiceContractData searchPortfolio(String customerName
-                                    , String customerNumber
+                                    , String contractNumber
                                     , String assetSerialNumber
                                     , Integer size
                                     , String sortOrder
                                     , Boolean assetDetail
-                                    , Integer page){
+                                    , Integer page
+                                    , Boolean disableLogging){
         
         PMUtility.ServiceContractData myResponse = new PMUtility.ServiceContractData();
+        if (disableLogging == null)
+            disableLogging = false;
 
         System.HttpResponse response;
         System.HttpRequest request = new System.HttpRequest();
@@ -35,10 +39,16 @@ public with sharing class PMCalloutUtility {
         
         if (assetDetail == false)
             requestParms = '?assetDetail=FALSE';
-            
-        customerName = customerName.trim();
-        customerNumber = customerNumber.trim();
-        assetSerialNumber = assetSerialNumber.trim();
+
+        system.debug('contractNumber' + contractNumber);    
+
+        if (customerName != null)
+            customerName = customerName.trim();
+        if (contractNumber != null)
+            contractNumber = contractNumber.trim();
+        if (assetSerialNumber != null)
+            assetSerialNumber = assetSerialNumber.trim();
+        
         sortOrder = sortOrder.trim();
 
         if (customerName != null && customerName != ''){
@@ -47,8 +57,8 @@ public with sharing class PMCalloutUtility {
             requestParms +=  '&customerName=' +  customerName;
         }
         
-        if (customerNumber != null && customerNumber != '')
-            requestParms +='&customerNumber=' + customerNumber;                  
+        if (contractNumber != null && contractNumber != '')
+            requestParms +='&contractNumber=' + contractNumber;                   
         
 
         if (assetSerialNumber != null && assetSerialNumber != '')
@@ -73,13 +83,24 @@ public with sharing class PMCalloutUtility {
         request.setHeader('Authorization', 'Bearer '+ PMUtility.getAccessToken());
     	request.setMethod('GET');
     	
+        Decimal dt1Long;
+        Decimal dt2Long;
+        Decimal milliseconds;
+        Decimal seconds;
+         
+
+        PM_Log__c l = new PM_Log__c();
         try{
+            dt1Long = DateTime.now().getTime();
+            l.user__c = userInfo.getUserid();
+            l.service__c = 'partnerportfolio';
+           
             response = new System.Http().send(request); 
-    
+            system.debug('response is: ' + response);
             if (response.getStatusCode() == 200){ 
 
                 myResponse = (PMUtility.ServiceContractData) System.JSON.deserialize(response.getBody(),PMUtility.ServiceContractData.class);
-            
+                system.debug('the response is: ' + myResponse);
                 for (PMUtility.Data d:myResponse.data){
                     d.newCoReady = 'true';
 
@@ -107,16 +128,28 @@ public with sharing class PMCalloutUtility {
                     else
                     if (periodocity == '12')
                         d.contractPeriodicity = 'Annually';
-                
                 }
-            } 
+
+                 l.results__c = 'Success!';
+            }     
             else{
-                throw new myException('Callouts unavailable at this time!');
+                l.results__c = response.getBody();
             } 
         }
         catch (Exception e){
-             throw new myException('Callouts unavailable at this time!',e);    
+            l.results__c = string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
+             
         } 
+        finally{
+            dt2Long = DateTime.now().getTime();
+           
+
+            milliseconds = dt2Long - dt1Long;
+            l.seconds__c = milliseconds / 1000;
+
+            if (disableLogging == false) 
+                insert l;
+        }
        
 	    return myResponse;
    	}
@@ -133,14 +166,14 @@ public with sharing class PMCalloutUtility {
         List<Lease_OLM_Quote__c> newQuotes = new List<Lease_OLM_Quote__c>();
 
         List<PMUtility.Quote> qList = new List<PMUtility.Quote>();
-
+        String accessToken = PMUtility.getAccessToken();
         System.HttpResponse response;
         System.HttpRequest request = new System.HttpRequest();
         
         request.setTimeout(120000);
     	request.setEndpoint(System.Label.PM_Endpoint + '/americas/v2/terminationquote?messageId=' + 'newco');
     	request.setHeader('Content-Type', 'application/json'); 
-        request.setHeader('Authorization', 'Bearer '+ PMUtility.getAccessToken());
+        request.setHeader('Authorization', 'Bearer '+ accessToken);
     	request.setMethod('POST');
     	
     	
@@ -149,7 +182,9 @@ public with sharing class PMCalloutUtility {
         
         Datetime dt = system.now();
        	gen.writeStringField('transmissionDate', dt.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss\'Z\''));
-	  	gen.writeStringField('partnerOrderId', '22684111');
+        Integer randomNumber = Integer.valueof((Math.random() * 100000000));
+        //System.debug('randomNumber is -'+randomNumber);
+	  	gen.writeStringField('partnerOrderId', string.valueOf(randomNumber));
         gen.writeStringField('contractNumber', leaseNumber);
         gen.writeStringField('terminationQuoteType', 'TRADEUP_WITHOUT_PURCHASE');
         
@@ -158,12 +193,23 @@ public with sharing class PMCalloutUtility {
 
         gen.writeObjectField('quoteCalculationOption', sList);
 		gen.writeEndObject();
-        	
+        List<PM_Log__c> iList = new List<PM_Log__c>();
+
 		request.setBody(gen.getAsString());  
-        
+        PM_Log__c l = new PM_Log__c();
+        Decimal dt1Long;
+        Decimal dt2Long;
+        Decimal milliseconds;
+        Decimal seconds;
+         
+
         try{
+            dt1Long = DateTime.now().getTime();
+            l.service__c = 'terminationquote';
+            l.user__c = userInfo.getUserid();
+            
             response = new System.Http().send(request); 
-        
+            
             if (response.getStatusCode() == 200){ 
 
                 qResponse = (PMUtility.TerminationQuoteResponse) System.JSON.deserialize(response.getBody(),PMUtility.TerminationQuoteResponse.class);
@@ -176,22 +222,39 @@ public with sharing class PMCalloutUtility {
                 qResponse.quoteNumber = null;
                 qResponse.quoteValidityDate = null;
                 qResponse.terminationQuoteType = null; 
+
+                l.results__c = 'Success!';
             }
             else{  
-               throw new myException('Callouts unavailable at this time!');
+                l.results__c = response.getBody();
             }
         }
         catch (Exception e) {
-           throw new myException('Callouts unavailable at this time!',e);
+           l.results__c = string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
         }  
+        finally{
+            l.quote__c = qResponse.quotes[0].quoteNumber;
+            dt2Long = DateTime.now().getTime();
+            milliseconds = dt2Long - dt1Long;
+            l.seconds__c = milliseconds / 1000;
+             
+            iList.add(l);
+
+        }
         
+        l = new PM_Log__c();
         try{
+            dt1Long = DateTime.now().getTime();
+            l.service__c = 'terminationquote';
+            l.user__c = userInfo.getUserid();
+
             System.HttpResponse response2;
             System.HttpRequest request2 = new System.HttpRequest();
             JSONGenerator gen2 = JSON.createGenerator(true);
 		    gen2.writeStartObject();
             gen2.writeStringField('transmissionDate', dt.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss\'Z\''));
-	  	    gen2.writeStringField('partnerOrderId', '22684111');
+            randomNumber = Integer.valueof((Math.random() * 100000000));
+	  	    gen2.writeStringField('partnerOrderId', string.valueOf(randomNumber));
 	  	    gen2.writeStringField('contractNumber', leaseNumber);
             gen2.writeStringField('terminationQuoteType', 'TRADEUP_WITH_PURCHASE');
             gen2.writeObjectField('quoteCalculationOption', sList);
@@ -201,7 +264,7 @@ public with sharing class PMCalloutUtility {
             request2.setTimeout(120000);
     	    request2.setEndpoint(System.Label.PM_Endpoint + '/americas/v2/terminationquote?messageId=' + 'newco');
     	    request2.setHeader('Content-Type', 'application/json'); 
-            request2.setHeader('Authorization', 'Bearer '+ PMUtility.getAccessToken());
+            request2.setHeader('Authorization', 'Bearer '+ accessToken);
     	    request2.setMethod('POST');
             response2 = new System.Http().send(request2); 
 
@@ -219,14 +282,27 @@ public with sharing class PMCalloutUtility {
                     qResponse2.quoteValidityDate = null;
                     qResponse2.terminationQuoteType = null;
                     qResponse.quotes.add(qResponse2.quotes[0]);
+                    l.results__c = 'Success!';
             }
             else{
-                throw new myException('Callouts unavailable at this time!');
+                l.results__c = response.getBody();
             }
         }
         catch (Exception e){
-            throw new myException('Callouts unavailable at this time!',e);
+             l.results__c = string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
         } 
+        finally{
+            l.quote__c =  qResponse2.quotes[0].quoteNumber;
+            dt2Long = DateTime.now().getTime();
+            system.debug(dt2Long);
+            system.debug(dt1Long);
+
+            milliseconds = dt2Long - dt1Long;
+            l.seconds__c = milliseconds / 1000;
+             
+            iList.add(l);
+
+        }
         
         List< Lease_OLM_Quote__c> lList = new List< Lease_OLM_Quote__c>();
         lList = [select id from  Lease_OLM_Quote__c  where contract_number__c = :leaseNumber];
@@ -266,9 +342,10 @@ public with sharing class PMCalloutUtility {
         newQuotes.add(lq);
 
         insert newQuotes;
-
-        if (!lList.isEmpty())
-            delete lList;
+        //mrm remove delete
+        //if (!lList.isEmpty())
+        //    delete lList;
+        insert iList;
 
         return qResponse;
     }
@@ -280,32 +357,54 @@ public with sharing class PMCalloutUtility {
     public static String getLeaseDetails(String leaseInfo){
         
         PMUtility.Data currentData = (PMUtility.Data) System.JSON.deserialize(leaseInfo,PMUtility.Data.class);
+        List<PM_Log__c> iList = new List<PM_Log__c>();
 
         System.HttpResponse response;
         System.HttpRequest request = new System.HttpRequest();
-        
+        String accessToken = PMUtility.getAccessToken();
         request.setTimeout(120000);
     	request.setEndpoint(System.Label.PM_Endpoint + '/americas/v1/contractdetail');
     	request.setHeader('Content-Type', 'application/json'); 
-        request.setHeader('Authorization', 'Bearer '+ PMUtility.getAccessToken());
+        request.setHeader('Authorization', 'Bearer '+ accessToken);
         request.setHeader('dllContractNumber', currentData.contractNumber);
     	request.setMethod('GET');
     	
         PMUtility.contractDetail contractDetail;
+        PM_Log__c l = new PM_Log__c();
+        Decimal dt1Long;
+        Decimal dt2Long;
+        Decimal milliseconds;
+        Decimal seconds;
 
         try{ 
-         
+            dt1Long = DateTime.now().getTime();
+            l.service__c = 'contractdetail';
+            l.user__c = userInfo.getUserid();
+
             response = new System.Http().send(request); 
             
             if (response.getStatusCode() == 200){ 
                 contractDetail = (PMUtility.contractDetail) System.JSON.deserialize(response.getBody(),PMUtility.ContractDetail.class);
+                l.results__c = 'Success!';
             }
             else{
-                throw new myException('Callouts unavailable at this time!');
+                 l.results__c = response.getBody();
             }
         }
         catch (Exception e){
-            throw new myException('Callouts unavailable at this time!',e);
+             l.results__c = string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
+        }
+        finally{
+            l.lease__c = currentData.contractNumber;
+            dt2Long = DateTime.now().getTime();
+            system.debug(dt2Long);
+            system.debug(dt1Long);
+
+            milliseconds = dt2Long - dt1Long;
+            l.seconds__c = milliseconds / 1000;
+             
+            iList.add(l);
+
         }
 
         /* add extra gathered data to currentdata */
@@ -339,11 +438,16 @@ public with sharing class PMCalloutUtility {
         request2.setTimeout(120000);
     	request2.setEndpoint(System.Label.PM_Endpoint + '/americas/v1/contractsummary');
     	request2.setHeader('Content-Type', 'application/json'); 
-        request2.setHeader('Authorization', 'Bearer '+ PMUtility.getAccessToken());
+        request2.setHeader('Authorization', 'Bearer '+ accessToken);
         request2.setHeader('dllContractNumber', currentData.contractNumber);
     	request2.setMethod('GET');
-    	
+    	l = new PM_Log__c();
+
         try{
+            dt1Long = DateTime.now().getTime();
+            l.service__c = 'contractsummary';
+            l.user__c = userInfo.getUserid();
+
             response2 = new System.Http().send(request2); 
         
             if (response2.getStatusCode() == 200){ 
@@ -365,15 +469,30 @@ public with sharing class PMCalloutUtility {
                 currentData.PaymentAmountReceived = contractSummary.lastPaymentAmount;
                 currentData.PaymentNumber = contractSummary.lastPaymentNumber;
 
+                 l.results__c = 'Success!';
+
             }
             else{
-                throw new myException('Callouts unavailable at this time!');
+                  l.results__c = response.getBody();
             }
         }
         catch (Exception e){
-            throw new myException('Callouts unavailable at this time!',e);
+            l.results__c = string.valueOf(e) + '-' + e.getMessage() + '-' + e.getStackTraceString() + '-' + e.getLineNumber();
+        }
+        finally{
+            l.lease__c = currentData.contractNumber;
+            dt2Long = DateTime.now().getTime();
+            system.debug(dt2Long);
+            system.debug(dt1Long);
+
+            milliseconds = dt2Long - dt1Long;
+            l.seconds__c = milliseconds / 1000;
+             
+            iList.add(l);
+
         }
 
+        insert iList;
         return JSON.serialize(currentData); 
 
     }

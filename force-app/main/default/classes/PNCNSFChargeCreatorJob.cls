@@ -114,7 +114,7 @@ global with sharing class PNCNSFChargeCreatorJob extends clcommon.DynamicJob {
                     nsfCharge.cllease__Date__c 				= (pxNSFRec.Date__c != null ? pxNSFRec.Date__c : cllease.SystemDateUtil.getCurrentSystemDate());
                     nsfCharge.cllease__Lease_Account__c  	= invoice.LS_Contract__c;
                     nsfCharge.cllease__Original_Amount__c   = pxNSFRec.NSF_Amount__c;
-                    nsfCharge.PX_NSF_Record__c 				= pxNSFRec.Id;
+                   // nsfCharge.PX_NSF_Record__c 				= pxNSFRec.Id;
                     nsfCharge.cllease__GL_Transaction_Flag__c = true;
                     nsfCharge.cllease__Tax_Processed__c     = 'Tax Not Calculated';
                     

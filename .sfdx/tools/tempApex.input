@@ -1,8 +1,2 @@
-
-   string leaseInfo = '{"assetDetail":[{"assetAddressLine1":"ATTN AP","assetAddressLine2":"1201 N WATSON RD STE 130","assetCity":"ARLINGTON","assetDescription":"SHARP COPIER","assetManufacturer":"SHARP","assetModel":"MXB402","assetPayment":"125.00","assetSequenceNumber":"1","assetSerialNumber":"09002699","assetState":"TX","assetZipCode":"760066122"}],"billingAddressLine1":"ATTN AP","billingCity":"ARLINGTON","billingState":"TX","billingZipCode":"760066122","contractExpireDate":"2014-06-13","contractNumber":"25110465","contractOriginalCost":"4323.78","contractPayment":"125.00","contractPeriodicity":"1","contractProgramId":"15574","contractProgramName":"OE_SHARP VENDOR","contractPurchaseOption":"FMV","contractSigner":"CHRISTIAN COLLADA","contractSignerTitle":"DIR FOR OPS","contractStartDate":"2011-06-14","contractTerm":"36","contractType":"STD","customerAddressLine1":"1201 N WATSON RD","customerCity":"ARLINGTON","customerName":"ABUNDANT HOME HEALTH","customerState":"TX","customerZipCode":"760066190","equipmentDescription":"1 Line of Equipment","lastPaymentReceivedDate":"2019-03-13","newcoReady":"true","numberOfRemainingPayments":"0","vendorAddressLine1":"PO BOX 612248","vendorCity":"DALLAS","vendorName":"SOUTHWEST OFFICE SYSTEMS INC","vendorSiteCode":"0000158950-0001","vendorState":"TX","vendorZipCode":"752612248"}';
-
-   PMCalloutUtility.getLeaseDetails(leaseInfo);
-
-   //PMUtility.Data myresponse = (PMUtility.Data) System.JSON.deserialize(leaseInfo,PMUtility.Data.class);
-
-   //system.debug(myresponse);
+Integer randomNumber = Integer.valueof((Math.random() * 100000000));
+System.debug('randomNumber is -'+randomNumber);

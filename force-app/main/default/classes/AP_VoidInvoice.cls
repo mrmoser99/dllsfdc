@@ -97,11 +97,13 @@ global with sharing class AP_VoidInvoice {
         cList = [select Id
                 ,name
                 ,cllease__Original_Amount__c
-                ,cllease__Tax_Due__c
+                ,cllease__original_tax_amount__c
                 ,cllease__Contract_Equipment__r.Equipment_Description1__c
                 ,cllease__Fee_Definition__r.name
                 from cllease__Charge__c 
                 where invoiced_In__c = :invoiceId
+                //and cllease__fee_definition__r.name = 'Late Charge'
+                and cllease__Fee_Definition__r.name not in ('Service Fees','Estimated Property Tax')
                 order by cllease__Contract_Equipment__r.Equipment_Description1__c
                 
                 ];
@@ -114,11 +116,11 @@ global with sharing class AP_VoidInvoice {
             r.chargeId = URL.getSalesforceBaseUrl().toExternalForm() + '/lightning/r/cllease__Charge__c/' + c.id + '/view?0.source=alohaHeader';
             r.fee =  c.cllease__Fee_Definition__r.name;
             r.feeAmount =  string.valueOf(c.cllease__Original_Amount__c);
-            r.taxAmount = string.valueOf(c.cllease__Tax_Due__c);
+            r.taxAmount = string.valueOf(c.cllease__original_tax_amount__c);
             system.debug('REsult is ' + r);
             results.add(r);
         }
-
+        /*
         Map<ID,cllease__Lease_account_Due_Details__c> billMap = new Map<ID,cllease__Lease_account_Due_Details__c>();
 
         List<cllease__Lease_account_Due_Details__c> bList = new List<cllease__Lease_account_Due_Details__c>();
@@ -160,6 +162,8 @@ global with sharing class AP_VoidInvoice {
             system.debug('REsult is ' + r);
             results.add(r);
         }
+        */
+
         return results;
 
 

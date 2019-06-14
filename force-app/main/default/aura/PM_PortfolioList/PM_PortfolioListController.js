@@ -5,6 +5,7 @@
         var actions = [
             { label: 'Get Lease Details', name: 'leaseDetails' },
             { label: 'Get Quote', name: 'quote' },
+            { label: 'Get Details and Quote', name: 'detquote' },
             { label: 'Equipment Detail', name: 'equipment' }
         ];
 
@@ -72,7 +73,8 @@
         helper.fetchRecords(component, event, 0);
         
     },
-   
+
+    
 
     handleRowAction: function (component, event, helper) {
         
@@ -84,46 +86,134 @@
        
         switch (rowAction.name) {
             case 'quote':
-                var action = component.get("c.generateQuotes");
                 
-                action.setParams({
-                  "leaseNumber": row.contractNumber
-                });
-                
-                action.setCallback(this, function(response) {
-                    var state = response.getState();
-                    console.log('State is: ' + state);
-                    if (state === "SUCCESS") {
-                        var records = response.getReturnValue();
-                        console.log(records.quotes);
-                        component.set('v.records',records);
-                        component.set('v.recordList',records.quotes);
-
-                        component.set('v.quoteData', records.quotes);
-
-                        var msg='Quotes Generated!';
-                        component.find('notifLib').showToast({
-                                      'variant': 'success',
-                                      'message': msg,
-                                      'mode': 'sticky'
+                        var action = component.get("c.generateQuotes");
+                        helper.toggleProgress(component);
+                        action.setParams({
+                          "leaseNumber": row.contractNumber
                         });
-                        //$A.get('e.force:refreshView').fire();  
-                    }
-                    else if (state === 'ERROR') {
-                        let toast = $A.get('e.force:showToast');
-                        toast.setParams({
-                            title: 'Error',
-                            message: 'Exception in callout!',
-                            type: 'error'
+                        
+                        action.setCallback(this, function(response) {
+                            var state = response.getState();
+                            console.log('State is: ' + state);
+                            if (state === "SUCCESS") {
+                                var records = response.getReturnValue();
+                                console.log(records.quotes);
+                                helper.toggleProgress(component);
+                                component.set('v.records',records);
+                                component.set('v.recordList',records.quotes);
+        
+                                component.set('v.quoteData', records.quotes);
+        
+                                var msg='Quotes Generated!';
+                                component.find('notifLib').showToast({
+                                              'variant': 'success',
+                                              'message': msg,
+                                              'mode': 'sticky'
+                                });
+                                //$A.get('e.force:refreshView').fire();  
+                            }
+                            else if (state === 'ERROR') {
+                                let toast = $A.get('e.force:showToast');
+                                toast.setParams({
+                                    title: 'Error',
+                                    message: 'Exception in callout!',
+                                    type: 'error'
+                                });
+                                toast.fire();
+                            }
+                            
+                            //$A.get('e.force:refreshView').fire();
                         });
-                        toast.fire();
-                    }
-                    
-                    //$A.get('e.force:refreshView').fire();
-                });
-                
-                $A.enqueueAction(action);
+                        
+                        $A.enqueueAction(action);
+                        
+        
+                   
+       
+      
                 break;
+
+                case 'detquote':
+                
+                    var action = component.get("c.getLeaseDetails");
+                
+                    action.setParams({
+                      "leaseInfo": JSON.stringify(row)
+                    });
+
+                    action.setBackground();
+
+                    
+                    action.setCallback(this, function(response) {
+                        var state = response.getState();
+                        if (state === "SUCCESS") {
+                            var records = response.getReturnValue();
+                            console.log(records);
+                            
+                            var msg='Details Gathered!';
+                            component.find('notifLib').showToast({
+                                          'variant': 'success',
+                                          'message': msg,
+                                          'mode': 'sticky'
+                            });
+                            //$A.get('e.force:refreshView').fire();
+                            var action = component.get("c.generateQuotes");
+            
+                    action.setParams({
+                      "leaseNumber": row.contractNumber
+                    });
+
+                    action.setBackground();
+                    
+                    action.setCallback(this, function(response) {
+                        var state = response.getState();
+                        console.log('State is: ' + state);
+                        if (state === "SUCCESS") {
+                            var records = response.getReturnValue();
+                            console.log(records.quotes);
+                            component.set('v.records',records);
+                            component.set('v.recordList',records.quotes);
+    
+                            component.set('v.quoteData', records.quotes);
+    
+                            var msg='Quotes Generated!';
+                            component.find('notifLib').showToast({
+                                          'variant': 'success',
+                                          'message': msg,
+                                          'mode': 'sticky'
+                            });
+                            //$A.get('e.force:refreshView').fire();  
+                        }
+                        else if (state === 'ERROR') {
+                            let toast = $A.get('e.force:showToast');
+                            toast.setParams({
+                                title: 'Error',
+                                message: 'Exception in callout!',
+                                type: 'error'
+                            });
+                            toast.fire();
+                        }
+                        
+                        //$A.get('e.force:refreshView').fire();
+                    });
+                    
+                    $A.enqueueAction(action);
+                      
+                        }
+                        
+                        //$A.get('e.force:refreshView').fire();
+                    });
+                    
+                    $A.enqueueAction(action);
+
+
+                    
+    
+               
+   
+  
+            break;    
 
             case 'quoteDetail':
                 let modalBody;
@@ -153,6 +243,7 @@
                 }
                 );
                 break;
+
             case 'equipment':
                 console.log('************************ start');
                 
@@ -204,6 +295,8 @@
                 
                 
         }
-    }     
+    } 
+    
+    
     
 })

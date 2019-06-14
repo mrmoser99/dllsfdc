@@ -1,9 +1,10 @@
 <aura:component controller="PM_Controller" implements="force:appHostable,flexipage:availableForAllPageTypes" access="global">
-   
+    
 
     <!-- attributes -->
     
     <aura:attribute name="data" type="List" default="[]"/>
+    <aura:attribute name="value" type="Integer" default="25"/>
     <aura:attribute name="quoteData" type="List" default="[]"/>
     <aura:attribute name="equipmentData" type="List" default="[]"/>
     <aura:attribute name="columns" type="List"/>
@@ -19,7 +20,8 @@
     <aura:handler name="init" value="{!this}" action="{!c.init}"/>
     <lightning:notificationsLibrary aura:id="notifLib"/>
     <lightning:overlayLibrary aura:id="overlayLib"/>
-    
+    <aura:attribute name="progress" type="Integer" default="0"/>
+    <aura:attribute name="isProgressing" type="Boolean" default="false"/>
     
     <lightning:card title="Search Parms" iconName="standard:search">
        
@@ -36,6 +38,8 @@
                 </div>
                    
             </lightning:layoutItem>
+
+
             <lightning:layoutItem>
                     <div style="height: 125px" class="slds-p-around_small">
                             <lightning:datatable
@@ -63,7 +67,8 @@
         
         
     </lightning:card>
-
+    <lightning:progressBar value="{! v.progress }" class="slds-progress-bar_circular" style="width:600px"/>
+    
     
     <div style="height: 800px">
     <lightning:datatable
