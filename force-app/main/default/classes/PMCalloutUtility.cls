@@ -182,7 +182,7 @@ public with sharing class PMCalloutUtility {
         
         Datetime dt = system.now();
        	gen.writeStringField('transmissionDate', dt.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss\'Z\''));
-        Integer randomNumber = Integer.valueof((Math.random() * 100000000));
+        Integer randomNumber = Integer.valueof((Math.random() * 1000000));
         //System.debug('randomNumber is -'+randomNumber);
 	  	gen.writeStringField('partnerOrderId', string.valueOf(randomNumber));
         gen.writeStringField('contractNumber', leaseNumber);
@@ -253,7 +253,7 @@ public with sharing class PMCalloutUtility {
             JSONGenerator gen2 = JSON.createGenerator(true);
 		    gen2.writeStartObject();
             gen2.writeStringField('transmissionDate', dt.formatGMT('yyyy-MM-dd\'T\'HH:mm:ss\'Z\''));
-            randomNumber = Integer.valueof((Math.random() * 100000000));
+            randomNumber = Integer.valueof((Math.random() * 1000000));
 	  	    gen2.writeStringField('partnerOrderId', string.valueOf(randomNumber));
 	  	    gen2.writeStringField('contractNumber', leaseNumber);
             gen2.writeStringField('terminationQuoteType', 'TRADEUP_WITH_PURCHASE');
@@ -322,6 +322,7 @@ public with sharing class PMCalloutUtility {
         lq.security_deposit__c = decimal.valueOf(qResponse.quotes[0].securityDeposit);
         lq.amount__c = decimal.valueOf(qResponse.quotes[0].amount);
         lq.contract_number__c =qResponse.contractNumber;
+        lq.past_due_service__c = decimal.valueOf(qResponse.quotes[0].pastDueService);
         newQuotes.add(lq);
 
         lq = new Lease_OLM_Quote__c();
@@ -339,6 +340,7 @@ public with sharing class PMCalloutUtility {
         lq.security_deposit__c = decimal.valueOf(qResponse.quotes[1].securityDeposit);
         lq.amount__c = decimal.valueOf(qResponse.quotes[1].amount);
         lq.contract_number__c =qResponse.contractNumber;
+        lq.past_due_service__c = decimal.valueOf(qResponse.quotes[1].pastDueService);
         newQuotes.add(lq);
 
         insert newQuotes;
@@ -409,10 +411,12 @@ public with sharing class PMCalloutUtility {
 
         /* add extra gathered data to currentdata */
         currentData.Cust_Legal_Name = contractDetail.customerLegalName;
+        currentData.customerAccount = contractDetail.customerAccount;
+
 
         //find assets[i].serialNumber in data
         //then update
-       
+         system.debug('contract detail is: ' + contractDetail); 
         for (Integer i=0;i < contractDetail.assets.size(); i++){
            
             for (Integer j=0;j < currentData.assetDetail.size();j++){
@@ -427,7 +431,11 @@ public with sharing class PMCalloutUtility {
                     currentData.assetDetail[j].Install_Location = contractDetail.assets[i].installLocation;
                     currentData.assetDetail[j].Install_State = contractDetail.assets[i].installState;
                     currentData.assetDetail[j].Install_Zip = contractDetail.assets[i].installPostalCode;
-                    continue;
+
+                     
+                    currentData.assetDetail[j].Install_County = contractDetail.assets[i].installCounty;
+                    currentData.assetDetail[j].Install_Date = contractDetail.assets[i].installDate;
+
                 }
             }
         } 
@@ -468,6 +476,8 @@ public with sharing class PMCalloutUtility {
                 currentData.PaymentReceivedDate = contractSummary.paymentAppliedDate;
                 currentData.PaymentAmountReceived = contractSummary.lastPaymentAmount;
                 currentData.PaymentNumber = contractSummary.lastPaymentNumber;
+                currentData.contractService = contractSummary.contractService;
+                currentData.Citytax = contractSummary.cityTax;
 
                  l.results__c = 'Success!';
 

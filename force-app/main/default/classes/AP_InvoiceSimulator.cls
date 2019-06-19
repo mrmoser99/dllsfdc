@@ -138,6 +138,9 @@ global with sharing class AP_InvoiceSimulator {
           results.add(r);
 
         for (cllease__charge__c c:cList){
+            if ( c.cllease__original_tax_amount__c == null)
+                 c.cllease__original_tax_amount__c = 0;
+                 
             r = new resultLine();
             r.equipmentName  = c.cllease__Contract_Equipment__r.Equipment_Description1__c;
             r.recordName = c.name;
@@ -357,13 +360,15 @@ global with sharing class AP_InvoiceSimulator {
             List<Adjustment__c> adjList = adjMap.get(c.id);  //list of adjustments to this bill
             Decimal amount = c.cllease__Original_Amount__c;
             Decimal tax = c.cllease__original_tax_amount__c;
+            if (tax == null)
+                tax = 0;
             Decimal total = amount + tax;
 
             if (adjList != Null){
                 for (Adjustment__c adj:adjList){
                     if (adj.tax_amount__c == null)
                         adj.tax_amount__c = 0.00;
-                    system.debug('amount is: ' + amount);
+                   
                     amount = amount - adj.credit__c;
                     tax = tax - adj.tax_amount__c;
                     total = amount + tax;

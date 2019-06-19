@@ -103,6 +103,9 @@ public with sharing class PNCUtility {
         blist.add(b);
 
         insert bList;
+
+       
+        update i;
         
         if (rInvoice)
             reverseInvoice(invoiceId);
@@ -115,8 +118,7 @@ public with sharing class PNCUtility {
     * 
     * reverseInvoice in CLS
     *
-    *   remove invoice from bills
-    *   remove invoice from charges
+    *    
     *   set void flag date/time on invoice
 	*	
 	* 
@@ -126,35 +128,100 @@ public with sharing class PNCUtility {
         /* void the invoice */
 
         Invoice__c i = [SELECT id
+                        ,total_invoiced_amount__c
                         FROM Invoice__c
                         where id = :invoiceId 
                        ]; 
 
         i.voided_in_Pnc__c = true;
         i.voided_in_pnc_date_time__c = datetime.now();
-       
-
-        List<cllease__Lease_account_Due_Details__c> billList = new List<cllease__Lease_Account_Due_Details__c>();
-        billList = [select id from cllease__Lease_Account_Due_Details__c
-                    where invoiced_in__c = :invoiceId];
-
-        /* removed the invoice from all bills & charges */
-
-        for (cllease__Lease_Account_Due_Details__c d:billList)
-            d.invoiced_in__c = null;
-        
-        list<cllease__charge__c> chargeList = new List<cllease__Charge__c>();
-        chargeList = [select id from cllease__Charge__c where invoiced_in__c = :invoiceId];
-        for (cllease__Charge__c c:chargeList){
-            c.invoiced_in__c = null;
-        }
+        i.file_generated__c = 'No';
+        i.file_generated_on__c = null;
+        i.invoice_emailed__c = false;
+        i.sent_to_pnc__c = false;
+        i.Sent_To_PNC_Date_Time__c = null;
+        i.sent_to_pnc_amount__c = i.Total_Invoiced_Amount__c;        
 
         update i;
-        update billList;
-        update chargeList;
+       
+        return true;
+
+    }  
+
+    /*************************************************************************************************
+    * 
+    * reverseTaxCharges
+    *
+	* 
+    *************************************************************************************************/
+    public static boolean reverseTaxes( ID invoiceId){ 
+    
+        List<adjustment__c> aList = new List<adjustment__c>();
+        aList = [select Id
+                ,adjustment_type__c
+                ,credit__c
+                ,debit__c
+                ,Charge__r.Name  
+                ,Due_Detail_Line__r.Name  
+                ,tax_amount__c
+                ,equipment__c
+                ,Charge_Bill_Name__c
+                from adjustment__c
+                where invoice__c = :invoiceId
+                order by equipment__c, charge_bill_name__C
+        ];
+        
+        Set<ID> chargeSet = new set<ID>();
+        for (adjustment__c a:aList)
+            chargeSet.add(a.charge__c);
+
+        List<cllease__Charge__c> clist = [SELECT AR_Type__c
+                                  , cllease__Lease_Account__r.cllease__Maturity_Date__c
+                                  , cllease__Lease_Account__r.cllease__First_Payment_Date__c
+                                  , cllease__Lease_Account__r.cllease__Account__r.Tax_Exempt__c
+                                  , cllease__Contract_Equipment__r.Name
+                                  , cllease__Contract_Equipment__r.GARD__c
+                                  , cllease__Fee_Definition__r.name
+                                  , cllease__Lease_Account__r.Name
+                                  ,BillingType__c
+                                  ,cllease__Accrue_Interest_From__c
+                                  ,cllease__Branch__c
+                                  ,cllease__Calculated_Interest2__c,cllease__Calculated_Interest3__c,cllease__Charge_Type__c,cllease__Contract_Equipment__c,cllease__Contract_Fee__c,cllease__Contract_Status__c,cllease__Date__c,cllease__Dues_Details__c,cllease__Expense_Fee__c,cllease__Fee_Definition__c,cllease__Fee_Due__c,cllease__Fee_Paid_Amount__c,cllease__Fee__c,cllease__GL_Posted_Flag__c,cllease__GL_Processing_Message__c,cllease__GL_Process_Date__c,cllease__GL_Reversal_Posted_Flag__c,cllease__GL_Reversal_Process_Date__c,cllease__GL_Transaction_Flag__c,cllease__Interest_Bearing__c,cllease__Interest_Due__c,cllease__Interest_Rate__c,cllease__Last_Accrual_Date__c,cllease__LeaseApplicationNumber__c,cllease__Lease_Account__c,cllease__Maturity_Date__c,cllease__Original_Amount__c,cllease__Original_Tax_Amount__c,cllease__Paid_Amount__c,cllease__Paid__c,cllease__Passthrough_Paid_Amount__c,cllease__Passthrough_Paid__c,cllease__Principal_Due__c,cllease__Quote_header__c,cllease__Reference__c,cllease__Remarks__c,cllease__Start_Date__c,cllease__Tax_Due__c,cllease__Tax_Paid_Amount__c,cllease__Tax_Processed__c,cllease__Tax_Rate__c,cllease__Total_Due_Amount__c,cllease__Transaction_Date__c,cllease__Transaction_Sub_Type__c,cllease__Waive__c,CompanyCode__c,Contract_Equipment__c,Contract_Type__c,CreatedById,CreatedDate,Current_Fee_Paid__c,Current_Tax_Paid__c,DestinationCity__c,DestinationCounty__c,DestinationState__c,DestinationZipCode__c,Equipment__c,Fee_Paid__c,Fee_Type_for_Term_Quote__c,Finance_Fee_created__c,Id,Invoiced_In__c,Invoice_Period_End_Date__c,Invoice_Period_Start_Date__c,IsDeleted,LastModifiedById,LastModifiedDate,LeaseType__c,MessageS__c,Name,Original_Tax_Amount__c,Overdue__c,Passthrough_Charge__c,Property_Tax__c,SystemModstamp,Taxbasis__c,Tax_APO__c,Tax_BOROUGH__c,Tax_CITY__c,Tax_Component__c,Tax_COUNTRY__c,Tax_COUNTY__c,Tax_DISTRICT__c,Tax_FPO__c,Tax_LOCAL_IMPROVEMENT_DISTRICT__c,Tax_Paid__c,Tax_PARISH__c,Tax_Payment_Type__c,Tax_Processed__c,Tax_PROVINCE__c,Tax_Rate_APO__c,Tax_Rate_BOROUGH__c,Tax_Rate_CITY__c,Tax_Rate_COUNTRY__c,Tax_Rate_COUNTY__c,Tax_Rate_DISTRICT__c,Tax_Rate_FPO__c,Tax_Rate_LOCAL_IMPROVEMENT_DISTRICT__c,Tax_Rate_PARISH__c,Tax_Rate_PROVINCE__c,Tax_Rate_SPECIAL_PURPOSE_DISTRICT__c,Tax_Rate_STATE__c,Tax_Rate_TERRITORY__c,Tax_Rate_TOWNSHIP__c,Tax_Rate_TRADE_BLOCK__c,Tax_Rate_TRANSIT_DISTRICT__c,Tax_SPECIAL_PURPOSE_DISTRICT__c,Tax_STATE__c,Tax_TERRITORY__c,Tax_TOWNSHIP__c,Tax_TRADE_BLOCK__c,Tax_TRANSIT_DISTRICT__c,Total_Amount__c,Total_Original_Amount__c,Transaction_Code__c,Transaction_SubType_Name__c
+                                  ,Withheld_Amount__c 
+                                FROM cllease__Charge__c 
+                                where id in :chargeSet];
+ 
+        for (cllease__Charge__c c1:cList)
+            c1.cllease__Waive__c = true;
+        
+      
+        for (cllease__Charge__c c:cList){
+        
+    
+            List<cllease__Charge__c> temp = new List<cllease__Charge__c>();
+            temp.add(c);
+            Dom.document methoddoc = VertexUtil.getChargesXml(temp);  
+            VertexApi__c vertexConfig = CLSCustomUtil.getVertexConfiguration();
+            VertexUtil.validateVertexConfig(vertexConfig);
+
+            System.debug(LoggingLevel.ERROR,'methoddoccc'+methoddoc.toXmlString());
+        
+            HttpResponse res;    
+            HttpRequest req = new HttpRequest();
+            req.setMethod('POST');
+            req.setEndpoint(vertexConfig.End_Point__c);
+            req.setHeader('Content-Type', 'text/xml');
+            req.setBody(methoddoc.toXMlString());
+
+            Http http = new Http();
+            res = http.send(req);
+
+	        system.debug('res:' + res.getBody());
+        }
+
+        update cList;
 
         return true;
 
-
-    }  
+    }
 }

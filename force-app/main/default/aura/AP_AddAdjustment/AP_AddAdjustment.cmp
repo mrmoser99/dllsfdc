@@ -9,6 +9,7 @@
     <aura:attribute name="isInvalid" type="Boolean" default="false"/>
     <aura:attribute name="isCharge" type="Boolean" default="false"/>
     <aura:attribute name="amountDue" type="decimal"  access="public"/>
+    <aura:attribute name="taxAmount" type="decimal"  access="public"/>
  
  
     <lightning:overlayLibrary aura:id="overlayLib"/>
@@ -20,7 +21,7 @@
             
             <lightning:card title="Add Adjustment" iconName="utility:moneybag" >
      
-                <lightning:messages /> 
+                <lightning:messages />  
                 <aura:if isTrue="{!v.isCharge}">
                     <lightning:inputField  fieldName="Charge__c"  aura:id="chargeLookup"  disabled="true"/> 
                     <aura:set attribute="else">
@@ -30,7 +31,8 @@
                
                                 
                 <lightning:inputField  aura:id="aType" fieldName="Adjustment_Type__c"  disabled="true"/>    
-                <lightning:inputField aura:id="credit" fieldName="Credit__c"   disabled="true" />   
+                <lightning:inputField aura:id="credit" fieldName="Credit__c"   disabled="true" /> 
+                <lightning:inputField aura:id="tax" fieldName="Tax_Amount__c"   disabled="true" />   
                
                
                 <lightning:button class="slds-m-top_large" variant="brand" type="submit" label="Save" onclick="{!c.handleSubmit}" />

@@ -1,19 +1,13 @@
 ({
     doInit: function(component, event, helper) {
        var recordId = component.get('v.recordId');
-       var actions = [
-            { label: 'Delete', name: 'delete' }
-        ];
-
-        var actions2 = [
-            { label: 'Adjust', name: 'adjust' }
-        ];
-
+      
         var action = component.get('c.getInvoice');  
         action.setParams({
             recordId: recordId
         });
-       
+
+      
         action.setCallback(this, function(response) {
             var state = response.getState();
             if (state === "SUCCESS") {
@@ -21,34 +15,44 @@
                  
                 if (results == 'Approved'){
                     component.set('v.isDisabled',true);
+                    console.log('is: ' + component.get('v.isDisabled'));
+                    
                 }
                 else{
                     component.set('v.isDisabled',false);
+                    
                 }
+                console.log('ugh' + component.get('v.isDisabled'));
+                var actions2 = [
+                    { label: 'Adjust', name: 'adjust', disabled : component.get('v.isDisabled')}
+                    
+                ];
+                var actions = [
+                    { label: 'Delete', name: 'delete',  disabled : component.get('v.isDisabled')}
+                ];
+                component.set('v.columns', [
+                    {label: 'Equipment', fieldName: 'equipmentName', type: 'text', initialWidth : 200},
+                    {label: 'Charge/Bill Id', fieldName: 'chargeId',  initialWidth : 200, type: 'url',sortable: true,typeAttributes: {label:{ fieldName: 'name'}}},
+                    {label: 'Description', fieldName: 'fee', type: 'text', initialWidth : 200},
+                    {label: 'Amount Due', fieldName: 'feeAmount', type: 'currency', typeAttributes: { currencyCode: 'USD'}},
+                    {label: 'Tax Due', fieldName: 'taxAmount', type: 'currency', typeAttributes: { currencyCode: 'USD'}},
+                    { type: 'action', typeAttributes: { rowActions: actions2 } }
+                    ]);
+            
+            
+                component.set('v.columnsA', [
+                        {label: 'Equipment', fieldName: 'Equipment__c', type: 'text', initialWidth : 200},
+                        {label: 'Charge/Bill Id', fieldName: 'Charge_Bill_Name__c', type: 'text'}, 
+                        {label: 'Description', fieldName: 'Adjustment_Type__c', type: 'text'}, 
+                        {label: 'Credit', initialWidth:120, fieldName: 'Credit__c', type: 'currency', typeAttributes: { currencyCode: 'USD'}},
+                        {label: 'Tax Amount', fieldName: 'Tax_Amount__c', type: 'currency', typeAttributes: { currencyCode: 'USD'}},
+                        { type: 'action', typeAttributes: { rowActions: actions } }
+                        ]);
+                
+        
             }
         });
         $A.enqueueAction(action);
-         
-
-        component.set('v.columns', [
-        {label: 'Equipment', fieldName: 'equipmentName', type: 'text', initialWidth : 200},
-        {label: 'Charge/Bill Id', fieldName: 'chargeId',  initialWidth : 200, type: 'url',sortable: true,typeAttributes: {label:{ fieldName: 'name'}}},
-        {label: 'Description', fieldName: 'fee', type: 'text', initialWidth : 200},
-        {label: 'Amount Due', fieldName: 'feeAmount', type: 'currency', typeAttributes: { currencyCode: 'USD'}},
-        {label: 'Tax Due', fieldName: 'taxAmount', type: 'currency', typeAttributes: { currencyCode: 'USD'}},
-        { type: 'action', typeAttributes: { rowActions: actions2 } }
-        ]);
-
-
-        component.set('v.columnsA', [
-            {label: 'Equipment', fieldName: 'Equipment__c', type: 'text', initialWidth : 200},
-            {label: 'Charge/Bill Id', fieldName: 'Charge_Bill_Name__c', type: 'text'}, 
-            {label: 'Description', fieldName: 'Adjustment_Type__c', type: 'text'}, 
-            {label: 'Credit', initialWidth:120, fieldName: 'Credit__c', type: 'currency', typeAttributes: { currencyCode: 'USD'}},
-            {label: 'Tax Amount', fieldName: 'Tax_Amount__c', type: 'currency', typeAttributes: { currencyCode: 'USD'}},
-            { type: 'action', typeAttributes: { rowActions: actions } }
-            ]);
-    
 
         helper.fetchAccounts(component,event, 0);
         
@@ -67,7 +71,9 @@
            console.log(state);
            var validationError = JSON.parse(response.getReturnValue());
            console.log(validationError);
+           console.log('hello');
            if (state == 'SUCCESS'){
+               
                if (validationError.Message){
                    component.find('notifLib').showToast({
                           'variant': 'error',
@@ -76,7 +82,7 @@
                    });
                }
                else{
-                   var msg='Invoice Adjustment Has Been Approved!';
+                   var msg='Invoice Adjustment Has Been Approved And Will Be Processed!';
                    component.find('notifLib').showToast({
                           'variant': 'success',
                           'message': msg,
@@ -160,7 +166,7 @@
         var row = event.getParam('row');
            
        
-        $A.createComponent('c:AP_AddAdjustment', {recordId :recordId, rowId :row.id, fee: row.fee, amountDue: row.feeAmount},
+        $A.createComponent('c:AP_AddAdjustment', {recordId :recordId, rowId :row.id, fee: row.fee, amountDue: row.feeAmount, taxAmount: row.taxAmount},
             function(content, status, errorMessage) {
                 if (status === 'SUCCESS') {
                     modalBody = content;

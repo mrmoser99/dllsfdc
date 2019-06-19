@@ -5,7 +5,7 @@
            console.log('do init recid:' + recordId);
            var fee = component.get('v.fee');
            var amountDue = component.get('v.amountDue');
-        
+           var taxAmount = component.get('v.taxAmount');
            var parentId = component.get('v.rowId');
           
            if (parentId.startsWith('a3')){
@@ -20,7 +20,8 @@
            }
 
            component.find("aType").set("v.value", fee);    
-           component.find("credit").set("v.value", amountDue);     
+           component.find("credit").set("v.value", amountDue);  
+           component.find("tax").set("v.value", taxAmount);     
 
             
         }, 
@@ -55,7 +56,8 @@
                aType:  component.find("aType").get("v.value"),
                credit: component.find("credit").get("v.value"),
                chargeId: chargeId,
-               dueId: dueId
+               dueId: dueId,
+               taxAmount: component.get('v.taxAmount')
            });
            console.log('hello world');
            console.log(component.get('v.recordId'));

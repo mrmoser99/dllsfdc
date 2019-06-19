@@ -175,12 +175,63 @@ global with sharing class AP_VoidInvoice {
     @AuraEnabled
     public static String approve(String recordId){
 
+       
         Map<String,String> response = new Map<String,String>();
+        Set<String> chargeSet = new Set<String>();
 
-        Invoice__c i = [select id from Invoice__c where id = :recordId];
+        List<adjustment__c> aList = new List<adjustment__c>();
+        aList = [select Id
+                ,charge__c
+                from adjustment__c
+                where invoice__c = :recordId
+                
+        ];
+        for (Adjustment__c a:aList)
+            chargeSet.add(a.charge__c);
+
+        List< cllease__Charge__c> clist  = [select cllease__Paid_Amount__c
+                                            ,name
+                                            from 
+                                            cllease__Charge__c 
+                                            where id in :chargeSet
+                                            ];
+        for (cllease__charge__c c:clist){
+            if (c.cllease__Paid_Amount__c > 0){
+                response.put('Message', c.name + ' has been paid.  You cannot waive a fee that has been paid!');
+                return JSON.serialize(response);
+            }
+
+        }    
+        if (aList.isEmpty()){
+            response.put('Message','There are no adjustment entries to approve. Please enter an adjustment and retry!');
+            return JSON.serialize(response);
+        }
+
+
+        List<Int_PX_Billing__c> pncList = new List<Int_PX_Billing__c>();
+        pncList = [ select id 
+                    from Int_PX_Billing__c
+                    where committed__c = false];
+        if (!pncList.isEmpty()){
+            response.put('Message','There is a pending transaction on its way to PNC.  Please retry in a few minutes!');
+            return JSON.serialize(response);
+        }
+
+        PNCUtility.reverseTaxes(recordId);
+        
+        Invoice__c i = [select id, sent_to_pnc__c from Invoice__c where id = :recordId];
         i.adjustment_status__c = 'Approved';
+        
+        if (i.sent_to_pnc__c){
+             PNCUtility.voidInvoice(recordId,true);  //void in pnc and reverse all flags
+        }
+        else{
+            i.invoice_emailed__c = false;
+        }
+
         update i;
 
+       
         return JSON.serialize(response);
     }   
 

@@ -93,6 +93,7 @@ Global Class CongaGenerateInvoice{
         String AD              = CongaURL_Settings__c.getInstance().AD__c;
         String Equipment       = CongaURL_Settings__c.getInstance().Equipment_contact__c;
         String Charges         = CongaURL_Settings__c.getInstance().Charges__c;
+        String Adjustment        = CongaURL_Settings__c.getInstance().Adjustment__c;
         
         system.debug('countSpecific States: ' + countSpecificStates);
         system.debug('countofotherstates : ' + countOfOtherStates);
@@ -136,6 +137,7 @@ Global Class CongaGenerateInvoice{
               ',[LateFee]'+LateFee+'?pv0='+recordId+ 
               ',[FinanceFee]' + FinanceFee + 
               ',[Charges]' + Charges + '?pv0=' + recordId + 
+              ',[ADJ]' + adjustment + '?pv0=' + recordId + 
               ',[EC]'+Equipment+'?pv0='+contId+'&TemplateId=' +InvTempId+
               '&DS7=1&OFN=InvoiceStatement&id='+recordId.subString(0,15);
  

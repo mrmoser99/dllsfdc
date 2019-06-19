@@ -50,6 +50,8 @@ public without sharing class PMUtility {
         @AuraEnabled public String cost;
         @AuraEnabled public String installLocation;
         @AuraEnabled public String installCity;
+        @AuraEnabled public String installCounty;
+        @AuraEnabled public String installDate;
         @AuraEnabled public String installState;
         @AuraEnabled public String installPostalCode;
         @AuraEnabled public String billingLocation;
@@ -69,6 +71,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String dllContractNumber;
         @AuraEnabled public String contractEndDate;
         @AuraEnabled public String customerLegalName;
+        @AuraEnabled public String customerAccount;
         @AuraEnabled public String customerAddress;
         @AuraEnabled public String customerCity;
         @AuraEnabled public String customerState;
@@ -87,6 +90,7 @@ public without sharing class PMUtility {
     public class contractSummary{
 
         @AuraEnabled public String dllContractNumber;
+        @AuraEnabled public String contractService; //6-19 new field
         @AuraEnabled public String contractStatus;
         @AuraEnabled public String customerName;
         @AuraEnabled public String leaseSignerPhone;
@@ -136,6 +140,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String contractAverageDaysToPay;
         @AuraEnabled public String contractSigner; //m-6
         @AuraEnabled public String contractSignerTitle;  //m-7
+        @AuraEnabled public String contractService;  // 6/19 new field 
         //@AuraEnabled public String daysPastDue; //dayspastdue
         @AuraEnabled public String equipmentDescription;
         @AuraEnabled public String nbrOfAssets;  //m-13
@@ -147,6 +152,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String customerName;  //map id 1
         @AuraEnabled public String olmCustomerNumber;  //next sprint  m-8
         @AuraEnabled public String customerNumber;
+        @AuraEnabled public String customerAccount; //6/19
         @AuraEnabled public String customerPhoneNumber;  //m-3
         @AuraEnabled public String customerAddressLine1; //m-5
         @AuraEnabled public String customerAddressline2;  //m-5
@@ -232,7 +238,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String Numberofassets;  //m-13   copy this to nbrOfAssets above.
         @AuraEnabled public String Statetax;  //m-15
         @AuraEnabled public String Countytax;  //m-16
-        @AuraEnabled public String Citytax; //m-17 missing
+        @AuraEnabled public String Citytax; //m-17 6/19 new field
         @AuraEnabled public String Districttax; //m-18
         @AuraEnabled public String Totalassetpayment; //m-19 contract rent
         @AuraEnabled public String Paymentfrequency; //m-20
@@ -273,6 +279,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String assetState;
         @AuraEnabled public String assetZipCode;
         @AuraEnabled public String assetPayment;
+        @AuraEnabled public String assetPayment;
 
         /* XXD_ASSET_TBL_TYPE in Select Inquiry */
         @AuraEnabled public String Asset_Category;
@@ -295,8 +302,8 @@ public without sharing class PMUtility {
         @AuraEnabled public String Guarantor_Name;
         @AuraEnabled public String Install_City;
         @AuraEnabled public String Install_Country;
-        @AuraEnabled public String Install_County; //missing
-        @AuraEnabled public String Install_Date;  //m-31
+        @AuraEnabled public String Install_County; // 6/19 new field
+        @AuraEnabled public String Install_Date;  // 6/19 new field
         @AuraEnabled public String Install_Location; //m-39
         @AuraEnabled public String Install_Site_Id;
         @AuraEnabled public String Install_State;

@@ -7,13 +7,31 @@ global with sharing class AP_ManualPayment {
 		
         Map<String,String> response = new Map<String,String>();
 
+        List<Int_PX_Billing__c> lineList = [Select line_data__c
+                                        from Int_PX_Billing__c 
+                                        where committed__c = false];
+       
+         
+     
+        if (!lineList.isEmpty()) {
+            response.put('Message','There is a pending PNC void transaction. Retry in a few minutes!');
+            return JSON.serialize(response);
+        }
+
         /* grab the account number */
-        Invoice__c i = [SELECT name, balance_due_amount__c, LS_Contract__r.cllease__Account__r.account_number__c, paid_invoice_amount__c
+        Invoice__c i = [SELECT name, balance_due_amount__c, sent_to_pnc__c ,LS_Contract__r.cllease__Account__r.account_number__c, paid_invoice_amount__c
                       FROM Invoice__c
                       where id = :recordId
                       ];
 
+        if (!i.sent_to_pnc__c){
+            response.put('Message','This invoice was never sent to PNC! Contact system administrator!');
+            return JSON.serialize(response);
+        }
+
+
         List<Int_PX_Remit__c> paymentsPending = new List<Int_PX_Remit__c>();
+       
 
         paymentsPending = [select id 
                             from Int_PX_Remit__c 
@@ -91,13 +109,30 @@ global with sharing class AP_ManualPayment {
 	}
 
     @AuraEnabled
-	public static String addAdjustment(String recordId, String aType,  Decimal credit, String chargeId, String dueId){
+	public static String addAdjustment(String recordId, String aType,  Decimal credit, String chargeId, String dueId, Decimal taxAmount){
         
         cllease__Charge__c c;
         cllease__Due_Detail_Lines__c d;
         String equipment;
-
         Map<String,String> response = new Map<String,String>(); 
+
+        if (taxAmount == null)
+            taxAmount = 0;
+            
+        //taxAmount = 0 - taxAmount;
+        //credit = 0 - credit;
+
+        List<Adjustment__c> aList = new List<Adjustment__c>();
+        aList = [select id 
+                 from Adjustment__c
+                 where charge__c = :chargeId
+                 ];
+
+        if (!aList.isEmpty()){
+            response.put('Message','This charge has already been adjusted, press cancel to continue!');
+             return JSON.serialize(response);
+        }
+      
         if (chargeId != Null){
             c = [select cllease__Contract_Equipment__r.Equipment_Description1__c 
                 from 
@@ -115,7 +150,8 @@ global with sharing class AP_ManualPayment {
                 ];
             equipment = d.cllease__Contract_Equipment__r.Equipment_Description1__c;
         }
-        Adjustment__c a = new Adjustment__c(Invoice__c = recordId, Adjustment_Type__c = aType, credit__c = credit, equipment__c = equipment, charge__c = chargeId, due_detail_line__c = dueId);
+        Adjustment__c a = new Adjustment__c(Invoice__c = recordId, Adjustment_Type__c = aType, credit__c = credit, equipment__c = equipment, charge__c = chargeId, due_detail_line__c = dueId
+            ,tax_amount__c = taxAmount);
         
         Invoice__c i = [select id from Invoice__c where id = :recordId];
         i.adjustment_status__c = 'Pending Approval';

@@ -144,9 +144,10 @@
 
                     action.setBackground();
 
-                    
+                     
                     action.setCallback(this, function(response) {
                         var state = response.getState();
+                        console.log('hello there');
                         if (state === "SUCCESS") {
                             var records = response.getReturnValue();
                             console.log(records);

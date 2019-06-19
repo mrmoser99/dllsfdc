@@ -284,17 +284,19 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
                 
                 localcount ++;
                 localsum += record.Balance_Due_Amount__c;
-                record.File_Generated__c = 'Yes';
+                record.File_Generated__c = 'Yes'; 
                 record.File_Generated_On__c = SystemDate;
                 
                 invoiceLi.add(record);
             }
                   
             if(linesRecords.size() > 0) {
+                system.debug('************* inserting: ' + lineRecords);
                 insert linesRecords;
             }
             
             if(invoiceLi.size() > 0) {
+                system.debug('**************** updates: ' + invoiceLi);
                 update invoiceLi;
             }
         
