@@ -279,7 +279,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String assetState;
         @AuraEnabled public String assetZipCode;
         @AuraEnabled public String assetPayment;
-        @AuraEnabled public String assetPayment;
+       
 
         /* XXD_ASSET_TBL_TYPE in Select Inquiry */
         @AuraEnabled public String Asset_Category;
