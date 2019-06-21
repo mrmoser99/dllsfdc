@@ -30,9 +30,10 @@ public with sharing class PNCUtility {
         6|0000000419|0000000419|04/16/2018|05/11/2018|INV-0000000057||||THE EVANGELICAL LUTHERAN CHURCH OF THE REDEMPTION IN PHILADELPHIA|8001 Bustleton Ave||Philadelphia|PA|19152-2801||||||249.19|||CC;DEBIT;CREDIT|||||||||||||||||||||LES-0000000306
         9|1|249.19|0|0
         */
+        /*
         List<Int_PX_Billing__c> bList = new List<Int_PX_Billing__c>();
 
-        
+         
         Int_PX_Billing__c b = new Int_PX_Billing__c();
         Datetime dt = DateTime.now();
         b.line_data__c = ' 1|BILLDATA|PNC|3517|SUM|' + dt.format('MMddyyyy') + '|' + dt.format('hhmmss');
@@ -66,6 +67,7 @@ public with sharing class PNCUtility {
         /* then add expired to the bill status and wamo...the invoice will be void */
         /* limit to 120 days to void */
 
+        /*
         List<Int_PX_Billing__c> lineList = new List<Int_PX_Billing__c>();
 
         lineList = [Select line_data__c
@@ -98,17 +100,22 @@ public with sharing class PNCUtility {
 
         b = new Int_PX_Billing__c();
         
-        b.line_data__c =  '9|1|' + string.valueOf(i.total_invoiced_amount__c) + '|0|0';
+        List<String> detailList = new List<String>();
+        detailList = origLine.split('\\|');
+        String originInvoiceAmount = detailList[20];
+
+        b.line_data__c =  '9|1|' + string.valueOf(originInvoiceAmount) + '|0|0';
 
         blist.add(b);
 
         insert bList;
 
-       
-        update i;
         
+        update i;
+        */
+
         if (rInvoice)
-            reverseInvoice(invoiceId);
+            reverseInvoice(invoiceId,true);
 
         return true;
 
@@ -123,7 +130,7 @@ public with sharing class PNCUtility {
 	*	
 	* 
     *************************************************************************************************/
-    public static boolean reverseInvoice( ID invoiceId){ 
+    public static boolean reverseInvoice( ID invoiceId,Boolean voidInPNC){ 
 
         /* void the invoice */
 
@@ -132,9 +139,8 @@ public with sharing class PNCUtility {
                         FROM Invoice__c
                         where id = :invoiceId 
                        ]; 
-
-        i.voided_in_Pnc__c = true;
-        i.voided_in_pnc_date_time__c = datetime.now();
+        if (voidInPNC)
+            i.void_in_Pnc__c = true;
         i.file_generated__c = 'No';
         i.file_generated_on__c = null;
         i.invoice_emailed__c = false;
@@ -194,9 +200,12 @@ public with sharing class PNCUtility {
         for (cllease__Charge__c c1:cList)
             c1.cllease__Waive__c = true;
         
+        List<Vertex_Log__c> vList = new List<Vertex_Log__c>();
+
       
         for (cllease__Charge__c c:cList){
-        
+            
+            Vertex_Log__c vertexLog = new Vertex_Log__c();
     
             List<cllease__Charge__c> temp = new List<cllease__Charge__c>();
             temp.add(c);
@@ -217,10 +226,20 @@ public with sharing class PNCUtility {
             res = http.send(req);
 
 	        system.debug('res:' + res.getBody());
+
+            vertexLog.Request_XML__c  = methoddoc.toXMlString();
+            vertexLog.Response_XML__c = res.getBody();
+            vertexLog.category__c = 'Reverse Fee Taxes';
+            vertexLog.contract_names__c = c.cllease__Lease_Account__r.Name;
+
+            vList.add(vertexLog);
         }
 
         update cList;
 
+        if (!vlist.isEmpty()){
+            insert vList;
+        }
         return true;
 
     }

@@ -29,6 +29,9 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
 
         query = ' SELECT  Id, Name,                                 '
               + '        Invoice_Period_End_Date__c,                '
+              + '        void_in_pnc__c,                '
+              + '        adjustment_status__c,                '
+              + '        sent_to_pnc_amount__c, '
               + '        Createddate,                               '
               + '        LS_Contract__r.cllease__Account__r.name,   '
               + '        LS_Contract__r.cllease__Account__r.phone,  '
@@ -52,7 +55,9 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
               + '                cllease__Transaction_Date__c       '
               + '         FROM Invoice_Bills__r)                    '
               + ' FROM Invoice__c                                   '
-              + ' WHERE File_Generated__c = \'No\'                  ';
+              + ' WHERE File_Generated__c = \'No\'                  '
+              + ' or Adjustment_Status__c = \'Approved\'            '
+              + ' or void_in_pnc__c = true';
 
         if(InvoiceNames!=null && InvoiceNames.size() > 0) {
             String InvoiceNamesStr = '';
@@ -210,6 +215,8 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
                 String fdiCode = '';
                 String pmtType = 'CC;DEBIT;CREDIT';
                 String billStatus = '';
+                if (record.void_in_pnc__c == true)
+                    billStatus = 'Expired';
                 String masterNumber = '';
                 String openField1 = '';
                 String openField2 = '';
@@ -251,7 +258,10 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
                 linesbody += '|' + prevBalance;                             //PreviousBalance
                 linesbody += '|' + pmtReceived;                             //PaymentReceived
                 linesbody += '|' + currentCharges;                          //CurrentCharges
-                linesbody += '|' + record.Balance_Due_Amount__c;            //AmountDue
+                if (record.void_in_pnc__c == true)
+                     linesbody += '|' + record.sent_to_pnc_amount__c;            //AmountDue
+                else
+                    linesbody += '|' + record.Balance_Due_Amount__c;            //AmountDue
                 linesbody += '|' + emailAddr;                               //EmailAddress
                 linesbody += '|' + fdiCode;                                 //FDICode
                 linesbody += '|' + pmtType;                                 //PmtTypeAllowed
@@ -286,17 +296,25 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
                 localsum += record.Balance_Due_Amount__c;
                 record.File_Generated__c = 'Yes'; 
                 record.File_Generated_On__c = SystemDate;
-                
+                if (record.void_in_pnc__c == true){
+                    record.voided_in_pnc__c = true;
+                    record.voided_in_pnc_date_time__c = datetime.now();
+                    record.void_in_pnc__c = false;
+                }
+                if (record.adjustment_status__c == 'Approved'){
+                    record.adjustment_status__c = 'Posted to PNC';
+                    record.adjusted_in_pnc__c = true;
+                    record.adjusted_in_pnc_date_time__c = datetime.now();
+                }
+
                 invoiceLi.add(record);
             }
                   
             if(linesRecords.size() > 0) {
-                system.debug('************* inserting: ' + lineRecords);
                 insert linesRecords;
             }
             
             if(invoiceLi.size() > 0) {
-                system.debug('**************** updates: ' + invoiceLi);
                 update invoiceLi;
             }
         

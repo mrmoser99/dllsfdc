@@ -124,7 +124,7 @@ global with sharing class AP_InvoiceSimulator {
                         where id = :recordId];
          
           r = new resultLine();
-          r.equipmentName = '';
+          r.equipmentName = ''; 
           r.recordName = '';
             
           r.fee = 'PAYMENT';

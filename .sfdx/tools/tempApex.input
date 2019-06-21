@@ -1,2 +1,5 @@
-Integer randomNumber = Integer.valueof((Math.random() * 100000000));
-System.debug('randomNumber is -'+randomNumber);
+string line = '6|0000000418|0000000418|06/02/2019|06/09/2019|INV-0000000207||||AMERICAN HOME HEALTH SERVICES LLC|261 Old York Rd, Ste 824||Jenkintown|PA|19046-3713||||||750.55|rhammond@angelsoncall.com||CC;DEBIT;CREDIT|Expired||||||||||||||||||||LES-0000000309';
+
+list<string> mylist = new list<string>();
+mylist = line.split('\\|');
+system.debug(mylist[20]);

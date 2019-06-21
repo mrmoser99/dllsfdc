@@ -12,11 +12,12 @@ global with sharing class AP_ManualPayment {
                                         where committed__c = false];
        
          
-     
+        /*
         if (!lineList.isEmpty()) {
             response.put('Message','There is a pending PNC void transaction. Retry in a few minutes!');
             return JSON.serialize(response);
         }
+        */
 
         /* grab the account number */
         Invoice__c i = [SELECT name, balance_due_amount__c, sent_to_pnc__c ,LS_Contract__r.cllease__Account__r.account_number__c, paid_invoice_amount__c
@@ -99,8 +100,9 @@ global with sharing class AP_ManualPayment {
             insert b;
 
         if (voidPNC == 'true'){
-            PNCUtility.voidInvoice(recordId,false);
+            PNCUtility.voidInvoice(recordId,true);
         }
+        
             
         
         return JSON.serialize(response); 

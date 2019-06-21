@@ -209,7 +209,7 @@ global with sharing class AP_VoidInvoice {
 
 
         List<Int_PX_Billing__c> pncList = new List<Int_PX_Billing__c>();
-        pncList = [ select id 
+        pncList = [ select id  
                     from Int_PX_Billing__c
                     where committed__c = false];
         if (!pncList.isEmpty()){
@@ -217,21 +217,29 @@ global with sharing class AP_VoidInvoice {
             return JSON.serialize(response);
         }
 
-        PNCUtility.reverseTaxes(recordId);
+        if (PNCUtility.reverseTaxes(recordId)){ 
+
+                
+            Invoice__c i = [select id, sent_to_pnc__c from Invoice__c where id = :recordId];
+            i.adjustment_status__c = 'Approved';
         
-        Invoice__c i = [select id, sent_to_pnc__c from Invoice__c where id = :recordId];
-        i.adjustment_status__c = 'Approved';
-        
-        if (i.sent_to_pnc__c){
-             PNCUtility.voidInvoice(recordId,true);  //void in pnc and reverse all flags
+            if (i.sent_to_pnc__c){
+                PNCUtility.reverseInvoice(recordId,false);   //PNCUtility.voidInvoice(recordId,true);  //void in pnc and reverse all flags
+                i.void_in_pnc__c = false;
+            }
+            else{
+                i.invoice_emailed__c = false;
+            }
+
+            update i;
+
         }
         else{
-            i.invoice_emailed__c = false;
+            response.put('Message','Vertex reversal failed!. Contact System Admin!');
+            return JSON.serialize(response);
         }
 
-        update i;
 
-       
         return JSON.serialize(response);
     }   
 
