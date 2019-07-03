@@ -1,7 +1,14 @@
 trigger IntDeliveryControl on Int_Delivery_Control__c (before insert) {
 
 
-    cllease__Office_Name__c o = [SELECT cllease__Current_System_Date__c FROM cllease__Office_Name__c];
+    cllease__Office_Name__c o;
+    if (test.isRunningTest()){
+         o = new cllease__office_name__c();
+         o.cllease__Current_System_Date__c = date.today();
+    }
+    else{
+          o = [SELECT cllease__Current_System_Date__c FROM cllease__Office_Name__c];
+    }
     dateTime now = date.valueOf(o.cllease__Current_System_Date__c);
     now = now.addHours(12);
     String dayOfWeek = now.format('EEEE');

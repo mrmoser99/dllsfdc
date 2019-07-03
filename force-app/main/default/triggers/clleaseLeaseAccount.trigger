@@ -39,8 +39,8 @@ trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
                 leaseMap2.put(trigger.new[0].id,'Hello');
                 //superTrumpUtil.sendRequest(leaseMap2);
                 if (!Test.isRunningTest()){
-                	ICVAsyncBookLease job = new ICVAsyncBookLease(trigger.new[0].id);  
-                	System.enqueueJob(job);
+                    ICVAsyncBookLease job = new ICVAsyncBookLease(trigger.new[0].id);  
+                    System.enqueueJob(job);
                 } 
         } 
         

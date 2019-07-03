@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All12</fullName>
+    <columns>Month__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>NAME</columns>
+    <columns>Committed__c</columns>
+    <columns>Contract_Number__c</columns>
+    <columns>Journal_Category__c</columns>
+    <columns>Accounted_Cr__c</columns>
+    <columns>Accounted_Dr__c</columns>
+    <columns>Accounting_Date__c</columns>
+    <columns>Period_Name__c</columns>
+    <columns>Batch_Description__c</columns>
+    <columns>Posting_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Period_Name__c</field>
+        <operation>equals</operation>
+        <value>201812</value>
+    </filters>
+    <label>All12</label>
+</ListView>

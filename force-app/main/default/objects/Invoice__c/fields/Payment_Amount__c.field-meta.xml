@@ -3,8 +3,8 @@
     <fullName>Payment_Amount__c</fullName>
     <description>This field using for values to update in Invoice conga document.</description>
     <externalId>false</externalId>
-    <inlineHelpText>Payment Amount that Customer has to Pay. Field Created for Conga Document Mapping.</inlineHelpText>
-    <label>Payment Amount</label>
+    <inlineHelpText>Rent + Service + Estimated Property Tax</inlineHelpText>
+    <label>Rent Amount Billed</label>
     <precision>18</precision>
     <required>false</required>
     <scale>2</scale>

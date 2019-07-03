@@ -273,6 +273,7 @@ global with sharing class APInterfaceRecordsGeneratorJob  extends clcommon.Dynam
                                 cllease__Contract__r.Name,
                                 cllease__Transaction_Date__c,
                                 cllease__GL_Process_Date__c,
+                                cllease__Amount__c,
                                 Fee_Amount_To_Dealer__c,
                                 cllease__Account__c,
                                 Remark__c,
@@ -318,7 +319,7 @@ global with sharing class APInterfaceRecordsGeneratorJob  extends clcommon.Dynam
                         validationSuccess = false;
                     }
 
-                    if(disbTxn.Fee_Amount_To_Dealer__c == null || disbTxn.Fee_Amount_To_Dealer__c == 0) {
+                    if(disbTxn.cllease__Amount__c == null || disbTxn.cllease__Amount__c == 0) {
                         remark = 'Disbursement Amount 0 (zero) skipping to AP file generation.';
                         validationSuccess = false;
                     }
@@ -350,10 +351,10 @@ global with sharing class APInterfaceRecordsGeneratorJob  extends clcommon.Dynam
                         debitEntry = new Int_OLMN_AP__c();
                         debitEntry.Contract_Number__c = disbTxn.cllease__Contract__r.Name;
                         debitEntry.Vendor_Code__c     = disbTxn.cllease__Account__r.Oracle_Vendor_ID__c;
-                        debitEntry.Invoice_Type_Lookup_Code__c= disbTxn.Fee_Amount_To_Dealer__c > 0 ? 'STANDARD' : 'CREDIT';
+                        debitEntry.Invoice_Type_Lookup_Code__c= disbTxn.cllease__Amount__c > 0 ? 'STANDARD' : 'CREDIT';
                         debitEntry.Invoice_Number__c  = disbTxn.Name;     
                         debitEntry.Invoice_Date__c    = txnDateStr;   
-                        debitEntry.Invoice_Amount__c  = disbTxn.Fee_Amount_To_Dealer__c;
+                        debitEntry.Invoice_Amount__c  = disbTxn.cllease__Amount__c;
                         debitEntry.Invoice_Currency_Code__c   = 'USD';
                         debitEntry.Invoice_Description__c     = disbTxn.cllease__Contract__r.Name;
                         if( disbTxn.cllease__Transaction_Sub_Type__c != null
@@ -370,7 +371,7 @@ global with sharing class APInterfaceRecordsGeneratorJob  extends clcommon.Dynam
                         debitEntry.Line_Number__c             = 1;
                         debitEntry.Line_Type_Lookup_Code__c   = 'ITEM';
                         debitEntry.Line_Description__c        = disbTxn.cllease__Contract__r.Name;
-                        debitEntry.Line_Amount__c             = disbTxn.Fee_Amount_To_Dealer__c;                                        
+                        debitEntry.Line_Amount__c             = disbTxn.cllease__Amount__c;                                        
                         debitEntry.Accounting_Date__c         = glDateStr;
                         debitEntry.Dist_Code_Combination__c   = glEntry.Movement_Code_DR_Segment__c;
                         debitEntry.Accts_Pay_Code_Combination__c = glEntry.Movement_Code_CR_Segment__c;

@@ -181,15 +181,15 @@ public with sharing class TestPNCIntegration {
         List<cllease__Lease_Payment_Transaction__c> pmtTxns = [Select Id, cllease__Cleared__c , cllease__Transaction_Amount__c,
                                                                     cllease__Payment_Mode__r.Name, cllease__Rent_Amount__c,
                                                                     cllease__Fees__c, cllease__Tax_Amount__c, cllease__Excess__c,
-                                                                    cllease__Bill__c, cllease__Charge__c 
+                                                                    cllease__Bill__c, cllease__Charge__c, cllease__Receipt_Date__c
                                                                 From cllease__Lease_Payment_Transaction__c
                                                                 Order By Name];
 
         // cllease__Cleared__c, cllease__Transaction_Amount__c, cllease__Rent_Amount__c, cllease__Fees__c, cllease__Tax_Amount__c, cllease__Excess__c, Bill/ChargeID
         List<List<String>> paymentTxnsExpected = new List<List<String>>();
-        paymentTxnsExpected.add(new List<String>{'true', '100.00', '90.00', '0.00',   '10.00', '0.00', bill.Id});
-        paymentTxnsExpected.add(new List<String>{'true', '110.00', '0.00',  '100.00', '10.00',  '0.00', charge.Id});
-        paymentTxnsExpected.add(new List<String>{'true', '90.00',  '0.00',  '0.00',   '0.00',  '90.00',''});                                                                
+        paymentTxnsExpected.add(new List<String>{'true', '100.00', '90.00', '0.00',   '10.00', '0.00', bill.Id,string.valueof(Paymentdate)});
+        paymentTxnsExpected.add(new List<String>{'true', '110.00', '0.00',  '100.00', '10.00',  '0.00', charge.Id,string.valueof(Paymentdate)});
+        paymentTxnsExpected.add(new List<String>{'true', '90.00',  '0.00',  '0.00',   '0.00',  '90.00','',string.valueof(Paymentdate)});                                                                
 
         //System.assertEquals(paymentTxnsExpected.size(), pmtTxns.size(),'Mismatch in No Of Payment Created for Remit File...');
 
@@ -200,7 +200,11 @@ public with sharing class TestPNCIntegration {
             System.assertEquals(Decimal.valueOf(paymentTxnsExpected[i][3]), ((Decimal)pmtTxns[i].cllease__Fees__c).setScale(2), 'Mismatch in cllease__Fees__c at row: '+i);
             System.assertEquals(Decimal.valueOf(paymentTxnsExpected[i][4]), ((Decimal)pmtTxns[i].cllease__Tax_Amount__c).setScale(2), 'Mismatch in cllease__Tax_Amount__c at row: '+i);
             System.assertEquals(Decimal.valueOf(paymentTxnsExpected[i][5]), ((Decimal)pmtTxns[i].cllease__Excess__c).setScale(2), 'Mismatch in cllease__Excess__c at row: '+i);
-            // first row(i=0) should have bill link as payment done towards bill
+            //System.assertEquals((paymentTxnsExpected[i][6]), pmtTxns[i].cllease__Receipt_Date__c, 'Mismatch in cllease__Excess__c at row: '+i);
+
+           
+            System.assertEquals((date.valueof(paymentTxnsExpected[i][6])),pmtTxns[i].cllease__Receipt_Date__c, 'Mismatch in cllease__Receipt_Date__c at row: '+i);
+// first row(i=0) should have bill link as payment done towards bill
             // Secone row(i=1) should have charge link as payment done towards charge
             if(i == 0) {
                 System.assertEquals(paymentTxnsExpected[i][6], pmtTxns[i].cllease__Bill__c, 'Mismatch in cllease__Bill__c at row: '+i);

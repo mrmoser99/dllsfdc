@@ -97,7 +97,7 @@ global with sharing class AP_VoidInvoice {
         cList = [select Id
                 ,name
                 ,cllease__Original_Amount__c
-                ,cllease__original_tax_amount__c
+                ,original_tax_amount__c
                 ,cllease__Contract_Equipment__r.Equipment_Description1__c
                 ,cllease__Fee_Definition__r.name
                 from cllease__Charge__c 
@@ -116,7 +116,7 @@ global with sharing class AP_VoidInvoice {
             r.chargeId = URL.getSalesforceBaseUrl().toExternalForm() + '/lightning/r/cllease__Charge__c/' + c.id + '/view?0.source=alohaHeader';
             r.fee =  c.cllease__Fee_Definition__r.name;
             r.feeAmount =  string.valueOf(c.cllease__Original_Amount__c);
-            r.taxAmount = string.valueOf(c.cllease__original_tax_amount__c);
+            r.taxAmount = string.valueOf(c.original_tax_amount__c);
             system.debug('REsult is ' + r);
             results.add(r);
         }
@@ -218,7 +218,7 @@ global with sharing class AP_VoidInvoice {
         }
 
         if (PNCUtility.reverseTaxes(recordId)){ 
-
+ 
                 
             Invoice__c i = [select id, sent_to_pnc__c from Invoice__c where id = :recordId];
             i.adjustment_status__c = 'Approved';

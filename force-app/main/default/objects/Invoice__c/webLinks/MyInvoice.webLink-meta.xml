@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MyInvoice</fullName>
+    <availability>online</availability>
+    <description>,[OrigFee]a2e1I000000Qam8?pv0=a7c1I00000095hV
+,[InterimRent]a2e1I000000Qam5?pv0=a7c1I00000095hV
+,[LateFee]a2e1I000000QamA?pv0=a7c1I00000095hV</description>
+    <displayType>button</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <hasMenubar>false</hasMenubar>
+    <hasScrollbars>true</hasScrollbars>
+    <hasToolbar>false</hasToolbar>
+    <height>600</height>
+    <isResizable>true</isResizable>
+    <linkType>url</linkType>
+    <masterLabel>MyInvoice</masterLabel>
+    <openType>newWindow</openType>
+    <position>none</position>
+    <protected>false</protected>
+    <showsLocation>false</showsLocation>
+    <showsStatus>false</showsStatus>
+    <url>/apex/APXTConga4__Conga_Composer?SolMgr=0
+&amp;serverUrl={!API.Partner_Server_URL_370}
+&amp;Id={!Invoice__c.Id}
+&amp;QueryId=[INV]a2e1I000000Qam7
+,[DueDetailsLines]a2e1I000000Qam4?pv0=a6Q1I000000TQlaUAG
+,[AD]a2e1I000000Qam2?pv0=a6J1I000001610HUAQ
+,[INSFEE]a2e1I000000Qam9?pv0=a7c1I000000XbtW
+,[OrigFee]a2e1I000000Qam8?pv0=a7c1I000000XbtW
+,[InterimRent]a2e1I000000Qam5?pv0=a7c1I000000XbtW
+,[LateFee]a2e1I000000QamA?pv0=a7c1I000000XbtW
+,[FinanceFee]a2e1I000000Qam6
+,[Charges]a2e550000005Plb?pv0=a7c1I000000XbtW
+,[EC]a2e1I000000Qalp?pv0=a6J1I000001610HUAQ
+,[ADJ]a2e55000000LpAV?pv0=a7c550000005QqF
+&amp;TemplateId=a2m1I000000NP50
+&amp;OFN=InvoiceStatement</url>
+</WebLink>

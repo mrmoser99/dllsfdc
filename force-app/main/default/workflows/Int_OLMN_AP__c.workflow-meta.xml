@@ -2,7 +2,6 @@
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <alerts>
         <fullName>Notify_AP</fullName>
-        <ccEmails>askap@leasedirect.com</ccEmails>
         <description>Notify AP</description>
         <protected>false</protected>
         <recipients>
@@ -12,6 +11,18 @@
         <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
         <template>cnotify__Notification_Templates/Funding</template>
+    </alerts>
+    <alerts>
+        <fullName>Payment_Confirmation_Delay</fullName>
+        <description>Payment Confirmation Delay</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Internal_Notifications</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>cnotify__Notification_Templates/Payment_Confirmation_Delay_Notice</template>
     </alerts>
     <rules>
         <fullName>Funding Notice</fullName>
@@ -27,5 +38,24 @@
         </criteriaItems>
         <description>This will send a notice to ap if a funding transaction is immiment.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Payment Confirmation Delay Notice</fullName>
+        <active>true</active>
+        <criteriaItems>
+            <field>Int_OLMN_AP__c.AP_Confirmed__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Payment_Confirmation_Delay</name>
+                <type>Alert</type>
+            </actions>
+            <offsetFromField>Int_OLMN_AP__c.CreatedDate</offsetFromField>
+            <timeLength>12</timeLength>
+            <workflowTimeTriggerUnit>Hours</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
     </rules>
 </Workflow>

@@ -180,9 +180,10 @@ global class Reconciler implements Messaging.InboundEmailHandler {
 
         system.debug(fieldList[i+4]);
         if (fieldList[i+4] == '0')
-            d.fee__c = 0;
-        else
-            d.Fee__c = decimal.valueOf(fieldList[i+4]);
+            if (fieldList[i+4] == '0')
+                d.fee__c = 0;
+            else
+                d.Fee__c = decimal.valueOf(fieldList[i+4]);
 
         insertList.add(d);
     

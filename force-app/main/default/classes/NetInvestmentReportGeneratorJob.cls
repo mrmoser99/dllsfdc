@@ -41,6 +41,7 @@ global with sharing class NetInvestmentReportGeneratorJob extends clcommon.Dynam
 				'		cllease__Account__r.Oracle_Vendor_ID__c , cllease__Yield__c, Billed_Not_Paid__c, cllease__Residual_Amount__c, '+
 				' 		cllease__Lease_Receivable_Amount__c , cllease__Payment_Frequency__c, cllease__Account__r.Name,                '+
 				'		cllease__Financed_Amount__c, Unbilled_Receivable__c, Unbilled_Rent__c, cllease__Payment_Method__c,   		  '+
+                '       Oracle_Trade_Up_Quote_Amount__c,                                                                              '+
                 '       (SELECT Id, Name, cllease__Date__c, cllease__Rental_Amount__c, cllease__Tax__c,                               '+
                 '               cllease__Active__c, cllease__Billed__c                                                                '+
                 '           FROM cllease__Payment_Streams__r                                                                          '+
@@ -310,6 +311,7 @@ global with sharing class NetInvestmentReportGeneratorJob extends clcommon.Dynam
     		report.ACCOUNTING_YIELD__C  = cllease.ValueUtil.round(contract.cllease__Yield__c, 4, 'Nearest');
     		report.BILLED_UNPAID_REC__C = contract.Billed_Not_Paid__c;
     		report.BOOKED_RESIDUAL__C  	= contract.cllease__Residual_Amount__c;
+            report.CAP_ROLLOVER_FEE_AMOUNT__c = contract.Oracle_Trade_Up_Quote_Amount__c; // it should be 8th field report extraction.
 
     		// 	report.CAP_BROKER_FEE_AMOUNT__C = 
     		// 	report.CAP_OTHER_FEE_AMOUNT__C  = 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Int_PX_Remit__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <externalId>false</externalId>
+    <label>Int PX Remit</label>
+    <referenceTo>Int_PX_Remit__c</referenceTo>
+    <relationshipLabel>PNC Recon Details</relationshipLabel>
+    <relationshipName>PNC_Recon_Details</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

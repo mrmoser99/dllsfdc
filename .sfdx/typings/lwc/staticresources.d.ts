@@ -86,6 +86,10 @@ declare module "@salesforce/resourceUrl/NGTaskListUpdateforNewcoChecklist31July"
     var NGTaskListUpdateforNewcoChecklist31July: string;
     export default NGTaskListUpdateforNewcoChecklist31July;
 }
+declare module "@salesforce/resourceUrl/OracleTradeUp_Fix_v2_19062019" {
+    var OracleTradeUp_Fix_v2_19062019: string;
+    export default OracleTradeUp_Fix_v2_19062019;
+}
 declare module "@salesforce/resourceUrl/SiteSamples" {
     var SiteSamples: string;
     export default SiteSamples;
@@ -114,9 +118,25 @@ declare module "@salesforce/resourceUrl/Support_Ticket_13253" {
     var Support_Ticket_13253: string;
     export default Support_Ticket_13253;
 }
+declare module "@salesforce/resourceUrl/TradeupAmountSpread_v1" {
+    var TradeupAmountSpread_v1: string;
+    export default TradeupAmountSpread_v1;
+}
+declare module "@salesforce/resourceUrl/TradeupAmount_v2" {
+    var TradeupAmount_v2: string;
+    export default TradeupAmount_v2;
+}
+declare module "@salesforce/resourceUrl/TradeupAmount_v3" {
+    var TradeupAmount_v3: string;
+    export default TradeupAmount_v3;
+}
 declare module "@salesforce/resourceUrl/TradeupAmountatEquipmentLevel_20092018" {
     var TradeupAmountatEquipmentLevel_20092018: string;
     export default TradeupAmountatEquipmentLevel_20092018;
+}
+declare module "@salesforce/resourceUrl/Tradeup_Fix_18062019" {
+    var Tradeup_Fix_18062019: string;
+    export default Tradeup_Fix_18062019;
 }
 declare module "@salesforce/resourceUrl/UpfrontTaxChanges_11_8_2018" {
     var UpfrontTaxChanges_11_8_2018: string;

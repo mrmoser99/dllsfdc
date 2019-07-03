@@ -398,7 +398,11 @@ global with sharing class FinancialReportBatch extends clcommon.DynamicJob {
           // Source Childs Aggregation Results withOutCondSourceFields
         
           Set<String> withOutCondTargetName = withOutCondTargetFields.keyset() ;
-          String withOutConTargObj = (new List<String>(withOutCondTargetName))[0]  ;
+          String withOutConTargObj;
+          if(withOutCondTargetName.size() > 0) {
+               withOutConTargObj = (new List<String>(withOutCondTargetName))[0]  ;
+          }
+           
         
           //  SObject withOutConTargobjApi ;
         

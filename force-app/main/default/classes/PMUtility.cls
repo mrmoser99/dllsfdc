@@ -21,7 +21,8 @@ public without sharing class PMUtility {
         @AuraEnabled public Links links;
         @AuraEnabled public Meta meta;
         @AuraEnabled public List<Data> data;
-        
+        @AuraEnabled public String responseCode;
+       
     }
 
     public class Links{
@@ -67,7 +68,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String leaseSignerPhone;           
     }
     public class contractDetail{
-
+        @AuraEnabled public String responseCode;
         @AuraEnabled public String dllContractNumber;
         @AuraEnabled public String contractEndDate;
         @AuraEnabled public String customerLegalName;
@@ -88,7 +89,7 @@ public without sharing class PMUtility {
 
     }
     public class contractSummary{
-
+        @AuraEnabled public String responseCode;
         @AuraEnabled public String dllContractNumber;
         @AuraEnabled public String contractService; //6-19 new field
         @AuraEnabled public String contractStatus;
@@ -125,7 +126,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String advancedPaymentStructure;  //m-11
 
         /* portfolio */
-
+        @AuraEnabled public String responseCode;
         @AuraEnabled public String contractNumber; //m-42
         @AuraEnabled public String contractType;  //m-44
         @AuraEnabled public String contractTerm;  //m-41
@@ -331,7 +332,7 @@ public without sharing class PMUtility {
     }
 
      public class TerminationQuoteResponse{
-
+        @AuraEnabled public String responseCode;
         @AuraEnabled public String partnerTransactionReference;
         @AuraEnabled public String contractNumber;
         @AuraEnabled public String quoteNumber;
@@ -372,9 +373,9 @@ public without sharing class PMUtility {
     *************************************************************************************************/
     public static string getAccessToken(){     
     	
-    	if (Test.isRunningTest())
-    		return string.valueOf(system.now());
-    		
+        String access_token;
+
+    
         User u = [select contactId
                   from User
                   where id = :userInfo.getUserId()
@@ -401,6 +402,7 @@ public without sharing class PMUtility {
             }
         }
 
+        
     	HttpRequest req_token = new HttpRequest();        
 		
 		String tokenEndpoint = System.Label.ICV_tokenendpoint;  
@@ -411,18 +413,27 @@ public without sharing class PMUtility {
         req_token.setBody('client_id='+client+'&client_secret='+secret+'&grant_type=client_credentials');
       
         Http http = new Http(); 
+
+        if (Test.isRunningTest())
+    		return string.valueOf(system.now());
+    		
         HTTPResponse res = http.send(req_token);
         
-		String access_token;
-
-		JSONParser parser = JSON.createParser(res.getBody());
+        if (res.getStatusCode()  == 200){
+            JSONParser parser = JSON.createParser(res.getBody());
             
-        while (parser.nextToken() != null) {
-        	if (parser.getCurrentName() == 'access_token') {
-            	access_token = parser.getText();
+            while (parser.nextToken() != null) {
+        	    if (parser.getCurrentName() == 'access_token') {
+            	    access_token = parser.getText();
+                }
             }
         }
-        
+        else{
+            return string.valueOf(res.getStatusCode());
+        }
+	
+
+		
        	return access_token;
          
     }

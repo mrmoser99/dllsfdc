@@ -3,8 +3,8 @@
     <fullName>Payment_Sales_Tax__c</fullName>
     <description>This field using for values to update in Invoice conga document.</description>
     <externalId>false</externalId>
-    <inlineHelpText>Payment Sales Tax Amount that Customer has to Pay. Field Created for Conga Document Mapping.</inlineHelpText>
-    <label>Payment Sales Tax</label>
+    <inlineHelpText>Rent Tax + Service Tax + Estimated Property Tax Tax</inlineHelpText>
+    <label>Rent Tax Amount Billed</label>
     <precision>18</precision>
     <required>false</required>
     <scale>2</scale>

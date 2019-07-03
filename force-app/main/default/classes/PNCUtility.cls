@@ -196,8 +196,9 @@ public with sharing class PNCUtility {
                                   ,Withheld_Amount__c 
                                 FROM cllease__Charge__c 
                                 where id in :chargeSet];
- 
-        for (cllease__Charge__c c1:cList)
+
+        List<cllease__Charge__c> clist2 = clist.clone();
+        for (cllease__Charge__c c1:cList2)
             c1.cllease__Waive__c = true;
         
         List<Vertex_Log__c> vList = new List<Vertex_Log__c>();
@@ -208,7 +209,9 @@ public with sharing class PNCUtility {
             Vertex_Log__c vertexLog = new Vertex_Log__c();
     
             List<cllease__Charge__c> temp = new List<cllease__Charge__c>();
+            c.cllease__Original_Amount__c = 0 - c.cllease__Original_Amount__c;
             temp.add(c);
+            
             Dom.document methoddoc = VertexUtil.getChargesXml(temp);  
             VertexApi__c vertexConfig = CLSCustomUtil.getVertexConfiguration();
             VertexUtil.validateVertexConfig(vertexConfig);
@@ -231,11 +234,11 @@ public with sharing class PNCUtility {
             vertexLog.Response_XML__c = res.getBody();
             vertexLog.category__c = 'Reverse Fee Taxes';
             vertexLog.contract_names__c = c.cllease__Lease_Account__r.Name;
-
+            c.cllease__Original_Amount__c = 0 - c.cllease__Original_Amount__c;
             vList.add(vertexLog);
         }
 
-        update cList;
+        update cList2;
 
         if (!vlist.isEmpty()){
             insert vList;

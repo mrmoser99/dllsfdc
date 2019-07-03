@@ -17,6 +17,4 @@
     <tabs>Int_OFAC__c</tabs>
     <tabs>Int_OFAC_FINCEN__c</tabs>
     <tabs>standard-report</tabs>
-    <tabs>CL_Lease_Financial_Report__c</tabs>
-    <tabs>Lease_Financial_Report_Mapping__c</tabs>
 </CustomApplication>

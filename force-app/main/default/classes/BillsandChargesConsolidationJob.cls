@@ -25,7 +25,8 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
                                                                  'Insurance Fees',
                                                                  'Finance Fees',
                                                                  'Interim Rent',
-                                                                 'Origination Fees'
+                                                                 'Origination Fees',
+        														 'NSF Fees'
                                                                 }; 
     // List of Bill Due Types to include for charges during consolidate
     private static List<String> billTypes =  new List<String> { 'BILL / DUE DATE' };

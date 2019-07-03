@@ -12,6 +12,8 @@ global with sharing class PNCNSFChargeCreatorJob extends clcommon.DynamicJob {
     private static String query;
     private static final String JOB_NAME = 'PNC NSF Charges Creation Job';
     private clcommon__Fee_Definition__c nsfFeeDefinition; 
+    
+    public class MyException extends Exception{}
 
     global PNCNSFChargeCreatorJob() {
         super(JOB_NAME, initialize(null));
@@ -69,11 +71,15 @@ global with sharing class PNCNSFChargeCreatorJob extends clcommon.DynamicJob {
         Map<string, List<Int_PX_NSF__c>> multPxNSFMap 	= new Map<string, List<Int_PX_NSF__c>>();
         List<Int_PX_NSF__c> updatepxNSFRecList 			= new List<Int_PX_NSF__c>();
         List<cllease__Charge__c> nsfChargesToInsert 	= new List<cllease__Charge__c>();
+        // To create reversal for all lease payment transaction in order to do it we need to collect all lpt's which has 
+        // invoice id that can be taken form list of NSF transaction taken for processing.
+        List<cllease__Repayment_Transaction_Adjustment__c> newReversalTxns = new List< cllease__Repayment_Transaction_Adjustment__c>();
+        Set<Id> invoiceIds = new Set<Id>();
 
         Savepoint sp = database.setsavepoint();
         try {
 
-            List<Int_PX_NSF__c> pxNSFRecordList = (List<Int_PX_NSF__c>)scope;     
+            List<Int_PX_NSF__c> pxNSFRecordList = (List<Int_PX_NSF__c>)scope;
             
             // A. Looping all PNC return records to consolidate all related PNC Return records with total amount
             for(Int_PX_NSF__c pxNSFRec: pxNSFRecordList) {
@@ -97,21 +103,56 @@ global with sharing class PNCNSFChargeCreatorJob extends clcommon.DynamicJob {
                 pxNSFTempList.add(pxNSFRec);
                 multPxNSFMap.put(pxNSFRec.Invoice_Number__c, pxNSFTempList);
             }
+            
+            System.debug(LoggingLevel.ERROR, 'multPxNSFMap.keyset() : ' + multPxNSFMap.keyset());
 
             // B. Querying all invoices with charges where invoices with Bills and Charges
-            List<Invoice__c> invoicesList = [SELECT Id, Name, LS_Contract__c
+            List<Invoice__c> invoicesList = [SELECT Id, Name, LS_Contract__c, LS_Contract__r.cllease__Next_Due_Date__c 
                                             	FROM Invoice__c 
                                             	WHERE Name IN :multPxNSFMap.keyset()
                                             	AND LS_Contract__c != Null];
+            for(Invoice__c invoice : invoicesList){
+                invoiceIds.add(invoice.Id);
+            }
+            
+            // C. Collecting all lpt created for invoices which are to be reversed
+            List<cllease__Lease_Payment_Transaction__c> lpts = [SELECT ID, 
+                                                                    NAME, 
+                                                                	cllease__Contract__c,
+                                                                    cllease__Transaction_Amount__c 
+                                                                    FROM cllease__Lease_Payment_Transaction__c
+                                                                    WHERE For_Invoice__c IN : invoiceIds
+                                                                    AND cllease__Reversed__c = False];
+           	System.debug(LoggingLevel.ERROR, 'lpts : ' + lpts);
+            
+            // D. Creating payment reversal of all scope invoices lpts
+            for(cllease__Lease_Payment_Transaction__c lpt:lpts){
+                cllease__Repayment_Transaction_Adjustment__c reversalTxn = new cllease__Repayment_Transaction_Adjustment__c(
+                    															cllease__Lease_Payment_Transaction__c = lpt.Id,
+                                                                                cllease__LS_Contract__c = lpt.cllease__Contract__c,
+                                                                                cllease__Adjusted_Amount__c = lpt.cllease__Transaction_Amount__c,
+                                                                                cllease__Adjustment_Txn_Date__c  = cllease.SystemDateUtil.getCurrentSystemDate(),
+                                                                                cllease__Reason_Code__c = 'NSF');
+                newReversalTxns.add(reversalTxn);
+            }
+            
+            // E. Insert all the reversal txn
+            if(newReversalTxns.size()>0){
+                insert newReversalTxns;
+            }
+			System.debug(LoggingLevel.ERROR, '^^^^ newReversalTxns : ' + newReversalTxns);
+            // Process all reversals.
+            cllease.IBulkPaymentReversalAction dAction = new cllease.BulkRepaymentAdjustmentAction(newReversalTxns);
+        	dAction.postRepaymentsAdjusment();
 
-            // C. Looping through all Invoices for Creating Payment Transactions in System
+            // F. Looping through all Invoices for Creating Payment Transactions in System
             for(Invoice__c invoice : invoicesList) {
                 // Looping all PNC Return files per Invoices to apply payments
                 for(Int_PX_NSF__c pxNSFRec : multPxNSFMap.get(invoice.Name)) {
                     // 1. Create charge for PNCNSF Record
                     cllease__Charge__c nsfCharge 			= new cllease__Charge__c();
                     nsfCharge.cllease__Fee_Definition__c 	= nsfFeeDefinition.id;
-                    nsfCharge.cllease__Date__c 				= (pxNSFRec.Date__c != null ? pxNSFRec.Date__c : cllease.SystemDateUtil.getCurrentSystemDate());
+                    nsfCharge.cllease__Date__c 				= invoice.LS_Contract__r.cllease__Next_Due_Date__c;
                     nsfCharge.cllease__Lease_Account__c  	= invoice.LS_Contract__c;
                     nsfCharge.cllease__Original_Amount__c   = pxNSFRec.NSF_Amount__c;
                    // nsfCharge.PX_NSF_Record__c 				= pxNSFRec.Id;
@@ -129,16 +170,16 @@ global with sharing class PNCNSFChargeCreatorJob extends clcommon.DynamicJob {
         
             System.debug(LoggingLevel.ERROR,'NSF Charges Created:'+nsfChargesToInsert);
         
-            // D. DML Operations on New Payments
+            // G. DML Operations on New Payments
             if(nsfChargesToInsert.size() > 0) {
                 insert nsfChargesToInsert;
             }
 
-            // F. Updating PNC Return records for processing "Committed__c = true"
+            // H. Updating PNC Return records for processing "Committed__c = true"
             if(updatepxNSFRecList.size()>0) {
                 update updatepxNSFRecList;
             }
-                 
+            //throw new MyException('Test');
         } catch(Exception e) {
             database.rollback(sp);   
             System.debug(LoggingLevel.ERROR, 'Exception: '+e.getMessage());    

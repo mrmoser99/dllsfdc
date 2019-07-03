@@ -27,6 +27,7 @@
     </profileActionOverrides>
     <tabs>standard-home</tabs>
     <tabs>Invoice__c</tabs>
+    <tabs>PNC_Recon_Batch__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Invoice_Adjustments_UtilityBar</utilityBar>
 </CustomApplication>

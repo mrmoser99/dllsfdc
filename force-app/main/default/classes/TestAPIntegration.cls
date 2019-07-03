@@ -41,6 +41,7 @@ public with sharing class TestAPIntegration {
         disbTxn.cllease__Transaction_Date__c = currentSystemDate;
         disbTxn.cllease__GL_Process_Date__c  = currentSystemDate;
         disbTxn.Fee_Amount_To_Dealer__c 	 = 1000;
+        disbTxn.cllease__Amount__c 	 = 1000;
         disbTxn.cllease__Account__c 		 = dealer.Id;
         disbTxn.cllease__Transaction_Sub_Type__c = txnSubType.Id;
         disbTxn.cllease__Contract__c 		 = contract.Id;
@@ -81,7 +82,8 @@ public with sharing class TestAPIntegration {
 											,Accts_Pay_Code_Combination__c
        									From Int_OLMN_AP__c
        									Order by Funding_Type__c];
-
+		System.debug(LoggingLevel.ERROR, '^^^^ apInterfaceRecs : ' + apInterfaceRecs);
+        
        	List<List<String>> apInterfaceRecsExpected = new List<List<String>>();
 		apInterfaceRecsExpected.add(new List<String>{'1234567', 'STANDARD', 'INV110', '20180315', '1000', 'USD', 'ASSET', 'NEWCO', 'Immediate', '20180315', 'EFT', '20180315', '1', 'ITEM', 'LES-0000001380', '1000.00', '20180324', '00101.02.3030.342020.00.00000.0000', '00101.02.3030.340021.00.00000.0000'});
 		apInterfaceRecsExpected.add(new List<String>{'1234567', 'STANDARD', 'DSB-0000000099', '20180315', '1000', 'USD','PASSTHROUGH', 'NEWCO', 'Immediate', '20180315', 'EFT', '20180315', '1', 'ITEM', 'LES-0000001380', '1000.00', '20180324', '00101.02.3030.153020.00.00000.0000', '00101.02.3030.340025.00.00000.0000'});

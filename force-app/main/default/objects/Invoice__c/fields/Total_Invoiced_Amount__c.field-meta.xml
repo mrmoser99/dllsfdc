@@ -2,9 +2,10 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Total_Invoiced_Amount__c</fullName>
     <externalId>false</externalId>
-    <formula>Billed_Amount__c + Charged_Amount__c</formula>
+    <formula>Billed_Amount__c + Charged_Amount__c - Total_of_Charge_Waived__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-    <label>Total Invoiced Amount</label>
+    <inlineHelpText>Total Bill Lines + Total Charge Lines Including Taxes - Total of Charge Waived Including Taxes</inlineHelpText>
+    <label>=Total Invoiced Amount</label>
     <precision>18</precision>
     <required>false</required>
     <scale>2</scale>

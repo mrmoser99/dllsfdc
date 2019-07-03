@@ -13,6 +13,7 @@ public class InvoiceSummaryUtil {
                                             Paid_Invoice_Amount__c, 
                                             Billed_Amount__c, 
                                             Charged_Amount__c, 
+                                         	Total_of_Charge_Waived__c,
                                             (SELECT Id, Name,
                                                 cllease__Rental_Due_Amount__c, 
                                                 cllease__Tax_Due_Amount__c, 
@@ -23,19 +24,24 @@ public class InvoiceSummaryUtil {
                                             (SELECT Id, Name,  
                                                 cllease__Original_Amount__c, 
                                                 cllease__Paid_Amount__c, 
-                                                Invoiced_In__c
+                                                Invoiced_In__c,
+                                             	cllease__Waive__c,
+                                             	Total_Original_Amount__c 
                                             FROM Invoice_Charges__r)
                                         FROM Invoice__c
                                         WHERE Id in: invIds];
 
-            Decimal totalchargeAmount, totalBillPaidAmount; 
+            Decimal totalchargeAmount, totalBillPaidAmount, totalChargeWaivedAmount; 
             // Looping through Invoices for updates
             for(Invoice__c invoice: invoices) {
                 totalchargeAmount =0;
                 totalBillPaidAmount =0;
+                totalChargeWaivedAmount =0;
                 // a. Looping through charges
                 for(cllease__Charge__c charge: invoice.Invoice_Charges__r) {
                     totalchargeAmount += (charge.cllease__Paid_Amount__c != null ? charge.cllease__Paid_Amount__c : 0);
+                    if(charge.cllease__Waive__c)
+                        totalChargeWaivedAmount += charge.Total_Original_Amount__c != null ? charge.Total_Original_Amount__c : 0;
                 }
 
                 // b. Looping through Bills
@@ -45,6 +51,8 @@ public class InvoiceSummaryUtil {
 
                 // Update Invoice Paid Amounts
                 invoice.Paid_Invoice_Amount__c = totalBillPaidAmount + totalchargeAmount ;
+                // Updating total charge waived amount
+                invoice.Total_of_Charge_Waived__c = totalChargeWaivedAmount;
                 // Avoiding resending Invoices to PNC again for remaining amounts. TIcket: 13061
                 //invoice.File_Generated__c = 'No'; 
             }

@@ -13,7 +13,7 @@
             {label: 'Account', fieldName: 'customerName', type: 'text', initialWidth: 220},
             {label: 'Lease', fieldName: 'contractNumber', type: 'text'},
             {label: 'Postal Code', fieldName: 'customerZipCode', type: 'text'},
-            {label: 'Start', fieldName: 'contractStartDate', type: 'text'},
+            {label: 'Start', fieldName: 'contractStartDate', type: 'date-local', typeAttributes: {month: "2-digit",day: "2-digit"}},
             {label: 'Term', fieldName: 'contractTerm', type: 'text'},
             {label: 'Remaining Payments', fieldName: 'numberOfRemainingPayments', type: 'text'},
             {label: 'Equipment', fieldName: 'equipmentDescription', type: 'text',  initialWidth: 225},
@@ -266,12 +266,12 @@
             case 'leaseDetails':
 
                 console.log(JSON.stringify(row));
-                var action = component.get("c.getLeaseDetails");
+                var action = component.get("c.getLeaseDetailsLeaseFirst");
                 
                 action.setParams({
                   "leaseInfo": JSON.stringify(row)
                 });
-                
+                console.log('hello');
                 action.setCallback(this, function(response) {
                     var state = response.getState();
                     if (state === "SUCCESS") {

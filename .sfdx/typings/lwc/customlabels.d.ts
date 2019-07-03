@@ -138,6 +138,10 @@ declare module "@salesforce/label/c.OrgUrl" {
     var OrgUrl: string;
     export default OrgUrl;
 }
+declare module "@salesforce/label/c.PM_Endpoint" {
+    var PM_Endpoint: string;
+    export default PM_Endpoint;
+}
 declare module "@salesforce/label/c.Welcome_Email" {
     var Welcome_Email: string;
     export default Welcome_Email;

@@ -3,7 +3,7 @@
     <fullName>Previous_Balance_Due__c</fullName>
     <description>This field using for values to update in Invoice conga document.</description>
     <externalId>false</externalId>
-    <label>Previous Balance Due</label>
+    <label>+Previous Balance Due</label>
     <precision>18</precision>
     <required>false</required>
     <scale>2</scale>

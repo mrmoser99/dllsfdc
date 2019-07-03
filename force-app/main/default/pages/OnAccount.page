@@ -1,0 +1,67 @@
+<apex:page standardController="cllease__Invoice_Credit__c" extensions="InvoiceCreditViewCtrl" tabStyle="cllease__Lease_Account__c"
+    sidebar="{!IF($CurrentPage.Parameters.modal == 'true', false, true)}">
+<apex:include pageName="clcommon__mintTheme"/>
+    <apex:form id="invoiceCreditForm">
+        <apex:sectionHeader title="Edit/View an Invoice Credit"/>
+        <apex:pageblock mode="edit" id="topBlock">
+            <apex:inlineEditSupport />
+            <apex:pageBlockButtons location="both" >
+                <cllease:BusyButton name="Save" busyName="Saving" actionTo="{!save}"
+                    oncomplete="closeIframe();"
+                    id="saveButton" style="margin-left:120px;" />
+                <apex:commandButton value="Cancel" action="{!cancel}" onclick="closeIframe()"
+                  id="cancelButton"/>
+            </apex:pageBlockButtons>
+            <apex:pageMessages escape="false"/>
+            <apex:pageBlockSection columns="2" title="Information">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Lease Contract</apex:outputLabel>
+                    <apex:outputpanel >
+                        <apex:outputfield value="{!cllease__Invoice_Credit__c.cllease__Contract__c}" >
+                            <apex:inlineEditSupport disabled="true"/>
+                        </apex:outputField>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Account</apex:outputLabel>
+                    <apex:outputpanel >
+                        <apex:outputField value="{!cllease__Invoice_Credit__c.cllease__Account__c}" >
+                        <apex:inlineEditSupport disabled="true"/>
+                        </apex:outputField>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2" title="Amounts and Balances" id="balanceSection" >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Original Credit Amount </apex:outputLabel>
+                    <apex:outputField value="{!cllease__Invoice_Credit__c.cllease__Original_Credit_Amount__c}">
+                        <apex:inlineEditSupport disabled="true"/>
+                    </apex:outputField>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Credit Balance </apex:outputLabel>
+                    <apex:outputField value="{!cllease__Invoice_Credit__c.cllease__Credit_Balance__c}">
+                        <apex:inlineEditSupport disabled="true"/>
+                    </apex:outputField>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Payment ID</apex:outputLabel>
+                    <apex:outputField value="{!cllease__Invoice_Credit__c.Payment_Transaction__c }">
+                        <apex:inlineEditSupport disabled="true"/>
+                    </apex:outputField>
+                </apex:pageBlockSectionItem> 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Status</apex:outputLabel>
+                    <apex:outputField value="{!cllease__Invoice_Credit__c.cllease__Status__c }">
+                        <apex:inlineEditSupport disabled="true"/>
+                    </apex:outputField>
+                </apex:pageBlockSectionItem> 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Comments </apex:outputLabel>
+                    <apex:inputField value="{!cllease__Invoice_Credit__c.cllease__Comments__c}"/>
+                </apex:pageBlockSectionItem>              
+            </apex:pageBlockSection>
+        </apex:pageblock>
+    </apex:form>
+    <apex:relatedList list="GL_Accounting_Entries__r"/>
+</apex:page>

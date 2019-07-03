@@ -13,6 +13,10 @@
     <tabs>standard-Account</tabs>
     <tabs>cllease__Lease_Account__c</tabs>
     <tabs>Invoice__c</tabs>
+    <tabs>Lease_OLM_Quote__c</tabs>
+    <tabs>cllease__GL_Transaction_Detail__c</tabs>
+    <tabs>cllease__Lease_Payment_Detail__c</tabs>
+    <tabs>clcommon__Bank_Account__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>CL_Lease_UtilityBar</utilityBar>
 </CustomApplication>

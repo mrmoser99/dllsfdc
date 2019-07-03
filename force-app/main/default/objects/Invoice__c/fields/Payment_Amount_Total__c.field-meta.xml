@@ -3,8 +3,8 @@
     <fullName>Payment_Amount_Total__c</fullName>
     <description>This field using for values to update in Invoice conga document.</description>
     <externalId>false</externalId>
-    <inlineHelpText>Payment Amount Total (= Payment Amount + Payment Sales Tax) that Customer has to Pay. Field Created for Conga Document Mapping.</inlineHelpText>
-    <label>Payment Amount Total</label>
+    <inlineHelpText>Rent + Tax Billed</inlineHelpText>
+    <label>Rent Amount Total Billed</label>
     <precision>18</precision>
     <required>false</required>
     <scale>2</scale>

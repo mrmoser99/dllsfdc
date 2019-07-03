@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Experian</fullName>
+        <description>Experian</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Internal_Notifications</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>cnotify__Notification_Templates/Address_Error</template>
+    </alerts>
     <fieldUpdates>
         <fullName>Update_Account_Email_Address</fullName>
         <field>Email_Address__c</field>
@@ -19,6 +31,20 @@
         <operation>Formula</operation>
         <protected>false</protected>
     </fieldUpdates>
+    <rules>
+        <fullName>Experian Error</fullName>
+        <actions>
+            <name>Experian</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Address__c.Address_Validation__c</field>
+            <operation>notEqual</operation>
+            <value>Verified by Experian</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
     <rules>
         <fullName>Update Address from Account</fullName>
         <actions>

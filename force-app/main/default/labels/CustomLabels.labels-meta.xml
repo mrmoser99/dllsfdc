@@ -265,6 +265,13 @@
         <value>https://cs41.salesforce.com</value>
     </labels>
     <labels>
+        <fullName>PM_Endpoint</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>PM Endpoint</shortDescription>
+        <value>https://apiacc.dllgroup.com</value>
+    </labels>
+    <labels>
         <fullName>Welcome_Email</fullName>
         <language>en_US</language>
         <protected>false</protected>

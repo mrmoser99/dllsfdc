@@ -11,6 +11,8 @@ global with sharing class GLSubledgerEntriesBatch extends clcommon.DynamicJob {
     private static String query;
     private static final String JOB_NAME = 'GL SubLedger Records Generator Job';
     private static Datetime txnDate;
+    
+    public class MyException extends Exception{}
 
     global GLSubledgerEntriesBatch() {
         super(JOB_NAME, initialize(null));
@@ -54,6 +56,7 @@ global with sharing class GLSubledgerEntriesBatch extends clcommon.DynamicJob {
                 '   Movement_Code_CR_Segment__c,                  '+
                 '   Movement_Code_DR_Segment__c,                  '+
                 '   Journal_Entry_Number__c,                      '+
+                '   cllease__Transaction_type1__c,                '+
                 '   cllease__Charge__c,                           '+
                 '   cllease__Charge__r.cllease__Fee_Definition__c,         '+
                 '   cllease__Charge__r.cllease__Fee_Definition__r.Name,    '+
@@ -225,6 +228,12 @@ global with sharing class GLSubledgerEntriesBatch extends clcommon.DynamicJob {
         // Updating Transaction Sub Type which is Accounting Template Line's Transaction Sub Type
         if(glEntry.cllease__Transaction_Type__c != null) {
             olmnAccEntry.Transaction_Sub_Type__c = txnSubTypeMap.get(glEntry.cllease__Transaction_Type__c);
+        }
+        
+        // Handling transaction subtype for Olm incase of charge waive entries
+        if(glEntry.cllease__Transaction_type1__c == DLLNewCoConstants.TXN_CHARGE && 
+            glEntry.Transaction_Sub_Type__c.contains('Waive')){
+            olmnAccEntry.Transaction_Sub_Type__c = glEntry.Transaction_Sub_Type__c;
         }
 
         // New Addition hardcoding the Transaction subtype as customr requested

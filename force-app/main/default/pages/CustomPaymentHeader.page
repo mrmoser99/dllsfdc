@@ -1,0 +1,20 @@
+<apex:page standardController="cllease__Lease_Payment_Transaction__c">
+    <apex:include pageName="clcommon__mintTheme"/>
+    <cllease:HighlightsPanelMintTheme labels="Transaction Amount, Receviable, Fees, Tax, OnAccount"
+                        value1="{!cllease__Lease_Payment_Transaction__c.cllease__Transaction_Amount__c}"
+                        value2="{!cllease__Lease_Payment_Transaction__c.cllease__Rent_Amount__c}"
+                        value3="{!cllease__Lease_Payment_Transaction__c.cllease__Fees__c}"
+                        value4="{!cllease__Lease_Payment_Transaction__c.cllease__Tax_Amount__c}"
+                        value5="{!cllease__Lease_Payment_Transaction__c.Invoice_Credit_Amount__c}"
+                        highlight="true"
+                        rendered="{!$Setup.clcommon__CL_Platform_Settings__c.clcommon__Theme_Name__c == 'Mint'}" />
+
+    <cllease:HighlightsPanel labels="Transaction Amount, Receviable, Fees, Tax, OnAccount"
+                        value1="{!cllease__Lease_Payment_Transaction__c.cllease__Transaction_Amount__c}"
+                        value2="{!cllease__Lease_Payment_Transaction__c.cllease__Rent_Amount__c}"
+                        value3="{!cllease__Lease_Payment_Transaction__c.cllease__Fees__c}"
+                        value4="{!cllease__Lease_Payment_Transaction__c.cllease__Tax_Amount__c}"
+                        value5="{!cllease__Lease_Payment_Transaction__c.Invoice_Credit_Amount__c}"
+                        highlight="true"
+                       rendered="{!NOT($Setup.clcommon__CL_Platform_Settings__c.clcommon__Theme_Name__c == 'Mint')}"/>
+</apex:page>

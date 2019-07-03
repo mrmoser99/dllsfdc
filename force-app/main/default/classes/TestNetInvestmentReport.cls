@@ -93,6 +93,7 @@ public with sharing class TestNetInvestmentReport {
                                                             BOOKED_RESIDUAL__C ,
                                                             CAP_BROKER_FEE_AMOUNT__C,
                                                             CAP_OTHER_FEE_AMOUNT__C,
+                                                            CAP_ROLLOVER_FEE_AMOUNT__c,
                                                             CONTRACT_END_DATE__C,
                                                             CONTRACT_NUMBER__C,
                                                             CONTRACT_START_DATE__C,

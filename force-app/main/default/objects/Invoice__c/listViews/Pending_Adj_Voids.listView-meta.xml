@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Pending_Adj_Voids</fullName>
+    <booleanFilter>1 OR 2</booleanFilter>
+    <columns>NAME</columns>
+    <columns>LS_Contract__c</columns>
+    <columns>Invoice_Due_Date__c</columns>
+    <columns>Billed_Amount__c</columns>
+    <columns>Payment_Sales_Tax__c</columns>
+    <columns>Charged_Amount__c</columns>
+    <columns>Balance_Due_Amount__c</columns>
+    <columns>Paid_Invoice_Amount__c</columns>
+    <columns>CREATED_DATE</columns>
+    <columns>File_Generated__c</columns>
+    <columns>Adjustment_Status__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Adjustment_Status__c</field>
+        <operation>equals</operation>
+        <value>Approved</value>
+    </filters>
+    <filters>
+        <field>Void_In_PNC__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Pending Adj/Voids</label>
+</ListView>

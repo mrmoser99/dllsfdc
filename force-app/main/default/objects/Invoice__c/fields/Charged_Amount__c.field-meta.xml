@@ -2,11 +2,12 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Charged_Amount__c</fullName>
     <externalId>false</externalId>
-    <label>Charged Amount</label>
+    <inlineHelpText>Total of Charge Lines Including Taxes</inlineHelpText>
+    <label>+Total of Charge Lines</label>
     <precision>18</precision>
     <required>false</required>
     <scale>2</scale>
-    <trackHistory>true</trackHistory>
+    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Currency</type>
 </CustomField>

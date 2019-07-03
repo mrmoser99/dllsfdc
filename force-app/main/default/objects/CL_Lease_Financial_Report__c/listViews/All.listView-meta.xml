@@ -3,17 +3,11 @@
     <fullName>All</fullName>
     <columns>Record_Count__c</columns>
     <columns>NAME</columns>
-    <columns>Original_Unearned_Lease_Income__c</columns>
-    <columns>Original_Unearned_Residual_Income__c</columns>
-    <columns>Ending_Unearned_Lease_Income__c</columns>
-    <columns>Ending_Unearned_Residual_Income__c</columns>
-    <columns>Beginning_Unearned_Lease_Income__c</columns>
-    <columns>Beginning_Unearned_Residual_Income__c</columns>
-    <columns>Paid_Through_Date__c</columns>
-    <columns>Lessee_Billing_Address_rich__c</columns>
-    <columns>Lessee_Billing_Address__c</columns>
-    <columns>Security_Deposit__c</columns>
+    <columns>Contract_Status__c</columns>
+    <columns>Gross_Rent__c</columns>
+    <columns>Unbilled_Rent_Streams__c</columns>
+    <columns>Billed_Rent_Streams__c</columns>
+    <columns>Billed_Rent_Transactions__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
-    <language>en_US</language>
 </ListView>

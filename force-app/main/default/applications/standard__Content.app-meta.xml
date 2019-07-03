@@ -9,4 +9,5 @@
     <tabs>standard-ContentSubscriptions</tabs>
     <tabs>CL_Lease_Financial_Report__c</tabs>
     <tabs>Lease_Financial_Report_Mapping__c</tabs>
+    <tabs>clcommon__Bank_Account__c</tabs>
 </CustomApplication>

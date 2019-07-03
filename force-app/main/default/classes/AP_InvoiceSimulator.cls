@@ -91,7 +91,7 @@ global with sharing class AP_InvoiceSimulator {
         cList = [select Id
                 ,name
                 ,cllease__Original_Amount__c
-                ,cllease__original_tax_amount__c
+                ,original_tax_amount__c
                 ,cllease__Fee_Definition__r.name
                 ,cllease__Contract_Equipment__r.Equipment_Description1__c
                 from cllease__Charge__c
@@ -138,20 +138,36 @@ global with sharing class AP_InvoiceSimulator {
           results.add(r);
 
         for (cllease__charge__c c:cList){
-            if ( c.cllease__original_tax_amount__c == null)
-                 c.cllease__original_tax_amount__c = 0;
+            
                  
             r = new resultLine();
             r.equipmentName  = c.cllease__Contract_Equipment__r.Equipment_Description1__c;
             r.recordName = c.name;
             r.fee =  c.cllease__Fee_Definition__r.name;
             feeTotal = feeTotal + c.cllease__Original_Amount__c;
-            taxtotal = taxTotal  + c.cllease__original_tax_amount__c;
-            totalTotal = totalTotal + c.cllease__Original_Amount__c +  c.cllease__original_tax_amount__c;
+            if (c.original_tax_amount__c == null)
+                continue;
+            else
+                taxtotal = taxTotal  + c.original_tax_amount__c;
+
+            if (c.original_tax_amount__c == null)    
+                totalTotal = totalTotal + c.cllease__Original_Amount__c;
+            else
+                 totalTotal = totalTotal + c.cllease__Original_Amount__c +  c.original_tax_amount__c;
+                 
             r.className = 'rightJustify';
             r.feeAmount =  string.valueOf(c.cllease__Original_Amount__c);
-            r.taxAmount = string.valueOf(c.cllease__original_tax_amount__c);
-            Decimal total = c.cllease__Original_Amount__c + c.cllease__original_tax_amount__c;
+            if (c.original_tax_amount__c == null)
+                r.taxAmount = '0.00';
+            else
+                r.taxAmount = string.valueOf(c.original_tax_amount__c);
+            
+            Decimal total;
+            if (c.original_tax_amount__c == null)
+                total = c.cllease__Original_Amount__c;
+            else
+                total = c.cllease__Original_Amount__c + c.original_tax_amount__c;
+
             r.totalAmount = string.valueOf(total);
             results.add(r);
         }
@@ -263,7 +279,7 @@ global with sharing class AP_InvoiceSimulator {
          cList = [select Id
                 ,name
                 ,cllease__Original_Amount__c
-                ,cllease__original_tax_amount__c
+                ,original_tax_amount__c
                 ,cllease__Fee_Definition__r.name
                 ,cllease__Contract_Equipment__r.Equipment_Description1__c
                 from cllease__Charge__c
@@ -359,7 +375,7 @@ global with sharing class AP_InvoiceSimulator {
             system.debug('map is: ' + adjMap.get(c.id));
             List<Adjustment__c> adjList = adjMap.get(c.id);  //list of adjustments to this bill
             Decimal amount = c.cllease__Original_Amount__c;
-            Decimal tax = c.cllease__original_tax_amount__c;
+            Decimal tax = c.original_tax_amount__c;
             if (tax == null)
                 tax = 0;
             Decimal total = amount + tax;

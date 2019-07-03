@@ -53,6 +53,17 @@ public without sharing class PM_Controller {
    	* 
    	********************************************************************************************/
     @AuraEnabled
+    public static String getLeaseDetailsLeaseFirst(String leaseInfo){   
+        
+        
+        return PMCalloutUtility.getLeaseDetailsLeaseFirst(leaseInfo);
+    } 
+
+    /********************************************************************************************
+   	* Lease details for a single lease
+   	* 
+   	********************************************************************************************/
+    @AuraEnabled
     public static String getLeaseDetails(String leaseInfo){   
         
         

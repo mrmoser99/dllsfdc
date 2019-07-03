@@ -26,6 +26,11 @@
                 <default>false</default>
                 <label>Approved</label>
             </value>
+            <value>
+                <fullName>Posted to PNC</fullName>
+                <default>false</default>
+                <label>Posted to PNC</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

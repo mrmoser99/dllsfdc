@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All12</fullName>
+    <columns>NAME</columns>
+    <columns>AMOUNT__c</columns>
+    <columns>Committed__c</columns>
+    <columns>JOURNAL_ENTRY_NUMBER__c</columns>
+    <columns>JOURNAL_ENTRY_LINE_NUMBER__c</columns>
+    <columns>Movement_Code__c</columns>
+    <columns>SIGN__c</columns>
+    <columns>ACCOUNT__c</columns>
+    <columns>TRANSACTION_DESCRIPTION__c</columns>
+    <columns>JOURNAL_DATE__c</columns>
+    <columns>JOURNAL_REFERENCE__c</columns>
+    <columns>JOURNAL_DESCRIPTION__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>JOURNAL_DATE__c</field>
+        <operation>equals</operation>
+        <value>20191231</value>
+    </filters>
+    <label>20191231</label>
+</ListView>
