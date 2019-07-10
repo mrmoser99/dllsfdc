@@ -7,7 +7,7 @@
 * 2/15/18 - MRM Created
 *
 **********************************************************************************************/
-global with sharing class NewCoUtility { 
+global without sharing class NewCoUtility { 
 	
 	public static Boolean skipApplicationTrigger = false;
     
@@ -466,4 +466,43 @@ global with sharing class NewCoUtility {
     	} 
     	
     }
+
+	/*@future
+	public static void updateContact(Map<String,String> contactTokenMap){
+
+		Contact c = [select id from contact where id in :contactTokenMap.keyset()];
+
+		c.pm_oauth_token__c = contactTokenMap.get(c.id);
+        c.pm_oauth_token_expiration_date__c = date.today().adddays(6);
+
+        update c;
+
+	}
+	*/
+	
+	@future
+	public static void updateOauthToken(Map<String,String> tokenMap){
+
+		List<PM_Oauth_Token__c> oaList = new List<PM_Oauth_Token__c>();
+        oaList = [  select  pm_oauth_token__c
+                        ,pm_oauth_token_expiration_date__c
+                    from PM_Oauth_Token__c
+                    where user__c in :tokenMap.keySet() 
+                    ]; 
+
+		if (oaList.size() == 0){
+			PM_Oauth_Token__c o = new PM_Oauth_Token__c();
+			o.pm_oauth_token__c = tokenMap.get(userInfo.getUserId());
+        	o.pm_oauth_token_expiration_date__c = date.today().adddays(6);
+			o.user__c = userInfo.getUserId();
+			insert o;
+		}
+		else{
+			PM_Oauth_Token__c o = oaList[0];
+			o.pm_oauth_token__c = tokenMap.get(userInfo.getUserId());
+        	o.pm_oauth_token_expiration_date__c = date.today().adddays(6);
+			update o;
+		}
+		
+	}
 }

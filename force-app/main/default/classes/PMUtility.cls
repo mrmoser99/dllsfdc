@@ -383,13 +383,30 @@ public without sharing class PMUtility {
 
         /* default for testing; this is south west office */
 
-        String client = 'b5dfbf6f-06a7-46c0-aa70-3b3eea4f4052';
-    	String secret = 'd1ae6328-159e-43af-9bec-fe213cf9bda0';
+        String client; // = 'b5dfbf6f-06a7-46c0-aa70-3b3eea4f4052';
+    	String secret; //= 'd1ae6328-159e-43af-9bec-fe213cf9bda0';
+        Contact c;
 
+        List<PM_Oauth_Token__c> oaList = new List<PM_Oauth_Token__c>();
+        oaList = [  select  pm_oauth_token__c
+                        ,pm_oauth_token_expiration_date__c
+                    from PM_Oauth_Token__c
+                    where user__c = :u.id
+                    ];
+        
+        Boolean tokenRequired = false;
+        if (oaList.size() == 0)
+            tokenRequired = true;
+        else{
+            if (date.today() > oaList[0].pm_oauth_token_expiration_date__c || oaList[0].pm_oauth_token_expiration_date__c == null){
+                tokenRequired = true;
+            }
+        }
+  
         if (u.contactId != null){
-            Contact c = [select  id
-                                ,account.client__c
-                                ,account.secret__c
+            c = [select   id
+                         ,account.client__c
+                         ,account.secret__c
                          from Contact 
                          where id = :u.contactId];
 
@@ -402,39 +419,61 @@ public without sharing class PMUtility {
             }
         }
 
+        if (tokenRequired){
         
-    	HttpRequest req_token = new HttpRequest();        
+    	    HttpRequest req_token = new HttpRequest();        
 		
-		String tokenEndpoint = System.Label.ICV_tokenendpoint;  
-		req_token.setEndpoint(tokenEndpoint);
-        req_token.setMethod('POST');        
-        req_token.setHeader('content-type', 'application/x-www-form-urlencoded');
-        req_token.setHeader('cache-control', 'no-cache');        
-        req_token.setBody('client_id='+client+'&client_secret='+secret+'&grant_type=client_credentials');
+		    String tokenEndpoint = System.Label.ICV_tokenendpoint;  
+		    req_token.setEndpoint(tokenEndpoint);
+            req_token.setMethod('POST');   
+            req_token.setTimeout(120000);     
+            req_token.setHeader('content-type', 'application/x-www-form-urlencoded');
+            req_token.setHeader('cache-control', 'no-cache');        
+            req_token.setBody('client_id='+client+'&client_secret='+secret+'&grant_type=client_credentials');
       
-        Http http = new Http(); 
+            Http http = new Http(); 
 
-        if (Test.isRunningTest())
-    		return string.valueOf(system.now());
+            if (Test.isRunningTest())
+    		    return string.valueOf(system.now());
     		
-        HTTPResponse res = http.send(req_token);
+            HTTPResponse res = http.send(req_token);
         
-        if (res.getStatusCode()  == 200){
-            JSONParser parser = JSON.createParser(res.getBody());
+            if (res.getStatusCode()  == 200){
+                JSONParser parser = JSON.createParser(res.getBody());
             
-            while (parser.nextToken() != null) {
-        	    if (parser.getCurrentName() == 'access_token') {
-            	    access_token = parser.getText();
+                while (parser.nextToken() != null) {
+        	     if (parser.getCurrentName() == 'access_token') {
+            	        access_token = parser.getText();
+                    }
                 }
             }
+            else{
+                return string.valueOf(res.getStatusCode());
+            }
+
+            /*
+            if (u.contactId != null){
+                Map<String,String> contactMap = new Map<String,String>();
+                contactMap.put(c.id,access_token);
+                NewCoUtility.updateContact(contactMap);
+            }
+            */
+
+            Map<String,String> tokenMap = new Map<String,String>();
+            tokenMap.put(u.id,access_token);
+            NewCoUtility.updateOauthToken(tokenMap);
+           
         }
-        else{
-            return string.valueOf(res.getStatusCode());
+        else {
+            access_token = oaList[0].pm_oauth_token__c;
+            //else
+            //    access_token =  c.pm_oauth_token__c;
         }
-	
 
 		
        	return access_token;
          
     }
+
+    
 }

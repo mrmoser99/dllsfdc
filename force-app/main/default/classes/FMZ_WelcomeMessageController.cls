@@ -7,6 +7,8 @@ public without sharing class FMZ_WelcomeMessageController {
     public static MessageSetting getWelcomeMessage(){
         FMZ_Welcome_Message__c setting = FMZ_Welcome_Message__c.getOrgDefaults();
 
+        PMUtility.getAccessToken();
+        
         return new MessageSetting(
                 setting.Text_Color_Hex_Code__c,
                 setting.Background_Color_Hex_Code__c,

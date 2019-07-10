@@ -125,21 +125,8 @@ public with sharing class PMCalloutUtility {
                             }
                         }
                         String periodocity = d.contractPeriodicity;
-
-                        if (periodocity == '1')
-                            d.contractPeriodicity = 'Monthly';
-                        else
-                        if (periodocity == '2')
-                            d.contractPeriodicity = 'Bi-Monthly';
-                        else 
-                        if (periodocity == '3')
-                            d.contractPeriodicity = 'Quarterly';
-                        else
-                        if (periodocity == '6')
-                            d.contractPeriodicity = 'Semi-Annually';
-                        else
-                        if (periodocity == '12')
-                            d.contractPeriodicity = 'Annually';
+                        d.contractPeriodicity = getContractPeriodicity(periodocity);
+                        
                     }
                     l.results__c = 'Success!';
                     myResponse.responseCode = string.valueOf(response.getStatusCode());
@@ -180,13 +167,40 @@ public with sharing class PMCalloutUtility {
                 l.seconds__c = milliseconds / 1000;
 
                 if (disableLogging == false) 
-                insert l;
+                    insert l;
             }
         }        
        
         return myResponse;
     }
+    
+    
+    /************************************************************************************************************************************************************
+    *  set the periodicy 
+    *************************************************************************************************************************************************************/
 
+    public static String  getContractPeriodicity(String p){
+
+        String response = '';
+
+        if (p == '1')
+            response = 'Monthly';
+        else
+        if (p == '2')
+            response = 'Bi-Monthly';
+        else 
+        if (p == '3')
+            response = 'Quarterly';
+        else
+        if (p == '6')
+            response = 'Semi-Annually';
+        else
+        if (p == '12')
+           response = 'Annually';
+
+        return response;
+
+    }
     /************************************************************************************************************************************************************
     *   generateQuotes - message format
     *************************************************************************************************************************************************************/
@@ -409,6 +423,9 @@ public with sharing class PMCalloutUtility {
     *************************************************************************************************************************************************************/
     public static PMUtility.TerminationQuoteResponse generateQuoteByType(String leaseNumber,String type){
         
+
+       
+         
         PMUtility.TerminationQuoteResponse qResponse = new PMUtility.TerminationQuoteResponse(); 
         
         List<Lease_OLM_Quote__c> newQuotes = new List<Lease_OLM_Quote__c>();
@@ -484,7 +501,7 @@ public with sharing class PMCalloutUtility {
             }
             else{  
                 l.results__c = response.getStatusCode() + '-' + response.getBody();
-                
+                qResponse.responseCode = string.valueOf(response.getStatusCode());
                 return qResponse;
             }
         }
@@ -499,10 +516,14 @@ public with sharing class PMCalloutUtility {
             dt2Long = DateTime.now().getTime();
             milliseconds = dt2Long - dt1Long;
             l.seconds__c = milliseconds / 1000;
-             
+
+            if (!Test.isRunningTest())
+                if (response.getStatusCode() == 400) 
+                    l.results__c = 'Success!';
+
             iList.add(l);
             if (response != null)
-                if (response.getStatusCode() <> 200){
+                if (response.getStatusCode() <> 200 ){
                     insert iList;
                 }
         }
@@ -512,6 +533,7 @@ public with sharing class PMCalloutUtility {
         lList = [select id from  Lease_OLM_Quote__c  where contract_number__c = :leaseNumber];
         
         Lease_OLM_Quote__c lq = PMCalloutUtility.popluateLeaseQuote(qResponse);
+       
         
         newQuotes.add(lq);
 
@@ -522,6 +544,10 @@ public with sharing class PMCalloutUtility {
         return qResponse;
     }
 
+
+    /************************************************************************************************************************************************************
+    *   populate the lease quote info
+    *************************************************************************************************************************************************************/
 
     public static Lease_OLM_Quote__c popluateLeaseQuote(PMUtility.TerminationQuoteResponse qResponse){
         
@@ -719,22 +745,10 @@ public with sharing class PMCalloutUtility {
 
                 PMUtility.contractSummary contractSummary = (PMUtility.contractSummary) System.JSON.deserialize(response2.getBody(),PMUtility.ContractSummary.class);
      
-                currentData.Contract_Status = contractSummary.contractStatus;
-                currentData.Contract_Application_Number = contractSummary.creditApplicationNumber;
-                currentData.Product = contractSummary.financialProduct;
-                currentData.Financialproduct = contractSummary.financialProduct;
-                currentData.PurchaseOption = contractSummary.purchaseOption;
-                currentData.Statetax = contractSummary.stateTax;
-                currentData.CityTax = contractSummary.cityTax;
-                currentData.DistrictTax = contractSummary.districtTax;
-                currentData.Totalassetpayment = contractSummary.contractRent;
-                currentData.PaymentFrequency = contractSummary.paymentFrequency;
-                currentData.Dayspastdue = contractSummary.dayspastDue;
-                currentData.PaymentReceivedDate = contractSummary.paymentAppliedDate;
-                currentData.PaymentAmountReceived = contractSummary.lastPaymentAmount;
-                currentData.PaymentNumber = contractSummary.lastPaymentNumber;
-                currentData.contractService = contractSummary.contractService;
-                currentData.Citytax = contractSummary.cityTax;
+                
+
+                currentData  = addContractSummary(currentData,contractSummary);
+               
 
                  l.results__c = 'Success!';
                  currentData.responseCode = string.valueOf(response2.getStatusCode());
@@ -769,4 +783,33 @@ public with sharing class PMCalloutUtility {
         return JSON.serialize(currentData); 
 
     }
+
+    
+    /************************************************************************************************************************************************************
+    *   add contract summary to the current data
+    *************************************************************************************************************************************************************/
+
+
+    public static PMUtility.Data addContractSummary(PMUtility.Data currentData, PMUtility.ContractSummary contractSummary){
+         
+        currentData.Contract_Status = contractSummary.contractStatus;
+        currentData.Contract_Application_Number = contractSummary.creditApplicationNumber;
+        currentData.Product = contractSummary.financialProduct;
+        currentData.Financialproduct = contractSummary.financialProduct;
+        currentData.PurchaseOption = contractSummary.purchaseOption;
+        currentData.Statetax = contractSummary.stateTax;
+        currentData.CityTax = contractSummary.cityTax;
+        currentData.DistrictTax = contractSummary.districtTax;
+        currentData.Totalassetpayment = contractSummary.contractRent;
+        currentData.PaymentFrequency = contractSummary.paymentFrequency;
+        currentData.Dayspastdue = contractSummary.dayspastDue;
+        currentData.PaymentReceivedDate = contractSummary.paymentAppliedDate;
+        currentData.PaymentAmountReceived = contractSummary.lastPaymentAmount;
+        currentData.PaymentNumber = contractSummary.lastPaymentNumber;
+        currentData.contractService = contractSummary.contractService;
+        currentData.Citytax = contractSummary.cityTax;
+
+        return currentData;
+    }
+
 }

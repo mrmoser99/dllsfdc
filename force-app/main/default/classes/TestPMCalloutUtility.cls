@@ -69,6 +69,21 @@ public class TestPMCalloutUtility {
        qResponse.quotes.add(q);
        Lease_OLM_Quote__c l = PMCalloutUtility.popluateLeaseQuote(qResponse);
     }
-	  
+	
+   public static testMethod void test5() {
+
+      PMCalloutUtility.getContractPeriodicity('1');
+      PMCalloutUtility.getContractPeriodicity('2');
+      PMCalloutUtility.getContractPeriodicity('3');
+      PMCalloutUtility.getContractPeriodicity('6');
+      PMCalloutUtility.getContractPeriodicity('12');
+
+      PMUtility.Data currentData = new PMUtility.Data();
+      PMUtility.ContractSummary contractSummary = new PMUtility.ContractSummary();
+      currentData = PMCalloutUtility.addContractSummary(currentData, contractSummary);
+         
+
+   }
+
 	
 }
