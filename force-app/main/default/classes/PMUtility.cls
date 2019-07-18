@@ -394,6 +394,7 @@ public without sharing class PMUtility {
                     where user__c = :u.id
                     ];
         
+        system.debug(date.today() + '-' + oaList[0].pm_oauth_token_expiration_date__c);
         Boolean tokenRequired = false;
         if (oaList.size() == 0)
             tokenRequired = true;
@@ -409,7 +410,8 @@ public without sharing class PMUtility {
                          ,account.secret__c
                          from Contact 
                          where id = :u.contactId];
-
+            system.debug('client:' + c.account.client__c);
+             system.debug('client:' + c.account.secret__c);
             if (c.account.client__c == null || c.account.secret__c == null){
                 Integer i=0;  //use default
             }

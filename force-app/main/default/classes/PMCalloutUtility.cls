@@ -7,7 +7,7 @@
 *   5/31/19 - completed upgrade to use callouts
 *   6/7/19 - removed the delete of old quotes
 *   6/28/19 - added a new service call that does search and get lease details to correct asset error on tearsheet
-* 
+*   7/11/19 - mrm added customer name to lease olm quote
 ********************************************************************************************************************/
 public with sharing class PMCalloutUtility {
 
@@ -421,7 +421,7 @@ public with sharing class PMCalloutUtility {
         type   'TRADEUP_WITHOUT_PURCHASE'
                'TRADEUP_WITH_PURCHASE'
     *************************************************************************************************************************************************************/
-    public static PMUtility.TerminationQuoteResponse generateQuoteByType(String leaseNumber,String type){
+    public static PMUtility.TerminationQuoteResponse generateQuoteByType(String leaseNumber,String type, String customerName){
         
 
        
@@ -529,15 +529,16 @@ public with sharing class PMCalloutUtility {
         }
         
         
-        List< Lease_OLM_Quote__c> lList = new List< Lease_OLM_Quote__c>();
-        lList = [select id from  Lease_OLM_Quote__c  where contract_number__c = :leaseNumber];
+        //List< Lease_OLM_Quote__c> lList = new List< Lease_OLM_Quote__c>();
+        //lList = [select id from  Lease_OLM_Quote__c  where contract_number__c = :leaseNumber];
         
         Lease_OLM_Quote__c lq = PMCalloutUtility.popluateLeaseQuote(qResponse);
        
-        
+        lq.customer_name__c = customerName;
+
         newQuotes.add(lq);
 
-        insert newQuotes;
+        insert newQuotes; 
       
         insert iList;
 

@@ -16,21 +16,13 @@ trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
     if (trigger.new.size() == 1){
          
         Map<ID,String> leaseMap = new Map<ID,String>(); 
-        if  (
-            (!trigger.old[0].cllease__Lease_Status__c.contains('ACTIVE') 
-            && trigger.new[0].cllease__Lease_Status__c.contains('ACTIVE') ) 
-        
-        || (trigger.old[0].welcome_package_requested__c == false &&
-            trigger.new[0].welcome_package_requested__c == true)
-            )
-        { 
-            if(trigger.old[0].welcome_package_requested__c == false 
-            &&  trigger.new[0].welcome_package_requested__c == true){
-               system.debug('welcome packet on the way');
-                trigger.new[0].welcome_package_requested__c = false;
-                leaseMap.put(trigger.new[0].id,'Welcome');
-                NewCoUtility.sendWelcomePacket(leaseMap);
-            }
+        if  (!trigger.old[0].cllease__Lease_Status__c.contains('ACTIVE') 
+            && trigger.new[0].cllease__Lease_Status__c.contains('ACTIVE'))  
+        {
+            trigger.new[0].welcome_package_requested__c = false;
+            leaseMap.put(trigger.new[0].id,'Welcome');
+            NewCoUtility.sendWelcomePacket(leaseMap);
+            
         }
         
         if  (!trigger.old[0].cllease__Lease_Status__c.contains('ACTIVE') 
