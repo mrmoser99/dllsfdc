@@ -394,7 +394,7 @@ public without sharing class PMUtility {
                     where user__c = :u.id
                     ];
         
-        system.debug(date.today() + '-' + oaList[0].pm_oauth_token_expiration_date__c);
+        
         Boolean tokenRequired = false;
         if (oaList.size() == 0)
             tokenRequired = true;

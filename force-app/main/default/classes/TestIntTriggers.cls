@@ -156,4 +156,12 @@ public with sharing class TestIntTriggers {
  		update p;
  		
  	}
+
+	 static testmethod void test10(){
+
+		 Int_PX_NSF__c n = new INT_PX_NSF__c();
+		 n.line_data__c = '1|19191919|3100349750|20190315|20190315:121124|PX|20000||20000|20000|20000';
+		 insert n;
+
+	 }
 }

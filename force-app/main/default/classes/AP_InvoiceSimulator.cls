@@ -116,26 +116,32 @@ global with sharing class AP_InvoiceSimulator {
         
         results.add(r);  
         */
-         Invoice__c i = [select Payment_Amount__c
+        Invoice__c i = [select Payment_Amount__c
                                 ,Previous_Balance_Due__c
                                 ,Payment_Sales_Tax__c
                                 ,Payment_Amount_Total__c	
                         from Invoice__c 
                         where id = :recordId];
          
-          r = new resultLine();
-          r.equipmentName = ''; 
-          r.recordName = '';
+        r = new resultLine();
+        r.equipmentName = ''; 
+        r.recordName = '';
             
-          r.fee = 'PAYMENT';
+        r.fee = 'PAYMENT';
 
-          r.feeAmount =  string.valueOf(i.Payment_Amount__c);
-          feeTotal = feeTotal + i.Payment_Amount__c;
-          r.taxAmount = string.valueOf(i.Payment_Sales_Tax__c);
-          taxTotal = taxTotal + i.Payment_Sales_Tax__c;
-          r.totalAmount = string.valueOf(i.Payment_Amount_Total__c);
-          totalTotal = totalTotal +i.Payment_Amount_Total__c;
-          results.add(r);
+        r.feeAmount =  string.valueOf(i.Payment_Amount__c);
+        if (i.payment_amount__c != null)
+            feeTotal = feeTotal + i.Payment_Amount__c;
+        r.taxAmount = string.valueOf(i.Payment_Sales_Tax__c);
+        if (i.payment_sales_tax__c != null)
+            taxTotal = taxTotal + i.Payment_Sales_Tax__c;
+        if (i.payment_amount_total__c == null)    
+            r.totalAmount = '';
+        else
+            r.totalAmount = string.valueOf(i.Payment_Amount_Total__c);
+        if (i.payment_amount_total__c != null)
+            totalTotal = totalTotal +i.Payment_Amount_Total__c;
+        results.add(r);
 
         for (cllease__charge__c c:cList){
             
@@ -265,12 +271,15 @@ global with sharing class AP_InvoiceSimulator {
         r.fee = 'PAYMENT';
 
         r.feeAmount =  string.valueOf(i.Payment_Amount__c);
-        feeTotal = feeTotal + i.Payment_Amount__c;
+        if (i.payment_amount__c != null)
+            feeTotal = feeTotal + i.Payment_Amount__c;
         r.taxAmount = string.valueOf(i.Payment_Sales_Tax__c);
-        taxTotal = taxTotal + i.Payment_Sales_Tax__c;
+        if (i.payment_sales_tax__c != null)
+            taxTotal = taxTotal + i.Payment_Sales_Tax__c;
         r.totalAmount = string.valueOf(i.Payment_Amount_Total__c);
-          totalTotal = totalTotal +i.Payment_Amount_Total__c;
-          results.add(r);
+        if (i.payment_amount_total__c != null)
+            totalTotal = totalTotal +i.Payment_Amount_Total__c;
+        results.add(r);
 
 
          /* get original charges */

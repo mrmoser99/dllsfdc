@@ -212,30 +212,36 @@ public with sharing class PNCUtility {
             c.cllease__Original_Amount__c = 0 - c.cllease__Original_Amount__c;
             temp.add(c);
             
-            Dom.document methoddoc = VertexUtil.getChargesXml(temp);  
-            VertexApi__c vertexConfig = CLSCustomUtil.getVertexConfiguration();
-            VertexUtil.validateVertexConfig(vertexConfig);
+            VertexApi__c vertexConfig;
+            Dom.document methoddoc;
 
-            System.debug(LoggingLevel.ERROR,'methoddoccc'+methoddoc.toXmlString());
-        
-            HttpResponse res;    
-            HttpRequest req = new HttpRequest();
-            req.setMethod('POST');
-            req.setEndpoint(vertexConfig.End_Point__c);
-            req.setHeader('Content-Type', 'text/xml');
-            req.setBody(methoddoc.toXMlString());
+            if (!Test.isRunningTest()){
+                methoddoc = VertexUtil.getChargesXml(temp);  
+                vertexConfig = CLSCustomUtil.getVertexConfiguration();
+                VertexUtil.validateVertexConfig(vertexConfig);
+                System.debug(LoggingLevel.ERROR,'methoddoccc'+methoddoc.toXmlString());
+             
 
-            Http http = new Http();
-            res = http.send(req);
+            
+                HttpResponse res;    
+                HttpRequest req = new HttpRequest();
+                req.setMethod('POST');
+                req.setEndpoint(vertexConfig.End_Point__c);
+                req.setHeader('Content-Type', 'text/xml');
+                req.setBody(methoddoc.toXMlString());
 
-	        system.debug('res:' + res.getBody());
+                Http http = new Http();
+                res = http.send(req);
 
-            vertexLog.Request_XML__c  = methoddoc.toXMlString();
-            vertexLog.Response_XML__c = res.getBody();
-            vertexLog.category__c = 'Reverse Fee Taxes';
-            vertexLog.contract_names__c = c.cllease__Lease_Account__r.Name;
-            c.cllease__Original_Amount__c = 0 - c.cllease__Original_Amount__c;
-            vList.add(vertexLog);
+	            system.debug('res:' + res.getBody());
+
+                vertexLog.Request_XML__c  = methoddoc.toXMlString();
+                vertexLog.Response_XML__c = res.getBody();
+                vertexLog.category__c = 'Reverse Fee Taxes';
+                vertexLog.contract_names__c = c.cllease__Lease_Account__r.Name;
+                c.cllease__Original_Amount__c = 0 - c.cllease__Original_Amount__c;
+                vList.add(vertexLog);
+            }
         }
 
         update cList2;

@@ -258,10 +258,16 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
                 linesbody += '|' + prevBalance;                             //PreviousBalance
                 linesbody += '|' + pmtReceived;                             //PaymentReceived
                 linesbody += '|' + currentCharges;                          //CurrentCharges
-                if (record.void_in_pnc__c == true)
+                if (record.void_in_pnc__c == true){
                      linesbody += '|' + record.sent_to_pnc_amount__c;            //AmountDue
-                else
+                     localsum += record.sent_to_pnc_amount__c; 
+                }
+                else{
                     linesbody += '|' + record.Balance_Due_Amount__c;            //AmountDue
+                    localsum += record.Balance_Due_Amount__c;
+                }
+
+                
                 linesbody += '|' + emailAddr;                               //EmailAddress
                 linesbody += '|' + fdiCode;                                 //FDICode
                 linesbody += '|' + pmtType;                                 //PmtTypeAllowed
@@ -293,7 +299,7 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
                 linesRecords.add(aline);
                 
                 localcount ++;
-                localsum += record.Balance_Due_Amount__c;
+                
                 record.File_Generated__c = 'Yes'; 
                 record.File_Generated_On__c = SystemDate;
                 if (record.void_in_pnc__c == true){

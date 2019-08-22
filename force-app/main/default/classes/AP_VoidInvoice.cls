@@ -210,7 +210,7 @@ global with sharing class AP_VoidInvoice {
 
         List<Int_PX_Billing__c> pncList = new List<Int_PX_Billing__c>();
         pncList = [ select id  
-                    from Int_PX_Billing__c
+                    from Int_PX_Billing__c 
                     where committed__c = false];
         if (!pncList.isEmpty()){
             response.put('Message','There is a pending transaction on its way to PNC.  Please retry in a few minutes!');

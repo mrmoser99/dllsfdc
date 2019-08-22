@@ -236,15 +236,18 @@ global without sharing class NewCoUtility {
 		'&DefaultPDF=1' +
 		'&LG3=2&APIMode=1&OFN=Welcome';		
 		
+
 		
 		String myURL = 'https://composer.congamerge.com/composer8/index.html';
+
+		
        	congaUrl=myURL+'?sessionId='+
        	 		contactMap.get(c.id)+
         		'&serverUrl='+
         		partnerUrl
        		 	+parms;
-	
-       	// Instantiate a new http object
+		
+		// Instantiate a new http object
     	Http h = new Http();
     	HttpRequest req = new HttpRequest();
     	req.setEndpoint(congaUrl);

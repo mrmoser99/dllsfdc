@@ -160,11 +160,11 @@ public  class TestAPInvoiceSimulator {
 
          AP_ManualPayment.addPayment(string.valueOf(inv.id),'check100',100.00,date.today(),null,null);
 
+        //public static String addAdjustment(String recordId, String aType,  Decimal credit, String chargeId, String dueId, Decimal taxAmount){
+        
+        AP_ManualPayment.addAdjustment(string.valueOf(inv.id),'Test',100.00,charge1.id,null,0);
 
-        //addAdjustment(String recordId, String aType,  Decimal credit, String chargeId, String dueId){
-        AP_ManualPayment.addAdjustment(string.valueOf(inv.id),'Test',100.00,charge1.id,null);
-
-        PNCUtility.reverseInvoice(inv.id);
+        PNCUtility.reverseInvoice(inv.id,false);
     
     }  
       static TestMethod void Test3() {

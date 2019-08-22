@@ -28,7 +28,7 @@ global with sharing class AP_ManualPayment {
         if (!i.sent_to_pnc__c){
             response.put('Message','This invoice was never sent to PNC! Contact system administrator!');
             return JSON.serialize(response);
-        }
+        } 
 
 
         List<Int_PX_Remit__c> paymentsPending = new List<Int_PX_Remit__c>();

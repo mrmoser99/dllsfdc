@@ -46,7 +46,7 @@ public class TestPMCalloutUtility {
     public static testMethod void test4() {
 
        PM_Controller.generateQuotes('lease');
-       PMCalloutUtility.generateQuoteByType('Lease','TRADEUP_WITHOUT_PURCHASE');
+       PMCalloutUtility.generateQuoteByType('Lease','TRADEUP_WITHOUT_PURCHASE',null);
 
        PMUtility.TerminationQuoteResponse qResponse = new PMUtility.TerminationQuoteResponse();
        PMUtility.Quote q = new PMUtility.Quote();
