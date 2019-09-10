@@ -1,0 +1,66 @@
+<apex:page showHeader="false" standardStylesheets="false">
+  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.min.js"></script>
+  <script src="https://unpkg.com/jspdf-autotable"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment@2.24.0/moment.min.js"></script>
+
+  <script>
+    window.addEventListener("message", function (event) {
+      //Check if origin is not your org"s my domain url, in this case, simply return out of function
+      // if (lightningDomain.indexOf(event.origin) == -1) {
+      //   // Reject message if origin domain is not as you are expecting
+      //   console.error("Discarding Message | Message received from invalid domain: ", event.origin);
+      //   return;
+      // }
+      // Handle the message event here
+      const jsonData = JSON.parse(event.data);
+      const billingAddress = `${jsonData.billingAddressLine1}, ${jsonData.billingAddressLine2 ? jsonData.billingAddressLine2 + ', ' : ''} ${jsonData.billingCity}, ${jsonData.billingState} ${jsonData.billingZipCode}`;
+
+      let generalInformationData = [[jsonData.contractStartDate ? moment(jsonData.contractStartDate).format('MM/DD/YYYY') : "", jsonData.contractExpireDate ? moment(jsonData.contractExpireDate).format('MM/DD/YYYY') : "", jsonData.contractTerm || "", jsonData.numberOfRemainingPayments || "", jsonData.Dayspastdue || "", jsonData.Purchaseoption || "", jsonData.Contract_Status || "", jsonData.contractPayment ? Number(jsonData.contractPayment).toLocaleString("en", { style: "currency", currency: "USD" }) : "", jsonData.contractService ? Number(jsonData.contractService).toLocaleString("en", { style: "currency", currency: "USD" }) : ""]]
+
+      let equipmentData = jsonData.assetDetail.map(el => {
+        return [``, `${el.assetSequenceNumber}`, `${el.assetManufacturer}`, `${el.assetModel}`, `${el.assetSerialNumber}`, `${el.Install_Date ? moment(el.Install_Date).format('MM/DD/YYYY') : ""}`, `${el.assetAddressLine1}, ${el.assetAddressLine2 ? el.assetAddressLine2 + ', ' : ''}${el.assetCity}, ${el.assetState} ${el.assetZipCode}`]
+      })
+
+      let title = 'TearSheet - ' + jsonData.contractNumber;
+      let doc = new jsPDF({ putOnlyUsedFonts: true, orientation: "landscape" });
+      doc.setFontStyle("bold");
+      doc.text(title, 125, 10);
+      doc.text('Customer Information:', 1, 15);
+      doc.text('Customer Name:', 1, 30);
+      doc.setFontStyle("normal");
+      doc.text(jsonData.customerName, 80, 30);
+      doc.setFontStyle("bold");
+      doc.text('Customer Number:', 1, 40);
+      doc.setFontStyle("normal");
+      doc.text(jsonData.customerAccount || '', 80, 40);
+      doc.setFontStyle("bold");
+      doc.text('Billing Address:', 1, 50);
+      doc.setFontStyle("normal");
+      doc.text(billingAddress || '', 80, 50);
+      doc.setFontStyle("bold");
+      doc.setFontStyle("bold");
+      doc.text('Lease Signer:', 1, 60);
+      doc.setFontStyle("normal");
+      doc.text(jsonData.contractSigner || '', 80, 60);
+
+      doc.setFontStyle("bold");
+      doc.text('General Information', 1, 90);
+      doc.setFontStyle("normal");
+      doc.autoTable({
+        head: [["Contract Origination Date", "Contract Maturity Date", "Term", "Remaining Payments", "Days Delinquent", "Purchase Option", "Lease Status", "Pre-Tax Payemnt", "Service Payment"]],
+        body: generalInformationData,
+        startY: 100,
+      })
+      doc.setFontStyle("bold");
+      doc.text('Equipment Summary', 1, 130);
+      doc.setFontStyle("normal");
+      doc.autoTable({
+        head: [[`TearSheet - ${jsonData.contractNumber}`, "Asset Number", "Make", "Model", "Serial Number", "Install Date", "Equipment Address"]],
+        body: equipmentData,
+        startY: 140,
+      })
+      doc.save(title + ".pdf")
+
+    }, false);  
+  </script>
+</apex:page>

@@ -112,20 +112,12 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
             String clleaseTxnSubType    = glEntry.Transaction_Sub_Type__c;
             String remark = 'Updated Default Movement Codes...';
             
-            if(glEntry.cllease__Charge__c != null && clleaseTxnSubType == null){
-                system.debug(LoggingLevel.ERROR, '^^^ chargeIdAndNameMap : ' + chargeIdAndNameMap);
-                Cllease__Charge__c chargeTxn = chargeIdAndNameMap.get(glEntry.cllease__Charge__c);
-                system.debug(LoggingLevel.ERROR, '^^^ chargeTxn : ' + chargeTxn);
-                System.debug(LoggingLevel.ERROR, '^^^ glEntry.cllease__Charge__r : ' + glEntry.cllease__Charge__r);
-                clleaseTxnSubType = chargeTxn.cllease__Fee_Definition__r.Name;
-                glEntry.cllease__Transaction_Description__c = chargeTxn.Name + ' - ' + clleaseTxnSubType + ' -  Waive';
-                if(glEntry.Id == null){
-                    glEntry.Charge_Waived__c = true;
-                }
+            if(glEntry.Id == null && glEntry.cllease__Item_Name__c == 'WAIVED'){
+                glEntry.Charge_Waived__c = true;
+                glEntry.cllease__Transaction_Description__c = glEntry.cllease__Transaction_Description__c + ' -  Waive';
             }
             
-            System.debug(LoggingLevel.ERROR, '^^^ clleaseTxnType : ' + clleaseTxnType);
-            System.debug(LoggingLevel.ERROR, '^^^ clleaseTxnSubType : ' + clleaseTxnSubType);
+            System.debug(LoggingLevel.ERROR, '^^^ Waive message : ' + glEntry.cllease__Transaction_Description__c);
             
             // throw new MyException('Test');
             

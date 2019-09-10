@@ -2,7 +2,6 @@
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
     <defaultLandingTab>Int_Agreement__c</defaultLandingTab>
     <description>Application for Int DMBI Monitor Project, includes all related Objects and Tabs.</description>
-    <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <label>DMBI Monitor</label>
@@ -35,7 +34,4 @@
     <tabs>Int_Collateral__c</tabs>
     <tabs>Int_Collateral_Party__c</tabs>
     <tabs>Int_Batch_Exception_Log__c</tabs>
-    <tabs>CL_Lease_Financial_Report__c</tabs>
-    <tabs>Lease_Financial_Report_Mapping__c</tabs>
-    <tabs>clcommon__Bank_Account__c</tabs>
 </CustomApplication>

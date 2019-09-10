@@ -4,6 +4,7 @@
 * 
 *	Change Log: 
 *	2/26/19 - MRM Created
+    9/5/19 - MRM Changed residual to use residual amount instead of bill residual amount from equipment
 *
 *   This is use to calculate exposure for one or more leases; it can handle up to 10 lease at a time....maybe less.
 
@@ -127,6 +128,7 @@ public with sharing class ExposureUtility {
                   ,Termination_Quote_Fees__c
                   ,Unearned_Income__c
                   ,Unearned_Residual__c 
+                  
                   FROM Lease_Exposure__c
                   where ls_contract__c in :leaseset
             ];
@@ -480,10 +482,10 @@ public with sharing class ExposureUtility {
                         if (d.cllease__Payment_Satisfied__c){
                             if (bucketMap.containsKey('Evergreen Billed')){
                                 amount = bucketMap.get('Evergreen Billed');
-                                amount += d.cllease__Tax_Due_Amount__c;
+                                amount += d.cllease__Total_Due_Amount__c;
                             }
                             else{
-                                amount = d.cllease__Tax_Due_Amount__c;
+                                amount = d.cllease__Total_Due_Amount__c;
                             }
                             bucketMap.put('Evergreen Billed',amount);
                             
@@ -491,10 +493,10 @@ public with sharing class ExposureUtility {
                         else{
                             if (bucketMap.containsKey('Evergreen Billed Not Paid')){
                                 amount = bucketMap.get('Evergreen Billed Not Paid');
-                                amount += d.cllease__Tax_Due_Amount__c;
+                                amount += d.cllease__Balance_Amount__c;
                             }
                             else{
-                                amount = d.cllease__Tax_Due_Amount__c;
+                                amount = d.cllease__Balance_Amount__c;
                             }
                             bucketMap.put('Evergreen Billed Not Paid',amount);
                         }
@@ -505,10 +507,10 @@ public with sharing class ExposureUtility {
                         if (d.cllease__Payment_Satisfied__c){
                             if (bucketMap.containsKey('Normal Rent Billed')){
                                 amount = bucketMap.get('Normal Rent Billed');
-                                amount += d.cllease__Tax_Due_Amount__c;
+                                amount += d.cllease__Total_Due_Amount__c;
                             }
                             else{
-                                amount = d.cllease__Tax_Due_Amount__c;
+                                amount = d.cllease__Total_Due_Amount__c;
                             }
                             bucketMap.put('Normal Rent Billed',amount);
                             
@@ -516,10 +518,10 @@ public with sharing class ExposureUtility {
                         else{
                             if (bucketMap.containsKey('Normal Rent Billed Not Paid')){
                                 amount = bucketMap.get('Normal Rent Billed Not Paid');
-                                amount += d.cllease__Tax_Due_Amount__c;
+                                amount += d.cllease__Balance_Amount__c;
                             }
                             else{
-                                amount = d.cllease__Tax_Due_Amount__c;
+                                amount = d.cllease__Balance_Amount__c;
                             }
                             bucketMap.put('Normal Rent Billed Not Paid',amount);
                         }
@@ -726,7 +728,7 @@ public with sharing class ExposureUtility {
         Map<ID,Map<String,Decimal>> returnMap = new Map<ID,Map<String,Decimal>>();
         Map<ID,List<cllease__Contract_Equipment__c>> leaseMap = new Map<ID,List<cllease__Contract_Equipment__c>>();
 
-        List<cllease__Contract_Equipment__c> eList = [SELECT Bill_Residual_Amount__c 
+        List<cllease__Contract_Equipment__c> eList = [SELECT cllease__Residual_Amount__c
                                                     ,cllease__contract__c
                                                     FROM cllease__Contract_Equipment__c
                                                     where cllease__contract__c in :leaseSet
@@ -753,10 +755,10 @@ public with sharing class ExposureUtility {
                 Decimal amount;
                 if (bucketMap.containsKey('Residual Amount')){
                     amount = bucketMap.get('Residual Amount');
-                    amount += e.Bill_Residual_Amount__c;
+                    amount += e.cllease__Residual_Amount__c;
                 }
                 else{
-                    amount = e.Bill_Residual_Amount__c;
+                    amount = e.cllease__Residual_Amount__c;
                 }
                 bucketMap.put('Residual Amount',amount);
             }

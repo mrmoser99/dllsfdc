@@ -62,7 +62,6 @@ global class VertexGetTaxonChargesJob extends clcommon.DynamicJob implements Dat
                        + 'Taxbasis__c, '
                        + 'cllease__Tax_Processed__c, '
                        + 'cllease__Original_Amount__c, '
-                       + 'cllease__Original_Tax_Amount__c, '
                        + 'cllease__Principal_Due__c, '
                        + 'cllease__Tax_Due__c, '
                        + 'cllease__Fee_Definition__r.name, '
@@ -314,7 +313,6 @@ global class VertexGetTaxonChargesJob extends clcommon.DynamicJob implements Dat
                         Decimal taxAmount   = valuesmap.get(charge.Name);
                         String taxComponent = calculatedTax.get(charge.name);
                         charge.cllease__Tax_Due__c = taxAmount;
-                        charge.cllease__Original_Tax_Amount__c = taxAmount;
                         //charge.cllease__Principal_Due__c += taxAmount;
                         charge.Tax_Component__c = taxComponent;
                         charge.cllease__Tax_Processed__c = 'Tax Calculated';

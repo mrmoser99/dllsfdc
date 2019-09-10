@@ -42,7 +42,7 @@
     </actionOverrides>
     <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
-    <deploymentStatus>InDevelopment</deploymentStatus>
+    <deploymentStatus>Deployed</deploymentStatus>
     <description>Int Party Street Address</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>false</enableBulkApi>

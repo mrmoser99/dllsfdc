@@ -42,7 +42,7 @@
     </actionOverrides>
     <allowInChatterGroups>true</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
-    <deploymentStatus>InDevelopment</deploymentStatus>
+    <deploymentStatus>Deployed</deploymentStatus>
     <description>Int Facility Object</description>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>

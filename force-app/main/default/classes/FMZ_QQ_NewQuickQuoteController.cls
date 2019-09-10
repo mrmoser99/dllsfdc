@@ -3,6 +3,15 @@ public without sharing class FMZ_QQ_NewQuickQuoteController {
     public static final String QUICK_QUOTE_OBJECT = 'genesis__Quick_Quotes__c';
 
     @AuraEnabled
+    public static String checkCustomerName(String customerName){
+        List<Account> accs = [SELECT Id FROM Account WHERE Name =: customerName];
+        if(accs.size() > 0){
+          return accs[0].Id;
+        }
+        return null;
+    }
+
+    @AuraEnabled
     public static String getAccountId(Id recordId){
         String accId = '';
         if(recordId.getSobjectType() == cllease__Lease_Account__c.sObjectType){
@@ -76,6 +85,17 @@ public without sharing class FMZ_QQ_NewQuickQuoteController {
 
             System.debug('!!!Inserting QQ: '+qq);
             insert qq;
+
+            genesis__Quick_Quotes__c qq2 = [SELECT Id, Name, Oracle_Trade_up_Quote_Number__c FROM genesis__Quick_Quotes__c WHERE Id =: qq.Id LIMIT 1];
+
+            if (qq2.Oracle_Trade_up_Quote_Number__c != null) {
+                Lease_OLM_Quote__c quote = [SELECT Id, Quick_Quote_Number__c FROM Lease_OLM_Quote__c WHERE Name =: qq2.Oracle_Trade_up_Quote_Number__c LIMIT 1];
+                if (quote != null) {
+                    quote.Quick_Quote_Number__c = qq2.Name;
+
+                    update quote; 
+                }
+            }
 
             genesis__Quick_Quote_Pricing_Options__c pricing = new genesis__Quick_Quote_Pricing_Options__c(genesis__Converted__c = true, genesis__Quick_Quote__c = qq.Id);
             insert pricing;
@@ -207,6 +227,7 @@ public without sharing class FMZ_QQ_NewQuickQuoteController {
                     update customer;
                 }
             }
+
             System.debug('!!!QQId: '+qq.Id);
             return new CreateResponse('SUCCESS',qq.Id,null);
         }catch(exception e){
@@ -326,5 +347,36 @@ public without sharing class FMZ_QQ_NewQuickQuoteController {
 
 
     public class QQCreationException extends Exception {}
+
+    // Email Support
+   @AuraEnabled
+   public static void emailSupport (String subject, String body) {
+       Id userId = UserInfo.getUserId();
+       List<User> userList = [SELECT Name, Email FROM User WHERE Id =: userId];
+       List<String> emails = new List<String>();
+       emails.add(userList[0].Email);
+       emails.add('samantha.kemme@fortimize.com');
+
+       List<Messaging.SingleEmailMessage> mails =  new List<Messaging.SingleEmailMessage>();
+
+       Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+       mail.setToAddresses(emails);
+       mail.setReplyTo(userList[0].Email);
+       mail.setSenderDisplayName(userList[0].Name);
+       mail.setSubject(subject);
+       mail.setHtmlBody(body);
+
+       mails.add(mail);
+
+       Messaging.sendEmail(mails);
+   }
+
+    // Get Settings
+   @AuraEnabled
+   public static FMZ_ENV_Variables__c getEnvVariables() {
+       FMZ_ENV_Variables__c settings = [SELECT URL__c FROM FMZ_ENV_Variables__c WHERE Name = 'default'];
+
+       return settings;
+   }
 
 }

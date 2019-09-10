@@ -1,0 +1,233 @@
+<aura:component
+  controller="FMZ_PortfolioManager"
+  implements="forceCommunity:availableForAllPageTypes,force:appHostable,flexipage:availableForAllPageTypes"
+  access="global"
+>
+  <!-- attributes -->
+  <aura:attribute name="data" type="Object" />
+  <aura:attribute name="csvData" type="Object" />
+  <aura:attribute name="columns" type="List" />
+  <aura:attribute name="settings" type="String" />
+  <aura:attribute name="selectedRows" type="List" />
+  <aura:attribute name="prepareDownload" type="Boolean" default="false" />
+  <aura:attribute name="leaseDetails" type="String" />
+
+  <!-- Tear Sheet -->
+  <aura:attribute name="leaseNumber" type="String" />
+  <aura:attribute name="selectedRow" type="String" />
+  <aura:attribute name="isTearSheetVisible" type="Boolean" default="false" />
+  <aura:attribute name="isQuoteModuleVisible" type="Boolean" default="false" />
+
+  <!-- Filter options -->
+  <aura:attribute name="customerName" type="String" />
+  <aura:attribute name="contractNumber" type="String" />
+  <aura:attribute name="contractNumberError" type="String" />
+  <aura:attribute name="equipmentSerialNumber" type="String" />
+
+  <!--- enableInfiniteLoading  -->
+  <aura:attribute name="enableInfiniteLoading" type="Boolean" default="true" />
+  <aura:attribute name="pageSize" type="Integer" default="20" />
+  <aura:attribute name="page" type="Integer" default="1" />
+  <aura:attribute name="rowCount" type="Integer" default="0" />
+  <aura:attribute name="itemTotal" type="Integer" default="0" />
+  <aura:attribute name="fullCount" type="Integer" />
+
+  <!--- Sorting  -->
+  <aura:attribute name="sortedBy" type="String" />
+  <aura:attribute name="sortedDirection" type="String" />
+  <aura:attribute name="defaultSortDirection" type="String" />
+
+  <!-- Quote TradeUp Support -->
+  <aura:attribute name="quoteLeaseData" type="String" />
+  <aura:attribute name="quoteSummaryData" type="String" />
+  <aura:attribute name="quoteData" type="String" />
+  <aura:attribute name="quoteData2" type="String" />
+
+  <!-- handlers-->
+  <aura:handler name="init" value="{! this }" action="{! c.doInit }" />
+
+  <!-- Design -->
+  <lightning:card
+    title="Portfolio Management"
+    iconName="action:quote"
+    class="slds-p-around_medium"
+  >
+    <lightning:notificationsLibrary aura:id="notifLib" />
+    <lightning:overlayLibrary aura:id="overlayLib" />
+    <div class="slds-grid slds-wrap; align-items: center">
+      <lightning:input
+        style="width: 300px; margin-right: 20px"
+        aura:id="customerName"
+        type="text"
+        value="{!v.customerName}"
+        name="Customer Name"
+        label="Customer Name"
+      />
+      <lightning:input
+        style="width: 300px; margin-right: 20px"
+        aura:id="contractNumber"
+        type="text"
+        value="{!v.contractNumber}"
+        name="Lease Number"
+        label="Lease Number"
+        messageWhenPatternMismatch="Lease number has to be 8 characters"
+        pattern=".{8,8}"
+      />
+      <lightning:input
+        style="width: 300px; margin-right: 20px"
+        aura:id="equipmentSerialNumber"
+        type="text"
+        value="{!v.equipmentSerialNumber}"
+        name="Equipment Serial Number"
+        label="Equipment Serial Number"
+      />
+    </div>
+    <div style="margin: 10px 0">
+      <lightning:button
+        variant="brand"
+        label="Filter Results"
+        title="Filter Results"
+        onclick="{! c.filterResults}"
+      />
+      <lightning:button
+        variant="brand"
+        label="Download"
+        title="Download"
+        onclick="{! c.download}"
+      />
+      <aura:if isTrue="{!v.prepareDownload}">
+        <lightning:spinner alternativeText="Loading" />
+      </aura:if>
+    </div>
+    <div style="height: 600px">
+      <lightning:datatable
+        columns="{! v.columns }"
+        data="{! v.data }"
+        hideCheckboxColumn="true"
+        keyField="id"
+        showRowNumberColumn="true"
+        rowNumberOffset="0"
+        selectedRows="{! v.selectedRows }"
+        enableInfiniteLoading="{! v.enableInfiniteLoading}"
+        sortedBy="{! v.sortedBy }"
+        sortedDirection="{! v.sortedDirection }"
+        defaultSortDirection="{! v.defaultSortDirection }"
+        onrowaction="{! c.handleRowAction}"
+        onsort="{! c.sortData}"
+        onloadmore="{! c.loadMoreData }"
+      />
+    </div>
+
+    <aura:if isTrue="{!v.isTearSheetVisible}">
+      <section
+        role="dialog"
+        tabindex="-1"
+        aria-labelledby="modal-heading-01"
+        aria-modal="true"
+        aria-describedby="modal-content-id-1"
+        class="slds-modal slds-fade-in-open"
+      >
+        <div class="slds-modal__container" style="width: 95%;max-width: 95%;">
+          <!-- Modal/Popup Box Header Starts here-->
+          <header class="slds-modal__header">
+            <lightning:buttonIcon
+              iconName="utility:close"
+              onclick="{!c.closeModal}"
+              alternativeText="close"
+              variant="bare-inverse"
+              class="slds-modal__close"
+            />
+            <h2
+              id="modal-heading-01"
+              class="slds-text-heading_medium slds-hyphenate"
+              >Tear Sheet - {!v.leaseNumber}</h2
+            >
+          </header>
+          <!--Modal/Popup Box Body Starts here-->
+          <div
+            class="slds-modal__content slds-p-around_medium"
+            id="modal-content-id-1"
+          >
+            <iframe
+              aura:id="vfFrame"
+              frameborder="0"
+              width="1"
+              height="1"
+              src="{!'/dealer/apex/FMZ_TearSheet'}"
+            />
+            <c:FMZ_TearSheet
+              leaseDetails="{!v.leaseDetails}"
+              leaseNumber="{!v.leaseNumber}"
+            />
+          </div>
+          <!--Modal/Popup Box Footer Starts here-->
+          <footer class="slds-modal__footer">
+            <lightning:button
+              variant="neutral"
+              label="Cancel"
+              title="Cancel"
+              onclick="{!c.closeModal}"
+            />
+            <lightning:button
+              variant="brand"
+              label="Download"
+              title="Download"
+              onclick="{!c.downloadTearSheet}"
+            />
+            <lightning:button
+              variant="brand"
+              label="Email"
+              title="Email"
+              onclick="{!c.emailTearSheetController}"
+            />
+            <lightning:button
+              variant="brand"
+              label="Quote"
+              title="Quote"
+              onclick="{!c.switchToQuoteModule}"
+            />
+          </footer>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.isQuoteModuleVisible}">
+      <section
+        role="dialog"
+        tabindex="-1"
+        aria-labelledby="modal-heading-01"
+        aria-modal="true"
+        aria-describedby="modal-content-id-1"
+        class="slds-modal slds-fade-in-open"
+      >
+        <div class="slds-modal__container" style="width: 95%;max-width: 95%;">
+          <header class="slds-modal__header">
+            <lightning:buttonIcon
+              iconName="utility:close"
+              onclick="{!c.closeModal}"
+              alternativeText="close"
+              variant="bare-inverse"
+              class="slds-modal__close"
+            />
+            <h2
+              id="modal-heading-01"
+              class="slds-text-heading_medium slds-hyphenate"
+              >Quote - {!v.leaseNumber}</h2
+            >
+          </header>
+          <c:FMZ_TradeUpQuote
+            row="{!v.selectedRow}"
+            quoteLeaseData="{!v.quoteLeaseData}"
+            quoteSummaryData="{!v.quoteSummaryData}"
+            quoteData="{!v.quoteData}"
+            quoteData2="{!v.quoteData2}"
+            leaseNumber="{!v.leaseNumber}"
+            isQuoteModuleVisible="{!v.isQuoteModuleVisible}"
+          />
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+  </lightning:card>
+</aura:component>

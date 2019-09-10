@@ -1,0 +1,462 @@
+<aura:component
+  description="FMZ_TradeUpQuote"
+  controller="FMZ_PortfolioManager"
+>
+  <!-- General -->
+  <aura:attribute name="selectedTradeUp" type="Object" />
+  <aura:attribute name="selectedRowObj" type="Object" />
+  <aura:attribute name="isQuoteModuleVisible" type="Boolean" default="false" />
+  <aura:attribute name="settings" type="String" />
+
+  <!-- Contract Summary  -->
+  <aura:attribute name="quoteLeaseData" type="String" />
+  <aura:attribute name="customerName" type="String" />
+  <aura:attribute name="leaseNumber" type="String" />
+  <aura:attribute name="minPaymentsRemaining" type="String" />
+  <aura:attribute name="leaseTerm" type="String" />
+  <aura:attribute name="equipmentPayment" type="String" />
+  <aura:attribute name="servicePayment" type="String" />
+  <aura:attribute name="daysDelinquent" type="String" />
+  <aura:attribute name="originationDate" type="Date" />
+  <aura:attribute name="maturityDate" type="Date" />
+  <aura:attribute name="leaseType" type="String" />
+  <aura:attribute name="quoteDate" type="Date" />
+
+  <!-- Equipment Summary -->
+  <aura:attribute name="equipmentData" type="Object" />
+  <aura:attribute name="equipmentColumns" type="List" />
+
+  <!-- Quote Summary -->
+  <aura:attribute name="tradeUpWithoutPurchase" type="Object" />
+  <aura:attribute name="tradeUpWithPurchase" type="Object" />
+  <aura:attribute name="quoteSummaryData" type="Object" />
+  <aura:attribute name="quoteSummaryColumns" type="List" />
+
+  <!-- Quote Details  -->
+  <aura:attribute name="quoteData" type="String" />
+  <aura:attribute name="quoteId" type="String" />
+  <aura:attribute name="remainingLeasePayments" type="String" />
+  <aura:attribute name="tradeUpDiscount" type="String" />
+  <aura:attribute name="equipmentPrice" type="String" />
+  <aura:attribute name="salesTax" type="String" />
+  <aura:attribute name="propertyTaxReimbursement" type="String" />
+  <aura:attribute name="pastDueService" type="String" />
+  <aura:attribute name="outstandingLeaseCharges" type="String" />
+  <aura:attribute name="securityDeposit" type="String" />
+  <aura:attribute name="netTradeUpAmount" type="String" />
+  <aura:attribute name="expirationDate" type="Date" />
+
+  <aura:attribute name="quoteData2" type="String" />
+  <aura:attribute name="quoteId2" type="String" />
+  <aura:attribute name="remainingLeasePayments2" type="String" />
+  <aura:attribute name="tradeUpDiscount2" type="String" />
+  <aura:attribute name="equipmentPrice2" type="String" />
+  <aura:attribute name="salesTax2" type="String" />
+  <aura:attribute name="propertyTaxReimbursement2" type="String" />
+  <aura:attribute name="pastDueService2" type="String" />
+  <aura:attribute name="outstandingLeaseCharges2" type="String" />
+  <aura:attribute name="securityDeposit2" type="String" />
+  <aura:attribute name="netTradeUpAmount2" type="String" />
+  <aura:attribute name="expirationDate2" type="Date" />
+
+  <!-- General -->
+  <aura:attribute name="isLoading" type="Boolean" default="false" />
+  <aura:attribute name="row" type="String" />
+  <aura:attribute name="selectedRow" type="String" />
+
+  <!-- Support Fields -->
+  <aura:attribute name="showSupport" type="Boolean" default="False" />
+  <aura:attribute name="body" type="String" />
+
+  <!-- Requote Application -->
+  <aura:attribute name="applicationId" type="Id" />
+  <!-- Init -->
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+  <!-- COMPONENT BEGIN -->
+  <lightning:notificationsLibrary aura:id="notifLib" />
+  <lightning:overlayLibrary aura:id="overlayLib" />
+  <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+    <!-- <div class="container"> -->
+    <aura:if isTrue="{!v.isLoading}">
+      <lightning:spinner alternativeText="Loading" />
+    </aura:if>
+
+    <aura:if isTrue="{!v.showSupport}">
+      <lightning:inputRichText
+        value="{!v.body}"
+        placeholder="Describe your support request here ..."
+      />
+      <div style="margin-top: 5px">
+        <lightning:button
+          variant="brand"
+          label="Send"
+          title="Send"
+          onclick="{! c.sendSupportEmail}"
+        />
+      </div>
+      <aura:set attribute="else">
+        <div class="slds-form slds-grid slds-wrap">
+          <h1 class="slds-size_1-of-1 slds-m-top_large slds-p-horizontal_small"
+            >Contract Summary</h1
+          >
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="text"
+            value="{!v.customerName}"
+            name="Customer Name"
+            label="Customer Name"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="text"
+            value="{!v.leaseNumber}"
+            name="Lease number"
+            label="Lease number"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="text"
+            value="{!v.minPaymentsRemaining}"
+            name="Min. Payments Remaining"
+            label="Min. Payments Remaining"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="text"
+            value="{!v.leaseTerm}"
+            name="Lease Term"
+            label="Lease Term"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.equipmentPayment}"
+            name="Equipment Payment"
+            label="Equipment Payment"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.servicePayment}"
+            name="Service Payment"
+            label="Service Payment"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="date"
+            dateStyle="short"
+            value="{!v.maturityDate}"
+            name="Contract Maturity Date"
+            label="Contract Maturity Date"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="date"
+            dateStyle="short"
+            value="{!v.originationDate}"
+            name="Contract Origination Date"
+            label="Contract Origination Date"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="text"
+            value="{!v.daysDelinquent}"
+            name="Days Delinquent"
+            label="Days Delinquent"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="text"
+            value="{!v.leaseType}"
+            name="Lease Type"
+            label="Lease Type"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="date"
+            dateStyle="short"
+            value="{!v.quoteDate}"
+            name="Quote Date"
+            label="Quote Date"
+            disabled="true"
+          />
+        </div>
+
+        <div class="slds-form slds-grid slds-wrap">
+          <h1 class="slds-size_1-of-1 slds-m-top_large slds-p-horizontal_small"
+            >Equipment summary</h1
+          >
+          <div class="datatable">
+            <lightning:datatable
+              keyField="id"
+              data="{!v.equipmentData}"
+              columns="{!v.equipmentColumns}"
+              hideCheckboxColumn="true"
+            />
+          </div>
+        </div>
+
+        <div class="slds-form slds-grid slds-wrap">
+          <h1 class="slds-size_1-of-1 slds-m-top_large slds-p-horizontal_small"
+            >Quote summary</h1
+          >
+          <div class="datatable">
+            <lightning:datatable
+              keyField="id"
+              data="{!v.quoteSummaryData}"
+              columns="{!v.quoteSummaryColumns}"
+              hideCheckboxColumn="true"
+              onrowaction="{! c.handleRowAction}"
+            />
+          </div>
+        </div>
+        <div class="slds-form slds-grid slds-wrap">
+          <h1 class="slds-size_1-of-1 slds-m-top_large slds-p-horizontal_small"
+            >Quote Detail</h1
+          >
+          <div class="slds-size_1-of-2 slds-p-horizontal_small">
+            <ui:inputRadio
+              aura:id="q1"
+              name="quoteSelect"
+              text="{!v.quoteSummaryData[0].quoteNumber}"
+              label="{!v.quoteSummaryData[0].quoteType + '   '}"
+              change="{!c.onQuoteSelect}"
+            />
+          </div>
+          <div class="slds-size_1-of-2 slds-p-horizontal_small">
+            <ui:inputRadio
+              aura:id="q2"
+              name="quoteSelect"
+              text="{!v.quoteSummaryData[1].quoteNumber}"
+              label="{!v.quoteSummaryData[1].quoteType + '   '}"
+              change="{!c.onQuoteSelect}"
+            />
+          </div>
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.remainingLeasePayments}"
+            label="Remaining Lease Payments"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.remainingLeasePayments2}"
+            label="Remaining Lease Payments"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.tradeUpDiscount}"
+            label="Trade-up Discount with Purchase"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.tradeUpDiscount2}"
+            label="Trade-up Discount with Purchase"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.equipmentPrice}"
+            label="Equipment Price"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.equipmentPrice2}"
+            label="Equipment Price"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.salesTax}"
+            label="Sales Tax"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.salesTax2}"
+            label="Sales Tax"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.propertyTaxReimbursement}"
+            label="Property Tax Reimbusement"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.propertyTaxReimbursement2}"
+            label="Property Tax Reimbusement"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.pastDueService}"
+            label="Past Due Service and Meter Overage"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.pastDueService2}"
+            label="Past Due Service and Meter Overage"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.outstandingLeaseCharges}"
+            label="Outstanding Lease Charges"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.outstandingLeaseCharges2}"
+            label="Outstanding Lease Charges"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.securityDeposit}"
+            label="Security Deposit"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.securityDeposit2}"
+            label="Security Deposit"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.netTradeUpAmount}"
+            label="Net Trade-up Amount"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="number"
+            formatter="currency"
+            value="{!v.netTradeUpAmount2}"
+            label="Net Trade-up Amount"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="Date"
+            dateStyle="short"
+            value="{!v.expirationDate}"
+            label="Quote Expiration Date"
+            disabled="true"
+          />
+          <lightning:input
+            class="slds-size_1-of-2 slds-p-horizontal_small"
+            type="Date"
+            dateStyle="short"
+            value="{!v.expirationDate2}"
+            label="Quote Expiration Date"
+            disabled="true"
+          />
+        </div>
+      </aura:set>
+    </aura:if>
+    <!-- </div> -->
+  </div>
+  <footer class="slds-modal__footer">
+    <lightning:button
+      variant="neutral"
+      label="Cancel"
+      title="Cancel"
+      onclick="{!c.closeModal}"
+    />
+    <aura:if isTrue="{!v.showSupport}">
+      <lightning:button
+        variant="brand"
+        label="Return to Quote"
+        title="Return to Quote"
+        onclick="{!c.returnToQuote}"
+      />
+      <aura:set attribute="else">
+        <lightning:button
+          variant="brand"
+          label="Contact Support"
+          title="Contact Support"
+          onclick="{!c.contactSupport}"
+        />
+      </aura:set>
+    </aura:if>
+    <lightning:button
+      variant="brand"
+      label="Email Quote"
+      title="Email Quote"
+      onclick="{!c.emailQuote}"
+    />
+    <aura:if isTrue="{!v.applicationId == null}">
+      <lightning:button
+        variant="brand"
+        label="Submit to Credit Approval"
+        title="Submit to Credit Approval"
+        disabled="{!empty(v.selectedTradeUp)}"
+        onclick="{!c.showCreditApproval}"
+      />
+      <aura:set attribute="else">
+        <lightning:button
+          variant="brand"
+          label="Submit to Requote Application"
+          title="Submit to Requote Application"
+          disabled="{!empty(v.selectedTradeUp)}"
+          onclick="{!c.requoteApplicationController}"
+        />
+      </aura:set>
+    </aura:if>
+  </footer>
+  <!-- COMPONENT END -->
+</aura:component>

@@ -1,114 +1,275 @@
-<aura:component description="New Credit Approval" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId"
-                controller="FMZ_QQ_NewQuickQuoteController">
+<aura:component
+  description="New Credit Approval"
+  implements="force:lightningQuickActionWithoutHeader,force:hasRecordId"
+  controller="FMZ_QQ_NewQuickQuoteController"
+                access="global"  
+>
+  <aura:attribute name="tradeUpDetails" type="Object" access="public" />
+  <aura:attribute name="settings" type="String" />
+  <aura:attribute name="submitFields" type="Object" />
+  <aura:attribute name="newAccount" type="Boolean" default="true" />
+  <aura:attribute name="recordId" type="String" />
+  <aura:attribute name="accountId" type="String" />
+  <aura:attribute name="account" type="Account" />
+  <aura:attribute name="dealerId" type="String" />
+  <aura:attribute name="fields" type="List" />
+  <aura:attribute name="processing" type="Boolean" default="true" />
+  <aura:attribute name="isInvalid" type="Boolean" default="false" />
+  <aura:attribute name="invalidFormatPhone" type="Boolean" default="false" />
+  <aura:attribute name="pollingIntervalId" type="Integer" />
+  <aura:attribute name="matches" type="List" access="private" />
 
-    <aura:attribute name="submitFields" type="Object" />
-    <aura:attribute name="newAccount" type="Boolean" default="true"/>
-    <aura:attribute name="recordId" type="String" />
-    <aura:attribute name="accountId" type="String" />
-    <aura:attribute name="account" type="Account"/>
-    <aura:attribute name="dealerId" type="String" />
-    <aura:attribute name="fields" type="List"/>
-    <aura:attribute name="processing" type="Boolean" default="true"/>
-    <aura:attribute name="isInvalid" type="Boolean" default="false"/>
-    <aura:attribute name="invalidFormatPhone" type="Boolean" default="false"/>
-    <aura:attribute name="pollingIntervalId" type="Integer"/>
-    <aura:attribute name="matches" type="List" access="private"/>
+  <!-- Support -->
+  <aura:attribute name="showSupport" type="Boolean" default="false" />
+  <aura:attribute name="body" type="String" />
 
-    <lightning:overlayLibrary aura:id="overlayLib"/>
+  <lightning:overlayLibrary aura:id="overlayLib" />
+  <lightning:notificationsLibrary aura:id="notifLib" />
 
-    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
-    <!--aura:registerEvent name="addressEvent" type="c:FMZ_NewCustomerAddress"/-->
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+  <!--aura:registerEvent name="addressEvent" type="c:FMZ_NewCustomerAddress"/-->
 
-    <lightning:card title="Credit Approval" iconName="standard:task2" >
-        <aura:set attribute="actions" >
-            <aura:if isTrue="{!v.recordId == null}">
-                <lightning:button label="{! not(v.newAccount) ? 'New Account' : 'Search Accounts'}" onclick="{!c.toggleNewAccount}"/>
+  <lightning:card title="Credit Approval" iconName="standard:task2">
+    <aura:set attribute="actions">
+      <aura:if isTrue="{!and(v.recordId == null, empty(v.tradeUpDetails))}">
+        <lightning:button
+          label="{! not(v.newAccount) ? 'New Account' : 'Search Accounts'}"
+          onclick="{!c.toggleNewAccount}"
+        />
+      </aura:if>
+    </aura:set>
+    <lightning:recordEditForm
+      aura:id="qqForm"
+      objectApiName="genesis__Quick_Quotes__c"
+      class="slds-is-relative"
+      onload="{!c.handleLoad}"
+      onsubmit="{!c.handleSubmit}"
+      onsuccess="{!c.handleSuccess}"
+      onerror="{!c.handleError}"
+    >
+      <div class="slds-p-around--medium">
+        <aura:if isTrue="{!v.showSupport}">
+          <lightning:inputRichText
+            value="{!v.body}"
+            placeholder="Describe your support request here ..."
+          />
+          <div style="margin-top: 5px">
+            <lightning:button
+              variant="brand"
+              label="Send"
+              title="Send"
+              onclick="{! c.sendSupportEmail}"
+            />
+          </div>
+        </aura:if>
+        <div class="{!v.showSupport ? 'hide_credit_approval' : ''}">
+          <div>
+            <!--<lightning:messages aura:id="messages"/>-->
+
+            <aura:if isTrue="{!not(empty(v.tradeUpDetails))}">
+              <div class="slds-m-bottom_small">
+                <div class="slds-text-title_caps slds-m-bottom_xx-small"
+                  >TRADE-UP DETAILS</div
+                >
+                <div class="slds-border_bottom">
+                  <lightning:input
+                    label="Lease Number"
+                    disabled="true"
+                    value="{!v.tradeUpDetails.leaseNumber}"
+                  />
+                  <lightning:input
+                    label="Quote Number"
+                    disabled="true"
+                    value="{!v.tradeUpDetails.quoteNumberDisplay}"
+                  />
+                  <lightning:input
+                    aura:id="price"
+                    type="number"
+                    formatter="currency"
+                    step="0.01"
+                    label="Quote Amount"
+                    disabled="true"
+                    value="{!v.tradeUpDetails.quoteAmount}"
+                  />
+                  <div class="slds-m-bottom_x-small" />
+                </div>
+              </div>
             </aura:if>
-        </aura:set>
 
-        <lightning:recordEditForm aura:id="qqForm" objectApiName="genesis__Quick_Quotes__c" class="slds-is-relative"
-                                  onload="{!c.handleLoad}"
-                                  onsubmit="{!c.handleSubmit}"
-                                  onsuccess="{!c.handleSuccess}"
-                                  onerror="{!c.handleError}">
-
-            <div class="slds-p-around--medium">
-                <!--<lightning:messages aura:id="messages"/>-->
-
-                <div class="{!'slds-notify_container slds-is-relative slds-m-left_x-small ' + (v.isInvalid ? '' : 'slds-hide')}">
-                    <div role="alert" class="slds-notify slds-notify_toast slds-theme_error">
-                        <div class="slds-notify_content">
-                            <h2 class="slds-text-heading_small">Please complete required fields.</h2>
-                        </div>
-                    </div>
+            <div
+              class="{!'slds-notify_container slds-is-relative slds-m-left_x-small ' + (v.isInvalid ? '' : 'slds-hide')}"
+            >
+              <div
+                role="alert"
+                class="slds-notify slds-notify_toast slds-theme_error"
+              >
+                <div class="slds-notify_content">
+                  <h2 class="slds-text-heading_small"
+                    >Please complete required fields.</h2
+                  >
                 </div>
-
-                <lightning:notificationsLibrary aura:id="notifLib"/>
-
-                <aura:iteration items="{!v.fields}" var="f">
-                    <aura:if isTrue="{!((v.recordId==null&amp;&amp;f.fieldPath=='genesis__Business_Name__c'))}">
-                        <aura:if isTrue="{!not(v.newAccount)}">
-                            <lightning:inputField fieldName="genesis__Account__c" aura:id="inputFieldAccountName" class="input-is-required"
-                                                  onchange="{!c.lookupChange}" value="{!v.accountId}"/>
-                            <aura:set attribute="else">
-                                <lightning:inputField fieldName="genesis__Business_Name__c" aura:id="inputFieldAccountId" class="input-is-required"/>
-                            </aura:set>
-                        </aura:if>
-                    </aura:if>
-                    <aura:if isTrue="{!v.recordId!=null||(v.recordId==null&amp;&amp;f.fieldPath!='genesis__Business_Name__c')}">
-                        <aura:if isTrue="{!f.fieldPath == 'Primary_Phone_number__c'}">
-                            <lightning:inputField fieldName="{!f.fieldPath}" aura:id="inputFieldPhone" class="{!f.required?'input-is-required':''}"/>
-                            <aura:if isTrue="{!v.invalidFormatPhone}">
-                                <div class="slds-text-color_error">Phone cannot start with 0 and should be 10 digits (NO '-')</div>
-                            </aura:if>
-                            <aura:set attribute="else">
-                                <aura:if isTrue="{!f.fieldPath == 'Estimated_Financed_Amount__c'}">
-                                    <lightning:inputField fieldName="{!f.fieldPath}" aura:id="inputFieldFinance" class="{!f.required?'input-is-required':''}"/>
-                                    <aura:set attribute="else">
-                                        <lightning:inputField fieldName="{!f.fieldPath}" aura:id="inputField" class="{!f.required?'input-is-required':''}"/>
-                                    </aura:set>
-                                </aura:if>
-                            </aura:set>
-                        </aura:if>
-                    </aura:if>
-
-                </aura:iteration>
-
-                <lightning:input aura:id="addressLine1"
-                                 type="text"
-                                 label="Street Address"
-                                 placeholder="Search Address with Experian"
-                                 onchange="{!c.findMatchingAddresses}"
-                                 required="true"
-                                 messageWhenValueMissing="Street Address is Required"/>
-                <div aura:id="matchesOverlay" class="no-display match_overlay">
-                    <aura:iteration items="{!v.matches}" var="match" >
-                        <div class="hover_color slds-p-around_x-small" data-value="{!match.format}" onclick="{!c.selectMatch}">
-                            {!match.suggestion}
-                        </div>
-                    </aura:iteration>
-                </div>
-                <lightning:input aura:id="city" type="text" label="City" required="true"
-                                 messageWhenValueMissing="City is Required"/>
-                <lightning:input aura:id="county" type="text" label="County" required="true"
-                                 messageWhenValueMissing="County is Required"/>
-                <lightning:input aura:id="state" type="text" label="State" required="true"
-                                 messageWhenValueMissing="State is Required"/>
-                <lightning:input aura:id="postalCode" type="text" label="Postal Code" required="true"
-                                 messageWhenValueMissing="Postal Code is Required"/>
-                <lightning:input aura:id="validStatus" type="text" label="Validation Status" disabled="true"/>
-                <lightning:input aura:id="validTime" type="datetime-local" label="Validation Timestamp" disabled="true"/>
-
-                <lightning:button class="slds-m-top_large" variant="brand" type="submit" label="Create" />
-                <lightning:button class="slds-m-top_large" label="Cancel" onclick="{!c.handleCancel}"/>
-
-                <aura:if isTrue="{!v.processing}">
-                    <lightning:spinner variant="brand" size="medium" alternativeText="Please Wait"/>
-                </aura:if>
+              </div>
             </div>
+            <aura:iteration items="{!v.fields}" var="f">
+              <aura:if
+                isTrue="{!((v.recordId==null&amp;&amp;f.fieldPath=='genesis__Business_Name__c'))}"
+              >
+                <aura:if
+                  isTrue="{!and(not(v.newAccount), empty(v.tradeUpDetails))}"
+                >
+                  <lightning:inputField
+                    fieldName="genesis__Account__c"
+                    aura:id="inputFieldAccountName"
+                    class="input-is-required"
+                    onchange="{!c.lookupChange}"
+                    value="{!v.accountId}"
+                  />
+                  <aura:set attribute="else">
+                    <lightning:inputField
+                      fieldName="genesis__Business_Name__c"
+                      aura:id="inputFieldAccountId"
+                      class="input-is-required"
+                    />
+                  </aura:set>
+                </aura:if>
+              </aura:if>
+              <aura:if
+                isTrue="{!v.recordId!=null||(v.recordId==null&amp;&amp;f.fieldPath!='genesis__Business_Name__c')}"
+              >
+                <aura:if isTrue="{!f.fieldPath == 'Primary_Phone_number__c'}">
+                  <lightning:inputField
+                    fieldName="{!f.fieldPath}"
+                    aura:id="inputFieldPhone"
+                    class="{!f.required?'input-is-required':''}"
+                  />
+                  <aura:if isTrue="{!v.invalidFormatPhone}">
+                    <div class="slds-text-color_error"
+                      >Phone cannot start with 0 and should be 10 digits (NO
+                      '-')</div
+                    >
+                  </aura:if>
+                  <aura:set attribute="else">
+                    <aura:if
+                      isTrue="{!f.fieldPath == 'Estimated_Financed_Amount__c'}"
+                    >
+                      <lightning:inputField
+                        fieldName="{!f.fieldPath}"
+                        aura:id="inputFieldFinance"
+                        class="{!f.required?'input-is-required':''}"
+                      />
+                      <aura:set attribute="else">
+                        <lightning:inputField
+                          fieldName="{!f.fieldPath}"
+                          aura:id="inputField"
+                          class="{!f.required?'input-is-required':''}"
+                        />
+                      </aura:set>
+                    </aura:if>
+                  </aura:set>
+                </aura:if>
+              </aura:if>
+            </aura:iteration>
 
+            <lightning:input
+              aura:id="addressLine1"
+              type="text"
+              label="Street Address"
+              placeholder="Search Address with Experian"
+              onchange="{!c.findMatchingAddresses}"
+              required="true"
+              messageWhenValueMissing="Street Address is Required"
+            />
+            <div aura:id="matchesOverlay" class="no-display match_overlay">
+              <aura:iteration items="{!v.matches}" var="match">
+                <div
+                  class="hover_color slds-p-around_x-small"
+                  data-value="{!match.format}"
+                  onclick="{!c.selectMatch}"
+                >
+                  {!match.suggestion}
+                </div>
+              </aura:iteration>
+            </div>
+            <lightning:input
+              aura:id="city"
+              type="text"
+              label="City"
+              required="true"
+              messageWhenValueMissing="City is Required"
+            />
+            <lightning:input
+              aura:id="county"
+              type="text"
+              label="County"
+              required="true"
+              messageWhenValueMissing="County is Required"
+            />
+            <lightning:input
+              aura:id="state"
+              type="text"
+              label="State"
+              required="true"
+              messageWhenValueMissing="State is Required"
+            />
+            <lightning:input
+              aura:id="postalCode"
+              type="text"
+              label="Postal Code"
+              required="true"
+              messageWhenValueMissing="Postal Code is Required"
+            />
+            <lightning:input
+              aura:id="validStatus"
+              type="text"
+              label="Validation Status"
+              disabled="true"
+            />
+            <lightning:input
+              aura:id="validTime"
+              type="datetime-local"
+              label="Validation Timestamp"
+              disabled="true"
+            />
+          </div>
+        </div>
+        <lightning:button
+          class="slds-m-top_large"
+          label="Cancel"
+          onclick="{!c.handleCancel}"
+        />
+        <aura:if isTrue="{!v.showSupport}">
+          <lightning:button
+            class="slds-m-top_large"
+            variant="brand"
+            label="Back to Application"
+            onclick="{!c.hideSupportHandler}"
+          />
+          <aura:set attribute="else">
+            <lightning:button
+              class="slds-m-top_large"
+              variant="brand"
+              label="Contact Support"
+              onclick="{!c.showSupportHandler}"
+            />
+          </aura:set>
+        </aura:if>
+        <aura:if isTrue="{!v.showSupport == false}">
+          <lightning:button
+            class="slds-m-top_large"
+            variant="brand"
+            type="submit"
+            label="Create"
+          />
+        </aura:if>
 
-        </lightning:recordEditForm>
-
-    </lightning:card>
+        <aura:if isTrue="{!v.processing}">
+          <lightning:spinner
+            variant="brand"
+            size="medium"
+            alternativeText="Please Wait"
+          />
+        </aura:if>
+      </div>
+    </lightning:recordEditForm>
+  </lightning:card>
 </aura:component>

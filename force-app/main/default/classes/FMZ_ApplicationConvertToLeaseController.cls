@@ -45,8 +45,7 @@ public without sharing class FMZ_ApplicationConvertToLeaseController {
 			if (String.isNotBlank(result) && result.contains('EXCEPTION, ')) {
 				result = getResultException(result);
 			}else if(result == 'Application is converted to contract successfully'){
-				app.genesis__Status__c = 'APPROVED - CONVERTED TO CONTRACT';
-				update app;
+				handleSuccessfulConvert(app);
 			}
 
 			return result;
@@ -56,6 +55,30 @@ public without sharing class FMZ_ApplicationConvertToLeaseController {
 			throw new AuraHandledException(e.getMessage());
 		}
 
+	}
+
+	@TestVisible
+	private static void handleSuccessfulConvert(genesis__Applications__c app){
+		app.genesis__Status__c = 'APPROVED - CONVERTED TO CONTRACT';
+		update app;
+
+		app = [SELECT Id, Lease_Number__c, Oracle_Trade_Up_Amount__c, Oracle_Trade_up_Lease_Number__c, Oracle_Trade_up_Quote_Number__c, Oracle_Trade_up_Quote_Expiration_Date__c
+					FROM genesis__Applications__c WHERE Id =: app.Id];
+
+		List<cllease__Lease_Account__c> lease = [SELECT Id FROM cllease__Lease_Account__c WHERE Id =: app.Lease_Number__c];
+		if(lease.size() > 0){
+			lease[0].Oracle_Trade_up_Lease_Number__c = app.Oracle_Trade_up_Lease_Number__c;
+			lease[0].Oracle_Trade_Up_Quote_Amount__c = app.Oracle_Trade_Up_Amount__c;
+			lease[0].Oracle_Trade_up_Quote_Number__c = app.Oracle_Trade_up_Quote_Number__c;
+			lease[0].Oracle_Trade_up_Quote_Expiration_Date__c = app.Oracle_Trade_up_Quote_Expiration_Date__c;
+			update lease;
+		}
+
+		List<Lease_OLM_Quote__c> quote = [SELECT Id FROM Lease_OLM_Quote__c WHERE Name =: app.Oracle_Trade_up_Quote_Number__c LIMIT 1];
+		if(quote.size() > 0 && lease.size() > 0){
+			quote[0].LS_Contract__c = lease[0].Id;
+			update quote;
+		}
 	}
 
 	@TestVisible

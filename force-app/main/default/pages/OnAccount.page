@@ -15,6 +15,14 @@
             <apex:pageMessages escape="false"/>
             <apex:pageBlockSection columns="2" title="Information">
                 <apex:pageBlockSectionItem >
+                    <apex:outputLabel >On Account</apex:outputLabel>
+                    <apex:outputpanel >
+                        <apex:outputfield value="{!cllease__Invoice_Credit__c.Name}" >
+                            <apex:inlineEditSupport disabled="true"/>
+                        </apex:outputField>
+                    </apex:outputpanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
                     <apex:outputLabel >Lease Contract</apex:outputLabel>
                     <apex:outputpanel >
                         <apex:outputfield value="{!cllease__Invoice_Credit__c.cllease__Contract__c}" >

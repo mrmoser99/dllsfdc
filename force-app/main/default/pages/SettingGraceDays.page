@@ -11,6 +11,7 @@
              <apex:inputfield label="Late Charge Grace Days " value="{!contractItem.Custom_Late_Charge_Grace_Days__c}"></apex:inputfield>
              <apex:inputField label="Finance Charge Grace Days " value="{!contractItem.Custom_Finance_Charge_Grace_Days__c}"></apex:inputfield>
              <apex:inputField label="Dealer" value="{!contractItem.cllease__Dealer__c}"/>
+             <apex:inputfield label="Cost of Funds" value="{!contractItem.Cost_of_Funds__c}"></apex:inputfield>
           </apex:pageblocksection>
      </apex:pageblock> 
   </apex:form> 

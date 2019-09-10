@@ -180,21 +180,9 @@
     <tabs>standard-Opportunity</tabs>
     <tabs>standard-Lead</tabs>
     <tabs>clcommon__Address__c</tabs>
-    <tabs>CL_Lease_Financial_Report__c</tabs>
-    <tabs>Lease_Financial_Report_Mapping__c</tabs>
-    <tabs>clcommon__Bank_Account__c</tabs>
     <workspaceConfig>
         <mappings>
-            <tab>CL_Lease_Financial_Report__c</tab>
-        </mappings>
-        <mappings>
-            <tab>Lease_Financial_Report_Mapping__c</tab>
-        </mappings>
-        <mappings>
             <tab>clcommon__Address__c</tab>
-        </mappings>
-        <mappings>
-            <tab>clcommon__Bank_Account__c</tab>
         </mappings>
         <mappings>
             <tab>standard-Account</tab>

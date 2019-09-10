@@ -75,7 +75,8 @@ global with sharing class PNCLptReversalAndNSFChargeCreatorJob extends clcommon.
         // invoice id that can be taken form list of NSF transaction taken for processing.
         List<cllease__Repayment_Transaction_Adjustment__c> newReversalTxns = new List< cllease__Repayment_Transaction_Adjustment__c>();
         Set<Id> invoiceIds = new Set<Id>();
-
+        Cllease__Transaction_Sub_Type__c txn = [SELECT id FROM Cllease__Transaction_Sub_Type__c WHERE Name=:DLLNewCoConstants.FEE_NSF Limit 1];
+		System.debug(LoggingLevel.ERROR, '^^^^ txn : ' + txn);
         Savepoint sp = database.setsavepoint();
         try {
 
@@ -145,17 +146,17 @@ global with sharing class PNCLptReversalAndNSFChargeCreatorJob extends clcommon.
             cllease.IBulkPaymentReversalAction dAction = new cllease.BulkRepaymentAdjustmentAction(newReversalTxns);
             dAction.postRepaymentsAdjusment();
 
-            // F. Looping through all Invoices for Creating Payment Transactions in System
+            // F. Looping through all Invoices for Creating NSF Charges in System
             for(Invoice__c invoice : invoicesList) {
-                // Looping all PNC Return files per Invoices to apply payments
+                // Looping all PNC Return files per Invoices to create NSF charge
                 for(Int_PX_NSF__c pxNSFRec : multPxNSFMap.get(invoice.Name)) {
                     // 1. Create charge for PNCNSF Record
                     cllease__Charge__c nsfCharge            = new cllease__Charge__c();
                     nsfCharge.cllease__Fee_Definition__c    = nsfFeeDefinition.id;
                     nsfCharge.cllease__Date__c              = invoice.LS_Contract__r.cllease__Next_Due_Date__c;
                     nsfCharge.cllease__Lease_Account__c     = invoice.LS_Contract__c;
-                    nsfCharge.cllease__Original_Amount__c   = pxNSFRec.NSF_Amount__c;
-                   // nsfCharge.PX_NSF_Record__c                = pxNSFRec.Id;
+                    nsfCharge.cllease__Original_Amount__c   = nsfFeeDefinition.clcommon__Amount__c;
+                    nsfCharge.cllease__Transaction_sub_type__c = txn.Id;
                     nsfCharge.cllease__GL_Transaction_Flag__c = true;
                     nsfCharge.cllease__Tax_Processed__c     = 'Tax Not Calculated';
                     
@@ -194,7 +195,7 @@ global with sharing class PNCLptReversalAndNSFChargeCreatorJob extends clcommon.
 
     public override void doStart(Database.BatchableContext bc) { 
         // Retrieving NSF Fee Definition from System
-        List<clcommon__Fee_Definition__c> feeDefinitions = [SELECT Id, Name FROM clcommon__Fee_Definition__c WHERE name = :DLLNewCoConstants.FEE_NSF LIMIT 1];
+        List<clcommon__Fee_Definition__c> feeDefinitions = [SELECT Id, Name, clcommon__Amount__c FROM clcommon__Fee_Definition__c WHERE name = :DLLNewCoConstants.FEE_NSF LIMIT 1];
         System.debug(LoggingLevel.ERROR, '^^^^ feeDefinitions : ' + feeDefinitions);
         if(feeDefinitions.size() == 0) {
             throw new CLSCustomException('No NSF Fees Definition not available in CL Lease System. Please Verify...');
@@ -207,6 +208,22 @@ global with sharing class PNCLptReversalAndNSFChargeCreatorJob extends clcommon.
         
     }   
 
-    public override void doFinish(Database.BatchableContext bc) { }
+    public override void doFinish(Database.BatchableContext bc) { 
+        // Query  Int_Batch_Status__c with status "Ready" and name "Px NSF" and update as completed.
+        List<Int_Batch_Status__c> batchStatusRecords = [SELECT Id, Name, Status__c
+                                                                    FROM Int_Batch_Status__c
+                                                                    WHERE Name = 'Px NSF' 
+                                                                        AND Status__c = 'Ready'
+                                                                        AND Completed__c = false
+                                                                    ORDER BY createdDate];
+        if(batchStatusRecords.size() > 0) {
+            Int_Batch_Status__c batchStatusRecord
+                = batchStatusRecords.get(0);
+            batchStatusRecord.Status__c = 'Completed';
+            batchStatusRecord.Completed__c = true;
+            System.debug(LoggingLevel.ERROR, '^^^^^ TEST INSIDE');
+            update batchStatusRecord;
+        }
+    }
 
 }

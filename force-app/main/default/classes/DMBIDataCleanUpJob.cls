@@ -17,19 +17,19 @@ global with sharing class DMBIDataCleanUpJob implements Database.Batchable<sObje
     global void execute(Database.BatchableContext BC, List<sObject> scope){
         try{
             /*if(!scope.isEmpty()&&scope.size()>10000){
-                DMBIInterfaceRecordGeneratorJob.HandleBulkDML(scope,'Delete');    
+DMBIInterfaceRecordGeneratorJob.HandleBulkDML(scope,'Delete');    
+}
+else{*/                                        
+            NumberOfRecordsDeleted += scope.size();
+            If(ObjectToQuery!='Int_Agreement__c'){
+                DELETE Scope;
+            }
+            Else{
+                Datetime dt = system.now().addseconds(40);
+                While(dt > system.now()){               
                 }
-                else{*/                                        
-             NumberOfRecordsDeleted += scope.size();
-             If(ObjectToQuery!='Int_Agreement__c'){
-               DELETE Scope;
-             }
-             Else{
-               Datetime dt = system.now().addseconds(40);
-               While(dt > system.now()){               
-               }
-               DELETE Scope;
-             }
+                DELETE Scope;
+            }
         }
         catch(Exception ex){
             System.debug(LoggingLevel.ERROR, 'Exception in execute method : '+ex.getMessage());
@@ -40,10 +40,13 @@ global with sharing class DMBIDataCleanUpJob implements Database.Batchable<sObje
     global void finish(Database.BatchableContext BC){
         system.debug(ObjectToQuery + ' Delete Batch Finished. Number of records Deleted : '+NumberOfRecordsDeleted);
         If(ObjectToQuery =='Int_Agreement__c'){
-           Datetime dt = system.now().addseconds(25);
-           While(dt > system.now()){               
-           }
-           Database.executeBatch(new DMBIInterfaceJob(),50);
+            Datetime dt = system.now().addseconds(25);
+            
+            While(dt > system.now()){               
+            }
+            
+            Database.executeBatch(new DMBIInterfaceJob(),10);
+            
         }
     }
     

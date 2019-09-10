@@ -99,16 +99,30 @@ global class BatchStatsReport implements Database.Batchable<SObject>,Database.St
 					,cllease__Total_Dealer_Charges__c
 					,cllease__Delinquent_Amount__c
 					,cllease__Amount_to_Current__c
+					
 				from cllease__Lease_Account__c
 				where booking_Date__c >= :startDate and createdDate < :enddate
 				];
-
+		Set<ID> leaseSet = new Set<ID>();
+		for (cllease__Lease_Account__c l:lList){
+			leaseSet.add(l.id);
+		}
 	 	a.booked__c = lList.size();
 		a.net_investment__c = llist.size();
 		a.funding__c = lList.size();
 		a.booked_amount__c = 0;
 		a.funding_amount__c = 0;
 		a.net_investment_amount__c = 0;
+
+		List<Lease_Exposure__c> eList = new List<Lease_Exposure__c>();
+		eList = [select net_investment__c 
+				from
+				Lease_Exposure__c
+				where ls_contract__c in :leaseSet];
+		for (Lease_Exposure__c e:eList)
+			if (e.net_investment__c != null)
+				a.net_investment_amount__c += e.net_investment__c;
+
 
 		for (cllease__Lease_Account__c l:lList){
 			if (l.cllease__Financed_Amount__c != null)
@@ -133,8 +147,6 @@ global class BatchStatsReport implements Database.Batchable<SObject>,Database.St
 			if (l.cllease__Delinquent_Amount__c != null)
 				a.delinquency_amount__c += l.cllease__Delinquent_Amount__c;
 		}
-
-		
 
 
 		update a;	

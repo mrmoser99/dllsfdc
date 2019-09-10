@@ -34,18 +34,20 @@ trigger UpdateInstallAddress on genesis__Application_Equipment__c (before insert
                                         FROM Account
                                         WHERE Id IN :accountIds]);
 
-        // Updating the Install Address on Equipment only when there is only one install address from linked Account
+        // Updating the Install Address on Equipment only when there are multiple install address from linked Account
         for(genesis__Application_Equipment__c appEquip: trigger.new) {
             System.debug(LoggingLevel.ERROR, ' Processing appEquip: '+appEquip);
             //appEquip.genesis__Other_Financed_fees__c = appEquip.Oracle_Trade_Up_Amount__c;
-            if(appEquip.genesis__Application__c != null && appEquip.Install_Address1__c == null
+            if(appEquip.genesis__Application__c != null 
                 && appAccountMap.containsKey(appEquip.genesis__Application__c)) {
                 // Get Install Address and update in Install Address
                 Id accountId = appAccountMap.get(appEquip.genesis__Application__c);
                 Account acc = accountInstallAddressMap.get(accountId);
                 List<Address__c> installAddresses = acc.Addresses__r;
                 System.debug(LoggingLevel.ERROR, ' Processing installAddresses: '+installAddresses);
-                if(installAddresses.size() >= 1) {
+                system.debug('Install Address:'+appEquip.Install_Address1__c);
+                if(installAddresses.size() >= 1 && appEquip.Install_Address1__c == null) {
+                    //system.debug('Install Address'+appEquip.Install_Address1__c);
                     appEquip.Install_Address1__c = installAddresses.get(0).Id;
                 }
             }

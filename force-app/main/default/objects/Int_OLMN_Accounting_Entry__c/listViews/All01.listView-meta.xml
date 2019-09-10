@@ -15,9 +15,9 @@
     <columns>Posting_Date__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
-        <field>Period_Name__c</field>
+        <field>Committed__c</field>
         <operation>equals</operation>
-        <value>201901</value>
+        <value>0</value>
     </filters>
     <label>All01</label>
 </ListView>

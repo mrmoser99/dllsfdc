@@ -2,38 +2,21 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Public static string query = DMBIStaticVariables.Empty_str;
     public static Map<string,string> CodeMap;
     public DMBIInterfaceRecordGeneratorJob(){
-        //CodeMap = getIntMapping();
+        //.CodeMap = getIntMapping();
     }
     Public static Map<string,string> getIntMapping(){
         Map<string,string> MappingMap = new Map<string,string>();
-        list<IntObjectMapping__mdt> MapObjList = [Select MasterLabel,value__c FROM IntObjectMapping__mdt LIMIT 100];
-        for (IntObjectMapping__mdt iom : MapObjList){
+        for (IntObjectMapping__mdt iom : DMBIStaticVariables.getIntObjectMapping()){
             MappingMap.put(iom.MasterLabel,iom.value__c);
         }
-        //system.debug('****MappingMap**'+MappingMap);
         Return MappingMap;
     } 
     //query method
     public static string ConstructQuery(){
         // returning constrcted Dynamic Query on Contract Object 
         return DMBIStaticVariables.NetInvestmentJobBatch_query_str;
+        
     }
-    ////query method with contract names included in query.
-    /*public static string ConstructQuery(list<string> ConNameList){
-        // Creating Dynamic Query on Contract Object 
-        query = DMBIStaticVariables.NetInvestmentJobBatch_query_str;
-        if(!ConNameList.isEmpty()){
-            String contractNamesStr = DMBIStaticVariables.Empty_str;
-            for (String contractName : ConNameList) {
-                contractNamesStr = contractNamesStr + '\'' + String.escapeSingleQuotes(contractName) + '\'' + ',';
-            }
-            contractNamesStr = contractNamesStr.substring(0, contractNamesStr.length() - 1);
-            query += ' AND Name in ('+ contractNamesStr + ') ';
-        }
-        query += ' ORDER BY Name';
-        //System.debug(LoggingLevel.ERROR, 'NetInvestmentReportGeneratorJob query in initialize : ' + query);
-        return query;
-    }*/
     /*------------------------------------- AGREEMENT EXPOSURE Records creation start-----------------------------------------------*/
     //@METHOD: To Create Int_Agreement_Exposure__c object
     Public static list<Int_Agreement_Exposure__c> CreateAgreementExposures(list<Int_Agreement__c> AgreementsList,list<cllease__Lease_Account__c> Contracts,map<string,string> intMap){
@@ -42,35 +25,28 @@ Public class DMBIInterfaceRecordGeneratorJob {
         for (Int_Agreement__c agr : AgreementsList){
             AgrMap.put(agr.Agreement_Number__c,new int_agreement__c(id=agr.Id));
         }
+        map<string,list<cllease__Rental_Stream__c>> ResMap = GetRentalSteamMap(Contracts);
         for(cllease__Lease_Account__c Contract : Contracts){
             If(!(Contract.cllease__Lease_Status__c == 'ACTIVE - MATURED' || Contract.cllease__Lease_Status__c == 'TERMINATED')) {
-                AgreementExposuresToInsert.add(CreateNewAgreementExposure(Contract,AgrMap,intMap));
+                list<cllease__Rental_Stream__c> RSList = new list<cllease__Rental_Stream__c> ();
+                if(ResMap.containskey(Contract.Id)){RSList.addAll(ResMap.get(Contract.Id));}
+                AgreementExposuresToInsert.add(CreateNewAgreementExposure(Contract,AgrMap,intMap,RSList));
             }
         }
         return AgreementExposuresToInsert;
     }
     //@@SUBMETHOD: constructing a new Int__agreement Exposure object
-    Private static Int_Agreement_Exposure__c CreateNewAgreementExposure(cllease__Lease_Account__c cla,map<string,int_agreement__c> agrMap, map<string,string> intmap){
-        /*
-        decimal exposureBooked = 0;
-        if(cla.cllease__Account__r.clcommon__direct_Exposure__c!=Null){
-            exposureBooked = cla.cllease__Account__r.clcommon__direct_Exposure__c; 
-            if(cla.cllease__Account__r.clcommon__Indirect_Exposure__c!=Null){
-                exposureBooked += cla.cllease__Account__r.clcommon__Indirect_Exposure__c;
-            }
-        }
-        */
+    Private static Int_Agreement_Exposure__c CreateNewAgreementExposure(cllease__Lease_Account__c cla,map<string,int_agreement__c> agrMap, map<string,string> intmap,list<cllease__Rental_Stream__c> RSList){
         Return new Int_Agreement_Exposure__c(
             Agreement_Name__c = AgrMap.get(cla.name).Id,
             Exposure_Type__c = 'DLL',
             Arrears_Amount__c = cla.cllease__Delinquent_Amount__c!=Null?ScaleToTwoDecimal(cla.cllease__Delinquent_Amount__c):0,
-            //Exposure_Booked__c = ScaleToTwoDecimal(exposureBooked),
             Exposure_Booked__c = cla.Exposure__c!=Null?ScaleToTwoDecimal(cla.Exposure__c):0,
             Agreement_Source_System__c = intmap.get(cla.Source_System__c),
             Agreement_Number__c = cla.name,
             Days_In_Arrears__c = string.valueof(cla.cllease__Days_Past_Due__c)!=Null?string.valueof(cla.cllease__Days_Past_Due__c):'0',
-            Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(CalculateNetPrincipalBalanceAmountFromRentalStream(cla.cllease__Rental_Streams__r)),
-            Accrued_Interest_Amount__c = ScaleToTwoDecimal(CalculateAccruedInterestAmountFromRentalStream(cla.cllease__Rental_Streams__r)),
+            Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(CalculateNetPrincipalBalanceAmountFromRentalStream(RSList)),
+            Accrued_Interest_Amount__c = ScaleToTwoDecimal(CalculateAccruedInterestAmountFromRentalStream(RSList)),
             Other_Arrears_Amount__c = 0,
             Other_Days_in_Arrears__c = '0'
         );
@@ -95,7 +71,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
             AgrMap.put(agrRec.Agreement_Number__c,new Int_Agreement__c(id=agrrec.Id));
             //AgreementClassificationToInsert.add(CreateNewAgreementClassification(agrRec));
         }
-        for (cllease__Lease_Account__c contract:contracts){
+        for(cllease__Lease_Account__c contract:contracts){
             //AgreementClassificationToInsert.add(CreateNewAgreementClassification(contract,agrMap,codemap));
             AgreementClassificationToInsert.add(CreateNewAgreementClassificationFPT(contract,agrMap,codemap));
             AgreementClassificationToInsert.add(CreateNewAgreementClassificationILC(contract,agrMap,codemap));
@@ -103,16 +79,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
         //insert AgreementClassificationToInsert;
         Return AgreementClassificationToInsert;
     }
-    //@@SUBMETHOD: constructing a new Int__agreement object
-    /*Private static Int_Agreement_Classification__c CreateNewAgreementClassification(cllease__Lease_Account__c cla,Map<string,Int_Agreement__c> AgrMap,map<string,string> codeMap){
-        Return new Int_Agreement_Classification__c(
-            Agreement_Name__c = AgrMap.get(cla.name).Id,
-            Agreement_Classification_Type_Code__c= 'FPST',
-            Agreement_Classification_Code__c = codeMap.containskey(cla.cllease__Product_Sub_Type__c)?codeMap.get(cla.cllease__Product_Sub_Type__c):'MPFL',//codeMap.containskey(contract.cllease__Product_Sub_Type__c),//
-            Agreement_Source_System__c= codeMap.get(cla.source_system__c),
-            Agreement_Number__c=cla.name
-        );
-    } */
+    
     Private static Int_Agreement_Classification__c CreateNewAgreementClassificationFPT(cllease__Lease_Account__c cla,Map<string,Int_Agreement__c> AgrMap,map<string,string> codeMap){
         Return new Int_Agreement_Classification__c(
             Agreement_Name__c = AgrMap.get(cla.name).Id,
@@ -132,29 +99,54 @@ Public class DMBIInterfaceRecordGeneratorJob {
         );
     }
     /*------------------------------------- Agreement classification Records creation ends-----------------------------------------------*/
+    
     /*------------------------------------- Agreement Records creation starts-----------------------------------------------*/
+    
     //@METHOD: To Create Agreement records
     Public static list<Int_Agreement__c> CreateAgreements(list<cllease__Lease_Account__c> clleaseContractsList,map<string,string> IntCodeMap){
         list<Int_Agreement__c> AgreementsToInsert = new list<Int_Agreement__c>();
+        map<string,list<cllease__Rental_Stream__c>> ResMap = new Map<string,list<cllease__Rental_Stream__c>>();
+        map<string,list<cllease__Residual_Stream__c>> RsdMap = new Map<string,list<cllease__Residual_Stream__c>>();
+        Map<string,List<cllease__Contract_Equipment__c>> EqmpntMap = new map<string,List<cllease__Contract_Equipment__c>>();
+        Map<string,list<cllease__Lease_Payment_Transaction__c>> PmntTransMap = new map<string,List<cllease__Lease_Payment_Transaction__c>>();
+        EqmpntMap = GetEquipments(clleaseContractsList);
+        //Payment transaction map
+        for(cllease__Lease_Payment_Transaction__c cce : DMBIStaticVariables.getPaymentTransactions(clleaseContractsList)){
+            if(!PmntTransMap.containskey(cce.cllease__Contract__c)){
+                PmntTransMap.put(cce.cllease__Contract__c,new list<cllease__Lease_Payment_Transaction__c>{cce});
+            }else{
+                list<cllease__Lease_Payment_Transaction__c> TempList = PmntTransMap.get(cce.cllease__Contract__c);
+                TempList.add(cce);
+                PmntTransMap.put(cce.cllease__Contract__c,TempList);
+            }
+        }
+        //Rental streams map
+        ResMap = GetRentalSteamMap(clleaseContractsList);
+        //Residual streams map
+        RsdMap = getResidualStreamMap(clleaseContractsList);
+        //CREATING AGREEMENT RECORDS FROM CONTRACT RECORDS.
         for(cllease__Lease_Account__c la : clleaseContractsList){//Agreement_Source_System__c
-            AgreementsToInsert.add(CreateNewAgreement(la,IntCodeMap));
+            string str = la.cllease__GL_Transaction_Details__r.size()>0?(la.cllease__GL_Transaction_Details__r[0].Movement_Code_DR_Segment__c != Null?la.cllease__GL_Transaction_Details__r[0].Movement_Code_DR_Segment__c:''):'';
+            List<cllease__Contract_Equipment__c> cceList = new list<cllease__Contract_Equipment__c>();
+            List<cllease__Lease_Payment_Transaction__c> clptList = new list<cllease__Lease_Payment_Transaction__c>();
+            List<cllease__Rental_Stream__c> CRSList = new list<cllease__Rental_Stream__c>();
+            List<cllease__Residual_Stream__c> ResList = new List<cllease__Residual_Stream__c>();
+            if(ResMap.containskey(la.Id)){CRSList.addAll(ResMap.get(la.Id));}
+            if(RsdMap.containskey(la.Id)){ResList.AddAll(RsdMap.get(la.Id));}
+            if(EqmpntMap.containskey(la.Id)){cceList.addAll(EqmpntMap.get(la.Id));}
+            if(PmntTransMap.containskey(la.id)){clptList.addall(PmntTransMap.get(la.Id));}
+            AgreementsToInsert.add(CreateNewAgreement(la,IntCodeMap,CRSList,ResList,str,cceList,clptList));
         }
         if(!AgreementsToInsert.isempty()){
-            insert AgreementsToInsert;
-            //system.debug(AgreementsToInsert.size() + 'Agreements inserted');
-            //Database.insert(AgreementsToInsert, false);
+            //insert AgreementsToInsert;
+            Database.insert(AgreementsToInsert, false);
         }
         Return AgreementsToInsert;
     }
     //@@SUBMETHOD: constructing a new Int__agreement object
-    Private static Int_Agreement__c CreateNewAgreement(cllease__Lease_Account__c cla, map<string,string> Codemap){
+    Private static Int_Agreement__c CreateNewAgreement(cllease__Lease_Account__c cla, map<string,string> Codemap,List<cllease__Rental_Stream__c> CRSList,List<cllease__Residual_Stream__c> ResList,string str,List<cllease__Contract_Equipment__c> ceList,list<cllease__Lease_Payment_Transaction__c> PTList){
         //Codemap = getIntMapping();
-        String AmortizationTypeCode;
-        If (cla.cllease__Residual_Amount__c > 0)
-           AmortizationTypeCode = 'OTHER';
-        else
-           AmortizationTypeCode = 'FRENCH'; 
-             
+        String AmortizationTypeCode = cla.cllease__Residual_Amount__c > 0?'OTHER':'FRENCH';
         Return new Int_Agreement__c(
             Funding_Rate__c = cla.Cost_of_Funds__c,
             Costs_Of_Funds_Percentage__c = cla.Cost_of_Funds__c,
@@ -164,7 +156,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Securitization_Identifier__c = '',
             Syndication_Percentage__c = Null,
             //GL_Code_Block__c = CalculateGLCodeBlock(cla.cllease__GL_Transaction_Details__r),
-            GL_Code_Block__c = cla.cllease__GL_Transaction_Details__r.size()>0?(cla.cllease__GL_Transaction_Details__r[0].Movement_Code_DR_Segment__c != Null?cla.cllease__GL_Transaction_Details__r[0].Movement_Code_DR_Segment__c:''):'',
+            GL_Code_Block__c = str,//cla.cllease__GL_Transaction_Details__r.size()>0?(cla.cllease__GL_Transaction_Details__r[0].Movement_Code_DR_Segment__c != Null?cla.cllease__GL_Transaction_Details__r[0].Movement_Code_DR_Segment__c:''):'',
             Floating_Rate_Cap__c = Null,
             Floating_Rate_Code__c = '',
             Floating_Rate_Currency_Code__c = '',
@@ -175,7 +167,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Floating_Rate_Spread__c = 0,   
             LGD_Percentage__c = 0,
             //LGD_Lookup_Type_Code__c = Codemap.containsKey(cla.cllease__Contract_Equipments__r[0].Master_Asset_Type__c)?Codemap.get(cla.cllease__Contract_Equipments__r[0].Master_Asset_Type__c):'',
-            LGD_Lookup_Type_Code__c = CalculateLGDLookUpTypeCode(cla.cllease__Contract_Equipments__r,Codemap),
+            LGD_Lookup_Type_Code__c = CalculateLGDLookUpTypeCode(ceList,Codemap),
             Current_Interest_Rate_Type_Code__c = 'FIXED',
             Interest_Rate_Type_Code__c = 'FIXED',
             System_Selling_Party_Number__c = cla.cllease__Dealer__r.Account_Number__c,
@@ -192,7 +184,8 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Maturity_Options_Code__c = 'ETNOFEE',
             Hyperion_Base_Entity__c = 'BEQUS',
             Amortization_Type_Code__c = AmortizationTypeCode,
-            Payment_Method_Code__c = CalculatePaymentmethodCode(cla.cllease__Contract_Payment_Transactions__r,Codemap),
+            Payment_Method_Code__c = CalculatePaymentmethodCode(PTList,Codemap),
+            //Payment_Method_Code__c = CalculatePaymentmethodCode1(PaymentTransMap,cla.id,Codemap),
             Agreement_Activation_Date__c = cla.Booking_Date__c!=Null?cla.Booking_Date__c:system.today(),
             Payments_Received__c = Null, //ScaleToTwoDecimal(CalculateclleaseTransactionAmountFrompaymentTransaction(cla.cllease__Contract_Payment_Transactions__r)),
             Day_Count_Convention_Code__c = Codemap.containsKey(cla.cllease__Days_Convention__c)?Codemap.get(cla.cllease__Days_Convention__c):'',
@@ -220,11 +213,23 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Payment_Frequency_Principal_Code__c= codemap.containskey(cla.cllease__Payment_Frequency__c)?codemap.get(cla.cllease__Payment_Frequency__c):'',
             Payment_Frequency_Interest_Code__c = codemap.containskey(cla.cllease__Payment_Frequency__c)?codemap.get(cla.cllease__Payment_Frequency__c):'',
             //Net_Principal_Balance_Amount__c = (cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c)!=Null?(ScaleToTwoDecimal(cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c)):0,
-            Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c - CalculateUnearnedRentalIncome(cla.cllease__Rental_Streams__r) - CalculateUnearnedResidualIncome(cla.cllease__Residual_Streams__r)+ cla.Billed_Not_Paid__c),
+            Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c - CalculateUnearnedRentalIncome(CRSList) - CalculateUnearnedResidualIncome(ResList)+ cla.Billed_Not_Paid__c),
             Currency_Code__c = cla.cllease__Currency_Code__c!=Null?cla.cllease__Currency_Code__c:'USD',
-            Accrued_Interest_Amount__c = ScaleToTwoDecimal(CalculateAccruedInterestAmountFromRentalStream(cla.cllease__Rental_Streams__r)),
+            Accrued_Interest_Amount__c = ScaleToTwoDecimal(CalculateAccruedInterestAmountFromRentalStream(CRSList)),
             Residual_Value_Booked__c = ScaleToTwoDecimal(cla.cllease__Residual_Amount__c)
         );
+    }
+    private static map<string,list<cllease__Residual_Stream__c>> getResidualStreamMap(list<cllease__Lease_Account__c> clleaseContractsList ){
+        map<string,list<cllease__Residual_Stream__c>> RsdMap = new map<string,list<cllease__Residual_Stream__c>>();
+        for(cllease__Residual_Stream__c rs : DMBIStaticVariables.getResidualStreams(clleaseContractsList)){
+            if(!RsdMap.containskey(rs.cllease__Contract__c)){
+                RsdMap.put(rs.cllease__Contract__c,new list<cllease__Residual_Stream__c>{rs});
+            }else{
+                list<cllease__Residual_Stream__c> TempList = RsdMap.get(rs.cllease__Contract__c);
+                TempList.add(rs);
+                RsdMap.put(rs.cllease__Contract__c,TempList);
+            }
+        }return RsdMap;
     }
     //@@SUBMETHOD: find master asset type code
     Private static void findMasterAssetTypecode(list<cllease__Contract_Equipment__c> Equipmnetlist){
@@ -243,6 +248,23 @@ Public class DMBIInterfaceRecordGeneratorJob {
     }
     
     //@@SUMMETHOD: find LGD LookUp Type Code
+    Private static String CalculateLGDLookUpTypeCode1(string contractID, Map<string,string> Codemap,Map<string,cllease__Contract_Equipment__c> ceMap){
+        String LGDLookUpTypeCode = '';
+        //String MasterAssetType = CEPList[0].Master_Asset_Type__c;
+        string MasterAssetType = ceMap.get(contractID).Master_Asset_Type__c;
+        //Decimal TotalDealerCharges = CEPList[0].cllease__Total_Dealer_Charges__c;
+        Decimal TotalDealerCharges = ceMap.get(contractID).cllease__Total_Dealer_Charges__c;
+        
+        for(cllease__Contract_Equipment__c CEP: ceMap.values()){
+            If(CEP.cllease__Total_Dealer_Charges__c > TotalDealerCharges){
+                TotalDealerCharges = CEP.cllease__Total_Dealer_Charges__c;
+                MasterAssetType = CEP.Master_Asset_Type__c;
+            }                
+        }
+        LGDLookUpTypeCode = Codemap.containsKey(MasterAssetType)?Codemap.get(MasterAssetType):'118';
+        return LGDLookUpTypeCode;
+    }
+    //@@SUMMETHOD: find LGD LookUp Type Code
     Private static String CalculateLGDLookUpTypeCode(List<cllease__Contract_Equipment__c> CEPList, Map<string,string> Codemap){
         String LGDLookUpTypeCode = '';
         String MasterAssetType = CEPList[0].Master_Asset_Type__c;
@@ -256,7 +278,6 @@ Public class DMBIInterfaceRecordGeneratorJob {
         LGDLookUpTypeCode = Codemap.containsKey(MasterAssetType)?Codemap.get(MasterAssetType):'118';
         return LGDLookUpTypeCode;
     }
-    
     //@@SUBMETHOD: find Net Principal Amount
     Private static Decimal CalculateNetPrincipalAmount(Decimal ResidualAmount,List<cllease__Rental_Stream__c> RntList,List<cllease__Residual_Stream__c> RsdList){
         Decimal NetPrincipalAmount = 0.00;
@@ -268,7 +289,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Private static Decimal CalculateGrossReceivable(List<cllease__Rental_Stream__c> RntList){
         Decimal GrossReceivable = 0.00;
         for(cllease__Rental_Stream__c Rnt: RntList){
-           GrossReceivable += Rnt.cllease__Payment_Amount__c;
+            GrossReceivable += Rnt.cllease__Payment_Amount__c;
         }
         Return GrossReceivable;
     }
@@ -277,9 +298,9 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Private static Decimal CalculateUnearnedRentalIncome(List<cllease__Rental_Stream__c> RntList){
         Decimal UnearnedRentalIncome = 0.00;
         for(cllease__Rental_Stream__c Rnt: RntList){
-           If(!Rnt.cllease__Accrued_Flag__c){
-               UnearnedRentalIncome += Rnt.cllease__Lease_Income__c;
-           }    
+            If(!Rnt.cllease__Accrued_Flag__c){
+                UnearnedRentalIncome += Rnt.cllease__Lease_Income__c;
+            }    
         }
         Return UnearnedRentalIncome;
     }
@@ -288,9 +309,9 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Private static Decimal CalculateUnearnedResidualIncome(List<cllease__Residual_Stream__c> RsdList){
         Decimal UnearnedResidualIncome = 0.00;
         for(cllease__Residual_Stream__c Rsd: RsdList){
-           If(!Rsd.cllease__Accrued_Flag__c){
-               UnearnedResidualIncome += Rsd.cllease__Residual_Income__c;
-           }    
+            If(!Rsd.cllease__Accrued_Flag__c){
+                UnearnedResidualIncome += Rsd.cllease__Residual_Income__c;
+            }    
         }
         Return UnearnedResidualIncome;
     }
@@ -299,7 +320,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Private static Decimal CalculateTotalLeaseIncome(List<cllease__Rental_Stream__c> RntList){
         Decimal TotalLeaseIncome = 0.00;
         for(cllease__Rental_Stream__c Rnt: RntList){
-           TotalLeaseIncome += Rnt.cllease__Lease_Income__c;
+            TotalLeaseIncome += Rnt.cllease__Lease_Income__c;
         }
         Return TotalLeaseIncome;
     }
@@ -308,7 +329,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Private static Decimal CalculateTotalResidualIncome(List<cllease__Residual_Stream__c> RsdList){
         Decimal TotalResidualIncome = 0.00;
         for(cllease__Residual_Stream__c Rsd: RsdList){
-           TotalResidualIncome += Rsd.cllease__Residual_Income__c;
+            TotalResidualIncome += Rsd.cllease__Residual_Income__c;
         }
         Return TotalResidualIncome;
     }
@@ -327,22 +348,21 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Private static String CalculatePaymentmethodCode(list<cllease__Lease_Payment_Transaction__c> PTList,map<string,string> Codemap){
         String PaymentMethodCode = '';
         If(!PTList.isEmpty()){
-          PaymentMethodCode = Codemap.containsKey(PTList[0].cllease__Payment_Mode__r.name)?Codemap.get(PTList[0].cllease__Payment_Mode__r.name):'O';
+            PaymentMethodCode = Codemap.containsKey(PTList[0].cllease__Payment_Mode__r.name)?Codemap.get(PTList[0].cllease__Payment_Mode__r.name):'O';
         }
         Else{
-          PaymentMethodCode = 'O';
+            PaymentMethodCode = 'O';
         }  
         return PaymentMethodCode;
     }
-    //@@SUBMETHOD:Summing up Beginning_Unearned_Residual_Income of Residual stream records to calculate Payments Received 
-    /*Private static Decimal CalculateAccruedInterestAmountFromResidualStream(list<cllease__Contract_Equipment__c> RSList){
-        Decimal TempResidualValueBooked = 0.0;
-        for(cllease__Contract_Equipment__c rs: RSList){
-            TempResidualValueBooked+=rs.cllease__Residual_Amount__c;
+    Private static String CalculatePaymentmethodCode1(map<string,cllease__Lease_Payment_Transaction__c> clptMap,string ContractID,map<string,string> Codemap){
+        String PaymentMethodCode = 'O';
+        If(!clptMap.containsKey(ContractID)){
+            PaymentMethodCode = Codemap.containsKey(clptMap.get(ContractID).cllease__Payment_Mode__r.name)?Codemap.get(clptMap.get(ContractID).cllease__Payment_Mode__r.name):'O';
+            //PaymentMethodCode = Codemap.containsKey(PTList[0].cllease__Payment_Mode__r.name)?Codemap.get(PTList[0].cllease__Payment_Mode__r.name):'O';
         }
-        return TempResidualValueBooked;
-    }*/
-    
+        return PaymentMethodCode;
+    }
     // Added on 6th OCt
     //@@@SUBMETHOD:Summing upcllease__Transaction_Amount__c of Payment Transaction Records to calculate ResidualValueBooked 
     Private static Decimal CalculateclleaseTransactionAmountFrompaymentTransaction (list<cllease__Lease_Payment_Transaction__c> TransList){
@@ -352,44 +372,60 @@ Public class DMBIInterfaceRecordGeneratorJob {
         }
         return TempResidualValueBooked;
     }
+    private static Map<string,list<cllease__Rental_Stream__c>> GetRentalSteamMap(List<cllease__Lease_Account__c> clleaseContractsList){
+        map<string,list<cllease__Rental_Stream__c>> ResMap = new Map<string,list<cllease__Rental_Stream__c>>();
+        for(cllease__Rental_Stream__c rs : DMBIStaticVariables.getRentalStreams(clleaseContractsList)){
+            if(!ResMap.containskey(rs.cllease__Contract__c)){
+                ResMap.put(rs.cllease__Contract__c,new list<cllease__Rental_Stream__c>{rs});
+            }else{
+                list<cllease__Rental_Stream__c> TempList = ResMap.get(rs.cllease__Contract__c);
+                TempList.add(rs);
+                ResMap.put(rs.cllease__Contract__c,TempList);
+            }
+        }
+        return ResMap;
+    }
     /*------------------------------------- Agreement Payment Schedules Records creation Starts-----------------------------------------------*/
     Public static list<Int_Agreement_Payment_Schedule__c> CreateIntAgreementPaymentSchedules(list<Int_Agreement__c> AgreementsList,List<cllease__Lease_Account__c> Contracts,map<string,string> intcode){
         list<Int_Agreement_Payment_Schedule__c> AgrPaymentScheduleList = new list<Int_Agreement_Payment_Schedule__c>();
+        map<string,list<cllease__Rental_Stream__c>> ResMap = GetRentalSteamMap(Contracts);
         map<string,Int_Agreement__c> AgrMap = New map<string,Int_Agreement__c>();
         for(Int_Agreement__c agr : AgreementsList){
             AgrMap.put(agr.Agreement_Number__c, agr);
         }
         for(cllease__Lease_Account__c cla : Contracts){
-            for(cllease__Rental_Stream__c crs: cla.cllease__Rental_Streams__r){
-              If(crs.cllease__Date__c >= system.today()){ 
-                AgrPaymentScheduleList.add(new Int_Agreement_Payment_Schedule__c(
-                   Agreement_Source_System__c = intcode.get(cla.Source_System__c)
-                   ,Schedule_Start_Date__c = crs.cllease__Date__c
-                   ,Payment_Type_Code__c = 'P' 
-                   ,Schedule_Amount__c = crs.cllease__Capital_Recovery__c!=Null?ScaleToTwoDecimal(crs.cllease__Capital_Recovery__c):0
-                   ,Schedule_Class__c = 'C' 
-                   ,Currency_Code__c = 'USD'//intcode.ContainsKey(cla.cllease__Currency_Code__c)?intcode.get(cla.cllease__Currency_Code__c):'USD'
-                   ,Agreement_Number__c = cla.name
-                   ,Agreement_Name__c = AgrMap.containskey(cla.name)?AgrMap.get(cla.name).Id:''
-                ));
-                AgrPaymentScheduleList.add(new Int_Agreement_Payment_Schedule__c(
-                   Agreement_Source_System__c = intcode.get(cla.Source_System__c)
-                   ,Schedule_Start_Date__c = crs.cllease__Date__c
-                   ,Payment_Type_Code__c = 'I' 
-                   ,Schedule_Amount__c = crs.cllease__Lease_Income__c!=Null?ScaleToTwoDecimal(crs.cllease__Lease_Income__c):0
-                   ,Schedule_Class__c = 'C' 
-                   ,Currency_Code__c = 'USD'//intcode.ContainsKey(cla.cllease__Currency_Code__c)?intcode.get(cla.cllease__Currency_Code__c):'USD'
-                   ,Agreement_Number__c = cla.name
-                   ,Agreement_Name__c = AgrMap.containskey(cla.name)?AgrMap.get(cla.name).Id:''
-                ));
-               } 
-             }   
+            list<cllease__Rental_Stream__c> ResList = new list<cllease__Rental_Stream__c>();
+            if(ResMap.containskey(cla.Id)){ResList.addAll(ResMap.get(cla.Id));}
+            for(cllease__Rental_Stream__c crs: ResList){
+                If(crs.cllease__Date__c >= system.today()){ 
+                    AgrPaymentScheduleList.add(new Int_Agreement_Payment_Schedule__c(
+                        Agreement_Source_System__c = intcode.get(cla.Source_System__c)
+                        ,Schedule_Start_Date__c = crs.cllease__Date__c
+                        ,Payment_Type_Code__c = 'P' 
+                        ,Schedule_Amount__c = crs.cllease__Capital_Recovery__c!=Null?ScaleToTwoDecimal(crs.cllease__Capital_Recovery__c):0
+                        ,Schedule_Class__c = 'C' 
+                        ,Currency_Code__c = 'USD'//intcode.ContainsKey(cla.cllease__Currency_Code__c)?intcode.get(cla.cllease__Currency_Code__c):'USD'
+                        ,Agreement_Number__c = cla.name
+                        ,Agreement_Name__c = AgrMap.containskey(cla.name)?AgrMap.get(cla.name).Id:''
+                    ));
+                    AgrPaymentScheduleList.add(new Int_Agreement_Payment_Schedule__c(
+                        Agreement_Source_System__c = intcode.get(cla.Source_System__c)
+                        ,Schedule_Start_Date__c = crs.cllease__Date__c
+                        ,Payment_Type_Code__c = 'I' 
+                        ,Schedule_Amount__c = crs.cllease__Lease_Income__c!=Null?ScaleToTwoDecimal(crs.cllease__Lease_Income__c):0
+                        ,Schedule_Class__c = 'C' 
+                        ,Currency_Code__c = 'USD'//intcode.ContainsKey(cla.cllease__Currency_Code__c)?intcode.get(cla.cllease__Currency_Code__c):'USD'
+                        ,Agreement_Number__c = cla.name
+                        ,Agreement_Name__c = AgrMap.containskey(cla.name)?AgrMap.get(cla.name).Id:''
+                    ));
+                } 
+            }   
         }
         
         Return AgrPaymentScheduleList;
     }
     /*------------------------------------- Agreement Payment Schedules Records creation Ends-----------------------------------------------*/
-     /*------------------------------------- AGREEMENT INTEREST Records creation start-----------------------------------------------*/
+    /*------------------------------------- AGREEMENT INTEREST Records creation start-----------------------------------------------*/
     //@METHOD: To Create Int_Agreement_Interest__c object    
     Public static list<Int_Agreement_Interest__c> CreateAgreementInterests(list<Int_Agreement__c> AgreementsList,List<cllease__Lease_Account__c> ContractsList){
         list<Int_Agreement_Interest__c> AgreementInterestsToInsert = new list<Int_Agreement_Interest__c>();
@@ -399,17 +435,22 @@ Public class DMBIInterfaceRecordGeneratorJob {
         Map<String,Map<Date,Decimal>> ResStrmMap = New Map<String,Map<Date,Decimal>>();
         Map<Date,Decimal> ResInterestMap = New Map<Date,Decimal>();
         //Map<string,list<cllease__Rental_Stream__c>> AgrMap = new map<string,list<cllease__Rental_Stream__c>>();
-        
+        Map<string,list<cllease__Residual_Stream__c>> rsdMap = getResidualStreamMap(ContractsList);
+        Map<string,list<cllease__Rental_Stream__c>> ResMap = GetRentalSteamMap(ContractsList);
         for(Int_Agreement__c agr : AgreementsList){
             AgreementMap.put(agr.Agreement_Number__c,agr);
             
         }
         for (cllease__Lease_Account__c cl:ContractsList){
-            IncomeStrmList.addAll(cl.cllease__Rental_Streams__r);
-            ResidualStrmList.addAll(cl.cllease__Residual_Streams__r);
-            //AgrMap.put(cl.Name,cl.cllease__Rental_Streams__r);
-            
-         }
+            list<cllease__Rental_Stream__c> TempRsList = new list<cllease__Rental_Stream__c>();
+            if(ResMap.containskey(cl.Id)){
+                IncomeStrmList.addAll(ResMap.get(cl.Id));
+            }
+            list<cllease__Residual_Stream__c> TempRsdList = new list<cllease__Residual_Stream__c>();
+            if(rsdMap.containskey(cl.Id)){
+                ResidualStrmList.addAll(rsdMap.get(cl.Id));
+            }
+        }
         
         
         if(!IncomeStrmList.isEmpty() && !AgreementMap.isEmpty()){
@@ -425,20 +466,18 @@ Public class DMBIInterfaceRecordGeneratorJob {
         Integer CurrentYear = Date.today().Year();
         for (cllease__Rental_Stream__c Income : IncomeStrmList){
             InterestAmount = 0;
-               
+            
             Int_Agreement__c agr = AgreementMap.containskey(Income.cllease__Contract__r.name)?AgreementMap.get(Income.cllease__Contract__r.name):Null;
             if (agr!=NULL && (Income.cllease__Accrued_Flag__c == TRUE) && Income.cllease__Lease_Income__c!=Null && Income.cllease__Date__c.addmonths(1).Month() == CurrentMonth && Income.cllease__Date__c.addmonths(1).Year() == CurrentYear){               
-                  InterestAmount = Income.cllease__Lease_Income__c;
-                  for(cllease__Residual_Stream__c crs: ResidualStrmList){
-                     If(crs.cllease__Contract__r.name != Null && crs.cllease__Date__c != Null){
+                InterestAmount = Income.cllease__Lease_Income__c;
+                for(cllease__Residual_Stream__c crs: ResidualStrmList){
+                    If(crs.cllease__Contract__r.name != Null && crs.cllease__Date__c != Null){
                         If(crs.cllease__Contract__r.name == Income.cllease__Contract__r.name && crs.cllease__Date__c.IsSameDay(Income.cllease__Date__c) && crs.cllease__Accrued_Flag__c == True){
-                         InterestAmount = InterestAmount + crs.cllease__Residual_Income__c;
+                            InterestAmount = InterestAmount + crs.cllease__Residual_Income__c;
                         }
-                
-                     }
-                  }                
-                  
-                       
+                        
+                    }
+                }                
                 AgrInterestList.add(new Int_Agreement_Interest__c(
                     Agreement_Name__c = agr.Id,
                     Agreement_Source_System__c=agr.Agreement_Source_System__c,
@@ -448,31 +487,45 @@ Public class DMBIInterfaceRecordGeneratorJob {
                     Interest_Amount__c = ScaleToTwoDecimal(InterestAmount>0?InterestAmount:0)
                     //Interest_Amount__c = Income.cllease__Lease_Income__c!=Null?Income.cllease__Lease_Income__c:NULL
                 ));
-             
+                
             }
         }               
         return AgrInterestList;
     }
-         
+    
     /*------------------------------------- AGREEMENT INTEREST Records creation ends-----------------------------------------------*/
-    
-    
+    /*---- Equipments map reusable ---- */
+    Private static map<string,list<cllease__Contract_Equipment__c>> GetEquipments(list<cllease__Lease_Account__c> clleaseContractsList){
+        Map<string,list<cllease__Contract_Equipment__c>> EquipmentMap = new map<string,list<cllease__Contract_Equipment__c>>();
+        for(cllease__Contract_Equipment__c cce : DMBIStaticVariables.GetContractEquipments(clleaseContractsList)){
+            if(!EquipmentMap.containskey(cce.cllease__Contract__c)){
+                EquipmentMap.put(cce.cllease__Contract__c,new list<cllease__Contract_Equipment__c>{cce});
+            }else{
+                list<cllease__Contract_Equipment__c> TempList = EquipmentMap.get(cce.cllease__Contract__c);
+                TempList.add(cce);
+                EquipmentMap.put(cce.cllease__Contract__c,TempList);
+            }
+        }
+        return EquipmentMap;
+    }
     /*------------------------------------- ASSET Records creation starts -----------------------------------------------*/
     //@METHOD: To Create Int_ASSET__c object
     Public static list<Int_Asset__c> CreateAssets(list<cllease__Lease_Account__c> clleaseContractsList,map<string,string> codemap){//,list<Int_Agreement_Line__c> AgrlineRecords
         list<Int_Asset__c> AssetToInsert = new list<Int_Asset__c>();
         set<string> AssetnumberSet = new set<string>();
+        Map<string,list<cllease__Contract_Equipment__c>> EqmpntMap = new map<string,list<cllease__Contract_Equipment__c>>();
         Map<String,cllease__Asset_workbench__c> AssetWBMap = New Map<String,cllease__Asset_workbench__c>();
-        for(cllease__Lease_Account__c la : clleaseContractsList){
-            for(cllease__Asset_workbench__c AssetWB: la.cllease__Asset_workbenchs__r){
-                AssetWBMap.put(AssetWB.cllease__Contract_Equipment__r.name,AssetWB);
-            }
+        for(cllease__Asset_workbench__c Awb : DMBIStaticVariables.getAssetWorkbenches(clleaseContractsList)){
+            AssetWBMap.put(Awb.cllease__Contract_Equipment__r.name,Awb);
         }
-        for(int_asset__c asset : [SELECT Asset_Number__c FROM int_asset__c]){
+        for(int_asset__c asset : DMBIStaticVariables.getAssets()){
             AssetnumberSet.add(asset.Asset_Number__c);
         }
+        EqmpntMap = GetEquipments(clleaseContractsList);
         for(cllease__Lease_Account__c la : clleaseContractsList){
-            AssetToInsert.addAll(CreateNewAssets(la.cllease__Contract_Equipments__r,AssetWBMap,la.Source_System__c,String.valueof(la.cllease__Number_of_Pieces_of_Equipment__c),AssetnumberSet,codemap));
+            list<cllease__Contract_Equipment__c> CEList = new list<cllease__Contract_Equipment__c> ();
+            if(EqmpntMap.containskey(la.Id)){CEList.addAll(EqmpntMap.get(la.Id));}
+            AssetToInsert.addAll(CreateNewAssets(CEList,AssetWBMap,la.Source_System__c,String.valueof(la.cllease__Number_of_Pieces_of_Equipment__c),AssetnumberSet,codemap));
         }
         if(!AssetToInsert.isEmpty()){
             //Insert AssetToInsert;
@@ -483,16 +536,14 @@ Public class DMBIInterfaceRecordGeneratorJob {
     //@@SUBMETHOD: constructing a new Asset object list
     Private static list<Int_Asset__c> CreateNewAssets(list<cllease__Contract_Equipment__c> CEList,Map<String,cllease__Asset_workbench__c> AssetWBMap,string SourceSystem,string NopEquipment,set<string> AssetnumberSet,map<string,string> intCodeMap){
         list<Int_Asset__c> TempAssetList = new list<Int_Asset__c>();
-        string status;
+        string status = '';
         
         for (cllease__Contract_Equipment__c cce : CEList){
-          //  string mat = intCodeMap.containsKey(cce.Master_Asset_Type__c)?intCodeMap.get(cce.Master_Asset_Type__c):'118';//cce.Master_Asset_Type__c!=Null?cce.Master_Asset_Type__c:'GMAT' ;
+            //  string mat = intCodeMap.containsKey(cce.Master_Asset_Type__c)?intCodeMap.get(cce.Master_Asset_Type__c):'118';//cce.Master_Asset_Type__c!=Null?cce.Master_Asset_Type__c:'GMAT' ;
             Status = (AssetWBMap.containsKey(cce.name) && AssetWBMap.get(cce.name).cllease__Return_Status__c !=Null)?(intCodeMap.containsKey(AssetWBMap.get(cce.name).cllease__Return_Status__c)?intCodeMap.get(AssetWBMap.get(cce.name).cllease__Return_Status__c):''):'';
             If (status =='TRMREG'){
                 status = 'REMARKETED';
             }
-                
-            
             TempAssetList.add( new Int_Asset__c(
                 Asset_Source_System__c = intCodeMap.get(SourceSystem),
                 Asset_Type__c = cce.Asset_Type_Name__c,
@@ -501,7 +552,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
                 Manufacturing_Year__c = cce.cllease__Year__c,
                 Used_Indicator__c = '0',
                 Serial_Number__c = cce.cllease__Equipment_Serial_Number__c,
-               // model__c = cce.Equipment_Description1__c,
+                // model__c = cce.Equipment_Description1__c,
                 model__c = cce.cllease__Model__c,
                 model_number__c = cce.cllease__Model__c,
                 make__c = cce.Manufacturer__c,
@@ -556,19 +607,21 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Public static list<Int_Agreement_Line__c> CreateAgreementlines(list<Int_Agreement__c> AgrRecords,list<cllease__Lease_Account__c> contractsList,map<string,string> intcode){//,list<Int_Asset__c> AssetRecords
         list<Int_Agreement_Line__c> AgreementLinesToInsert = new list<Int_Agreement_Line__c>();
         map<string,int_agreement__c> AgrMap = new map<string,int_agreement__c>();
+        Map<string,list<cllease__Contract_Equipment__c>> EquipmentMap = new map<string,list<cllease__Contract_Equipment__c>>();
         string status;
         //list<cllease__Contract_Equipment__c> equipmentList = new list<cllease__Contract_Equipment__c>();
         for(Int_Agreement__c agr : AgrRecords){
             AgrMap.put(agr.Agreement_Number__c,agr);
             //AgreementLinesToInsert.add(CreateNewAgreementLine(agr));
         }
+        //Equipment map 
+        EquipmentMap = GetEquipments(contractsList);
         for(cllease__Lease_Account__c contract : contractsList){
-            for (cllease__Contract_Equipment__c eq : contract.cllease__Contract_Equipments__r){
-               /* If (eq.cllease__Status__c=='TERMINATED')
-                    status = 'TRMEAR';
-                else
-                    status = intcode.containsKey(eq.cllease__Status__c)?intcode.get(eq.cllease__Status__c):'';
-               */ 
+            list<cllease__Contract_Equipment__c> ceList = new list<cllease__Contract_Equipment__c>();
+            if(EquipmentMap.containskey(contract.Id)){
+                ceList.addAll(EquipmentMap.get(contract.Id));
+            }
+            for (cllease__Contract_Equipment__c eq : ceList){
                 AgreementLinesToInsert.add(
                     new Int_Agreement_Line__c(
                         Agreement_Name__c = AgrMap.get(eq.cllease__Contract__r.Name).Id
@@ -603,12 +656,12 @@ Public class DMBIInterfaceRecordGeneratorJob {
         Decimal NetResidualAmount = 0.00;
         Decimal UnearnedResidualIncome = 0.00;
         for(cllease__Residual_Stream__c RS: RSList){
-          If(!RS.cllease__Accrued_Flag__c)  {
-             UnearnedResidualIncome += RS.cllease__Residual_Income__c ;
-          }    
+            If(!RS.cllease__Accrued_Flag__c)  {
+                UnearnedResidualIncome += RS.cllease__Residual_Income__c ;
+            }    
         }
         NetResidualAmount = ContractResidual!=0?(BookedResidual*(1 - UnearnedResidualIncome/ContractResidual)):(BookedResidual-UnearnedResidualIncome);
-        Return NetResidualAmount;
+            Return NetResidualAmount;
     }
     
     private static integer CountRentalStream(list<cllease__Rental_Stream__c> RSList){
@@ -637,28 +690,18 @@ Public class DMBIInterfaceRecordGeneratorJob {
             AgrAssetMap.put(asset.Asset_Number__c,new int_asset__c(id=asset.Id,Asset_Source_System__c=asset.Asset_Source_System__c,Global_Master_Asset_Type_Code__c=asset.Global_Master_Asset_Type_Code__c));
         } 
         if(!AgreementLinesList.isEmpty()){            
-            for(Int_Agreement_Line__c iaf : [SELECT id,name,Agreement_Name__c,Agreement_Number__c,Agreement_Source_System__c,Agreement_Line_Number__c FROM Int_Agreement_Line__c WHERE ID IN:AgreementLinesList]){
+            for(Int_Agreement_Line__c iaf : DMBIStaticVariables.getAgreementLines(AgreementLinesList)){
                 AgrFeatureMap.put(iaf.Agreement_Number__c,new Int_Agreement_Line__c(id=iaf.id,Agreement_Name__c=iaf.Agreement_Name__c,Agreement_Source_System__c=iaf.Agreement_Source_System__c,Agreement_Number__c=iaf.Agreement_Number__c,Agreement_Line_Number__c=iaf.Agreement_Line_Number__c));
             }
+            Map<string,List<cllease__Contract_Equipment__c>> EquipmentMap = GetEquipments(contractsList);
             for(cllease__Lease_Account__c contract:contractsList){
-                EquipmentList.addAll(contract.cllease__Contract_Equipments__r);
+                if(EquipmentMap.containskey(contract.Id)){
+                    EquipmentList.addAll(EquipmentMap.get(contract.Id));
+                }
                 partyMap.put(contract.Name,contract.Account_Number__c);
             }
             
             for (cllease__Contract_Equipment__c equipment : EquipmentList){
-                /*
-                AgrFeatureList.add(new Int_Agreement_Line_Feature__c(
-                    Agreement_Source_System__c = AgrFeatureMap.containskey(equipment.cllease__Contract__r.name)?AgrFeatureMap.get(equipment.cllease__Contract__r.name).Agreement_Source_System__c:'CLCMUS',
-                    //Value_AlphaNumeric__c = 'NULL',
-                    //Value_Numeric__c = 'NULL',
-                    //Value_DateTime__c = system.today(),
-                    Agreement_Number__c = equipment.Name!=Null?equipment.Name:'AN',
-                    Agreement_Line_Number__c = equipment.Name!=Null?equipment.Name:'ALN',
-                    //Feature_Name__c = 'NULL',
-                    Agreement_Name__c = AgrFeatureMap.containskey(equipment.cllease__Contract__r.name)?AgrFeatureMap.get(equipment.cllease__Contract__r.name).Agreement_Name__c:Null,
-                    Agreement_Line_Name__c = AgrFeatureMap.containskey(equipment.cllease__Contract__r.name)?AgrFeatureMap.get(equipment.cllease__Contract__r.name).Id:null
-                ));
-                */
                 //system.debug(equipment.Name+'-->'+AgrAssetMap.get(equipment.Name).Id);
                 AgrLineAssetsToInsert.add(new int_agreement_line_asset__c(
                     Agreement_Line_Name__c = AgrFeatureMap.containskey(equipment.cllease__Contract__r.name) ? AgrFeatureMap.get(equipment.cllease__Contract__r.name).Id:Null
@@ -705,43 +748,67 @@ Public class DMBIInterfaceRecordGeneratorJob {
             }
         }
         ReturnList.addAll(AgrLineAssetsToInsert);
-        //   ReturnList.addAll(AgrFeatureList);
-        ReturnList.addAll(CollateralsToInsert);
-        ReturnList.addAll(CollateralAgreementsToInsert);
-        ReturnList.addAll(CollateralPartiesToInsert);
-        //#### Insering agreementLineAssets and Collaterals.
-        if(!ReturnList.isEmpty()){
-            Database.insert(ReturnList,false);
+        if(!CollateralsToInsert.isEmpty()){
+            Database.insert(CollateralsToInsert,false);
+        }
+        if(!CollateralAgreementsToInsert.isEmpty()){
+            Database.insert(CollateralAgreementsToInsert,false);
+        }
+        if(!CollateralPartiesToInsert.isEmpty()){
+            Database.insert(CollateralPartiesToInsert,false);
         }
         Return ReturnList;
     }
     
     /*------------------------------------- AGREEMENT LINE creation ends-----------------------------------------------*/
+    private static Map<string,list<cllease__Contract_Parties__c>> getParties(list<cllease__Lease_Account__c> contracts,string key){
+        Map<string,list<cllease__Contract_Parties__c>> PartiesMap = new Map<string,list<cllease__Contract_Parties__c>>();
+        for(cllease__Contract_Parties__c ccp : DMBIStaticVariables.getContractParties(contracts)){
+            if(key=='Id'){
+                if(!PartiesMap.containskey(ccp.cllease__Contract__c )){
+                    PartiesMap.put(ccp.cllease__Contract__c,new list<cllease__Contract_Parties__c>{ccp});
+                }else{
+                    list<cllease__Contract_Parties__c> TempList = PartiesMap.get(ccp.cllease__Contract__c);
+                    TempList.add(ccp);
+                    PartiesMap.put(ccp.cllease__Contract__c,TempList);
+                }
+            }else{
+                if(!PartiesMap.containskey(ccp.cllease__Contract__r.name )){
+                    PartiesMap.put(ccp.cllease__Contract__r.name,new list<cllease__Contract_Parties__c>{ccp});
+                }else{
+                    list<cllease__Contract_Parties__c> TempList = PartiesMap.get(ccp.cllease__Contract__r.name);
+                    TempList.add(ccp);
+                    PartiesMap.put(ccp.cllease__Contract__r.name,TempList);
+                }
+            }
+            
+        }return PartiesMap;
+    }
     /*------------------------------------- IntParty creation Starts -----------------------------------------------*/
-   // Public static list<Int_Party__c> CreateParties(list<cllease__Lease_Account__c> Contracts,map<string,string> Codemapping){  
-   Public static list<Int_Party__c> CreateParties(list<cllease__Lease_Account__c> Contracts,set<string> insertedParties,map<string,string> Codemapping){     
-       // list<Int_Party__c> NewParties = new list<Int_Party__c>();
+    Public static list<Int_Party__c> CreateParties(list<cllease__Lease_Account__c> Contracts,set<string> insertedParties,map<string,string> Codemapping){     
+        // list<Int_Party__c> NewParties = new list<Int_Party__c>();
         map<string,Int_Party__c> NewPartyMap = new map<string,int_party__c>();
-        system.debug(insertedParties.size() + '**InsertedParties**' + insertedParties);
+        Map<string,list<cllease__Contract_Parties__c>> PartiesMap = getParties(Contracts,'Id');
         for (cllease__Lease_Account__c Contract : Contracts ){
-            for (cllease__Contract_Parties__c cp : Contract.cllease__Contract_Parties__r){
+            list<cllease__Contract_Parties__c> CCPList = new list<cllease__Contract_Parties__c>();
+            if(PartiesMap.containskey(Contract.Id)){CCPList.addAll(PartiesMap.get(Contract.Id));}
+            for (cllease__Contract_Parties__c cp : CCPList){
                 if(cp.cllease__Party_Account_Name__r.Account_Number__c!=Null&& !insertedParties.contains(String.valueOf((cp.cllease__Party_Account_Name__r.Account_Number__c)))){
-                    //system.debug('***Inserting...:' + cp.cllease__Party_Account_Name__r.Account_Number__c);
                     NewPartyMap.put(cp.cllease__Party_Account_Name__r.Account_Number__c,New Int_Party__c(
-                    Party_Source_System__c = Codemapping.get(Contract.Source_System__c)
-                    ,Party_Number__c = cp.cllease__Party_Account_Name__r.Account_Number__c
-                    ,Party_Name__c = cp.cllease__Party_Account_Name__r.name
-                    ,Individual_Indicator__c = '0'
-                    ,Basel_Classification_Amount__c = 0
-                    ,PD_Percentage__c = 0
-                    ,Consolidated_Turnover_Amount__c = 0
-                    ,Industry_Code__c = Contract.cllease__Account__r.Industry_Code__c!=Null?Contract.cllease__Account__r.Industry_Code__c:Null
-                    ,Industry_Type_Code__c = Contract.cllease__Account__r.Industry_Code_Type__c!=Null?Contract.cllease__Account__r.Industry_Code_Type__c:Null
-                    ,Party_Contract_Name__c = contract.name
-                    ,PD_Rating_Score__c =  string.valueof(Contract.cllease__Account__r.genesis__Total_Risk_Score__c).substring(0,4) 
-                    ,Legal_Form_Code__c = Codemapping.containskey(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name)?Codemapping.get(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name):''
-                    //,Individual_Indicator__c = Codemapping.containskey(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name)?'1':'0'
-                ));
+                        Party_Source_System__c = Codemapping.get(Contract.Source_System__c)
+                        ,Party_Number__c = cp.cllease__Party_Account_Name__r.Account_Number__c
+                        ,Party_Name__c = cp.cllease__Party_Account_Name__r.name
+                        ,Individual_Indicator__c = '0'
+                        ,Basel_Classification_Amount__c = 0
+                        ,PD_Percentage__c = 0
+                        ,Consolidated_Turnover_Amount__c = 0
+                        ,Industry_Code__c = Contract.cllease__Account__r.Industry_Code__c!=Null?Contract.cllease__Account__r.Industry_Code__c:Null
+                        ,Industry_Type_Code__c = Contract.cllease__Account__r.Industry_Code_Type__c!=Null?Contract.cllease__Account__r.Industry_Code_Type__c:Null
+                        ,Party_Contract_Name__c = contract.name
+                        ,PD_Rating_Score__c =  string.valueof(Contract.cllease__Account__r.genesis__Total_Risk_Score__c).substring(0,4) 
+                        ,Legal_Form_Code__c = Codemapping.containskey(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name)?Codemapping.get(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name):''
+                        //,Individual_Indicator__c = Codemapping.containskey(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name)?'1':'0'
+                    ));
                 }
                 
             }   
@@ -749,8 +816,6 @@ Public class DMBIInterfaceRecordGeneratorJob {
         //### INSERT on INT PARTY objects
         if(!NewPartyMap.isEmpty()){
             Database.insert(NewPartyMap.values(),false);  
-            system.debug('******************PartyMap****************' + NewPartyMap.keyset()); 
-            //insert NewPartyMap.values();       
         }
         return NewPartyMap.values();
     }
@@ -776,10 +841,24 @@ Public class DMBIInterfaceRecordGeneratorJob {
         return PartyFeturesToInsert;
     }
     //------------------------------------- IntAgreementPartyfetures creation Ends -----------------------------------------------*/
+    //contract parties //
+    private static map<string,list<cllease__Contract_Parties__c>> getContractparties(list<cllease__Lease_Account__c> contracts){
+        map<string,list<cllease__Contract_Parties__c>> PartiesMap = new map<string,list<cllease__Contract_Parties__c>>();
+        for(cllease__Contract_Parties__c cp : DMBIStaticVariables.getContractParties(contracts)){
+            if(!PartiesMap.containskey(cp.cllease__Contract__c)){
+                PartiesMap.put(cp.cllease__Contract__c,new list<cllease__Contract_Parties__c>{cp});
+            }else{
+                list<cllease__Contract_Parties__c> TempList = PartiesMap.get(cp.cllease__Contract__c);
+                TempList.add(cp);
+                PartiesMap.put(cp.cllease__Contract__c,TempList);    
+            }
+        }return PartiesMap;
+    }
     //------------------------------------- PartyStreetAddress creation Starts---- -----------------------------------------------*/
     PUblic static list<Int_Party_Street_Address__c> CreateIntAgreementPartyStreetAddressDetails(list<Int_Party__c> IntParties,list<cllease__Lease_Account__c> Contracts,map<string,string> CodeMap){
         //list<Int_Party_Street_Address__c> PSADList = New list<Int_Party_Street_Address__c>();
         Map<string,Int_Party_Street_Address__c> PSADMap = new Map<string,Int_Party_Street_Address__c>();
+        map<string,list<cllease__Contract_Parties__c>> ContractpartiesMap =  getContractparties(Contracts);
         Map<string,Int_Party__c> PartyMap = new map<string,int_party__c>();
         for (Int_Party__c ip : IntParties){
             if(ip.id!=Null){
@@ -787,24 +866,28 @@ Public class DMBIInterfaceRecordGeneratorJob {
             }
         }
         for(cllease__Lease_Account__c Contract :Contracts){
-          for (cllease__Contract_Parties__c cp : Contract.cllease__Contract_Parties__r){
-            If(cp.cllease__Party_Account_Name__r.Account_Number__c!=Null && PartyMap.containskey(cp.cllease__Party_Account_Name__r.Account_Number__c)){ 
-                PSADMap.put(cp.cllease__Party_Account_Name__r.Account_Number__c,New Int_Party_Street_Address__c(
-                    Party_Name__c = PartyMap.containskey(cp.cllease__Party_Account_Name__r.Account_Number__c)?PartyMap.get(cp.cllease__Party_Account_Name__r.Account_Number__c).Id:Null,
-                    Party_Address_Type_Code__c = 'ESTA',
-                    Party_Number__c = cp.cllease__Party_Account_Name__r.Account_Number__c,
-                    Party_Source_System__c = CodeMap.get(Contract.Source_System__c),
-                    Country_Code__c = 'US',
-                    Address_Line_1__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_1__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_1__c: '',
-                    Address_Line_2__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_2__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_2__c: '',
-                    Address_Line_3__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_3__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_3__c: '',
-                    Address_Line_4__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_4__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_4__c: '',                    
-                    Town_Name__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.City__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.City__c: '',
-                    Region_Name__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.State__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.State__c: '',
-                    Post_Code__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Zip_Code__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Zip_Code__c: ''
-                ));
-             }  
-           } 
+            List<cllease__Contract_Parties__c> ccpList = new list<cllease__Contract_Parties__c>();
+            if(ContractpartiesMap.containskey(contract.Id)){
+                ccpList.addAll(ContractpartiesMap.get(contract.Id));
+            }
+            for (cllease__Contract_Parties__c cp : ccpList){
+                If(cp.cllease__Party_Account_Name__r.Account_Number__c!=Null && PartyMap.containskey(cp.cllease__Party_Account_Name__r.Account_Number__c)){ 
+                    PSADMap.put(cp.cllease__Party_Account_Name__r.Account_Number__c,New Int_Party_Street_Address__c(
+                        Party_Name__c = PartyMap.containskey(cp.cllease__Party_Account_Name__r.Account_Number__c)?PartyMap.get(cp.cllease__Party_Account_Name__r.Account_Number__c).Id:Null,
+                        Party_Address_Type_Code__c = 'ESTA',
+                        Party_Number__c = cp.cllease__Party_Account_Name__r.Account_Number__c,
+                        Party_Source_System__c = CodeMap.get(Contract.Source_System__c),
+                        Country_Code__c = 'US',
+                        Address_Line_1__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_1__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_1__c: '',
+                        Address_Line_2__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_2__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_2__c: '',
+                        Address_Line_3__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_3__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_3__c: '',
+                        Address_Line_4__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_4__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_4__c: '',                    
+                        Town_Name__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.City__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.City__c: '',
+                        Region_Name__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.State__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.State__c: '',
+                        Post_Code__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Zip_Code__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Zip_Code__c: ''
+                    ));
+                }  
+            } 
         }
         Return PSADMap.values();
     }    
@@ -820,36 +903,40 @@ Public class DMBIInterfaceRecordGeneratorJob {
                 PartyMap.put(ip.Party_Number__c,new Int_Party__c(id=ip.id));
             }    
         }
+        map<string,list<cllease__Contract_Parties__c>> ContractpartiesMap = getContractparties(Contracts);
         for(cllease__Lease_Account__c Contract :Contracts){
-            for (cllease__Contract_Parties__c cp : Contract.cllease__Contract_Parties__r){
+            list<cllease__Contract_Parties__c> ccpList = new list<cllease__Contract_Parties__c>();
+            //taking each list to avoid null key exception
+            if(ContractpartiesMap.containskey(contract.Id)){
+                ccpList.addAll(ContractpartiesMap.get(contract.Id));
+            }
+            for (cllease__Contract_Parties__c cp : ccpList){
                 //if(contract.cllease__Account__r.EIN__c!=Null && !PERMap.containskey(contract.cllease__Account__r.EIN__c)){
                 If(cp.cllease__Party_Account_Name__r.EIN__c!=Null && cp.cllease__Party_Account_Name__r.Account_Number__c!=Null && PartyMap.containskey(cp.cllease__Party_Account_Name__r.Account_Number__c)){ 
                     PERMap.put(cp.cllease__Party_Account_Name__r.Account_Number__c,New Int_Party_External_Reference__c(
-                    Party_Source_System__c = intmap.get(contract.Source_System__c),
-                    //External_Identifier_Type__c = contract.DLL_Reference_Number__c!=Null?'DLLUID':'',
-                    //External_Identifier_Type__c = Contract.Application__r.genesis__ID_Type__c!=NULL?(Intmap.containskey(Contract.Application__r.genesis__ID_Type__c)?Intmap.get(Contract.Application__r.genesis__ID_Type__c):''):'',
-                    External_Identifier_Type__c = 'FTI',
-                    External_Identifier__c = cp.cllease__Party_Account_Name__r.EIN__c,
-                    Party_Number__c = cp.cllease__Party_Account_Name__r.Account_Number__c,
-                    Party_Name__c = PartyMap.containskey(cp.cllease__Party_Account_Name__r.Account_Number__c)?PartyMap.get(cp.cllease__Party_Account_Name__r.Account_Number__c).Id:Null
+                        Party_Source_System__c = intmap.get(contract.Source_System__c),
+                        //External_Identifier_Type__c = contract.DLL_Reference_Number__c!=Null?'DLLUID':'',
+                        //External_Identifier_Type__c = Contract.Application__r.genesis__ID_Type__c!=NULL?(Intmap.containskey(Contract.Application__r.genesis__ID_Type__c)?Intmap.get(Contract.Application__r.genesis__ID_Type__c):''):'',
+                        External_Identifier_Type__c = 'FTI',
+                        External_Identifier__c = cp.cllease__Party_Account_Name__r.EIN__c,
+                        Party_Number__c = cp.cllease__Party_Account_Name__r.Account_Number__c,
+                        Party_Name__c = PartyMap.containskey(cp.cllease__Party_Account_Name__r.Account_Number__c)?PartyMap.get(cp.cllease__Party_Account_Name__r.Account_Number__c).Id:Null
                     ));
-                 }   
+                }   
             }
         }
+        System.debug(PERMap.values().size()+'---->'+PERMap.values());
         Return PERMap.values() ;
     }
     //------------------------------------- PartyExternalReference creation Ends -----------------------------------------------//
     /*-------------------------------------IntAgreementParties creation starts---------------------------------------------------*/
     Public static list<Int_Agreement_Party__c> CreateIntAgreementParties(list<Int_Agreement__c> AgreementRecords,list<cllease__Lease_Account__c> Contracts,list<Int_Party__c> IntParties,list<Int_Party__c> InsertedParties,map<string,string> IntCodeMapping){
         Map<String,Int_party__c> IntPartyMap = new Map<String,Int_party__c>();
-        Set<Int_party__c> AllParties = new Set<Int_party__c>(IntParties);
+        //Set<Int_party__c> AllParties = new Set<Int_party__c>(IntParties);
         list<Int_Agreement_Party__c> AgrPartiesToInsert = new list<Int_Agreement_Party__c>();
         Map<String,Int_Agreement__c> AgreementMap = new map<string,Int_Agreement__c>();
         Map<String,cllease__Lease_Account__c> ContractMap = new map<string,cllease__Lease_Account__c>();
-        List<cllease__Contract_Parties__c> PartiesList = new list<cllease__Contract_Parties__c>();
-        AllParties.addall(InsertedParties);
-        //Constructing an intparty map
-        for (Int_Party__c ip : AllParties){            
+        for (Int_Party__c ip : IntParties){            
             if(ip.id!=Null){
                 IntPartyMap.put(ip.Party_Number__c, new int_party__c(id=ip.id,Party_Number__c=ip.Party_Number__c));
             }
@@ -859,47 +946,44 @@ Public class DMBIInterfaceRecordGeneratorJob {
             AgreementMap.put(agr.Agreement_Number__c,new int_agreement__c (id = agr.Id,Agreement_Source_System__c=agr.Agreement_Source_System__c,Agreement_Number__c=agr.Agreement_Number__c));
         }
         //constructing contract map
+        Map<string,list<cllease__Contract_Parties__c>> PartiesMap = getParties(contracts,'Name');
+        //system.debug('parties map--->'+PartiesMap.size());
         for(cllease__Lease_Account__c cla : contracts){
             ContractMap.put(cla.Name,cla);
         }
-        system.debug(LoggingLevel.INFO,'***AgreementMap Size****' + AgreementMap.size());
-        system.debug(LoggingLevel.INFO,'***AgreementMap****' + AgreementMap.keyset());
         //Consolidating all the contract parites in one list.
         for (int_agreement__c agr :AgreementRecords){
-            PartiesList.addAll(contractMap.get(agr.Agreement_Number__c).cllease__Contract_Parties__r);
-            for(cllease__Contract_Parties__c cp : PartiesList){
-                if(IntCodeMapping.containskey(cp.cllease__Party_Type__c)) {
-                    AgrPartiesToInsert.add(CreateNewAgreementParty(agr,cp,IntPartyMap,IntCodeMapping));
+            List<cllease__Contract_Parties__c> PartiesList = new list<cllease__Contract_Parties__c>();
+            if(PartiesMap.containskey(agr.Agreement_Number__c)){
+                for(cllease__Contract_Parties__c ccp : PartiesMap.get(agr.Agreement_Number__c)){
+                    PartiesList.add(ccp);
                 }
-            } 
-            PartiesList.clear();   
-        }                
+                for(cllease__Contract_Parties__c cp : PartiesList){
+                    if(IntCodeMapping.containskey(cp.cllease__Party_Type__c)) {
+                        Int_Agreement_Party__c ap = CreateNewAgreementParty(agr,cp,IntPartyMap,IntCodeMapping)!=null?CreateNewAgreementParty(agr,cp,IntPartyMap,IntCodeMapping):Null;
+                        if(ap!=NULL){AgrPartiesToInsert.add(ap);}
+                    }
+                } 
+            }
+        }     
         return AgrPartiesToInsert;
     }
     //@@SUBMETHOD: constructing a new Agreement Party  object 
     Private static Int_Agreement_Party__c CreateNewAgreementParty(Int_Agreement__c agr,cllease__Contract_Parties__c cp,Map<string,Int_party__c> IntPartyMap,map<string,string> IntCodeMapping){
-        set<String> PartyAgreements = new set<String>();
+        //set<String> PartyAgreements = new set<String>();
         Int_Agreement_Party__c Agreementparty = new Int_Agreement_Party__c();
-        Map<string,Int_Agreement_Party__c> AgrPartyMap = new map<string,Int_Agreement_Party__c>();        
-           
-        //system.debug(LoggingLevel.INFO,'******AgreementNumber*****:' + agr.Agreement_Number__c);
-        //system.debug(LoggingLevel.INFO,'***Party***:'+cp.cllease__Party_Account_Name__r.Account_Number__c);                
-        Int_party__c party = IntPartyMap.containskey(String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c))?IntPartyMap.get(String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c)):Null;//IntPartyMap.get(String.valueof(cp.cllease__Contract__r.name));//
-                
-        if(party!=Null){
-             //AgrPartyMap.put(party.Party_Number__c, New Int_Agreement_Party__c(
-            
-             Agreementparty.Party_Name__c = party.Id!=Null?party.Id:'';
-             Agreementparty.Party_Role_Type_Code__c = IntCodeMapping.containskey(cp.cllease__Party_Type__c)?IntCodeMapping.get(cp.cllease__Party_Type__c):'';
-             Agreementparty.Agreement_Source_System__c = agr.Agreement_Source_System__c;
-             Agreementparty.Agreement_Number__c = String.valueof(agr.Agreement_Number__c);
-             Agreementparty.Party_Source_System__c = agr.Agreement_Source_System__c;                    
-             Agreementparty.Party_Number__c = party.Party_Number__c!=Null?party.Party_Number__c:'';
-             Agreementparty.Agreement_Name__c = agr.id;
-             
-                 
+        //Map<string,Int_Agreement_Party__c> AgrPartyMap = new map<string,Int_Agreement_Party__c>();        
+        if(IntPartyMap.containskey(String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c))){ 
+            int_party__c party = new int_party__c();
+            party = IntPartyMap.get(String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c));
+            Agreementparty.Party_Name__c = party.Id!=Null?party.Id:'';
+            Agreementparty.Party_Role_Type_Code__c = IntCodeMapping.containskey(cp.cllease__Party_Type__c)?IntCodeMapping.get(cp.cllease__Party_Type__c):'';
+            Agreementparty.Agreement_Source_System__c = agr.Agreement_Source_System__c;
+            Agreementparty.Agreement_Number__c = String.valueof(agr.Agreement_Number__c);
+            Agreementparty.Party_Source_System__c = agr.Agreement_Source_System__c;                    
+            Agreementparty.Party_Number__c = party.Party_Number__c!=Null?party.Party_Number__c:'';
+            Agreementparty.Agreement_Name__c = agr.id;
         }
-                    
         Return Agreementparty;
     }
     /*------------------------------------- IntAgreementParties creation Ends-----------------------------------------------*/
@@ -924,10 +1008,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
             'Int_Party_feature__c'=>'PartyFeature',
             'Int_Risk_Costs_Movements__c'=>'RiskCostsMovements',
             'Int_Delivery_controle__c'=>'DeliveryControl',
-            'Int_file_controle__c'=>'FileControl',
-            'Int_Agreement_Line__c'=>'AgreementLine','Int_Party__c'=>'Party','Int_Agreement_Classification__c'=>'AgreementClassification','Int_Agreement_Exposure__c'=>'AgreementExposure','Int_Agreement_Line_Feature__c'=>'AgreementLineFeature','Int_Agreement_Interest__c'=>'AgreementInterest','Int_Agreement_Line_Asset__c'=>'AgreementLineAsset','Int_Agreement_Feature__c'=>'AgreementFeature','Int_Agreement_Party__c'=>'AgreementParty','Int_Agreement_Payment_Schedule__c'=>'AgreementPaymentSchedule','Int_Party_External_Reference__c'=>'PartyExternalReference','Int_Party_Feature__c'=>'PartyFeature','Int_Party_Street_Address__c'=>'PartyStreetAddress','Int_Delivery_Control__c'=>'DeliveryControl','Int_File_Control__c'=>'FileControl','Int_Facility__c'=>'Facility','Int_Agreement_Non_IFRS__c'=>'AgreementNonIFRS','Int_Agreement_Provision__c'=>'AgreementProvision','Int_Asset_Feature__c'=>'AssetFeature','Int_Asset_Usage__c'=>'AssetUsage','Int_Collateral__c'=>'Collateral','Int_Collateral_Agreement__c'=>'CollateralAgreement','Int_Collateral_Party__c'=>'CollateralParty','Int_Facility_Feature__c'=>'FacilityFeature','Int_Facility_Party__c'=>'FacilityParty','Int_Party_Feature__c'=>'PartyFeature','Int_Risk_Costs_Movements__c'=>'RiskCostsMovements'};
-                //for (cllease__Lease_Account__c contract: Contracts){
-                //system.debug('***timestr*** ' + timestr );
+            'Int_file_controle__c'=>'FileControl','Int_Agreement_Line__c'=>'AgreementLine','Int_Party__c'=>'Party','Int_Agreement_Classification__c'=>'AgreementClassification','Int_Agreement_Exposure__c'=>'AgreementExposure','Int_Agreement_Line_Feature__c'=>'AgreementLineFeature','Int_Agreement_Interest__c'=>'AgreementInterest','Int_Agreement_Line_Asset__c'=>'AgreementLineAsset','Int_Agreement_Feature__c'=>'AgreementFeature','Int_Agreement_Party__c'=>'AgreementParty','Int_Agreement_Payment_Schedule__c'=>'AgreementPaymentSchedule','Int_Party_External_Reference__c'=>'PartyExternalReference','Int_Party_Feature__c'=>'PartyFeature','Int_Party_Street_Address__c'=>'PartyStreetAddress','Int_Delivery_Control__c'=>'DeliveryControl','Int_File_Control__c'=>'FileControl','Int_Facility__c'=>'Facility','Int_Agreement_Non_IFRS__c'=>'AgreementNonIFRS','Int_Agreement_Provision__c'=>'AgreementProvision','Int_Asset_Feature__c'=>'AssetFeature','Int_Asset_Usage__c'=>'AssetUsage','Int_Collateral__c'=>'Collateral','Int_Collateral_Agreement__c'=>'CollateralAgreement','Int_Collateral_Party__c'=>'CollateralParty','Int_Facility_Feature__c'=>'FacilityFeature','Int_Facility_Party__c'=>'FacilityParty','Int_Party_Feature__c'=>'PartyFeature','Int_Risk_Costs_Movements__c'=>'RiskCostsMovements'};
                 return new Int_File_Control__c(
                     Source_System__c = intcode.get(DMBIStaticVariables.SourceSystem),//contract.Source_System__c,
                     Start_DateTime_Extraction__c = String.ValueOf(BatchStartTime),
@@ -946,7 +1027,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
     /*------------------------------------- DELIVERY CONTROL creation Starts -----------------------------------------------*/
     Public static Int_Delivery_Control__c createDeliveryControlObjects(datetime BatchStartTime,map<string,string> intcode){
         //string sourceSystem = DMBIStaticVariables.SourceSystem;
-         
+        
         return new Int_Delivery_Control__c(
             Source_System__c = intcode.get(DMBIStaticVariables.SourceSystem),
             Extraction_DateTime__c = String.ValueOf(BatchStartTime),
@@ -972,8 +1053,6 @@ Public class DMBIInterfaceRecordGeneratorJob {
         }
         return MonthEndIndicator;
     }
-
-    
     Public static integer CountInsertedRecords(list<sobject> sobjectList){
         integer count = 0;
         for(sobject sob: sobjectList){
@@ -987,39 +1066,6 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Public static decimal ScaleToTwoDecimal(decimal amount){
         return amount!=Null?amount.setScale(2):0.00;
     }
-    /*
-    //THis method handles the bulk insert records morethan 10k
-    Public static void HandleBulkDML(list<sobject> sobjectList,String Operation){
-        map<integer,list<sobject>> HandleListMap = new map<integer,list<sobject>>();
-        integer i = 1;
-        for(Sobject sob : sobjectList ){
-            if(HandleListMap.containskey(i)){
-                list<sobject> TempList = HandleListMap.get(i);
-                TempList.add(sob);
-                if(TempList.size()<=10000){
-                    HandleListMap.put(i,TempList);
-                }
-                else{
-                    HandleListMap.put(i++,new list<sobject>{sob});
-                }
-            }
-            else{
-                HandleListMap.put(i,new list<sobject>{sob});
-            }
-        }
-        if(HandleListMap.isEmpty()){
-            for (integer key : HandleListMap.keyset()){
-                if(Operation=='Insert'){
-                    Insert HandleListMap.get(key);    
-                }
-                else if(Operation=='Delete'){
-                    DELETE HandleListMap.get(key);
-                }
-            }
-        }
-    }
-    */
-    
     //This method calculate the size of sObect
     Public static integer CalculateSize(List<sObject> sobj){
         Integer count = 0;

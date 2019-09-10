@@ -5,7 +5,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Conga Quote URL</shortDescription>
-        <value>https://c.cs41.visual.force.com</value>
+        <value>https://c.cs77.visual.force.com</value>
     </labels>
     <labels>
         <fullName>Conga_URL</fullName>
@@ -35,7 +35,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>FMZ Dealer Community Base URL</shortDescription>
-        <value>https://dev-newcofinance.cs41.force.com/dealer/</value>
+        <value>https://acceptance-leasing.cs93.force.com/dealer/</value>
     </labels>
     <labels>
         <fullName>FMZ_EDQ_Auth_Token</fullName>
@@ -96,7 +96,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>ICS Environment Id</shortDescription>
-        <value>DEV01</value>
+        <value>ACC01</value>
     </labels>
     <labels>
         <fullName>ICS_Financial_Product_Type_Code</fullName>
@@ -136,7 +136,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>ICS Reply To</shortDescription>
-        <value>https://cs41.salesforce.com/services/Soap/class/ICSResponse</value>
+        <value>https://cs93.salesforce.com/services/Soap/class/ICSResponse</value>
     </labels>
     <labels>
         <fullName>ICS_Source_System</fullName>
@@ -262,14 +262,14 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>OrgUrl</shortDescription>
-        <value>https://cs41.salesforce.com</value>
+        <value>https://na73.salesforce.com</value>
     </labels>
     <labels>
         <fullName>PM_Endpoint</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>PM Endpoint</shortDescription>
-        <value>https://apiacc.dllgroup.com</value>
+        <value>https://api.dllgroup.com</value>
     </labels>
     <labels>
         <fullName>Welcome_Email</fullName>

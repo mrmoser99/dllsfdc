@@ -9,7 +9,9 @@ public cllease__Lease_Account__c contractItem{get;set;}
       contractList = [Select ID,Name,
                              Custom_Late_Charge_Grace_Days__c,
                              Custom_Finance_Charge_Grace_Days__c,
-                             cllease__Dealer__c
+                             cllease__Dealer__c,
+                             Cost_of_Funds__c
+
                        From  cllease__Lease_Account__c 
                        Where ID = :contractID];
         if(!contractList.isEmpty())

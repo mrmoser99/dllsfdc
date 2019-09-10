@@ -8,6 +8,7 @@
     <columns>Transaction_Type__c</columns>
     <columns>NSF_Amount__c</columns>
     <columns>Invoice_Amount_Paid__c</columns>
+    <columns>Invoice_Number__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

@@ -179,6 +179,23 @@
 						if (onChangeAction) {
 							$A.enqueueAction(onChangeAction);
 						}
+            var action = component.get('c.getEquipment');
+            action.setParams({
+                applicationId: component.get('v.applicationId')
+            });
+            action.setCallback(this, function(response) {
+                var state = response.getState();
+                if (state === 'SUCCESS') {
+                    var equipment = response.getReturnValue();
+                    component.set('v.equipment', response.getReturnValue());
+                } else if (state === 'ERROR') {
+                    let error = response.getError();
+                    if (error && error[0]) {
+                        console.log(error[0].message);
+                    }
+                }
+            });
+            $A.enqueueAction(action);
 					} else if (state === 'ERROR') {
 						let error = response.getError();
 						if (error && error[0]) {

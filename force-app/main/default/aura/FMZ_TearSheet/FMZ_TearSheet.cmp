@@ -1,0 +1,190 @@
+<aura:component description="FMZ_TearSheet" controller="FMZ_PortfolioManager">
+  <!-- CUSTOMER INFORMATION BEGIN -->
+  <aura:attribute name="customerName" type="String" />
+  <aura:attribute name="accountNumber" type="String" />
+  <aura:attribute name="billingAddress" type="String" />
+  <aura:attribute name="equipmentLocationAddress" type="String" />
+  <aura:attribute name="leaseSigner" type="String" />
+  <!-- CUSTOMER INFORMATION END -->
+
+  <!-- GENERAL INFORMATION BEGIN -->
+  <aura:attribute name="bookedDate" type="Date" />
+  <aura:attribute name="maturityDate" type="Date" />
+  <aura:attribute name="term" type="String" />
+  <aura:attribute name="remainingPayments" type="String" />
+  <aura:attribute name="purchaseOption" type="String" />
+  <aura:attribute name="leaseStatus" type="String" />
+  <aura:attribute name="preTaxEquipmentPayment" type="String" />
+  <aura:attribute name="servicePayment" type="String" />
+  <aura:attribute name="daysDelinquent" type="String" />
+  <!-- GENERAL INFORMATION END -->
+
+  <!-- EQUIPMENT SUMMARY BEGIN -->
+  <aura:attribute name="data" type="Object" />
+  <aura:attribute name="columns" type="List" />
+  <!-- EQUIPMENT SUMMARY END -->
+
+  <!-- MISC BEGIN -->
+  <aura:attribute name="leaseNumber" type="String" default="25110465" />
+  <aura:attribute name="isLoading" type="Boolean" default="false" />
+  <aura:attribute name="leaseDetails" type="String" />
+  <!-- MISC BEGIN -->
+
+  <!-- HANDLERS BEGIN -->
+  <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+  <!-- HANDLERS END -->
+
+  <!-- COMPONENT BEGIN -->
+  <lightning:notificationsLibrary aura:id="notifLib" />
+  <lightning:overlayLibrary aura:id="overlayLib" />
+  <div class="container">
+    <aura:if isTrue="{!v.isLoading}">
+      <lightning:spinner alternativeText="Loading" />
+    </aura:if>
+    <div class="slds-form slds-grid slds-wrap">
+      <h1 class="slds-size_1-of-1 slds-m-top_large slds-p-horizontal_small"
+        >Customer information</h1
+      >
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="text"
+        value="{!v.customerName}"
+        name="Customer Name"
+        label="Customer Name"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="text"
+        value="{!v.accountNumber}"
+        name="Account number"
+        label="Account number"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="text"
+        value="{!v.billingAddress}"
+        name="Billing address"
+        label="Billing address"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="text"
+        value="{!v.equipmentLocationAddress}"
+        name="Equipment location address"
+        label="Equipment location address"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="text"
+        value="{!v.leaseSigner}"
+        name="Lease signer"
+        label="Lease signer"
+        disabled="true"
+      />
+    </div>
+
+    <div class="slds-form slds-grid slds-wrap">
+      <h1 class="slds-size_1-of-1 slds-m-top_large slds-p-horizontal_small"
+        >General information</h1
+      >
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="date"
+        dateStyle="short"
+        value="{!v.bookedDate}"
+        name="Contract Origination Date"
+        label="Contract Origination Date"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="date"
+        dateStyle="short"
+        value="{!v.maturityDate}"
+        name="Contract Maturity date"
+        label="Contract Maturity date"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="text"
+        value="{!v.term}"
+        name="Term"
+        label="Term"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="text"
+        value="{!v.remainingPayments}"
+        name="Remaining payments"
+        label="Remaining payments"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="text"
+        value="{!v.purchaseOption}"
+        name="Purchase option"
+        label="Purchase option"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="text"
+        value="{!v.daysDelinquent}"
+        name="Days Delinquent"
+        label="Days Delinquent"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="number"
+        formatter="currency"
+        value="{!v.preTaxEquipmentPayment}"
+        name="Pre-tax equipment payment"
+        label="Pre-tax equipment payment"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="number"
+        formatter="currency"
+        value="{!v.servicePayment}"
+        name="Service Payment"
+        label="Service Payment"
+        disabled="true"
+      />
+      <lightning:input
+        class="slds-size_1-of-2 slds-p-horizontal_small"
+        type="text"
+        value="{!v.leaseStatus}"
+        name="Lease status"
+        label="Lease status"
+        disabled="true"
+      />
+    </div>
+
+    <div class="slds-form slds-grid slds-wrap">
+      <h1 class="slds-size_1-of-1 slds-m-top_large slds-p-horizontal_small"
+        >Equipment summary</h1
+      >
+      <div
+        class="slds-size_1-of-1 slds-p-horizontal_small"
+        style="height: 300px"
+      >
+        <lightning:datatable
+          keyField="id"
+          data="{!v.data}"
+          columns="{!v.columns}"
+          hideCheckboxColumn="true"
+        />
+      </div>
+    </div>
+  </div>
+  <!-- COMPONENT END -->
+</aura:component>

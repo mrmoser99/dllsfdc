@@ -10,13 +10,13 @@
     <aura:attribute name="error" type="String" access="private"/>
     <aura:attribute name="installAddresses" type="List" access="private"/>
     <aura:attribute name="totalEquipmentCost" type="Double" access="private"/>
-    
+
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
     <aura:handler event="c:FMZ_Application_Refresh" action="{!c.handleRefresh}"/>
 
     <aura:method name="saveAndValidate" access="public"/>
 	<aura:registerEvent name="dataChangedEvent" type="c:FMZ_Application_Refresh"/>
-    
+
     <!-- EQUIPMENT LOOKUP AND ADD -->
     <lightning:layout verticalAlign="start">
         <lightning:layoutItem size="6" largeDeviceSize="6" mediumDeviceSize="8" smallDeviceSize="10" class="slds-p-right_x-small">
@@ -94,15 +94,27 @@
                                          messageWhenValueMissing="Selling Price is required."
                                          messageWhenRangeUnderflow="Selling Price must be over $0."
                                          onchange="{!c.handleEquipmentChange}" onblur="{!c.handleEquipmentBlur}"/>
+                       <aura:if isTrue="{!not(empty(e.genesis__Application__r.Oracle_Trade_Up_Amount__c))}">
+                         <div>
+                            <div>Trade-Up Amount:</div>
+                            <lightning:formattedNumber value="{!e.Oracle_Trade_Up_Amount__c}"
+                                                    style="currency" currencyCode="USD"/>
+                         </div>
+                         <div>
+                            <div>Total:</div>
+                            <lightning:formattedNumber value="{!e.Oracle_Trade_Up_Amount__c + e.genesis__Estimated_Selling_Price__c}"
+                                                    style="currency" currencyCode="USD"/>
+                         </div>
+                      </aura:if>
 						<!--<div class="slds-p-top_x-small">-->
 							<!--Upfront Tax:&nbsp;<lightning:formattedNumber value="{!e.Upfront_Tax_Amount__c}" style="currency"-->
 													   <!--maximumFractionDigits="0" currencyCode="USD"/>-->
 						<!--</div>-->
-						<div class="slds-p-top_x-small">
-							<lightning:input aura:id="exempt" type="checkbox" label="Tax Exempt"
-											 value="{!e.Tax_Exempt__c}" onchange="{!c.handleEquipmentBlur}"
-											 checked="{!e.Tax_Exempt__c}" required="false"/>
-						</div>
+            						<div class="slds-p-top_x-small">
+            							<lightning:input aura:id="exempt" type="checkbox" label="Tax Exempt"
+            											 value="{!e.Tax_Exempt__c}" onchange="{!c.handleEquipmentBlur}"
+            											 checked="{!e.Tax_Exempt__c}" required="false"/>
+            						</div>
                     </td>
                     <td class="slds-text-align_center">
                         <lightning:button aura:id="deleteBtn" label="Delete" variant="base"

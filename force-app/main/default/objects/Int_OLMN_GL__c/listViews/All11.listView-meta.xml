@@ -18,7 +18,7 @@
     <filters>
         <field>JOURNAL_DATE__c</field>
         <operation>equals</operation>
-        <value>20190131</value>
+        <value>20190531</value>
     </filters>
     <label>20190131</label>
 </ListView>

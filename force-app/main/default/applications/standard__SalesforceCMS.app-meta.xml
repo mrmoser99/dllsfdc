@@ -6,12 +6,8 @@
     <label>Salesforce CMS</label>
     <navType>Console</navType>
     <tabs>standard-CmsAuthorHome</tabs>
-    <tabs>clcommon__Bank_Account__c</tabs>
     <uiType>Lightning</uiType>
     <workspaceConfig>
-        <mappings>
-            <tab>clcommon__Bank_Account__c</tab>
-        </mappings>
         <mappings>
             <tab>standard-CmsAuthorHome</tab>
         </mappings>

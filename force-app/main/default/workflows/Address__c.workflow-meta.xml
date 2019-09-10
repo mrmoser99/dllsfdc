@@ -39,7 +39,7 @@
         </actions>
         <active>true</active>
         <criteriaItems>
-            <field>Address__c.Address_Validation__c</field>
+            <field>Address__c.Validation_Status__c</field>
             <operation>notEqual</operation>
             <value>Verified by Experian</value>
         </criteriaItems>

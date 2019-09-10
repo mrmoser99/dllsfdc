@@ -6,8 +6,8 @@
     <columns>Results__c</columns>
     <columns>User__c</columns>
     <columns>Seconds__c</columns>
-    <columns>Quote__c</columns>
     <columns>Lease__c</columns>
+    <columns>Quote__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

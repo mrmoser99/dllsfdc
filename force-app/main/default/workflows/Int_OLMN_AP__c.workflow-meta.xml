@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <alerts>
+        <fullName>Funding_Payment_Issue</fullName>
+        <description>Funding/Payment Issue</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Internal_Notifications</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>cnotify__Notification_Templates/Dealer_Delay_Funding_Notice</template>
+    </alerts>
+    <alerts>
         <fullName>Notify_AP</fullName>
+        <ccEmails>askap@leasedirect.com</ccEmails>
         <description>Notify AP</description>
         <protected>false</protected>
         <recipients>
@@ -38,6 +51,31 @@
         </criteriaItems>
         <description>This will send a notice to ap if a funding transaction is immiment.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Funding or Passthru Issue</fullName>
+        <active>true</active>
+        <criteriaItems>
+            <field>Int_OLMN_AP__c.CreatedDate</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Int_OLMN_AP__c.Committed__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <description>If a funding or pass thru record is created and it is still there at 5PM the notify the users of payment failure</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Funding_Payment_Issue</name>
+                <type>Alert</type>
+            </actions>
+            <offsetFromField>Int_OLMN_AP__c.Delay_Notice_Date_Time__c</offsetFromField>
+            <timeLength>0</timeLength>
+            <workflowTimeTriggerUnit>Hours</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
     </rules>
     <rules>
         <fullName>Payment Confirmation Delay Notice</fullName>

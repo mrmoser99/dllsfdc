@@ -3,6 +3,6 @@
     <description>Created by Lightning App Builder</description>
     <flexiPage>PM_Tester</flexiPage>
     <label>PM Tester</label>
-    <mobileReady>true</mobileReady>
+    <mobileReady>false</mobileReady>
     <motif>Custom52: Balls</motif>
 </CustomTab>

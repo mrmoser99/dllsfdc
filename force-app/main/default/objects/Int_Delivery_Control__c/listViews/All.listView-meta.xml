@@ -3,7 +3,6 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>Extraction_DateTime__c</columns>
-    <columns>Reporting_Date__c</columns>
     <columns>End_Of_Day_Indicator__c</columns>
     <columns>End_Of_Month_Indicator__c</columns>
     <columns>End_Of_Week_Indicator__c</columns>

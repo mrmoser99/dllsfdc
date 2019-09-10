@@ -8,4 +8,3 @@ public with sharing class TestBatchStats {
 		
  	}
 }
-

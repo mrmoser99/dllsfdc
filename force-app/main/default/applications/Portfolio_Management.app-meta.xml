@@ -14,6 +14,7 @@
     <tabs>PM_Tester</tabs>
     <tabs>Lease_OLM_Quote__c</tabs>
     <tabs>PM_Log__c</tabs>
+    <tabs>PM_Oauth_Token__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Portfolio_Management_UtilityBar</utilityBar>
 </CustomApplication>

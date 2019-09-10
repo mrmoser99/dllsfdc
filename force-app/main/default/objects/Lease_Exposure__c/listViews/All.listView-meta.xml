@@ -2,8 +2,13 @@
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>All</fullName>
     <columns>NAME</columns>
-    <columns>Formula__c</columns>
     <columns>Exposure__c</columns>
+    <columns>UPDATEDBY_USER</columns>
     <filterScope>Everything</filterScope>
+    <filters>
+        <field>Exposure__c</field>
+        <operation>notEqual</operation>
+        <value>0</value>
+    </filters>
     <label>All</label>
 </ListView>

@@ -1,200 +1,420 @@
 <aura:component controller="FMZ_ApplicationSummaryController">
+  <aura:attribute name="applicationId" type="Id" required="true" />
+  <aura:attribute name="recalculating" type="Boolean" default="false" />
+  <aura:attribute name="pricingMessage" type="String" />
 
-    <aura:attribute name="applicationId" type="Id" required="true"/>
-    <aura:attribute name="recalculating" type="Boolean" default="false"/>
-    <aura:attribute name="pricingMessage" type="String"/>
+  <aura:attribute name="application" type="Object" access="private" />
+  <aura:attribute name="approval" type="Object" access="private" />
+  <aura:attribute name="billing" type="Object" access="private" />
+  <aura:attribute name="locations" type="List" access="private" />
+  <aura:attribute name="isQuoteModuleVisible" type="Boolean" default="false" />
 
-    <aura:attribute name="application" type="Object" access="private"/>
-    <aura:attribute name="approval" type="Object" access="private"/>
-    <aura:attribute name="billing" type="Object" access="private"/>
-    <aura:attribute name="locations" type="List" access="private"/>
+  <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
 
-    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+  <aura:method name="updateView" />
+  <lightning:notificationsLibrary aura:id="notifLib" />
+  <aura:if isTrue="{!v.isQuoteModuleVisible}">
+    <section
+      role="dialog"
+      tabindex="-1"
+      aria-labelledby="modal-heading-01"
+      aria-modal="true"
+      aria-describedby="modal-content-id-1"
+      class="slds-modal slds-fade-in-open"
+    >
+      <div class="slds-modal__container" style="width: 95%;max-width: 95%;">
+        <header class="slds-modal__header">
+          <lightning:buttonIcon
+            iconName="utility:close"
+            onclick="{!c.closeModal}"
+            alternativeText="close"
+            variant="bare-inverse"
+            class="slds-modal__close"
+          />
+          <h2
+            id="modal-heading-01"
+            class="slds-text-heading_medium slds-hyphenate"
+            >Quote - {!v.application.Oracle_Trade_up_Lease_Number__c}</h2
+          >
+        </header>
+        <c:FMZ_TradeUpQuote
+          leaseNumber="{!v.application.Oracle_Trade_up_Lease_Number__c}"
+          isQuoteModuleVisible="{!v.isQuoteModuleVisible}"
+          applicationId="{!v.applicationId}"
+        />
+      </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+  </aura:if>
+  <div class="slds-card slds-p-around_small">
+    <table class="slds-m-top_small slds-table">
+      <tr>
+        <td colspan="2">
+          <div class="slds-text-heading--small slds-text-color_success"
+            >CREDIT APPROVAL</div
+          >
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold new-highlight" style="width:10rem;"
+          >Approved For</td
+        >
+        <td class="new-highlight">
+          <lightning:formattedNumber
+            value="{!v.approval.Estimated_Financed_Amount__c}"
+            style="currency"
+            currencyCode="USD"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold new-highlight" style="width:10rem;"
+          >Financed Amount</td
+        >
+        <td class="new-highlight">
+          <lightning:formattedNumber
+            value="{!v.application.genesis__Financed_Amount__c}"
+            style="currency"
+            currencyCode="USD"
+          />
+          <!-- + (empty(v.application.genesis__Other_Financed_fees__c) ? 0 : v.application.genesis__Other_Financed_fees__c) -->
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold slds-text-color_success new-highlight"
+          >Remaining Credit</td
+        >
+        <td class="slds-text-title_bold slds-text-color_success new-highlight">
+          <lightning:formattedNumber
+            value="{!v.approval.Estimated_Financed_Amount__c - (v.application.genesis__Financed_Amount__c)}"
+            style="currency"
+            currencyCode="USD"
+          />
+          <!-- +(empty(v.application.genesis__Other_Financed_fees__c) ? 0 : v.application.genesis__Other_Financed_fees__c) -->
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="slds-is-relative">
+          <aura:if isTrue="{!v.recalculating}">
+            Recalculating...
+            <lightning:spinner
+              alternativeText="Recalculating"
+              variant="brand"
+              size="small"
+            />
+          </aura:if>
+        </td>
+      </tr>
+      <aura:if
+        isTrue="{! not(greaterthanorequal(v.approval.Estimated_Financed_Amount__c - (v.application.genesis__Financed_Amount__c),  0))}"
+      >
+        <!-- +(empty(v.application.genesis__Other_Financed_fees__c) ? 0 : v.application.genesis__Other_Financed_fees__c) -->
+        <tr>
+          <td colspan="2">
+            <div
+              class="slds-text-title slds-text-title_bold slds-text-color_error"
+              style="white-space:normal;"
+              >This customer is not Approved for this Amount</div
+            >
+          </td>
+        </tr>
+      </aura:if>
+    </table>
+  </div>
 
-    <aura:method name="updateView"/>
-
-    <div class="slds-card slds-p-around_small">
-
-        <table class="slds-m-top_small slds-table">
-            <tr>
-                <td colspan="2">
-                    <div class="slds-text-heading--small slds-text-color_success">CREDIT APPROVAL</div>
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold new-highlight" style="width:10rem;">Approved For</td>
-                <td class="new-highlight">
-                    <lightning:formattedNumber value="{!v.approval.Estimated_Financed_Amount__c}"
-                                               style="currency" currencyCode="USD"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold new-highlight" style="width:10rem;">Financed Amount</td>
-                <td class="new-highlight">
-                    <lightning:formattedNumber value="{!v.application.genesis__Financed_Amount__c + (empty(v.application.genesis__Other_Financed_fees__c) ? 0 : v.application.genesis__Other_Financed_fees__c)}"
-                                               style="currency" currencyCode="USD"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold slds-text-color_success new-highlight">Remaining Credit</td>
-                <td class="slds-text-title_bold slds-text-color_success new-highlight">
-                    <lightning:formattedNumber value="{!v.approval.Estimated_Financed_Amount__c - (v.application.genesis__Financed_Amount__c +(empty(v.application.genesis__Other_Financed_fees__c) ? 0 : v.application.genesis__Other_Financed_fees__c))}"
-                                               style="currency" currencyCode="USD"/>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="slds-is-relative">
-                    <aura:if isTrue="{!v.recalculating}">
-                        Recalculating...
-                        <lightning:spinner alternativeText="Recalculating" variant="brand" size="small"/>
-                    </aura:if>
-                </td>
-            </tr>
-            <aura:if isTrue="{! not(greaterthanorequal(v.approval.Estimated_Financed_Amount__c - (v.application.genesis__Financed_Amount__c +(empty(v.application.genesis__Other_Financed_fees__c) ? 0 : v.application.genesis__Other_Financed_fees__c)),  0))}">
-                <tr>
-                    <td colspan="2">
-                        <div class="slds-text-title slds-text-title_bold slds-text-color_error" style="white-space:normal;">This customer is not Approved for this Amount</div>
-                    </td>
-                </tr>
-            </aura:if> 
-        </table>
-
-    </div>
-
+  <aura:if isTrue="{!not(empty(v.application.Oracle_Trade_up_Lease_Number__c))}">
     <div class="slds-card slds-p-around_small" style="margin-top: .5rem">
+      <table class="slds-m-top_small slds-table">
+        <tr>
+          <td colspan="2">
+            <div class="slds-text-heading--small slds-text-color_success"
+              >TRADE-UP DETAILS</div
+            >
+          </td>
+        </tr>
+        <tr>
+          <td class="slds-text-title_bold new-highlight" style="width:10rem;"
+            >Lease Number</td
+          >
+          <td class="new-highlight">
+            {!v.application.Oracle_Trade_up_Lease_Number__c}
+          </td>
+        </tr>
+        <tr>
+          <td class="slds-text-title_bold new-highlight" style="width:10rem;"
+            >Quote Number</td
+          >
+          <td class="new-highlight">
+            {!v.application.Oracle_Trade_up_Quote_Number__c_Display}
+          </td>
+        </tr>
 
-        <table class="slds-m-top_small slds-table">
-            <tr>
-                <td colspan="2">
-                    <div class="slds-text-heading--small slds-text-color_success">ORDER SUMMARY</div>
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold" style="width:10rem;vertical-align:top;">Customer</td>
-                <td>
-                    <p class="slds-truncate slds-cell-wrap" title="{!v.application.genesis__Account__r.Name}">{!v.application.genesis__Account__r.Name}</p>
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold slds-align-top">Bill To</td>
-                <td>
-                    <div>{!v.billing.Address_Line_1__c}</div>
-                    <div class="slds-p-bottom_x-small">{!v.billing.City__c},{!' '}{!v.billing.State__c}{!' '}{!v.billing.Zip_Code__c}<br/>{!v.billing.Email_Address__c}</div>
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold slds-align-top">Install Locations</td>
-                <td>
-                    <aura:iteration items="{!v.locations}" var="l">
-                        <div>{!l.Address_Line_1__c}</div>
-                        <div class="slds-p-bottom_x-small">{!l.City__c},{!' '}{!l.State__c}{!' '}{!l.Zip_Code__c}</div>
-                    </aura:iteration>
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold">Equipment</td>
-                <td>
-                    {!v.application.No_of_Equipments__c}&nbsp;Units
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold">Lease Term</td>
-                <td>
-                    {!v.application.genesis__Term__c}&nbsp;
-					{!v.application.genesis__Payment_Frequency__c == 'MONTHLY' ? ' Months' :
-					v.application.genesis__Payment_Frequency__c == 'QUARTERLY' ? ' Quarters' :
-					v.application.genesis__Payment_Frequency__c == 'ANNUAL' ? ' Years' : ''}
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold">Rate Factor</td>
-                <td>
-                    <lightning:formattedNumber value="{!v.application.Pricing_Rate_Factor__c}"
-                                               minimumIntegerDigits="1" minimumFractionDigits="8"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold">First Payment Due</td>
-                <td>
-                    <lightning:formattedDateTime value="{!v.application.genesis__Expected_First_Payment_Date__c}"
-                                                 year="numeric" month="2-digit" day="2-digit"/>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <div class="slds-text-heading--small slds-text-color_success slds-m-top_medium">
-						{!(empty(v.application.genesis__Payment_Frequency__c) ? '' : v.application.genesis__Payment_Frequency__c + ' ') + 'PRICE'}
-					</div>
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold new-highlight" style="width:10rem;">Equipment</td>
-                <td class="new-highlight">
-                    <lightning:formattedNumber value="{!v.application.genesis__Payment_Amount__c}"
-                                               style="currency" currencyCode="USD"/>
-                    <!--<lightning:formattedNumber value="{!v.application.Pre_Upfront_Tax_Payment_Amount1__c}"-->
-                                               <!--style="currency" currencyCode="USD"/>-->
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold new-highlight">Services</td>
-                <td class="new-highlight">
-                    <lightning:formattedNumber value="{!v.application.Service_Fee__c}"
-                                               style="currency" currencyCode="USD"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold slds-text-color_success new-highlight">Lease Payment</td>
-                <td class="slds-text-title_bold slds-text-color_success new-highlight">
-                    <lightning:formattedNumber value="{!v.application.genesis__Payment_Amount__c+v.application.Service_Fee__c}"
-                                               style="currency" currencyCode="USD"/><!-- v.application.Pre_Upfront_Tax_Payment_Amount__c + v.application.Pre_Upfront_Tax_Payment_Amount1__c  -->
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold new-highlight">Estimated Property Tax</td>
-                <td class="new-highlight">
-                    <lightning:formattedNumber value="{!v.application.Total_Estimated_Property_Tax__c}"
-                                               style="currency" currencyCode="USD"/>
-                </td>
-            </tr>
-            <tr>
-                <td class="slds-text-title_bold new-highlight">Insurance</td>
-                <td class="new-highlight">
-                    <lightning:formattedNumber value="{!v.application.Total_Insurance_Fees__c}"
-                                               style="currency" currencyCode="USD"/>
-                </td>
-            </tr>
-            <!--<tr>-->
-                <!--<td class="slds-text-title_bold new-highlight">Financed Sales Tax</td>-->
-                <!--<td class="new-highlight">-->
-                    <!--&lt;!&ndash;<lightning:formattedNumber value="{!sub(v.application.Pre_Upfront_Tax_Payment_Amount__c,v.application.Pre_Upfront_Tax_Payment_Amount1__c)}"&ndash;&gt;-->
-                                               <!--&lt;!&ndash;style="currency" currencyCode="USD"/>&ndash;&gt;-->
-                    <!--<lightning:formattedNumber value="{!sub(v.application.Total_Lease_Payment__c,v.application.genesis__Payment_Amount__c)}"-->
-                                               <!--style="currency" currencyCode="USD"/>-->
-                <!--</td>-->
-            <!--</tr>-->
-            <tr>
-                <td class="slds-text-title_bold slds-text-color_success new-highlight">Invoice Total</td>
-                <td class="slds-text-title_bold slds-text-color_success new-highlight">
-                    <lightning:formattedNumber value="{!v.application.genesis__Payment_Amount__c+v.application.Total_Insurance_Fees__c+v.application.Service_Fee__c+v.application.Total_Estimated_Property_Tax__c}"
-                                               style="currency" currencyCode="USD"/><!-- include v.application.Pre_Upfront_Tax_Payment_Amount__c -->
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="slds-is-relative">
-                    <aura:if isTrue="{!v.recalculating}">
-                        Recalculating...
-                        <lightning:spinner alternativeText="Recalculating" variant="brand" size="small"/>
-                    </aura:if>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <div class="slds-text-title slds-text-title_bold slds-text-color_error" style="white-space:normal;">{!v.pricingMessage}</div>
-                </td>
-            </tr>
-        </table>
-
+        <tr>
+          <td class="slds-text-title_bold new-highlight" style="width:10rem;"
+            >Quote Expiration Date</td
+          >
+          <td class="new-highlight">
+            {!v.application.Oracle_Trade_up_Quote_Expiration_Date__c}
+          </td>
+        </tr>
+        <tr>
+          <td class="slds-text-title_bold new-highlight" style="width:10rem;"
+            >Financed Amount</td
+          >
+          <td class="new-highlight">
+            <lightning:formattedNumber
+              value="{!v.application.genesis__Financed_Amount__c }"
+              style="currency"
+              currencyCode="USD"
+            />
+            <!-- + (empty(v.application.genesis__Other_Financed_fees__c) ? 0 : v.application.genesis__Other_Financed_fees__c) -->
+          </td>
+        </tr>
+        <tr>
+          <td
+            class="slds-text-color_destructive slds-text-title_bold new-highlight"
+            style="width:10rem;"
+            >Quote Amount</td
+          >
+          <td
+            class="new-highlight slds-text-title_bold slds-text-color_destructive"
+          >
+            <lightning:formattedNumber
+              value="{!v.application.genesis__Other_Financed_fees__c}"
+              style="currency"
+              currencyCode="USD"
+            />
+          </td>
+        </tr>
+        <tr>
+          <td
+            class="slds-text-title_bold slds-text-color_success new-highlight"
+            style="width:10rem;"
+            >Funded Amount</td
+          >
+          <td
+            class="slds-text-title_bold slds-text-color_success new-highlight"
+          >
+            <lightning:formattedNumber
+              value="{!v.application.genesis__Financed_Amount__c - v.application.genesis__Other_Financed_fees__c}"
+              style="currency"
+              currencyCode="USD"
+            />
+          </td>
+        </tr>
+        <tr style="width: 100%">
+          <lightning:button
+            variant="brand"
+            label="Requote"
+            title="Requote"
+            onclick="{!c.quoteModuleHandler}"
+          />
+        </tr>
+        <tr>
+          <td colspan="2" class="slds-is-relative">
+            <aura:if isTrue="{!v.recalculating}">
+              Recalculating...
+              <lightning:spinner
+                alternativeText="Recalculating"
+                variant="brand"
+                size="small"
+              />
+            </aura:if>
+          </td>
+        </tr>
+      </table>
     </div>
+  </aura:if>
 
+  <div class="slds-card slds-p-around_small" style="margin-top: .5rem">
+    <table class="slds-m-top_small slds-table">
+      <tr>
+        <td colspan="2">
+          <div class="slds-text-heading--small slds-text-color_success"
+            >ORDER SUMMARY</div
+          >
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold" style="width:10rem;vertical-align:top;"
+          >Customer</td
+        >
+        <td>
+          <p
+            class="slds-truncate slds-cell-wrap"
+            title="{!v.application.genesis__Account__r.Name}"
+            >{!v.application.genesis__Account__r.Name}</p
+          >
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold slds-align-top">Bill To</td>
+        <td>
+          <div>{!v.billing.Address_Line_1__c}</div>
+          <div class="slds-p-bottom_x-small"
+            >{!v.billing.City__c},{!' '}{!v.billing.State__c}{!'
+            '}{!v.billing.Zip_Code__c}<br />{!v.billing.Email_Address__c}</div
+          >
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold slds-align-top">Install Locations</td>
+        <td>
+          <aura:iteration items="{!v.locations}" var="l">
+            <div>{!l.Address_Line_1__c}</div>
+            <div class="slds-p-bottom_x-small"
+              >{!l.City__c},{!' '}{!l.State__c}{!' '}{!l.Zip_Code__c}</div
+            >
+          </aura:iteration>
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold">Equipment</td>
+        <td>
+          {!v.application.No_of_Equipments__c}&nbsp;Units
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold">Lease Term</td>
+        <td>
+          {!v.application.genesis__Term__c}&nbsp;
+          {!v.application.genesis__Payment_Frequency__c == 'MONTHLY' ? ' Months'
+          : v.application.genesis__Payment_Frequency__c == 'QUARTERLY' ? '
+          Quarters' : v.application.genesis__Payment_Frequency__c == 'ANNUAL' ?
+          ' Years' : ''}
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold">Rate Factor</td>
+        <td>
+          <lightning:formattedNumber
+            value="{!v.application.Pricing_Rate_Factor__c}"
+            minimumIntegerDigits="1"
+            minimumFractionDigits="8"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold">First Payment Due</td>
+        <td>
+          <lightning:formattedDateTime
+            value="{!v.application.genesis__Expected_First_Payment_Date__c}"
+            year="numeric"
+            month="2-digit"
+            day="2-digit"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div
+            class="slds-text-heading--small slds-text-color_success slds-m-top_medium"
+          >
+            {!(empty(v.application.genesis__Payment_Frequency__c) ? '' :
+            v.application.genesis__Payment_Frequency__c + ' ') + 'PRICE'}
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold new-highlight" style="width:10rem;"
+          >Equipment</td
+        >
+        <td class="new-highlight">
+          <lightning:formattedNumber
+            value="{!v.application.genesis__Payment_Amount__c}"
+            style="currency"
+            currencyCode="USD"
+          />
+          <!--<lightning:formattedNumber value="{!v.application.Pre_Upfront_Tax_Payment_Amount1__c}"-->
+          <!--style="currency" currencyCode="USD"/>-->
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold new-highlight">Services</td>
+        <td class="new-highlight">
+          <lightning:formattedNumber
+            value="{!v.application.Service_Fee__c}"
+            style="currency"
+            currencyCode="USD"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold slds-text-color_success new-highlight"
+          >Lease Payment</td
+        >
+        <td class="slds-text-title_bold slds-text-color_success new-highlight">
+          <lightning:formattedNumber
+            value="{!v.application.genesis__Payment_Amount__c+v.application.Service_Fee__c}"
+            style="currency"
+            currencyCode="USD"
+          /><!-- v.application.Pre_Upfront_Tax_Payment_Amount__c + v.application.Pre_Upfront_Tax_Payment_Amount1__c  -->
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold new-highlight"
+          >Estimated Property Tax</td
+        >
+        <td class="new-highlight">
+          <lightning:formattedNumber
+            value="{!v.application.Total_Estimated_Property_Tax__c}"
+            style="currency"
+            currencyCode="USD"
+          />
+        </td>
+      </tr>
+      <tr>
+        <td class="slds-text-title_bold new-highlight">Insurance</td>
+        <td class="new-highlight">
+          <lightning:formattedNumber
+            value="{!v.application.Total_Insurance_Fees__c}"
+            style="currency"
+            currencyCode="USD"
+          />
+        </td>
+      </tr>
+      <!--<tr>-->
+      <!--<td class="slds-text-title_bold new-highlight">Financed Sales Tax</td>-->
+      <!--<td class="new-highlight">-->
+      <!--&lt;!&ndash;<lightning:formattedNumber value="{!sub(v.application.Pre_Upfront_Tax_Payment_Amount__c,v.application.Pre_Upfront_Tax_Payment_Amount1__c)}"&ndash;&gt;-->
+      <!--&lt;!&ndash;style="currency" currencyCode="USD"/>&ndash;&gt;-->
+      <!--<lightning:formattedNumber value="{!sub(v.application.Total_Lease_Payment__c,v.application.genesis__Payment_Amount__c)}"-->
+      <!--style="currency" currencyCode="USD"/>-->
+      <!--</td>-->
+      <!--</tr>-->
+      <tr>
+        <td class="slds-text-title_bold slds-text-color_success new-highlight"
+          >Invoice Total</td
+        >
+        <td class="slds-text-title_bold slds-text-color_success new-highlight">
+          <lightning:formattedNumber
+            value="{!v.application.genesis__Payment_Amount__c+v.application.Total_Insurance_Fees__c+v.application.Service_Fee__c+v.application.Total_Estimated_Property_Tax__c}"
+            style="currency"
+            currencyCode="USD"
+          /><!-- include v.application.Pre_Upfront_Tax_Payment_Amount__c -->
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="slds-is-relative">
+          <aura:if isTrue="{!v.recalculating}">
+            Recalculating...
+            <lightning:spinner
+              alternativeText="Recalculating"
+              variant="brand"
+              size="small"
+            />
+          </aura:if>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div
+            class="slds-text-title slds-text-title_bold slds-text-color_error"
+            style="white-space:normal;"
+            >{!v.pricingMessage}</div
+          >
+        </td>
+      </tr>
+    </table>
+  </div>
 </aura:component>

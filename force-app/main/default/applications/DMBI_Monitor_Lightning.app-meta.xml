@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Application for Int DMBI Monitor Project, includes all related Objects and Tabs.</description>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>DMBI Monitor</label>
+    <navType>Standard</navType>
+    <tabs>standard-home</tabs>
+    <tabs>Int_Agreement__c</tabs>
+    <tabs>Int_Agreement_Classification__c</tabs>
+    <tabs>Int_Agreement_Exposure__c</tabs>
+    <tabs>Int_Agreement_Interest__c</tabs>
+    <tabs>Int_Agreement_Line__c</tabs>
+    <tabs>Int_Agreement_Line_Asset__c</tabs>
+    <tabs>Int_Agreement_Feature__c</tabs>
+    <tabs>Int_Agreement_Party__c</tabs>
+    <tabs>Int_Agreement_Line_Feature__c</tabs>
+    <tabs>Int_Agreement_Payment_Schedule__c</tabs>
+    <tabs>Int_Asset__c</tabs>
+    <tabs>Int_Delivery_Control__c</tabs>
+    <tabs>Int_Party_External_Reference__c</tabs>
+    <tabs>Int_Party__c</tabs>
+    <tabs>Int_Party_Feature__c</tabs>
+    <tabs>Int_Party_Street_Address__c</tabs>
+    <tabs>Int_Facility__c</tabs>
+    <tabs>Int_Agreement_Non_IFRS__c</tabs>
+    <tabs>Int_Facility_Feature__c</tabs>
+    <tabs>Int_Facility_Party__c</tabs>
+    <tabs>Int_Agreement_Provision__c</tabs>
+    <tabs>Int_File_Control__c</tabs>
+    <tabs>Int_Risk_Costs_Movements__c</tabs>
+    <tabs>Int_Collateral_Agreement__c</tabs>
+    <tabs>Int_Asset_Feature__c</tabs>
+    <tabs>Int_Asset_Usage__c</tabs>
+    <tabs>Int_Collateral__c</tabs>
+    <tabs>Int_Collateral_Party__c</tabs>
+    <tabs>Int_Batch_Exception_Log__c</tabs>
+    <uiType>Lightning</uiType>
+</CustomApplication>

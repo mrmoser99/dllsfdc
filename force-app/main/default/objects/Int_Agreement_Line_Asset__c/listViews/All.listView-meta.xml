@@ -9,7 +9,6 @@
     <columns>Asset_Source_System__c</columns>
     <columns>Agreement_Line_Number__c</columns>
     <columns>Agreement_Number__c</columns>
-    <columns>Committed__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

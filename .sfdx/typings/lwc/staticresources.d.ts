@@ -86,9 +86,17 @@ declare module "@salesforce/resourceUrl/NGTaskListUpdateforNewcoChecklist31July"
     var NGTaskListUpdateforNewcoChecklist31July: string;
     export default NGTaskListUpdateforNewcoChecklist31July;
 }
+declare module "@salesforce/resourceUrl/OracleTradeUpModule" {
+    var OracleTradeUpModule: string;
+    export default OracleTradeUpModule;
+}
 declare module "@salesforce/resourceUrl/OracleTradeUp_Fix_v2_19062019" {
     var OracleTradeUp_Fix_v2_19062019: string;
     export default OracleTradeUp_Fix_v2_19062019;
+}
+declare module "@salesforce/resourceUrl/PagesBfrOracleTradeUpChange" {
+    var PagesBfrOracleTradeUpChange: string;
+    export default PagesBfrOracleTradeUpChange;
 }
 declare module "@salesforce/resourceUrl/SiteSamples" {
     var SiteSamples: string;

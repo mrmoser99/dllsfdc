@@ -2,15 +2,6 @@
  * Created by samuelmeyers on 11/8/18.
  */
 
- /****************************************************************************************************************************************************
- *
- * Change Log:
- *
- *  
- *
- ***************************************************************************************************************************************************/
-
-
 public with sharing class FMZ_QuickActionController {
     private static final String BASE_URL = System.Label.FMZ_Dealer_Community_Base_URL;
 
@@ -31,7 +22,6 @@ public with sharing class FMZ_QuickActionController {
 
     @AuraEnabled
     public static List<Section> getSections(){
-      
         FMZ_CTA_Settings__c setting = FMZ_CTA_Settings__c.getOrgDefaults();
         List<Section> sections = new List<Section>();
         sections.add(new Section(

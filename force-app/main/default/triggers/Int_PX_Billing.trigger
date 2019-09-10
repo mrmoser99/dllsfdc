@@ -13,7 +13,7 @@ trigger Int_PX_Billing on Int_PX_Billing__c (after update) {
  	/*
  	6|0000000419|0000000419|04/16/2018|05/11/2018|INV-0000000057||||THE EVANGELICAL 
  	*/ 
-  	 
+ 	
  	Map<String,Decimal> invoiceMap = new Map<String,Decimal>();
  	
  	for (Int_PX_Billing__c b:trigger.new){
@@ -21,14 +21,13 @@ trigger Int_PX_Billing on Int_PX_Billing__c (after update) {
  		if (b.committed__c == true){
  			List<String> line = new List<String>();
  			line = b.line_data__c.split('\\|');
-			system.debug(line);
  			if (line != null)
  				if (line[0] == '6')
 	 				if (line[5] != null)
 	 					invoiceMap.put(line[5],decimal.valueOf(line[20]));
  			
  		}
- 		system.debug('invoice map is: '  + invoiceMap);
+ 		system.debug(invoiceMap);
  	}
  	
  	List<Invoice__c> uList = [select id

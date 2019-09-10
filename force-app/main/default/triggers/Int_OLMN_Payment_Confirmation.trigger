@@ -13,7 +13,7 @@ trigger Int_OLMN_Payment_Confirmation on Int_OLMN_Payment_Confirmation__c (befor
 	Set<String> invoiceSet = new Set<String>();
 	for (Int_OLMN_Payment_Confirmation__c r:trigger.new){
 		invoiceSet.add(r.invoice_number__c);
-	}	 
+	}	
 
 	List<Int_OLMN_AP__c> pList = new list<Int_OLMN_AP__c>();
 	pList = [select id from Int_OLMN_AP__c where invoice_number__c in :invoiceSet];

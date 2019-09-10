@@ -10,12 +10,8 @@
     <columns>GL_Date__c</columns>
     <columns>Accounting_Date__c</columns>
     <columns>ACCTS_PAY_CODE_COMBINATION__c</columns>
-    <columns>DIST_CODE_COMBINATION__c</columns>
-    <columns>Invoice_Amount__c</columns>
-    <columns>Expense_Amount__c</columns>
-    <columns>CREATEDBY_USER</columns>
-    <columns>UPDATEDBY_USER</columns>
     <columns>CREATED_DATE</columns>
+    <columns>Invoice_Amount__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

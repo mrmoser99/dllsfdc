@@ -8,7 +8,4 @@
     <tabs>standard-Account</tabs>
     <tabs>ICS_Application__c</tabs>
     <tabs>ICS_Log__c</tabs>
-    <tabs>CL_Lease_Financial_Report__c</tabs>
-    <tabs>Lease_Financial_Report_Mapping__c</tabs>
-    <tabs>clcommon__Bank_Account__c</tabs>
 </CustomApplication>

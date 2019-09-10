@@ -10,7 +10,7 @@
             <type>group</type>
         </recipients>
         <recipients>
-            <recipient>john.mccann@dllgroup.com</recipient>
+            <recipient>john.mccann@dllgroup.com.prod</recipient>
             <type>user</type>
         </recipients>
         <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>

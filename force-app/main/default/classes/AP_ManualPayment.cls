@@ -1,3 +1,11 @@
+/*************************************************************************************************
+ Change Log:
+
+MRM - 9/5/19 - removed edits so that over payment can occur.
+ 
+
+
+ ***************************************************************************************************/ 
 global with sharing class AP_ManualPayment {
 
     public Static boolean manualPayment = false;
@@ -45,11 +53,10 @@ global with sharing class AP_ManualPayment {
             return JSON.serialize(response);
         } 
 
-        if (checkAmount > i.balance_due_amount__c)   {
-            response.put('Message','Payment cannot be greater than the balance due!');
-            return JSON.serialize(response);
-        } 
-
+        //if (checkAmount > i.balance_due_amount__c)   {
+        //    response.put('Message','Payment cannot be greater than the balance due!');
+        //    return JSON.serialize(response);
+        //} 
 
         if (paymentsPending.size() > 0){
             response.put('Message','There is already a payment pending for this invoice!');
@@ -58,11 +65,11 @@ global with sharing class AP_ManualPayment {
 
         system.debug('checkamount: ' + checkAmount);
         system.debug('other' + i.balance_due_amount__c) ;
-        if (checkAmount > i.balance_due_amount__c){
-            response.put('Message','Check amount must be less than or equal to the balance due!');
-            return JSON.serialize(response);
-        }
-            
+        //if (checkAmount > i.balance_due_amount__c){
+        //    response.put('Message','Check amount must be less than or equal to the balance due!');
+        //    return JSON.serialize(response);
+        //}
+             
 
         Int_PX_Remit__c r = new Int_PX_Remit__c();
  

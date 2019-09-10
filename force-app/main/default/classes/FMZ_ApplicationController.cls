@@ -43,10 +43,10 @@ public without sharing class FMZ_ApplicationController {
 
 			// make sure the number of months in the term are set
 			genesis__Applications__c application = [
-				SELECT Id, genesis__Term__c, Customer_Provided_Insurance__c,
+				SELECT Id, genesis__Term__c, Customer_Provided_Insurance__c, Trade_Up_Quote__c, genesis__Other_Financed_fees__c,
 					(SELECT Id FROM genesis__Application_Equipments__r LIMIT 1)
 				FROM genesis__Applications__c
-				WHERE Id = :applicationId
+				WHERE Id =: applicationId
 			];
 
 			if (application.genesis__Term__c == null) {
@@ -85,10 +85,22 @@ public without sharing class FMZ_ApplicationController {
 //				update equipment;
 //			}
 
+// UPDATING PRICING GENERATION PER Q2s GENERATE PRICING FLOW
+
+			result = UpdateEquipmentDetails.updateEquipmentDetail(applicationId);
+			if (result != 'SUCCESS') {
+				return result;
+			}
 			// 2 - Generate Pricing
 			result = genesis.SkuidPricingCtrl.generatePricing(applicationId);
 			if (result != 'Pricing Generated...') {
 				return result;
+			}
+
+			// 4 - Calculate Estimated Property Tax
+			result = calculateEstPropertyTax.func_calcEPT(applicationId);
+			if (result != 'SUCCESS') {
+				return 'Estimated Property Tax Calculation Failed.';
 			}
 
 			if (!application.Customer_Provided_Insurance__c) {
@@ -97,12 +109,6 @@ public without sharing class FMZ_ApplicationController {
 				if (result != 'SUCCESS') {
 					return 'Insurance Calculation Failed.';
 				}
-			}
-
-			// 4 - Calculate Estimated Property Tax
-			result = calculateEstPropertyTax.func_calcEPT(applicationId);
-			if (result != 'SUCCESS') {
-				return 'Estimated Property Tax Calculation Failed.';
 			}
 
 			///// SELECT PRICING BUTTON //////
@@ -143,6 +149,16 @@ public without sharing class FMZ_ApplicationController {
 
 
 			//TODO: zero out upfront tax for tax exempt properties
+
+			// application = [
+			// 	SELECT Id, Oracle_Trade_Up_Amount__c, Trade_Up_Quote__c, genesis__Other_Financed_fees__c FROM genesis__Applications__c
+			// 	WHERE Id =: applicationId
+			// ];
+			//
+			// if(application.Trade_Up_Quote__c){
+			// 		application.genesis__Other_Financed_fees__c = application.Oracle_Trade_Up_Amount__c;
+			// 		update application;
+			// }
 
 
 			return result;

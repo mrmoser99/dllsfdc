@@ -19,20 +19,32 @@ global class UpdateEquipmentDetails {
             }
             
             // 1. Query application with Equipments for details to copy
-            List<genesis__Applications__c> applications = [Select Id, Name, 
+            List<genesis__Applications__c> applications = [Select Id, Name,Oracle_Trade_Up_Amount__c, 
                                                                 (Select Id, Name, genesis__Other_Financed_Fees__c, Oracle_Trade_Up_Amount__c
                                                                 From genesis__Application_Equipments__r)
                                                             From genesis__Applications__c
                                                             Where Id = :applicationId];
-            
+            Integer TotalEquipments = [select count() from genesis__Application_Equipment__c where genesis__Application__c =:applicationId ];
+            Integer Counter=1;
+            Decimal TotalEquipmentTradeup=0;
             List<genesis__Application_Equipment__c> equipmentsToUpdate = new List<genesis__Application_Equipment__c>();
             // 2. loop through applications
-            for(genesis__Applications__c application : applications) {
+            for(genesis__Applications__c application : applications) 
+            {
                 // 3. looping through Equipments
-                for(genesis__Application_Equipment__c equipment : application.genesis__Application_Equipments__r) {
-                    equipment.genesis__Other_Financed_Fees__c = equipment.Oracle_Trade_Up_Amount__c;
+                for(genesis__Application_Equipment__c equipment : application.genesis__Application_Equipments__r) 
+                {
+                    if(Counter<TotalEquipments){
+                    TotalEquipmentTradeup += (equipment.Oracle_Trade_Up_Amount__c != null ? equipment.Oracle_Trade_Up_Amount__c : 0);
+                    equipment.genesis__Other_Financed_Fees__c = (application.Oracle_Trade_Up_Amount__c != null ? equipment.Oracle_Trade_Up_Amount__c : NULL) ;
                     equipmentsToUpdate.add(equipment);
-                }
+                    }
+                    else if(Counter == TotalEquipments ){
+                         equipment.genesis__Other_Financed_Fees__c = (application.Oracle_Trade_Up_Amount__c != null ? (application.Oracle_Trade_Up_Amount__c - TotalEquipmentTradeup) : NULL);
+                         equipmentsToUpdate.add(equipment);
+                    }
+                    counter ++;
+                 }
             }
             // 3  update Equipments after processing
             if(equipmentsToUpdate.size() > 0) {
