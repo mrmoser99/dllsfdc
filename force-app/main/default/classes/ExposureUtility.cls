@@ -195,7 +195,7 @@ public with sharing class ExposureUtility {
                     ex.LS_Contract__c = id;
                     ex.name = leaseMap.get(id).name;
                     ex.Rent__c = leaseSetRent.get(id).get('RENT');
-                    ex.estimated_property_tax__c = leaseSetRent.get(id).get('Estimated Property Tax');
+                    //ex.estimated_property_tax__c = leaseSetRent.get(id).get('Estimated Property Tax');
 
                     ex.Evergreen_Billed__c = leaseSetBillBuckets.get(id).get('Evergreen Billed');
 
@@ -214,7 +214,7 @@ public with sharing class ExposureUtility {
                     if (leaseSetBillBuckets.get(id) != null)
                         if (leaseSetBillBuckets.get(id).get('Total Amount Paid') != null)
                             exposure = exposure - leaseSetBillBuckets.get(id).get('Total Amount Paid');
-
+ 
                     system.debug('- Total Amount Paid =' + exposure);
                     calcDetails += '- Total Amount Paid  (incl taxes) of ' + leaseSetBillBuckets.get(id).get('Total Amount Paid')  + ' = ' + exposure + '\n'; 
                     
@@ -222,18 +222,31 @@ public with sharing class ExposureUtility {
                     if (leaseSetBillBuckets.get(id).get('Evergreen Rent Billed Not Paid') != null)
                         exposure += leaseSetBillBuckets.get(id).get('Evergreen Rent Billed Not Paid');
                     
-                    system.debug('+ Evergreen Rent Billed Not Paid =' + exposure);
-                    calcDetails += '+ Tax on Evergreen Rent Billed Not Paid of '  + ex.Evergreen_Billed_not_paid__c + ' = ' + exposure + '\n';
+                    ex.Tax_On_Evergreen_Billed_not_paid__c = leaseSetBillBuckets.get(id).get('Tax on Evergreen Billed Not Paid');
+                    if (leaseSetBillBuckets.get(id).get('Tax on Evergreen Billed Not Paid') != null)
+                        exposure += leaseSetBillBuckets.get(id).get('Tax on Evergreen Billed Not Paid');
+                    calcDetails += '+ Tax on Evergreen Rent Billed Not Paid of '  + ex.tax_on_Evergreen_Billed_not_paid__c + ' = ' + exposure + '\n';
+                    
+                   
+                    //ex.Rent_Billed_Not_Paid__c = leaseSetBillBuckets.get(id).get('Normal Rent Billed Not Paid');
+                    //if (leaseSetBillBuckets.get(id).get('Normal Rent Billed Not Paid') != null)
+                    //        exposure += leaseSetBillBuckets.get(id).get('Normal Rent Billed Not Paid');
+                    //system.debug('+ Normal Rent Billed Not Paid =' + exposure);
+                    //calcDetails += '+ Tax on Rent Billed Not Paid of ' +   ex.Rent_Billed_Not_Paid__c  + ' = ' + exposure + '\n';
+                   
+                   
+                    system.debug(leaseSetBillBuckets.get(id));
+                    system.debug(leaseSetBillBuckets.get(id).get('Tax on Rent Billed Not Paid'));
+                    ex.tax_on_rent_billed_not_paid__c = leaseSetBillBuckets.get(id).get('Tax on Rent Billed Not Paid');
+                    if (leaseSetBillBuckets.get(id).get('Tax on Rent Billed Not Paid') != null)
+                        exposure += leaseSetBillBuckets.get(id).get('Tax on Rent Billed Not Paid');
+                    calcDetails += '+ Tax on Rent Billed Not Paid of ' +   ex.tax_on_rent_billed_not_paid__c  + ' = ' + exposure + '\n';
+                    
+                    //system.debug('+ Evergreen Rent Billed Not Paid =' + exposure);
                     
                     
-                    ex.Rent_Billed_Not_Paid__c = leaseSetBillBuckets.get(id).get('Normal Rent Billed Not Paid');
-                    if (leaseSetBillBuckets.get(id).get('Normal Rent Billed Not Paid') != null)
-                            exposure += leaseSetBillBuckets.get(id).get('Normal Rent Billed Not Paid');
-                    system.debug('+ Normal Rent Billed Not Paid =' + exposure);
-                    calcDetails += '+ Tax on Rent Billed Not Paid of ' +   ex.Rent_Billed_Not_Paid__c  + ' = ' + exposure + '\n';
-
                     if (leaseSetChargeBuckets.get(id) != null){
-                        ex.Late_Fees__c = leaseSetChargeBuckets.get(id).get('Late Fees');
+                        ex.Late_Fees__c = leaseSetChargeBuckets.get(id).get('Late Fees'); 
                         if (leaseSetChargeBuckets.get(id).get('Late Fees') != null)
                             exposure += leaseSetChargeBuckets.get(id).get('Late Fees');
                         system.debug('+ Late Fees =' + exposure);
@@ -274,23 +287,16 @@ public with sharing class ExposureUtility {
                         system.debug('+ Termination Quote Fees =' + exposure);
                         calcDetails +='+ Termination Quote Fees of ' +  ex.Termination_Quote_Fees__c + ' = ' + exposure + '\n';
                         
-                        if (ex.estimated_property_tax__c == null)
-                            ex.estimated_property_tax__c = 0;
-                        
-                        if (leaseSetChargeBuckets.get(id).get('Estimated Property Tax') != null){
-                            exposure += ex.Estimated_Property_Tax__c.setScale(2);
-                        }
-                        system.debug('+ Estimated Property Tax =' + exposure);
+                        exposure += ex.Estimated_Property_Tax__c;
                         calcDetails +='+ Estimated Property Tax of ' + ex.Estimated_Property_Tax__c.setScale(2)  + ' = '  + exposure + '\n'; 
 
                         Decimal salesTax = 0;
                         if (leaseSetChargeBuckets.get(id).get('Estimated Property Tax') != null){
-                            //ex.Estimated_Property_Tax__c += leaseSetChargeBuckets.get(id).get('Estimated Property Tax');
                             salesTax = leaseSetChargeBuckets.get(id).get('Estimated Property Tax');
                             ex.sales_tax_on_property_tax__c = salesTax.setScale(2);
                             exposure += salesTax ;
                         }
-                        system.debug('+ Estimated Property Tax =' + exposure);
+                        system.debug('+ Sales Tax on Property Tax =' + exposure);
                         calcDetails +='+ Sales Tax on Property Tax of ' + salesTax.setScale(2) + ' = '  + exposure + '\n';
                         
                         
@@ -318,21 +324,21 @@ public with sharing class ExposureUtility {
                     if (leaseSetNonCash.get(id) != null){
                         ex.Unearned_Income__c = leaseSetNonCash.get(id).get('UNEARNED INCOME');
                         if (leaseSetNonCash.get(id).get('UNEARNED INCOME') != null)
-                            exposure += leaseSetNonCash.get(id).get('UNEARNED INCOME');
-                        system.debug('+ Unearned Income =' + exposure);
-                        calcDetails +='+ Unearned Income of ' + ex.Unearned_Income__c + ' = ' + exposure + '\n';
+                            exposure -= leaseSetNonCash.get(id).get('UNEARNED INCOME');
+                        system.debug('- Unearned Income =' + exposure);
+                        calcDetails += '- Unearned Income of ' + ex.Unearned_Income__c + ' = ' + exposure + '\n';
 
                         ex.Unearned_Residual__c = leaseSetNonCash.get(id).get('UNEARNED RESIDUAL');
                         if (leaseSetNonCash.get(id).get('UNEARNED RESIDUAL') != null)
-                            exposure += leaseSetNonCash.get(id).get('UNEARNED RESIDUAL');
-                        system.debug('+ Unearned Residual =' + exposure);
-                        calcDetails +='+ Unearned Residual of ' + ex.Unearned_Residual__c +  ' = ' + exposure + '\n';
+                            exposure -= leaseSetNonCash.get(id).get('UNEARNED RESIDUAL');
+                        system.debug('- Unearned Residual =' + exposure);
+                        calcDetails += '- Unearned Residual of ' + ex.Unearned_Residual__c +  ' = ' + exposure + '\n';
 
-                        ex.Rent_Accrual__c = leaseSetNonCash.get(id).get('RENTAL ACCRUAL');
-                        if (leaseSetNonCash.get(id).get('RENTAL ACCRUAL') != null)
-                            exposure += leaseSetNonCash.get(id).get('RENTAL ACCRUAL');
-                        system.debug('+ Rental Accrual =' + exposure);
-                        calcDetails +='+ Rental Accrual of ' + ex.Rent_Accrual__c  + ' = ' + '\n';
+                        //ex.Rent_Accrual__c = leaseSetNonCash.get(id).get('RENTAL ACCRUAL');
+                        //if (leaseSetNonCash.get(id).get('RENTAL ACCRUAL') != null)
+                        //    exposure += leaseSetNonCash.get(id).get('RENTAL ACCRUAL');
+                        //system.debug('+ Rental Accrual =' + exposure);
+                        //calcDetails +='+ Rental Accrual of ' + ex.Rent_Accrual__c  + ' = ' + '\n';
                     }
                     system.debug('=  Total Exposure =' + exposure);
                     exposureMap.put('Exposure',exposure);
@@ -499,6 +505,15 @@ public with sharing class ExposureUtility {
                                 amount = d.cllease__Balance_Amount__c;
                             }
                             bucketMap.put('Evergreen Billed Not Paid',amount);
+
+                            if (bucketMap.containsKey('Tax on Evergreen Rent Billed Not Paid')){
+                                amount = bucketMap.get('Tax on Evergreen Rent Billed Not Paid');
+                                amount += d.Tax_Due__c;
+                            }
+                            else{
+                                amount = d.tax_due__c;
+                            }
+                            bucketMap.put('Tax on Evergreen Rent Billed Not Paid',amount);
                         }
                         
                    }
@@ -524,6 +539,15 @@ public with sharing class ExposureUtility {
                                 amount = d.cllease__Balance_Amount__c;
                             }
                             bucketMap.put('Normal Rent Billed Not Paid',amount);
+
+                            if (bucketMap.containsKey('Tax on Rent Billed Not Paid')){
+                                amount = bucketMap.get('Tax on Rent Billed Not Paid');
+                                amount += d.tax_due__c;
+                            }
+                            else{
+                                 amount = d.tax_due__c;
+                            }
+                            bucketMap.put('Tax on Rent Billed Not Paid',amount);
                         }
                         
                    }
@@ -607,7 +631,7 @@ public with sharing class ExposureUtility {
                 ,Invoiced_In__c
                 ,Name
                 ,Premium_Purchase_Amount__c
-              
+                ,tax_due__c
                 ,Report_Date_Time__c
                 ,Unbilled_Service_and_Maintenance__c
                 ,VertexTax_Computed_DDL_Count__c 
@@ -665,13 +689,13 @@ public with sharing class ExposureUtility {
                     amount = bucketMap.get(c.cllease__Fee_Definition__r.name);
                     
                     if (c.cllease__Fee_Definition__r.name == 'Estimated Property Tax')
-                        amount += c.cllease__Tax_Due__c - c.cllease__tax_paid_amount__c;
+                        amount += c.cllease__Tax_Due__c;
                     else
                         amount += c.cllease__Total_Due_Amount__c;
                 }
                 else{
                     if (c.cllease__Fee_Definition__r.name == 'Estimated Property Tax')
-                        amount = c.cllease__Tax_Due__c - c.cllease__Tax_paid_amount__c;
+                        amount = c.cllease__Tax_Due__c;
                     else
                         amount = c.cllease__Total_Due_Amount__c;
                 }

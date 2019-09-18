@@ -259,7 +259,11 @@ public with sharing class Bridger {
     	} 
     	  
 		XgServicesSearch.ArrayOfResultRecord resultList = new XgServicesSearch.ArrayOfResultRecord();
-		
+
+		system.debug(XgServicesSearch.ArrayOfEntityMatchInfo.EntityMatchInfo);
+
+		system.debug('Results = ' + results);
+
 		if (!Test.isRunningTest()){
 			resultList = results.records;
 		 
