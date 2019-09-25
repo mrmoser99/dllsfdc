@@ -5,6 +5,8 @@
 * Change Log:
 *
 * 2/15/18 - MRM Created
+* 9/19/19 - MRM Changed invoice__c to clcommon__Consolidated_Invoice__c
+* 9/24/19 - MRM added cams check to process
 *
 **********************************************************************************************/
 global without sharing class NewCoUtility { 
@@ -343,14 +345,14 @@ global without sharing class NewCoUtility {
     
     	 
     	system.debug(invoiceMap);
-    	List<Invoice__c> invoiceList = new List<Invoice__c>();
-    	invoiceList = [select id from Invoice__c where id in :invoiceMap.keySet()];
-    	List<Invoice__c> uInvoiceList = new list<Invoice__c>();
+    	List<clcommon__Consolidated_Invoice__c> invoiceList = new List<clcommon__Consolidated_Invoice__c>();
+    	invoiceList = [select id from clcommon__Consolidated_Invoice__c where id in :invoiceMap.keySet()];
+    	List<clcommon__Consolidated_Invoice__c> uInvoiceList = new list<clcommon__Consolidated_Invoice__c>();
     	
-    	for (Invoice__C i:invoiceList){
+    	for (clcommon__Consolidated_Invoice__c i:invoiceList){
     		i.conga_url__c = invoiceMap.get(i.id);
     		
-    		uInvoiceList.add(i);
+    		uInvoiceList.add(i); 
     	}
     	
        
@@ -419,16 +421,18 @@ global without sharing class NewCoUtility {
     		businessResult = bridger.bridgerSearch(input1);//business
     		individualResult = bridger.bridgerSearch(input2);//individual
     		
+			NewCoUtility.skipApplicationTrigger = true;
+
     		if (businessResult.hit || individualResult.hit){
 	   			app.genesis__Status__c = 'OFAC DECLINED';
     		}
     		else{
-    			app.genesis__Status__c = 'CREDIT APPROVED';
+    			app.genesis__Status__c = 'OFAC APPROVED';
+							
     		}
     	
-    		NewCoUtility.skipApplicationTrigger = true;
-    	
     		update app;
+
     		
     	}
     	catch (Exception e){
@@ -466,7 +470,7 @@ global without sharing class NewCoUtility {
     	} 
     	
     }
-
+  
 	/*@future
 	public static void updateContact(Map<String,String> contactTokenMap){
 
