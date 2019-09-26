@@ -1,3 +1,4 @@
+/* 9/19/19 - MRM Changed reference to invoiced_in__c */
 @isTest
 public class CongaGenerateInvoiceTest {
     
@@ -40,7 +41,7 @@ public class CongaGenerateInvoiceTest {
      
         
         
-          Invoice__c inv = new invoice__c();
+          clcommon__Consolidated_Invoice__c inv = new clcommon__Consolidated_Invoice__c();
           inv.LS_Contract__c = LSContract.id;
           
           insert inv;
@@ -58,7 +59,7 @@ public class CongaGenerateInvoiceTest {
 			 bill.cllease__Total_Paid_Amount__c 	                    = 49.00;
 			 bill.cllease__Total_Due_Amount__c 		                    = 100.00;
 			 bill.cllease__Status__c 				                    = 'In Process';	
-        	 bill.Invoiced_In__c                                        =  inv.Id;
+        	 bill.cllease__Consolidated_Invoice__c                                        =  inv.Id;
 												  
 		     insert bill;
         
@@ -107,7 +108,7 @@ public class CongaGenerateInvoiceTest {
           retrievedContract.Billing_Address__c = address.Id;
           update retrievedContract;
         
-          Invoice__c inv = new invoice__c();
+          clcommon__Consolidated_Invoice__c inv = new clcommon__Consolidated_Invoice__c();
           inv.LS_Contract__c = LSContract.id;
           
           insert inv;
@@ -125,7 +126,7 @@ public class CongaGenerateInvoiceTest {
        bill.cllease__Total_Paid_Amount__c                       = 49.00;
        bill.cllease__Total_Due_Amount__c                        = 100.00;
        bill.cllease__Status__c                            = 'In Process'; 
-           bill.Invoiced_In__c                                        =  inv.Id;
+           bill.cllease__Consolidated_Invoice__c                                        =  inv.Id;
                           
          insert bill;
         

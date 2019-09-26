@@ -1955,11 +1955,6 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Estimated_Property_Tax__c</field>
-            <table>cllease__Lease_Account__c.Lease_Exposure__r</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>Evergreen_Billed__c</field>
             <table>cllease__Lease_Account__c.Lease_Exposure__r</table>
         </columns>

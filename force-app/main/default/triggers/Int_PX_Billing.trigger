@@ -30,12 +30,12 @@ trigger Int_PX_Billing on Int_PX_Billing__c (after update) {
  		system.debug(invoiceMap);
  	}
  	
- 	List<Invoice__c> uList = [select id
+ 	List<clcommon__Consolidated_Invoice__c> uList = [select id
  							,name 
- 							from Invoice__c 
+ 							from clcommon__Consolidated_Invoice__c 
  							where name in:invoiceMap.keySet()
  							];
- 	for (invoice__c i:uList){
+ 	for (clcommon__Consolidated_Invoice__c i:uList){
  		i.sent_to_pnc__c = true; 
  		i.sent_to_pnc_amount__c = invoiceMap.get(i.name);	
  		i.sent_to_pnc_date_time__c = system.now();

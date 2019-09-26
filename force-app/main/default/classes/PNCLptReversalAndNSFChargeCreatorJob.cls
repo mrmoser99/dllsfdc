@@ -108,11 +108,11 @@ global with sharing class PNCLptReversalAndNSFChargeCreatorJob extends clcommon.
             System.debug(LoggingLevel.ERROR, 'multPxNSFMap.keyset() : ' + multPxNSFMap.keyset());
 
             // B. Querying all invoices with charges where invoices with Bills and Charges
-            List<Invoice__c> invoicesList = [SELECT Id, Name, LS_Contract__c, LS_Contract__r.cllease__Next_Due_Date__c 
-                                                FROM Invoice__c 
+            List<clcommon__Consolidated_Invoice__c> invoicesList = [SELECT Id, Name, LS_Contract__c, LS_Contract__r.cllease__Next_Due_Date__c 
+                                                FROM clcommon__Consolidated_Invoice__c 
                                                 WHERE Name IN :multPxNSFMap.keyset()
                                                 AND LS_Contract__c != Null];
-            for(Invoice__c invoice : invoicesList){
+            for(clcommon__Consolidated_Invoice__c invoice : invoicesList){
                 invoiceIds.add(invoice.Id);
             }
             
@@ -122,7 +122,7 @@ global with sharing class PNCLptReversalAndNSFChargeCreatorJob extends clcommon.
                                                                     cllease__Contract__c,
                                                                     cllease__Transaction_Amount__c 
                                                                     FROM cllease__Lease_Payment_Transaction__c
-                                                                    WHERE For_Invoice__c IN : invoiceIds
+                                                                    WHERE Pmt_For_Invoice__c IN : invoiceIds
                                                                     AND cllease__Reversed__c = False];
             System.debug(LoggingLevel.ERROR, 'lpts : ' + lpts);
             
@@ -147,7 +147,7 @@ global with sharing class PNCLptReversalAndNSFChargeCreatorJob extends clcommon.
             dAction.postRepaymentsAdjusment();
 
             // F. Looping through all Invoices for Creating NSF Charges in System
-            for(Invoice__c invoice : invoicesList) {
+            for(clcommon__Consolidated_Invoice__c invoice : invoicesList) {
                 // Looping all PNC Return files per Invoices to create NSF charge
                 for(Int_PX_NSF__c pxNSFRec : multPxNSFMap.get(invoice.Name)) {
                     // 1. Create charge for PNCNSF Record

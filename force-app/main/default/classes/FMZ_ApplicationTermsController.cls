@@ -8,7 +8,7 @@ public without sharing class FMZ_ApplicationTermsController {
         List<genesis__Product_Rate_Card_Association__c> rcAssociations = [
             SELECT genesis__Rate_Card_Setup__c
             FROM genesis__Product_Rate_Card_Association__c
-            WHERE  IN (
+            WHERE genesis__CL_Product__c IN (
                 SELECT genesis__CL_Product__c
                 FROM genesis__Applications__c
                 WHERE Id =: applicationId

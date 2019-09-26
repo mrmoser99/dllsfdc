@@ -5,6 +5,7 @@
 *	Change Log: 
 *	2/26/19 - MRM Created
     9/5/19 - MRM Changed residual to use residual amount instead of bill residual amount from equipment
+    9/19/19 - MRM changed ref to invoiced_in__c tov cllease__Consolidated_Invoice__c 
 *
 *   This is use to calculate exposure for one or more leases; it can handle up to 10 lease at a time....maybe less.
 
@@ -628,7 +629,7 @@ public with sharing class ExposureUtility {
                 ,Days_Past_Due__c
                 ,Gain_Loss__c
                 ,Id
-                ,Invoiced_In__c
+                ,cllease__Consolidated_Invoice__c
                 ,Name
                 ,Premium_Purchase_Amount__c
                 ,tax_due__c

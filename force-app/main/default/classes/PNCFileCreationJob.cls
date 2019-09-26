@@ -50,11 +50,12 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
               + '        LS_Contract__r.Zip_Code__c,                '
               + '        LS_Contract__r.Customer_Primary_Phone__c,  '
               + '        Invoice_Due_Date__c,                       '
+              + '        clcommon__Consolidated_Invoice__c,         '
               + '        (SELECT Id,                                '
               + '                Name,                              '
               + '                cllease__Transaction_Date__c       '
-              + '         FROM Invoice_Bills__r)                    '
-              + ' FROM Invoice__c                                   '
+              + '         FROM cllease_Bills__r)                    '
+              + ' FROM clcommon__Consolidated_Invoice__c                                   '
               + ' WHERE File_Generated__c = \'No\'                  '
               + ' or Adjustment_Status__c = \'Approved\'            '
               + ' or void_in_pnc__c = true';
@@ -84,10 +85,10 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
         //                               = false for all interface records  processed
         Boolean uncommittedInterfaceRecordsExist = InterfaceTablesUnfinishedTxnsCheck.checkUnfinishedTxnsForPNCIntegration();
         System.debug('uncommittedInterfaceRecordsExist = ' + uncommittedInterfaceRecordsExist);
-        if(uncommittedInterfaceRecordsExist) {
+        /*if(uncommittedInterfaceRecordsExist) {
             throw new CLSCustomException('PNC Interface table(Int_PX_Billing__c) has unfinished transactions. '+
                                       'Please commit all transactions from Interface table and run Job again...');
-        }
+        }*/
         
         
         //AHR
@@ -127,11 +128,11 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
 
     public override void doExecute(Database.BatchableContext bc, List<sObject> scope) {
   
-
+		System.debug(LoggingLevel.ERROR, 'TTTTTT');
         Savepoint sp = database.setsavepoint();
         try {
             String linesbody='';  
-            List<Invoice__c> invoiceList = (List<Invoice__c>)scope;  
+            List<clcommon__Consolidated_Invoice__c> invoiceList = (List<clcommon__Consolidated_Invoice__c>)scope;  
             List<Int_PX_Billing__c> linesRecords= new List<Int_PX_Billing__c>();
             integer localcount =0;
             Decimal localsum = 0.0;
@@ -139,8 +140,8 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
             User userRec = [Select Id, cllease__Current_Branch_s_System_Date__c from user WHERE id =: UserInfo.getUserId()];
             Date TodaysDate = userRec.cllease__Current_Branch_s_System_Date__c;
             Date SystemDate = Date.newinstance(TodaysDate.year(),TodaysDate.month(),TodaysDate.day());
-            List<Invoice__c> invoiceLi = new List<Invoice__c>();
-            for(Invoice__c record: invoiceList) {
+            List<clcommon__Consolidated_Invoice__c> invoiceLi = new List<clcommon__Consolidated_Invoice__c>();
+            for(clcommon__Consolidated_Invoice__c record: invoiceList) {
                 linesbody = '';
                 string InvoiceDuedate = DateTime.newInstance(record.Invoice_Due_Date__c.year(),
                                                              record.Invoice_Due_Date__c.month(),
@@ -148,8 +149,8 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
                      
                 System.debug('Invoice_Due_Date...'+InvoiceDuedate);
                 String invoiceStmtDate;
-                if(record.Invoice_Bills__r.size() > 0 ) {
-                    cllease__Lease_account_Due_Details__c bill = record.Invoice_Bills__r.get(0);
+                if(record.cllease__Bills__r.size() > 0 ) {
+                    cllease__Lease_account_Due_Details__c bill = record.cllease__Bills__r.get(0);
                     //invoiceStmtDate = bill.cllease__Transaction_Date__c.format('MM/dd/yyyy');
                     invoiceStmtDate = DateTime.newInstance(bill.cllease__Transaction_Date__c.year(),
                                                            bill.cllease__Transaction_Date__c.month(),

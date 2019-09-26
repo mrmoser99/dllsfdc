@@ -143,11 +143,6 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Invoiced_In__c</field>
-            <table>cllease__Lease_account_Due_Details__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>LastModifiedBy</field>
             <table>cllease__Lease_account_Due_Details__c</table>
         </columns>
@@ -324,16 +319,6 @@
         <columns>
             <checkedByDefault>false</checkedByDefault>
             <field>VertexTax_Computed_DDL_Count__c</field>
-            <table>cllease__Lease_account_Due_Details__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
-            <field>Invoiced_In__c.Id</field>
-            <table>cllease__Lease_account_Due_Details__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
-            <field>Invoiced_In__c.Name</field>
             <table>cllease__Lease_account_Due_Details__c</table>
         </columns>
         <columns>

@@ -14,11 +14,11 @@
 
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>  
      
-    <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="Invoice__c" >
+    <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="clcommon__Consolidated_Invoice__c" >
             
             <lightning:card title="Invoice Adjustments" iconName="utility:moneybag" >
             	<lightning:layout horizontalAlign="space" >
-                <lightning:outputField fieldName="Customer_Name__c" />  
+                <lightning:outputField fieldName="Customer_Name__c" />   
                 <lightning:outputField fieldName="LS_Contract__c" />  
                 <lightning:outputField fieldName="Adjustment_Status__c" aura:id="status"/>
             	</lightning:layout>

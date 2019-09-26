@@ -1,3 +1,12 @@
+/*********************************************************************************************
+*
+* ChangeLog:
+*
+* 	9/19/19 - MRM Changed invoice__c to clcommon__Consolidated_Invoice__c
+*
+*
+************************************************************************************************/
+
 global with sharing class AP_VoidInvoice {
 
     @AuraEnabled
@@ -5,11 +14,11 @@ global with sharing class AP_VoidInvoice {
 
         Map<String,String> response = new Map<String,String>();
 
-        Invoice__c i = [SELECT ID
+        clcommon__Consolidated_Invoice__c i = [SELECT ID
             ,name
             ,voided_in_pnc__c
             ,sent_to_pnc__c
-            FROM Invoice__c
+            FROM clcommon__Consolidated_Invoice__c
             where id = :recordId 
             ]; 
 
@@ -101,7 +110,7 @@ global with sharing class AP_VoidInvoice {
                 ,cllease__Contract_Equipment__r.Equipment_Description1__c
                 ,cllease__Fee_Definition__r.name
                 from cllease__Charge__c 
-                where invoiced_In__c = :invoiceId
+                where cllease__Consolidated_Invoice__c = :invoiceId
                 //and cllease__fee_definition__r.name = 'Late Charge'
                 and cllease__Fee_Definition__r.name not in ('Service Fees','Estimated Property Tax')
                 order by cllease__Contract_Equipment__r.Equipment_Description1__c
@@ -220,7 +229,7 @@ global with sharing class AP_VoidInvoice {
         if (PNCUtility.reverseTaxes(recordId)){ 
  
                 
-            Invoice__c i = [select id, sent_to_pnc__c from Invoice__c where id = :recordId];
+            clcommon__Consolidated_Invoice__c i = [select id, sent_to_pnc__c from clcommon__Consolidated_Invoice__c where id = :recordId];
             i.adjustment_status__c = 'Approved';
         
             if (i.sent_to_pnc__c){
@@ -250,7 +259,7 @@ global with sharing class AP_VoidInvoice {
     @AuraEnabled
     public static String getInvoice(String recordId){
 
-        Invoice__c i = [select adjustment_status__c from Invoice__c where id = :recordId];
+        clcommon__Consolidated_Invoice__c i = [select adjustment_status__c from clcommon__Consolidated_Invoice__c where id = :recordId];
 
         
         return i.adjustment_status__c;
@@ -298,7 +307,7 @@ global with sharing class AP_VoidInvoice {
         
         
         Adjustment__c a = [select invoice__c from Adjustment__c where id = :toDelete.id];
-        Invoice__c i = [select id from Invoice__c where id = :a.invoice__c];
+        clcommon__Consolidated_Invoice__c i = [select id from clcommon__Consolidated_Invoice__c where id = :a.invoice__c];
 
         List<Adjustment__c> aList = [select id from Adjustment__c where invoice__c = :a.invoice__c ];
         if (aList.size() == 1){

@@ -5,12 +5,13 @@
 *  log:
 *
 * 	6/25/18 - MRM Added bridger call
+*   9/25/19 - MRM Changed bridger call to queable call - OFACCall
 *
 ****************************************************************************************************************/
 
 trigger ApplicationTrigger on genesis__Applications__c (before insert,before update) {
     
-	if (NewCoUtility.skipApplicationTrigger == true) return;
+	if (NewCoUtility.skipApplicationTrigger == true || CAMSUtility.skipApplicationTrigger == true) return; 
     
     system.debug('running trigger');
     
@@ -25,7 +26,9 @@ trigger ApplicationTrigger on genesis__Applications__c (before insert,before upd
 	    		system.debug('*************** checking bridger ******************');
 	    		Map<ID,String> inputMap = new Map<ID,String>();
 	    		inputMap.put(trigger.new[i].id,'Check Bridger');
-	    		NewCoUtility.bridgerCheck(inputMap);
+	    		OFACCall job = new OFACCall(inputMap);
+        		System.enqueueJob(job);	   
+			   
     		}
 	    	i++;
 	    }

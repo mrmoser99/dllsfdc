@@ -1,3 +1,4 @@
+/* 9/19/19 - MRM changed ref to invoiced_in to cllease__Consolidated_Invoice__c */
 @isTest
 public with sharing class TestPNCIntegration {
     @isTest
@@ -110,7 +111,7 @@ public with sharing class TestPNCIntegration {
         // Paymentdate earlier to 10 days
         Date paymentDate = currentSystemDate.addDays(-10);
         // B. Create Invoice , Bills and Charges manually
-        Invoice__c invoice = new invoice__c();
+        clcommon__Consolidated_Invoice__c invoice = new clcommon__Consolidated_Invoice__c();
         invoice.LS_Contract__c      = contract.id;
         invoice.Invoice_Due_Date__c = paymentDate; 
         insert invoice; 
@@ -124,7 +125,7 @@ public with sharing class TestPNCIntegration {
         bill.cllease__Total_Due_Amount__c   = 100.00;
         bill.cllease__Total_Paid_Amount__c  = 0.00;
         bill.cllease__Status__c             = 'Tax Calculated'; 
-        bill.Invoiced_In__c                 =  invoice.Id;
+        bill.cllease__Consolidated_Invoice__c                 =  invoice.Id;
         bill.cllease__Transaction_Date__c   = paymentDate;
         insert bill;
 
@@ -142,10 +143,10 @@ public with sharing class TestPNCIntegration {
         charge.cllease__Principal_Due__c    = 110; 
         charge.cllease__Calculated_Interest3__c = 0;
         charge.cllease__Tax_Processed__c    = 'Tax Calculated';
-        charge.Invoiced_In__c               = invoice.Id;
+        charge.cllease__Consolidated_Invoice__c               = invoice.Id;
         update charge;
 
-        Invoice__c invoiceRetrieve = [Select Id, Name From Invoice__c Limit 1];
+        clcommon__Consolidated_Invoice__c invoiceRetrieve = [Select Id, Name From clcommon__Consolidated_Invoice__c Limit 1];
 
         List<Int_PX_Remit__c> mockRemitToInsert = new List<Int_PX_Remit__c>();
         /*mockRemitToInsert.add(new Int_PX_Remit__c(  Record_Number__c    = 0, 
@@ -274,7 +275,7 @@ public with sharing class TestPNCIntegration {
         // Paymentdate earlier to 10 days
         Date paymentDate = currentSystemDate.addDays(-10);
         // B. Create Invoice , Bills and Charges manually
-        Invoice__c invoice = new invoice__c();
+        clcommon__Consolidated_Invoice__c invoice = new clcommon__Consolidated_Invoice__c();
         invoice.LS_Contract__c      = contract.id;
         invoice.Invoice_Due_Date__c = paymentDate; 
         insert invoice; 
@@ -288,7 +289,7 @@ public with sharing class TestPNCIntegration {
         bill.cllease__Total_Due_Amount__c   = 100.00;
         bill.cllease__Total_Paid_Amount__c  = 0.00;
         bill.cllease__Status__c             = 'Tax Calculated'; 
-        bill.Invoiced_In__c                 =  invoice.Id;
+        bill.cllease__Consolidated_Invoice__c                 =  invoice.Id;
         bill.cllease__Transaction_Date__c   = paymentDate;
         insert bill;
 
@@ -306,7 +307,7 @@ public with sharing class TestPNCIntegration {
         charge.cllease__Principal_Due__c    = 100; 
         charge.cllease__Calculated_Interest3__c = 0;
         charge.cllease__Tax_Processed__c    = 'Tax Calculated';
-        charge.Invoiced_In__c               = invoice.Id;
+        charge.cllease__Consolidated_Invoice__c               = invoice.Id;
         update charge;
 
         // Apply payments to Bill and charge
@@ -384,7 +385,7 @@ public with sharing class TestPNCIntegration {
         dAction.postPayments();
 
         // Create Mockup remit file with negative amounts
-        Invoice__c invoiceRetrieve = [Select Id, Name From Invoice__c Limit 1];
+        clcommon__Consolidated_Invoice__c invoiceRetrieve = [Select Id, Name From clcommon__Consolidated_Invoice__c Limit 1];
 
         List<Int_PX_Remit__c> mockRemitToInsert = new List<Int_PX_Remit__c>();
         mockRemitToInsert.add(new Int_PX_Remit__c(  Record_Number__c = 1, 
@@ -412,7 +413,7 @@ public with sharing class TestPNCIntegration {
         //              2. payment reversal
         //              3. invoice file generated flag
 
-        List<Invoice__c> invoicesToResend = [SELECT Id, Name, File_Generated__c FROM Invoice__c WHERE Id =: invoice.Id AND File_Generated__c='No'];
+        List<clcommon__Consolidated_Invoice__c> invoicesToResend = [SELECT Id, Name, File_Generated__c FROM clcommon__Consolidated_Invoice__c WHERE Id =: invoice.Id AND File_Generated__c='No'];
         
         // Checking for reversed Invoice for PNC
         System.assertEquals(1, invoicesToResend.size(), 'Mismatch in No Of reverted Invoice records...');

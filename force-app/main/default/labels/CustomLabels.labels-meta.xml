@@ -5,7 +5,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Conga Quote URL</shortDescription>
-        <value>https://c.cs77.visual.force.com</value>
+        <value>https://c.cs93.visual.force.com</value>
     </labels>
     <labels>
         <fullName>Conga_URL</fullName>
@@ -248,7 +248,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Invoice Test Contact Id</shortDescription>
-        <value>0031I00000JBgde</value>
+        <value>0031I00000tWCLG</value>
     </labels>
     <labels>
         <fullName>OFAC_Checking</fullName>
@@ -262,14 +262,14 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>OrgUrl</shortDescription>
-        <value>https://na73.salesforce.com</value>
+        <value>https://newco--dev.my.salesforce.com</value>
     </labels>
     <labels>
         <fullName>PM_Endpoint</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>PM Endpoint</shortDescription>
-        <value>https://api.dllgroup.com</value>
+        <value>https://apiacc.dllgroup.com</value>
     </labels>
     <labels>
         <fullName>Welcome_Email</fullName>

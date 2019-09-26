@@ -76,31 +76,6 @@ public class TestPaymentDLLChangesEndToEnd {
         System.assertEquals(lpt[0].Id, invoiceList[0].Payment_Transaction__c, 'Invoice not mapped to the current contract');
         System.assertEquals(lpt[0].cllease__Transaction_Amount__c, invoiceList[0].cllease__Original_Credit_Amount__c, 'Invoice amount is not equal to lpt transaction amount');
         System.assertEquals('Unapplied', invoiceList[0].cllease__Status__c, 'Invoice amount is not equal to lpt transaction amount');
-        List<Cllease__GL_Transaction_Detail__c> glEntries = [SELECT Id, 
-                                                            Cllease__Transaction_Type__c,
-                                                            Cllease__Charge__c,
-                                                            Cllease__Company__c,
-                                                            Cllease__Contract__c,
-                                                            Cllease__Credit_Amount__c,
-                                                            Cllease__Credit_GL_Account__c,
-                                                            Cllease__Credit_GL_Account_Code__c,
-                                                            Cllease__Debit_Amount__c,
-                                                            Cllease__Debit_GL_Account__c,
-                                                            Cllease__Debit_GL_Account_Code__c,
-                                                            Cllease__Exported_Flag__c,
-                                                            Cllease__Exported_Date__c,
-                                                            Cllease__GL_Batch_Post_Date__c,
-                                                            Cllease__GL_Date__c,
-                                                            Cllease__Item_Id__c,
-                                                            Cllease__Item_Name__c,
-                                                            Invoice_Credit__c,
-                                                            cllease__Transaction_Description__c,
-                                                            Cllease__LeaseApplicationNumber__c
-                                                            FROM Cllease__GL_Transaction_Detail__c WHERE Invoice_Credit__c =: invoiceList[0].Id];
-        System.assertEquals(glEntries[0].Cllease__Credit_GL_Account__c, glAccounts[1].Id, 'Mismatch in credit account id');
-        System.assertEquals(glEntries[0].Cllease__Debit_GL_Account__c, glAccounts[0].Id, 'Mismatch in Debit account id');
-        System.assertEquals(glEntries[0].Cllease__Credit_Amount__c, lpt[0].cllease__Transaction_Amount__c, 'Mismatch in credit amount and pmt amount');
-        System.assertEquals(glEntries[0].Cllease__Debit_Amount__c, lpt[0].cllease__Transaction_Amount__c, 'Mismatch in Debit amount and pmt amount');
     }
     
     @isTest
@@ -138,39 +113,6 @@ public class TestPaymentDLLChangesEndToEnd {
         System.assertEquals('Cancelled', invoiceList[0].cllease__Status__c, 'Invoice should be cancelled as the payment is reversed');
         List<cllease__Lease_Payment_Transaction__c> pmt = [SELECT cllease__Excess__c, Invoice_Credit_Amount__c, cllease__Reversed__c FROM cllease__Lease_Payment_Transaction__c WHERE Id=:lpt[0].Id];
         System.assertEquals(true, pmt[0].cllease__Reversed__c, 'Payment should be reversed');
-        
-        List<Cllease__GL_Transaction_Detail__c> glEntries = [SELECT Id, 
-                                                            Cllease__Transaction_Type__c,
-                                                            Cllease__Charge__c,
-                                                            Cllease__Company__c,
-                                                            Cllease__Contract__c,
-                                                            Cllease__Credit_Amount__c,
-                                                            Cllease__Credit_GL_Account__c,
-                                                            Cllease__Credit_GL_Account_Code__c,
-                                                            Cllease__Debit_Amount__c,
-                                                            Cllease__Debit_GL_Account__c,
-                                                            Cllease__Debit_GL_Account_Code__c,
-                                                            Cllease__Exported_Flag__c,
-                                                            Cllease__Exported_Date__c,
-                                                            Cllease__GL_Batch_Post_Date__c,
-                                                            Cllease__GL_Date__c,
-                                                            Cllease__Item_Id__c,
-                                                            Cllease__Item_Name__c,
-                                                            Invoice_Credit__c,
-                                                            cllease__Transaction_Description__c,
-                                                            Cllease__LeaseApplicationNumber__c
-                                                            FROM Cllease__GL_Transaction_Detail__c WHERE Invoice_Credit__c =: invoiceList[0].Id];
-        System.assertEquals(2, glEntries.Size(), 'Two Gl entreis should be created one is actual and other one should be reversal');
-        
-        for(Cllease__GL_Transaction_Detail__c gl : glEntries){
-            if(gl.cllease__Transaction_Description__c.contains('REVERSAL')){
-                System.assertEquals(gl.Cllease__Credit_GL_Account__c, glAccounts[0].Id, 'Mismatch in credit account id');
-                System.assertEquals(gl.Cllease__Debit_GL_Account__c, glAccounts[1].Id, 'Mismatch in Debit account id');
-            } else{
-                System.assertEquals(gl.Cllease__Credit_GL_Account__c, glAccounts[1].Id, 'Mismatch in credit account id');
-                System.assertEquals(gl.Cllease__Debit_GL_Account__c, glAccounts[0].Id, 'Mismatch in Debit account id');
-            }
-        }
     }
     
     @isTest

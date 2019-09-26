@@ -29,14 +29,26 @@ trigger ChargesInvoiceTrigger on cllease__Charge__c (before insert, before updat
             	charge.cllease__Transaction_Date__c = currentCLLeaseSystemDate;
             }
 		}
+        
+        /**
+         * Owner: CLS-Q2
+         * Date : 09/12/2019
+         * Description: Trigger to update custom fields required by DLL on product invoice object.
+         * Fee Amount Billed, Fee Tax Amount Billed, Fee Billed Total Amount, -Total of Charge Waived
+         * Total Fee Paid, Total Fee Tax Paid, Total Charge Paid Amount
+         **/
+        if(trigger.isUpdate) {
+            InvoiceDetailHandler handler = new InvoiceDetailHandler(trigger.new, trigger.old);
+            handler.updateInvoiceHandlerForCharges();
+        }
 	}
 
 	// 2. Follwoing after update code for updating the Invoice paid amount in Invoice
 	if(trigger.isAfter && trigger.isUpdate) {
 		Set<Id> invIds = new Set<Id>();
 	   	for (cllease__Charge__c childObj : Trigger.new) {
-	   		if(childObj.Invoiced_In__c != null) {
-	   			invIds.add(childObj.Invoiced_In__c);
+	   		if(childObj.cllease__Consolidated_Invoice__c != null) {
+	   			invIds.add(childObj.cllease__Consolidated_Invoice__c);
 	   		}
 	  	}
 	  

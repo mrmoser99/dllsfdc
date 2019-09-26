@@ -1,3 +1,12 @@
+/***************************************************************************************************************
+ * 
+ *
+ * Change Log:
+ *
+ * 9/26/19 - Changed status from CREDIT APPROVED TO CAMS APPROVED for cams
+
+ ********************************************************************************************************************/
+
 public without sharing class FMZ_ApplicationConvertToLeaseController {
 
 	@AuraEnabled
@@ -26,8 +35,9 @@ public without sharing class FMZ_ApplicationConvertToLeaseController {
 				return 'A funding request has already been created for this application';
 			}
 
-			// CREDIT APPROVED is API value for OFAC APROVED
-			if (app.genesis__Status__c != 'CREDIT APPROVED') {
+			// CREDIT APPROVED is API value for OFAC APROVED;
+			/* mrm 9/236 changed from CREDIT APPROVED to CAMS APPROVED */
+			if (app.genesis__Status__c != 'CAMS APPROVED') {
 				return 'The application must be completed and approved before it can be funded';
 			}
 

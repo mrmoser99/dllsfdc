@@ -161,7 +161,7 @@ global virtual class ContractProcessor implements clcommon.IContractProcessor {
              *   ii. Generate Streams and Activate Contract Processs incase Application status not "CREDIT APPROVED"
              */
             if(application.get('genesis__Status__c') ==null
-                || application.get('genesis__Status__c') != 'CREDIT APPROVED') {
+                || application.get('genesis__Status__c') != 'CAMS APPROVED') {
                 return;
             }
 

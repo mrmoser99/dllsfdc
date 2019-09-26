@@ -17,4 +17,10 @@
     <tabs>Int_OFAC__c</tabs>
     <tabs>Int_OFAC_FINCEN__c</tabs>
     <tabs>standard-report</tabs>
+    <tabs>clcommon__Billing_Group__c</tabs>
+    <tabs>clcommon__Collateral__c</tabs>
+    <tabs>test1__c</tabs>
+    <tabs>clcommon__Factory_Registration__c</tabs>
+    <tabs>clcommon__Payment_Mode__c</tabs>
+    <tabs>clcommon__Cash_Receipt_Application__c</tabs>
 </CustomApplication>

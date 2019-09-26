@@ -66,6 +66,8 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                                             State__c
                                         FROM cllease__Lease_Account__c
                                         WHERE Id IN :contractsToRetrieve]);
+        
+        System.debug(LoggingLevel.ERROR, '^^^ contractsMap : ' + contractsMap);
 
         // d .Retrieve Movement Codes for Transactions and Taxes.
         Map<String, Movement_Code__c> txnMovementCodesMap = new Map<String, Movement_Code__c>();

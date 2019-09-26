@@ -4,7 +4,6 @@
     <externalId>false</externalId>
     <label>LS Contract</label>
     <referenceTo>cllease__Lease_Account__c</referenceTo>
-    <relationshipLabel>Invoice</relationshipLabel>
     <relationshipName>Invoice</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

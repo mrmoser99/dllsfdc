@@ -1,11 +1,11 @@
 /*************************************************************************************************
  Change Log:
 
-MRM - 9/5/19 - removed edits so that over payment can occur.
- 
+ 9/5/19 MRM - removed edits so that over payment can occur.
+ 9/18/19 - MRM - Ursa change - use clcommon_consolidated_invoice__c instead of invoice__c
 
+ *********************************************************************************************************************/
 
- ***************************************************************************************************/ 
 global with sharing class AP_ManualPayment {
 
     public Static boolean manualPayment = false;
@@ -17,7 +17,7 @@ global with sharing class AP_ManualPayment {
 
         List<Int_PX_Billing__c> lineList = [Select line_data__c
                                         from Int_PX_Billing__c 
-                                        where committed__c = false];
+                                        where committed__c = false]; 
        
          
         /*
@@ -28,8 +28,8 @@ global with sharing class AP_ManualPayment {
         */
 
         /* grab the account number */
-        Invoice__c i = [SELECT name, balance_due_amount__c, sent_to_pnc__c ,LS_Contract__r.cllease__Account__r.account_number__c, paid_invoice_amount__c
-                      FROM Invoice__c
+        clcommon__Consolidated_Invoice__c i = [SELECT name, balance_due_amount__c, sent_to_pnc__c ,LS_Contract__r.cllease__Account__r.account_number__c, paid_invoice_amount__c
+                      FROM clcommon__Consolidated_Invoice__c
                       where id = :recordId
                       ];
 
@@ -52,7 +52,7 @@ global with sharing class AP_ManualPayment {
             response.put('Message','This invoice has been paid, cannot make an additional payment on this invoice!');
             return JSON.serialize(response);
         } 
-
+ 
         //if (checkAmount > i.balance_due_amount__c)   {
         //    response.put('Message','Payment cannot be greater than the balance due!');
         //    return JSON.serialize(response);
@@ -159,10 +159,10 @@ global with sharing class AP_ManualPayment {
                 ];
             equipment = d.cllease__Contract_Equipment__r.Equipment_Description1__c;
         }
-        Adjustment__c a = new Adjustment__c(Invoice__c = recordId, Adjustment_Type__c = aType, credit__c = credit, equipment__c = equipment, charge__c = chargeId, due_detail_line__c = dueId
+        Adjustment__c a = new Adjustment__c(invoice__c = recordId, Adjustment_Type__c = aType, credit__c = credit, equipment__c = equipment, charge__c = chargeId, due_detail_line__c = dueId
             ,tax_amount__c = taxAmount);
         
-        Invoice__c i = [select id from Invoice__c where id = :recordId];
+        clcommon__Consolidated_Invoice__c i = [select id from clcommon__Consolidated_Invoice__c where id = :recordId];
         i.adjustment_status__c = 'Pending Approval';
         
         update i;

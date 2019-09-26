@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CAMS_Queue_CAMS_Check</fullName>
+    <columns>CREATED_DATE</columns>
+    <columns>CREATEDBY_USER</columns>
+    <columns>NAME</columns>
+    <columns>Application__c</columns>
+    <columns>LS_Contract__c</columns>
+    <columns>Quick_Quote__c</columns>
+    <columns>Status__c</columns>
+    <columns>Account_Number__c</columns>
+    <filterScope>Queue</filterScope>
+    <label>CAMS Queue</label>
+    <queue>CAMS_Queue</queue>
+    <sharedTo>
+        <allInternalUsers/>
+    </sharedTo>
+</ListView>

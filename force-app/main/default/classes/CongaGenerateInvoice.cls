@@ -41,15 +41,15 @@ Global Class CongaGenerateInvoice{
            }
            System.debug('***Ri-list****'+Ri);
         }
-      list<Invoice__c> inv =  [select id, name,LS_Contract__r.id,LS_Contract__r.Number_of_Days_TO_Mature__c,LS_Contract__r.cllease__Lease_Status__c,LS_Contract__r.Billing_Address__r.state__c,LS_Contract__r.State__c,(select id, name from Invoice_Bills__r) 
-                              from Invoice__c where id =:recordId limit 1];
+      list<clcommon__Consolidated_Invoice__c> inv =  [select id, name,LS_Contract__r.id,LS_Contract__r.Number_of_Days_TO_Mature__c,LS_Contract__r.cllease__Lease_Status__c,LS_Contract__r.Billing_Address__r.state__c,LS_Contract__r.State__c,(select id, name from cllease__Bills__r) 
+                              from clcommon__Consolidated_Invoice__c where id =:recordId limit 1];
       if(inv.size()>0)
       {
          
       system.debug('here');
-      if(inv[0].Invoice_Bills__r.size()>0)
+      if(inv[0].cllease__Bills__r.size()>0)
       {
-          BillId = inv[0].Invoice_Bills__r[0].Id;
+          BillId = inv[0].cllease__bills__r[0].Id;
           contId = inv[0].LS_Contract__r.id;
           System.debug('Bill ID'+BillId);
           System.debug('LS Contract ID'+contId);

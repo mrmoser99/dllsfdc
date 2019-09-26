@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>Delivery_Source_System__c</columns>
+    <columns>Delivery_Source_System_Extraction_DateTi__c</columns>
+    <columns>End_Of_Month_indicator__c</columns>
+    <columns>End_Of_Week_Indicator__c</columns>
+    <columns>Interface_Version__c</columns>
+    <columns>Reporting_Date__c</columns>
+    <columns>Reporting_Date_End_Of_Day_Indicator__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>

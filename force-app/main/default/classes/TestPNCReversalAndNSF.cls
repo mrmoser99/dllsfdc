@@ -59,8 +59,8 @@ public class TestPNCReversalAndNSF {
         Insert accountingLine;
     }
     
-    public static Invoice__c createInvoice(Id contractId){
-        Invoice__c  invoice = new Invoice__c(LS_Contract__c = contractId);
+    public static clcommon__Consolidated_Invoice__c createInvoice(Id contractId){
+        clcommon__Consolidated_Invoice__c  invoice = new clcommon__Consolidated_Invoice__c(LS_Contract__c = contractId);
         insert invoice;
         return invoice;
     }
@@ -90,8 +90,8 @@ public class TestPNCReversalAndNSF {
         System.debug(LoggingLevel.ERROR, '^^^^ fees : ' + fees);
         List<cllease__GL_Account__c> glAccounts = [SELECT Id FROM cllease__GL_Account__c WHERE NAME IN ('OnAccount', 'Cash') ORDER BY NAME];
         cllease__Lease_Account__c contract = [SELECT Id, cllease__Contract_Date__c from Cllease__Lease_Account__c limit 1];
-        Invoice__c invoice = createInvoice(contract.Id);
-        invoice = [Select Id, Name from Invoice__c where Id =: invoice.Id];
+        clcommon__Consolidated_Invoice__c invoice = createInvoice(contract.Id);
+        invoice = [Select Id, Name from clcommon__Consolidated_Invoice__c where Id =: invoice.Id];
         List<cllease__Lease_Payment_Transaction__c> lpt = new List<cllease__Lease_Payment_Transaction__c>();
         lpt.add(new cllease__Lease_Payment_Transaction__c(cllease__Contract__c = contract.Id,
                                                           cllease__Transaction_Date__c = contract.cllease__Contract_Date__c ,

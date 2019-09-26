@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>File_Name__c</columns>
+    <columns>Start_DateTime_Extraction__c</columns>
+    <columns>End_DateTime_Extraction__c</columns>
+    <columns>Hash_Total_1__c</columns>
+    <columns>Hash_Total_2__c</columns>
+    <columns>Hash_Total_3__c</columns>
+    <columns>Number_Of_Records__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>

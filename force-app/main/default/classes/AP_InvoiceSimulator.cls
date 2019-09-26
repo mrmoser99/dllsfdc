@@ -1,4 +1,14 @@
-global with sharing class AP_InvoiceSimulator {
+/********************************************************************************************************************
+ *   AP INVOICE SIMULATOR
+
+ ChangeLog:
+
+ 9/18/19 - MRM - Ursa change - use clcommon_consolidated_invoice__c instead of invoice__c
+
+
+
+ *********************************************************************************************************************/
+ global with sharing class AP_InvoiceSimulator {
 
    
      public class resultLine{
@@ -95,7 +105,7 @@ global with sharing class AP_InvoiceSimulator {
                 ,cllease__Fee_Definition__r.name
                 ,cllease__Contract_Equipment__r.Equipment_Description1__c
                 from cllease__Charge__c
-                where invoiced_In__c = :recordId
+                where cllease__Consolidated_Invoice__c = :recordId
                 and cllease__Fee_Definition__r.name not in ('Service Fees','Estimated Property Tax')
                 order by cllease__Contract_Equipment__r.Equipment_Description1__c
                 ];
@@ -116,11 +126,11 @@ global with sharing class AP_InvoiceSimulator {
         
         results.add(r);  
         */
-        Invoice__c i = [select Payment_Amount__c
+        clcommon__Consolidated_Invoice__c	 i = [select Payment_Amount__c
                                 ,Previous_Balance_Due__c
                                 ,Payment_Sales_Tax__c
                                 ,Payment_Amount_Total__c	
-                        from Invoice__c 
+                        from clcommon__Consolidated_Invoice__c	 
                         where id = :recordId];
          
         r = new resultLine();
@@ -184,7 +194,7 @@ global with sharing class AP_InvoiceSimulator {
         bList = [select Id
                 ,cllease__Due_Type_Description__c
                 from cllease__Lease_account_Due_Details__c
-                where invoiced_In__c = :recordId
+                where cllease__Consolidated_Invoice__c = :recordId
                 ];
         for (cllease__Lease_account_Due_Details__c b:blist){
             billMap.put(b.id,b);
@@ -257,11 +267,11 @@ global with sharing class AP_InvoiceSimulator {
         Decimal taxTotal =  0;
         Decimal totalTotal = 0;
 
-        Invoice__c i = [select Payment_Amount__c
+        clcommon__Consolidated_Invoice__c	 i = [select Payment_Amount__c
                                 ,Previous_Balance_Due__c
                                 ,Payment_Sales_Tax__c
                                 ,Payment_Amount_Total__c	
-                        from Invoice__c 
+                        from clcommon__Consolidated_Invoice__c	 
                         where id = :recordId];
          
         resultLine r = new resultLine();
@@ -292,7 +302,7 @@ global with sharing class AP_InvoiceSimulator {
                 ,cllease__Fee_Definition__r.name
                 ,cllease__Contract_Equipment__r.Equipment_Description1__c
                 from cllease__Charge__c
-                where invoiced_In__c = :recordId
+                where cllease__Consolidated_Invoice__c = :recordId
                 and cllease__Fee_Definition__r.name not in ('Service Fees','Estimated Property Tax')
                 order by cllease__Contract_Equipment__r.Equipment_Description1__c
                 ];
@@ -304,7 +314,7 @@ global with sharing class AP_InvoiceSimulator {
         bList = [select Id
                 ,cllease__Due_Type_Description__c
                 from cllease__Lease_account_Due_Details__c
-                where invoiced_In__c = :recordId
+                where cllease__Consolidated_Invoice__c = :recordId
                 ];
 
         for (cllease__Lease_account_Due_Details__c b:blist){

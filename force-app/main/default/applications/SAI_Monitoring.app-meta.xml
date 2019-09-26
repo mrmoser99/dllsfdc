@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultLandingTab>standard-home</defaultLandingTab>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>SAI Monitoring</label>
+    <tabs>SAI_Application__c</tabs>
+    <tabs>SAI_Application_Agreement__c</tabs>
+    <tabs>SAI_Application_Source_System__c</tabs>
+    <tabs>SAI_Application_Feature__c</tabs>
+    <tabs>SAI_Application_Party__c</tabs>
+    <tabs>SAI_Party__c</tabs>
+    <tabs>SAI_Delivery_Control__c</tabs>
+    <tabs>SAI_File_Control__c</tabs>
+    <tabs>clcommon__Billing_Group__c</tabs>
+    <tabs>clcommon__Collateral__c</tabs>
+    <tabs>test1__c</tabs>
+    <tabs>clcommon__Factory_Registration__c</tabs>
+    <tabs>clcommon__Payment_Mode__c</tabs>
+    <tabs>clcommon__Cash_Receipt_Application__c</tabs>
+</CustomApplication>

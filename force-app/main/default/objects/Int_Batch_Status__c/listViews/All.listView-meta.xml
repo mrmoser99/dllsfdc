@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ListView xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>All</fullName>
+    <fullName>ALL</fullName>
     <columns>NAME</columns>
     <columns>Completed__c</columns>
     <columns>Status__c</columns>
@@ -8,10 +8,5 @@
     <columns>UPDATEDBY_USER</columns>
     <columns>CREATED_DATE</columns>
     <filterScope>Everything</filterScope>
-    <filters>
-        <field>NAME</field>
-        <operation>equals</operation>
-        <value>Px Remit</value>
-    </filters>
-    <label>All</label>
+    <label>ALL</label>
 </ListView>

@@ -4,9 +4,9 @@
     <deleteConstraint>SetNull</deleteConstraint>
     <externalId>false</externalId>
     <label>Invoice</label>
-    <referenceTo>Invoice__c</referenceTo>
-    <relationshipLabel>Adjustments</relationshipLabel>
-    <relationshipName>Adjustments</relationshipName>
+    <referenceTo>clcommon__Consolidated_Invoice__c</referenceTo>
+    <relationshipLabel>Adjustments (Invoice)</relationshipLabel>
+    <relationshipName>Adjustments1</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>

@@ -15,6 +15,12 @@
     <tabs>Lease_OLM_Quote__c</tabs>
     <tabs>PM_Log__c</tabs>
     <tabs>PM_Oauth_Token__c</tabs>
+    <tabs>clcommon__Billing_Group__c</tabs>
+    <tabs>clcommon__Collateral__c</tabs>
+    <tabs>test1__c</tabs>
+    <tabs>clcommon__Factory_Registration__c</tabs>
+    <tabs>clcommon__Payment_Mode__c</tabs>
+    <tabs>clcommon__Cash_Receipt_Application__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Portfolio_Management_UtilityBar</utilityBar>
 </CustomApplication>

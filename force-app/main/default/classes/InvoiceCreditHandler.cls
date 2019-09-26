@@ -3,11 +3,14 @@ public with sharing class InvoiceCreditHandler {
     private Map<Id, Cllease__Invoice_Credit__c> invoiceCreditOldMap;
     Set<Id> contractIds = new Set<Id>();
     Set<Id> productIds = new Set<Id>();
+   	Set<Id> pmtIds = new Set<Id>();
     Map<Id, Id> leaseAccountProductMap = new Map<Id, Id>();
+    Map<Id, Boolean> pmtMap = new Map<Id, Boolean>();
     Map<Id, List<Cllease__Accounting_Template_Line__c>> productAccountTemplateListMap = new Map<Id, List<Cllease__Accounting_Template_Line__c>>();
     List<Cllease__Accounting_Template_Header__c> accountingTemplatesHdrList = new List<Cllease__Accounting_Template_Header__c> ();
     List<Cllease__GL_Transaction_Detail__c> glTxnListToInsert = new List<Cllease__GL_Transaction_Detail__c>();
     List<Cllease__GL_Transaction_Detail__c> glReversalTxnListToInsert = new List<Cllease__GL_Transaction_Detail__c>();
+    List<cllease__Lease_Payment_Transaction__c> pmtTransactions = new List<cllease__Lease_Payment_Transaction__c>();
     Map<String, String> objectColumnMap = new Map<String, String>();
     Map<Id, Id> contractBranchMap = new Map<Id, Id>();
     
@@ -20,9 +23,19 @@ public with sharing class InvoiceCreditHandler {
     }
 
     public void initialize(){
-        // Collecting all contract from the invoice credit which are being created.
+        // Collecting all contract from the invoice credit which are being created and list of payments from Invoice.
         for(Cllease__Invoice_Credit__c credit : invoiceCreditList){
             contractIds.add(credit.Cllease__Contract__c);
+            pmtIds.add(credit.Payment_Transaction__c);
+        }
+        
+        List<cllease__Lease_Payment_Transaction__c > pmtList = [SELECT ID,
+                                                                	cllease__Reversed__c
+                                                                    FROM cllease__Lease_Payment_Transaction__c
+                                                                    WHERE ID IN : pmtIds];
+        // Get status of payment from Invoice so that if it is a reversed payment then we should not be creating accounting for invoice credit.
+        for(cllease__Lease_Payment_Transaction__c lpt : pmtList){
+            pmtMap.put(lpt.Id, lpt.cllease__Reversed__c);
         }
 
         // Query product id where ids contractIds.
@@ -33,7 +46,7 @@ public with sharing class InvoiceCreditHandler {
             leaseAccountProductMap.put(leaseAccount.Id, leaseAccount.Cllease__Lease_Product_Name__c);
             contractBranchMap.put(leaseAccount.Id, leaseAccount.Cllease__Branch__c);
         }
-
+        
         accountingTemplatesHdrList =[SELECT ID,
                                             Cllease__Product__c,
                                             Cllease__Securitization_Flag__c,
@@ -95,14 +108,17 @@ public with sharing class InvoiceCreditHandler {
         
         //Query all the lpt with above set of name and form a map between string and id to get the lpt id.
         List<cllease__Lease_Payment_Transaction__c > pmtList = [SELECT ID,
-                                                                    NAME
+                                                                    NAME, 
+                                                                	cllease__Reversed__c
                                                                     FROM cllease__Lease_Payment_Transaction__c
                                                                     WHERE Name IN : lptNames];
         for(cllease__Lease_Payment_Transaction__c lpt : pmtList){
             lptNameAndIdMap.put(lpt.Name, lpt.Id);
+            pmtMap.put(lpt.Id, lpt.cllease__Reversed__c);
         }
         
         System.debug(LoggingLevel.ERROR, '^^^^ lptNameAndIdMap : ' + lptNameAndIdMap);
+        System.debug(LoggingLevel.ERROR, '^^^^ pmtMap : ' + pmtMap);
         
         for(cllease__Invoice_Credit__c invoice : invoiceCreditList){
             System.debug(LoggingLevel.ERROR, '^^^^ invoice : ' + invoice);
@@ -180,27 +196,36 @@ public with sharing class InvoiceCreditHandler {
     
     public void afterInsertHandler() {
         initialize();
+        Boolean pmtReversed;
         for(Cllease__Invoice_Credit__c invoice : invoiceCreditList){
-            System.debug(LoggingLevel.ERROR, '^^^^ invoice : ' + invoice);
-            Id contractId = invoice.Cllease__Contract__c;
-            Id productId = leaseAccountProductMap.get(contractId);
-            for(Cllease__Accounting_Template_Line__c line : productAccountTemplateListMap.get(productId)){
-                String columnKey = line.Cllease__Amount_Object__c + '|' + line.Cllease__Amount_Object_Column__c;
-                String fieldApi = objectColumnMap.get(columnKey).split('\\|')[1];
-                System.debug(LoggingLevel.ERROR, '^^^ fieldApi : ' + fieldApi);
-                Decimal amount = (Decimal) invoice.get(fieldApi);
-                Cllease__GL_Transaction_Detail__c glEntry = new Cllease__GL_Transaction_Detail__c();
-                glEntry.Cllease__Contract__c = invoice.Cllease__Contract__c;
-                glEntry.Cllease__Credit_Amount__c = amount;
-                glEntry.Cllease__Debit_Amount__c =  amount;
-                glEntry.Cllease__GL_Date__c = cllease.systemDateutil.getCurrentSystemDate();
-                glEntry.Cllease__Credit_GL_Account__c = line.Cllease__Credit_GL_Account__c;
-                glEntry.Cllease__Debit_GL_Account__c = line.Cllease__Debit_GL_Account__c;
-                glEntry.Cllease__Transaction_Type__c = line.Cllease__Transaction_Sub_Type__c;
-                glEntry.Cllease__Company__c = contractBranchMap.get(invoice.Cllease__Contract__c);
-                glEntry.Cllease__Transaction_Description__c = line.get('Name') + ' - ' + line.name;
-                glEntry.Invoice_Credit__c = invoice.id;
-                glTxnListToInsert.add(glEntry);
+            if(pmtMap.containsKey(invoice.Payment_Transaction__c)){
+                pmtReversed = pmtMap.get(invoice.Payment_Transaction__c);
+            }
+            else{
+                pmtReversed = False;
+            }
+            System.debug(LoggingLevel.ERROR, '^^^^ pmtReversed : ' + pmtReversed);
+            if(!pmtReversed){
+                Id contractId = invoice.Cllease__Contract__c;
+                Id productId = leaseAccountProductMap.get(contractId);
+                for(Cllease__Accounting_Template_Line__c line : productAccountTemplateListMap.get(productId)){
+                    String columnKey = line.Cllease__Amount_Object__c + '|' + line.Cllease__Amount_Object_Column__c;
+                    String fieldApi = objectColumnMap.get(columnKey).split('\\|')[1];
+                    System.debug(LoggingLevel.ERROR, '^^^ fieldApi : ' + fieldApi);
+                    Decimal amount = (Decimal) invoice.get(fieldApi);
+                    Cllease__GL_Transaction_Detail__c glEntry = new Cllease__GL_Transaction_Detail__c();
+                    glEntry.Cllease__Contract__c = invoice.Cllease__Contract__c;
+                    glEntry.Cllease__Credit_Amount__c = amount;
+                    glEntry.Cllease__Debit_Amount__c =  amount;
+                    glEntry.Cllease__GL_Date__c = cllease.systemDateutil.getCurrentSystemDate();
+                    glEntry.Cllease__Credit_GL_Account__c = line.Cllease__Credit_GL_Account__c;
+                    glEntry.Cllease__Debit_GL_Account__c = line.Cllease__Debit_GL_Account__c;
+                    glEntry.Cllease__Transaction_Type__c = line.Cllease__Transaction_Sub_Type__c;
+                    glEntry.Cllease__Company__c = contractBranchMap.get(invoice.Cllease__Contract__c);
+                    glEntry.Cllease__Transaction_Description__c = line.get('Name') + ' - ' + line.name;
+                    glEntry.Invoice_Credit__c = invoice.id;
+                    glTxnListToInsert.add(glEntry);
+                }
             }
         }
         System.debug(LoggingLevel.ERROR, '^^^ glTxnListToInsert : ' + glTxnListToInsert);

@@ -8,10 +8,10 @@ public  class TestAPInvoiceSimulator {
         
         
         
-        Invoice__c inv = new invoice__c();
+        clcommon__Consolidated_Invoice__c inv = new clcommon__Consolidated_Invoice__c();
         inv.LS_Contract__c = LSContract.id;
         inv.Billed_Amount__c 	 = 100.00;
-        inv.paid_invoice_amount__c = 0.00;
+        //inv.paid_invoice_amount__c = 0.00;
         insert inv;
         
         cllease__Lease_Account_Due_Details__c bill = new cllease__Lease_Account_Due_Details__c();
@@ -22,7 +22,7 @@ public  class TestAPInvoiceSimulator {
 		bill.cllease__Total_Paid_Amount__c 	                    = 0;
 		bill.cllease__Total_Due_Amount__c 		                    = 100.00;
 		bill.cllease__Status__c 				                    = 'In Process';	
-        bill.Invoiced_In__c                                        =  inv.Id;
+        bill.cllease__Consolidated_Invoice__c                                        =  inv.Id;
 												  
 		insert bill;
         
@@ -34,7 +34,7 @@ public  class TestAPInvoiceSimulator {
         charge1.cllease__Original_Amount__c   = 100.00;
         charge1.Tax_Processed__c              = false;
         charge1.Tax_Component__c              = '';
-        charge1.Invoiced_In__c                = inv.id;
+        charge1.cllease__Consolidated_Invoice__c                = inv.id;
     
      	upsert charge1;
 
@@ -74,11 +74,11 @@ public  class TestAPInvoiceSimulator {
         
         
         
-        Invoice__c inv = new invoice__c();
+        clcommon__Consolidated_Invoice__c inv = new clcommon__Consolidated_Invoice__c();
         inv.LS_Contract__c = LSContract.id;
         inv.Billed_Amount__c 	 = 100.00;
         inv.charged_amount__c = 0.00;
-        inv.paid_invoice_amount__c = 0.00;
+        //inv.paid_invoice_amount__c = 0.00;
         insert inv;
 
         system.debug('***************** ' + inv.balance_due_amount__c);
@@ -91,7 +91,7 @@ public  class TestAPInvoiceSimulator {
 		bill.cllease__Total_Paid_Amount__c 	                    = 0.00;
 		bill.cllease__Total_Due_Amount__c 		                    = 100.00;
 		bill.cllease__Status__c 				                    = 'In Process';	
-        bill.Invoiced_In__c                                        =  inv.Id;
+        bill.cllease__Consolidated_Invoice__c                                        =  inv.Id;
 												  
 		insert bill;
         
@@ -103,7 +103,7 @@ public  class TestAPInvoiceSimulator {
         charge1.cllease__Original_Amount__c   = 200.00;
         charge1.Tax_Processed__c              = false;
         charge1.Tax_Component__c              = '';
-        charge1.Invoiced_In__c                = inv.id;
+        charge1.cllease__Consolidated_Invoice__c                = inv.id;
     
      	upsert charge1;
 
@@ -173,11 +173,11 @@ public  class TestAPInvoiceSimulator {
         
         
         
-        Invoice__c inv = new invoice__c();
+        clcommon__Consolidated_Invoice__c inv = new clcommon__Consolidated_Invoice__c();
         inv.LS_Contract__c = LSContract.id;
         inv.Billed_Amount__c 	 = 100.00;
         inv.charged_amount__c = 0.00;
-        inv.paid_invoice_amount__c = 0.00;
+        //inv.paid_invoice_amount__c = 0.00; 
         insert inv;
 
         system.debug('***************** ' + inv.balance_due_amount__c);
@@ -190,7 +190,7 @@ public  class TestAPInvoiceSimulator {
 		bill.cllease__Total_Paid_Amount__c 	                    = 0.00;
 		bill.cllease__Total_Due_Amount__c 		                    = 100.00;
 		bill.cllease__Status__c 				                    = 'In Process';	
-        bill.Invoiced_In__c                                        =  inv.Id;
+        bill.cllease__Consolidated_Invoice__c                                        =  inv.Id;
 												  
 		insert bill;
         
@@ -202,7 +202,7 @@ public  class TestAPInvoiceSimulator {
         charge1.cllease__Original_Amount__c   = 200.00;
         charge1.Tax_Processed__c              = false;
         charge1.Tax_Component__c              = '';
-        charge1.Invoiced_In__c                = inv.id;
+        charge1.cllease__Consolidated_Invoice__c                = inv.id;
     
      	upsert charge1;
 

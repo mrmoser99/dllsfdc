@@ -329,5 +329,3 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
     }
   
 }
-
-

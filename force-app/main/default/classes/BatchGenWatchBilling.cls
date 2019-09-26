@@ -5,6 +5,8 @@
 * ChangeLog:
 *
 *	6/1/18 - MRM Created Class
+* 	9/19/19 - MRM Changed invoice__c to clcommon__Consolidated_Invoice__c
+*
 *
 ************************************************************************************************/
 global class BatchGenWatchBilling implements Database.Batchable<SObject>,Database.Stateful{
@@ -60,7 +62,7 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
        
         List<Bill_Monitor__c> uList = new List<Bill_Monitor__c>();
        	
-       	List<Invoice__c> invoiceList = new List<Invoice__c>();
+       	List<clcommon__Consolidated_Invoice__c> invoiceList = new List<clcommon__Consolidated_Invoice__c>();
        	invoiceList = [ select id
        					, name
        					, Invoice_Due_Date__c
@@ -69,14 +71,14 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
        					, ls_contract__c
        					, Total_Invoiced_Amount__c
        					, invoice_emailed__c
-       	 				from Invoice__c where ls_contract__c in:contractIdSet
+       	 				from clcommon__Consolidated_Invoice__c where ls_contract__c in:contractIdSet
        	
 						];
-		Map<String,List<Invoice__c>> iMap = new Map<String,List<Invoice__c>>();
+		Map<String,List<clcommon__Consolidated_Invoice__c>> iMap = new Map<String,List<clcommon__Consolidated_Invoice__c>>();
 		
 		
-       	for (Invoice__c i:invoiceList){
-       		List<Invoice__c> invList = new List<Invoice__c>(); 
+       	for (clcommon__Consolidated_Invoice__c i:invoiceList){
+       		List<clcommon__Consolidated_Invoice__c> invList = new List<clcommon__Consolidated_Invoice__c>(); 
        		
        		/* if multiple invoices, add the values */
        		if (iMap.containsKey(string.valueOf(i.ls_contract__c) + '-' + string.valueOf(i.invoice_Due_Date__c))){
@@ -103,7 +105,7 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
        			  c.cllease__Lease_Account__r.Name
        			, c.cllease__Lease_Account__c
        			, c.cllease__Tax_Due__c
-       			, c.Invoiced_In__c
+       			, c.cllease__Consolidated_Invoice__c
        			, c.Name 
        			, c.cllease__paid_amount__c
        			From cllease__Charge__c c
@@ -113,26 +115,26 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
        		Decimal totalTax = 0;
        		Decimal totalPayment = 0;
        		
-       		if (invoiceChargeTaxAmountMap.containsKey(ch.Invoiced_In__c)){
-       			totalTax = invoiceChargeTaxAmountMap.get(ch.Invoiced_In__c);
+       		if (invoiceChargeTaxAmountMap.containsKey(ch.cllease__Consolidated_Invoice__c)){
+       			totalTax = invoiceChargeTaxAmountMap.get(ch.cllease__Consolidated_Invoice__c);
        			totalTax = totalTax + ch.cllease__Tax_Due__c; 
-       			invoiceChargeTaxAmountMap.put(ch.Invoiced_In__c,totalTax);
+       			invoiceChargeTaxAmountMap.put(ch.cllease__Consolidated_Invoice__c,totalTax);
        		}
        		else{
-       			invoiceChargeTaxAmountMap.put(ch.Invoiced_In__c,ch.cllease__Tax_Due__c);
+       			invoiceChargeTaxAmountMap.put(ch.cllease__Consolidated_Invoice__c,ch.cllease__Tax_Due__c);
        		}
        		
-       		if (invoiceChargeTaxAmountMap.containsKey(ch.Invoiced_In__c)){
-       			totalPayment = invoiceChargeTaxPaidAmountMap.get(ch.Invoiced_In__c);
+       		if (invoiceChargeTaxAmountMap.containsKey(ch.cllease__Consolidated_Invoice__c)){
+       			totalPayment = invoiceChargeTaxPaidAmountMap.get(ch.cllease__Consolidated_Invoice__c);
        			if (totalPayment == null)
        				totalPayment = 0;
        			if (ch.cllease__paid_amount__c == null)
        				ch.cllease__paid_amount__c = 0;
        			totalPayment = totalPayment + ch.cllease__paid_amount__c; 
-       			invoiceChargeTaxPaidAmountMap.put(ch.Invoiced_In__c,totalPayment);
+       			invoiceChargeTaxPaidAmountMap.put(ch.cllease__Consolidated_Invoice__c,totalPayment);
        		}
        		else{
-       			invoiceChargeTaxPaidAmountMap.put(ch.Invoiced_In__c,ch.cllease__paid_amount__c);
+       			invoiceChargeTaxPaidAmountMap.put(ch.cllease__Consolidated_Invoice__c,ch.cllease__paid_amount__c);
        		}
        	}
        	system.debug('charge paid map is: ' + invoiceChargeTaxPaidAmountMap);
@@ -154,11 +156,11 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
        		Select c.cllease__Tax_Due_Amount__c
        		, c.cllease__Account__c
        		, c.Name
-       		, c.Invoiced_In__c 
+       		, c.cllease__Consolidated_Invoice__c 
        		, c.cllease__total_paid_amount__c
        		From cllease__Lease_account_Due_Details__c c
        		Where cllease__lease_Account__c in :contractIdSet
-       		and invoiced_in__c != null
+       		and cllease__Consolidated_Invoice__c != null
        		];
        	
        	
@@ -166,22 +168,22 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
        		Decimal totalTax = 0;
        		Decimal totalPayment = 0;
        		
-       		if (invoiceBillTaxAmountMap.containsKey(b.Invoiced_In__c)){
-       			totalTax = invoiceBillTaxAmountMap.get(b.Invoiced_In__c);
+       		if (invoiceBillTaxAmountMap.containsKey(b.cllease__Consolidated_Invoice__c)){
+       			totalTax = invoiceBillTaxAmountMap.get(b.cllease__Consolidated_Invoice__c);
        			totalTax = totalTax + b.cllease__Tax_Due_Amount__c; 
-       			invoiceBillTaxAmountMap.put(b.Invoiced_In__c,totalTax);
+       			invoiceBillTaxAmountMap.put(b.cllease__Consolidated_Invoice__c,totalTax);
        		}
        		else{
-       			invoiceBillTaxAmountMap.put(b.Invoiced_In__c,b.cllease__Tax_Due_Amount__c);
+       			invoiceBillTaxAmountMap.put(b.cllease__Consolidated_Invoice__c,b.cllease__Tax_Due_Amount__c);
        		}
        		
-       		if (invoiceBillTaxPaidAmountMap.containsKey(b.Invoiced_In__c)){
-       			totalPayment = invoiceBillTaxPaidAmountMap.get(b.Invoiced_In__c);
+       		if (invoiceBillTaxPaidAmountMap.containsKey(b.cllease__Consolidated_Invoice__c)){
+       			totalPayment = invoiceBillTaxPaidAmountMap.get(b.cllease__Consolidated_Invoice__c);
        			totalPayment = totalPayment + b.cllease__total_paid_amount__c; 
-       			invoiceBillTaxPaidAmountMap.put(b.Invoiced_In__c,totalPayment);
+       			invoiceBillTaxPaidAmountMap.put(b.cllease__Consolidated_Invoice__c,totalPayment);
        		}
        		else{
-       			invoiceBillTaxPaidAmountMap.put(b.Invoiced_In__c,b.cllease__total_paid_amount__c);
+       			invoiceBillTaxPaidAmountMap.put(b.cllease__Consolidated_Invoice__c,b.cllease__total_paid_amount__c);
        		}
        	}
        	system.debug('bill map is: ' + invoiceBillTaxAmountMap);
@@ -212,7 +214,7 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
         			if (iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c)).size() > 1){
         				m.multiple_invoices__c = true;
         				m.invoiced__c = true;
-        				m.invoice__c = null;
+        				m.invoice__c = null; 
         			}
         			else{
         				m.multiple_invoices__c = false;
@@ -226,7 +228,7 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
         			nbrEmailed = 0;
         			 
         			if (iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c)) != null){
-        				for(Invoice__c i2:iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c))){
+        				for(clcommon__Consolidated_Invoice__c i2:iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c))){
         					m.Invoice_Amount__c = m.Invoice_Amount__c + i2.Total_Invoiced_Amount__c;
         					if (i2.invoice_emailed__c == true)
         						nbrEmailed++;
@@ -263,7 +265,7 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
      
         		if (iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c)) != null){
         			m.invoice_amount__c = 0;
-        			for(Invoice__c i2:iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c))){
+        			for(clcommon__Consolidated_Invoice__c i2:iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c))){
         				system.debug('adding amounts');
         				m.Invoice_Amount__c = m.Invoice_Amount__c + i2.Total_Invoiced_Amount__c;
         				m.invoice_emailed__c = i2.invoice_emailed__c;
@@ -292,7 +294,7 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
         	m.invoice_tax__c = 0;
         	m.paid_amount__c = 0;
         	if (iMap.get(string.valueOf(m.LS_Contract__c) + '-' + string.valueOf(m.due_date__c)) != null){
-        		for (Invoice__c i2:iMap.get(string.valueOf(m.LS_Contract__c) + '-' + string.valueOf(m.due_date__c)) ){
+        		for (clcommon__Consolidated_Invoice__c i2:iMap.get(string.valueOf(m.LS_Contract__c) + '-' + string.valueOf(m.due_date__c)) ){
         			if (invoiceChargeTaxAmountMap.containsKey(m.invoice__c)){
         				m.invoice_tax__c = m.invoice_tax__c + invoiceChargeTaxAmountMap.get(m.invoice__c);
         				m.Paid_Amount__c = m.paid_amount__c + invoiceChargeTaxPaidAmountMap.get(m.invoice__c);

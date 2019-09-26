@@ -727,11 +727,6 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Invoiced_In__c</field>
-            <table>cllease__Contract_Equipment__c.cllease__Charges__r</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>cllease__Last_Accrual_Date__c</field>
             <table>cllease__Contract_Equipment__c.cllease__Charges__r</table>
         </columns>

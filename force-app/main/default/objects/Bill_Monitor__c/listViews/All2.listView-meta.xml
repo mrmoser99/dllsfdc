@@ -4,7 +4,6 @@
     <columns>NAME</columns>
     <columns>Due_Date__c</columns>
     <columns>LS_Contract__c</columns>
-    <columns>Invoice__c</columns>
     <columns>Multiple_Invoices__c</columns>
     <columns>Invoiced__c</columns>
     <columns>Invoice_Emailed__c</columns>

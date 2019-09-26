@@ -1,0 +1,153 @@
+html {
+    height: 100%;
+}
+
+body {
+    background-color: #EBEEF0;
+    font: normal normal 400 12px Lato;
+    padding: 0 !important;
+    height: 100%;
+}
+
+body > .nx-page {
+    padding: 0;
+    background-color: #EBEEF0;
+}
+
+.cls-dashboard-tab-content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.cls-dashboard-tab-content .ui-tabs-nav {
+    position: absolute;
+    top: 0;
+    height: 40px;
+    left: 0;
+    right: 0;
+}
+
+.cls-dashboard-tab-content > div.ui-tabs-panel {
+    position: absolute;
+    top: 46px;
+    bottom: 6px;
+    left: 0;
+    right: 0;
+}
+
+#loan-dashboard-grid {
+    margin: 0 !important;
+}
+
+#loan-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 40%;
+    margin: 0 !important;
+}
+
+#loan-right-panel {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 40%;
+    right: 0;
+    margin: 0 0 0 10px !important;
+}
+
+#loan-panel .cls-dashboard-section {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#loan-panel .cls-dashboard-section .wrapper-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+#loan-panel .cls-dashboard-section .wrapper-container {
+    position: absolute;
+    top: 65px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#loan-panel .cls-dashboard-section .wrapper-container div {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#loan-dashboard-document-section{
+    position: absolute;
+    top: 0;
+    bottom: 50%;
+    left: 0;
+    right: 0;
+}
+
+#loan-dashboard-parties-section {
+    position: absolute;
+    top: 50%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 !important;
+}
+
+#loan-dashboard-document-section div,
+#loan-dashboard-parties-section div {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+#relationship-dashboard,
+#collateral-tab,
+#construction-tab{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0 !important;
+}
+
+#construction-help {
+    position: absolute;
+    top: -42px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    border: none !important;
+}
+
+#loan-details-iframe,
+#document-iframe,
+#party-iframe {
+    border: none;
+}
+
+div[pagename="NGLoanDashBoard"] {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

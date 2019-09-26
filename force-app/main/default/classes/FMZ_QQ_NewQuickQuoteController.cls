@@ -1,3 +1,13 @@
+/********************************************************************************************************
+* 
+*
+* Change Log:
+*
+* 9/25/19 - Changed to use the new genesis__cl_product__c from ursa
+
+
+
+ ********************************************************************************************************/ 
 public without sharing class FMZ_QQ_NewQuickQuoteController {
 
     public static final String QUICK_QUOTE_OBJECT = 'genesis__Quick_Quotes__c';
@@ -50,8 +60,8 @@ public without sharing class FMZ_QQ_NewQuickQuoteController {
             qq.Dealer__c = dealer.Id;
             qq.Dealer_Name__c = dealer.Name;
             //qq.Legal_Entity__c = dealer.clcommon__Legal_Entity_Type__c;
-
-            qq.CL_Product__c = [SELECT Id FROM clcommon__CL_Product__c WHERE clcommon__Product_Name__c = 'Finance Lease' LIMIT 1].Id;
+            /* ursa change */
+            qq.genesis__CL_Product__c = [SELECT Id FROM clcommon__CL_Product__c WHERE clcommon__Product_Name__c = 'Finance Lease' LIMIT 1].Id;
             qq.genesis__Company__c = [SELECT Id FROM genesis__Company__c WHERE genesis__Default__c = true LIMIT 1].Id;
 
             qq.genesis__No_Of_Payments_Required_Upfront__c = 0;

@@ -255,12 +255,13 @@ public with sharing class Bridger {
 				
 				if (!Test.isRunningTest())
 					results = SearchClient.Search_x(Context, Config, SearchInput);
+					system.debug('Individual Results:' + results);
     		}
     	} 
     	  
 		XgServicesSearch.ArrayOfResultRecord resultList = new XgServicesSearch.ArrayOfResultRecord();
 
-		system.debug(XgServicesSearch.ArrayOfEntityMatchInfo.EntityMatchInfo);
+		//system.debug(XgServicesSearch.ArrayOfEntityMatchInfo.EntityMatchInfo); 
 
 		system.debug('Results = ' + results);
 

@@ -1,0 +1,125 @@
+/*******************************************************************************************************************
+*   OFACCall - made this into a queable since cams need to be called in sequence
+* 
+*	Change Log: 
+*	9/25/19 - MRM Created
+* 
+********************************************************************************************************************/
+public class OFACCall implements Queueable, Database.AllowsCallouts {
+    
+    
+    private Map<ID,String> applicationMap;
+
+    public  OFACCall(Map<ID,String> applicationMap)
+    {
+        this.applicationMap = applicationMap;
+    }
+    
+    public void execute(QueueableContext context) {
+    	
+    	genesis__Applications__c app = new genesis__applications__c(); 
+    	Bridger.bridgerInput input1 = new Bridger.bridgerInput();
+    	Bridger.bridgerInput input2 = new Bridger.bridgerInput();
+    	Boolean businessHit = false;
+    	Boolean individualHit = false;
+    	bridger.bridgerResult IndividualResult = new Bridger.bridgerResult();
+        bridger.bridgerResult businessResult = new Bridger.bridgerResult();
+    	
+    	try{
+    	
+    		app = [select genesis__account__r.name
+    					,billing_address1__r.address_line_1__c
+    					,billing_address1__r.address_line_2__c
+    					,billing_address1__r.city__c
+    					,billing_address1__r.county__c
+    					,billing_address1__r.country__c
+    					,billing_address1__r.zip_code__c
+    					,billing_address1__r.state__c
+    					,genesis__account__r.EIN__c
+    					,contract_signer__c
+    					,contract_signer_last_name__c
+    					,contract_signer_title__c
+    				from genesis__applications__c
+    				where id in :applicationMap.keySet()
+    				limit 1	
+    		];
+    		/* business */
+    		input1.requestType = 'Business'; 
+    		input1.street1 = app.billing_address1__r.address_line_1__c;
+    		input1.street2 = app.billing_address1__r.address_line_2__c;
+    		input1.city = app.billing_address1__r.city__c;
+    		input1.stateprovincedistrict = app.billing_address1__r.state__c;
+    		input1.postalcode = app.billing_address1__r.zip_code__c;
+    		input1.addresstype = 'Current';
+    		input1.county = app.billing_address1__r.county__c;
+    		input1.fullname = app.genesis__account__r.name;
+    		input1.ein = app.genesis__account__r.ein__c;  
+    		 
+    		system.debug('************ input1: ' + input1);
+    		/* individual */
+    		input2.requestType = 'Individual';
+    		input2.title = app.Contract_Signer_Title__c;
+    		input2.last = app.contract_signer_last_name__c;
+    		input2.first = app.contract_signer__c;
+    		system.debug('************ input2: ' + input2);
+    		
+    		
+    		businessResult = bridger.bridgerSearch(input1);//business
+    		individualResult = bridger.bridgerSearch(input2);//individual
+    		
+			NewCoUtility.skipApplicationTrigger = true;
+
+    		if (businessResult.hit || individualResult.hit){
+	   			app.genesis__Status__c = 'OFAC DECLINED';
+    		}
+    		else{
+    			app.genesis__Status__c = 'OFAC APPROVED';
+							
+    		}
+    	
+    		update app;
+
+			if (app.genesis__status__c == 'OFAC APPROVED'){ 
+				system.debug('Submitting CAMS Call now.....');
+            	CAMSCall job = new CAMSCall(applicationMap);
+        		System.enqueueJob(job);	   
+			}
+    		
+    	}
+    	catch (Exception e){
+    		system.debug('***** Exception: ' + e);
+    		ofac_log__c o1 = new ofac_log__c();
+    		o1.result__c = string.valueOf(e);
+    		o1.application__c = app.id;
+			insert o1;
+			
+			app.genesis__Status__c = 'OFAC FATAL';
+    		NewCoUtility.skipApplicationTrigger = true;
+    		update app;
+			    		
+    	}	
+    	finally {
+    		system.debug(app.billing_address1__r.address_line_1__c);
+			List<OFAC_Log__c> oList = new List<OFAC_Log__c>();
+			
+			system.debug(input1);
+			ofac_log__c o1 = new ofac_log__c();
+    		o1.input__c = string.valueOf(input1);
+    		o1.application__c = app.id;
+    		o1.result__c =  businessResult.result;
+    		olist.add(o1);
+			
+			system.debug(input2);
+			ofac_log__c o2 = new ofac_log__c();
+    		o2.input__c = string.valueOf(input2);
+    		o2.result__c = individualResult.result;
+    		o2.application__c = app.id;
+    		oList.add(o2);
+    		
+			if (!olist.isEmpty())
+				insert oList;
+    	} 
+    	
+    }
+
+}

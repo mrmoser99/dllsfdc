@@ -152,7 +152,7 @@ global with sharing class APInterfaceRecordsGeneratorJob  extends clcommon.Dynam
                             remark = 'Invoice Number is Missing';
                             validationSuccess = false;
                         }
-
+                        system.debug('remark is: ' + remark);
                         if(validationSuccess) {
                             Datetime txnDate    = dealerFundingTxn.cllease__Txn_Date__c;
                             txnDate = txnDate.addHours(currentSystemNow.hour());
@@ -204,6 +204,7 @@ global with sharing class APInterfaceRecordsGeneratorJob  extends clcommon.Dynam
                     } else {
                         remark = 'GL Entries not yet generated';
                     }
+                    system.debug('remark is: ' + remark);
 
                     // Upating Remark in all transactions for validation/Success/failure
                     for(cllease__Other_Transaction__c groupedTxn : groupedTxns) {

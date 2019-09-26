@@ -166,3 +166,27 @@ declare module "@salesforce/resourceUrl/skuid_ngui_production" {
     var skuid_ngui_production: string;
     export default skuid_ngui_production;
 }
+declare module "@salesforce/resourceUrl/skuid_pgsp_a2W1I000000STnSUAW_LeaseEquipment" {
+    var skuid_pgsp_a2W1I000000STnSUAW_LeaseEquipment: string;
+    export default skuid_pgsp_a2W1I000000STnSUAW_LeaseEquipment;
+}
+declare module "@salesforce/resourceUrl/skuid_pgsp_a2W1I000000STo5UAG_AnyLeaseProductAppli" {
+    var skuid_pgsp_a2W1I000000STo5UAG_AnyLeaseProductAppli: string;
+    export default skuid_pgsp_a2W1I000000STo5UAG_AnyLeaseProductAppli;
+}
+declare module "@salesforce/resourceUrl/skuid_pgsp_a2W1I000000SToDUAW_ApplicationForm" {
+    var skuid_pgsp_a2W1I000000SToDUAW_ApplicationForm: string;
+    export default skuid_pgsp_a2W1I000000SToDUAW_ApplicationForm;
+}
+declare module "@salesforce/resourceUrl/skuid_pgsp_a2W1I000000SToxUAG_NGLoanDashBoard" {
+    var skuid_pgsp_a2W1I000000SToxUAG_NGLoanDashBoard: string;
+    export default skuid_pgsp_a2W1I000000SToxUAG_NGLoanDashBoard;
+}
+declare module "@salesforce/resourceUrl/skuid_pgsp_a2W1I000000SToyUAG_NGTaskList" {
+    var skuid_pgsp_a2W1I000000SToyUAG_NGTaskList: string;
+    export default skuid_pgsp_a2W1I000000SToyUAG_NGTaskList;
+}
+declare module "@salesforce/resourceUrl/skuid_pgsp_a2W1I000000STp1UAG_PackageView" {
+    var skuid_pgsp_a2W1I000000STp1UAG_PackageView: string;
+    export default skuid_pgsp_a2W1I000000STp1UAG_PackageView;
+}

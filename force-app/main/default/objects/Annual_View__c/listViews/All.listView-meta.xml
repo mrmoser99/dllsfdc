@@ -10,6 +10,8 @@
     <columns>Booked_Amount__c</columns>
     <columns>Funding__c</columns>
     <columns>Funding_Amount__c</columns>
+    <columns>Net_Investment__c</columns>
+    <columns>Net_Investment_Amount__c</columns>
     <columns>Delinquency__c</columns>
     <columns>Delinquency_Amount__c</columns>
     <filterScope>Everything</filterScope>

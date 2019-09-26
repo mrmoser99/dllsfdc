@@ -1,0 +1,142 @@
+.nx-page[pagename=NGTaskList] {
+  padding-top: 24px;
+  padding-right: 0;
+  padding-left: 0;
+  background-color: white;
+}
+
+body {
+  background-color: #FFFFFF;
+}
+
+body > .nx-page {
+    background-color: #FFFFFF;
+}
+
+.square.lochmara:after {
+    content: attr(execVal);
+    font-size:24px;
+}
+
+.square.treeP:after {
+    content: attr(execVal);
+    font-size:24px;
+}
+
+.square.limedS:after {
+    content: attr(execVal);
+    font-size:24px;
+}
+
+.square.tskOutstanding:after {
+    content: attr(execVal);
+    font-size:24px;
+}
+
+.square .leaseAdmin:after {
+    content: attr(execVal);
+    font-size:24px;
+}
+
+.LSButtonC.hrLine {
+    border-bottom: 1px solid #ebeef0;
+    margin-left:16px;
+    margin-right:7px;
+    padding-bottom: 10px;
+}
+
+.noHrLine .nx-basicfieldeditor-item {
+    border-bottom:none;
+}
+
+#task-list-name {
+  background-color: #2d5074;
+    color: white;
+    margin-left: 13px;
+    margin-right: 6px;
+}
+
+#task-list-name .nx-editor-contents-template {
+    color: #333;
+    margin-left: -8px;
+    font-size: 14px;
+    padding-top: 10px;
+}
+
+#task-list-name .nx-fieldtext {
+    font-size: 14px;
+    display:inline-block;
+}
+
+#LASummaryPT{
+    margin-bottom: 20px;
+    margin-top: -18px;
+}
+#task-list-name {
+    background-color: #ffffff;
+    margin-bottom: 20px;
+}
+.status-title {
+    color: #37444e;
+    size: 13px;
+}
+.square.lochmara {
+    background-color: #1cbdd4;
+}
+.square .leaseAdmin {
+    background-color: #000000;
+}
+.ui-button.iconic-button.iconic-button-exception-task,
+.ui-button.iconic-button.iconic-button-exception-task.ui-state-hover,
+.ui-button.iconic-button.iconic-button-exception-task.ui-state-focus {
+    border: 0px;
+    margin-top: -08px;
+    margin-left: -120px;
+    position: absolute;
+    z-index: 1000;
+}
+.ui-button.iconic-button.iconic-button-exception-task:before,
+.ui-button.iconic-button.iconic-button-exception-task.ui-state-hover:before,
+.ui-button.iconic-button.iconic-button-exception-task.ui-state-focus:before {
+    font-family: FontAwesome;
+    font-size: 18px;
+    background-color: #ffffff;
+    color: #ffa21d;
+    width: 29px;
+    height: 29px;
+    margin-bottom: 3px;
+    border-radius: 50%;
+    border: 2px solid #ffa21d;
+    text-align: center;
+    display: inline-block;
+    font-weight: normal;
+    outline: none;
+    cursor: pointer;
+}
+.ui-button.iconic-button.iconic-button-next-stage-submit,
+.ui-button.iconic-button.iconic-button-next-stage-submit.ui-state-hover,
+.ui-button.iconic-button.iconic-button-next-stage-submit.ui-state-focus {
+    border: 0px;
+    margin-top: 43px;
+    margin-left: -118px;
+    position: absolute;
+    z-index: 1000;
+}
+.ui-button.iconic-button.iconic-button-next-stage-submit:before,
+.ui-button.iconic-button.iconic-button-next-stage-submit.ui-state-hover:before,
+.ui-button.iconic-button.iconic-button-next-stage-submit.ui-state-focus:before {
+    font-family: FontAwesome;
+    font-size: 18px;
+    background-color: #ffffff;
+    color: #1cbdd4;
+    width: 29px;
+    height: 29px;
+    margin-bottom: 3px;
+    border-radius: 50%;
+    border: 2px solid #1cbdd4;
+    text-align: center;
+    display: inline-block;
+    font-weight: normal;
+    outline: none;
+    cursor: pointer;
+}

@@ -1,15 +1,16 @@
 /**
  * Author: Cloud Lending Solutions
  * Description: Following class helps in updating Paid Invoice Amount in Invoice object  
+ * 9/19/19 - MRM - changed ref to invoiced_in__c to cllease__Consolidated_Invoice__c 
  **/
 public class InvoiceSummaryUtil {
     // Following method update the invoices from Bills and charges after paid.
     public static void InvoiceSummary(Set<Id> invIds) {
         System.debug(' Starting the InvoiceSummary method ');
-        Savepoint sp = database.setsavepoint();
+        Savepoint sp = database.setsavepoint(); 
         try {
             // getting the List of charges and bill from invoice object 
-            List<Invoice__c> invoices = [SELECT Id, Name,
+            List<clcommon__Consolidated_Invoice__c> invoices = [SELECT Id, Name,
                                             Paid_Invoice_Amount__c, 
                                             Billed_Amount__c, 
                                             Charged_Amount__c, 
@@ -17,40 +18,40 @@ public class InvoiceSummaryUtil {
                                             (SELECT Id, Name,
                                                 cllease__Rental_Due_Amount__c, 
                                                 cllease__Tax_Due_Amount__c, 
-                                                Invoiced_In__c, 
+                                                cllease__Consolidated_Invoice__c, 
                                                 cllease__Rental_Paid_Amount__c, 
                                                 cllease__Total_Paid_Amount__c
-                                            FROM Invoice_Bills__r), 
+                                            FROM cllease__Bills__r), 
                                             (SELECT Id, Name,  
                                                 cllease__Original_Amount__c, 
                                                 cllease__Paid_Amount__c, 
-                                                Invoiced_In__c,
+                                                cllease__Consolidated_Invoice__c,
                                              	cllease__Waive__c,
                                              	Total_Original_Amount__c 
-                                            FROM Invoice_Charges__r)
-                                        FROM Invoice__c
+                                            FROM cllease__Charges__r)
+                                        FROM clcommon__Consolidated_Invoice__c
                                         WHERE Id in: invIds];
 
-            Decimal totalchargeAmount, totalBillPaidAmount, totalChargeWaivedAmount; 
+            Decimal totalchargeAmount, totalBillPaidAmount, totalChargeWaivedAmount;  
             // Looping through Invoices for updates
-            for(Invoice__c invoice: invoices) {
+            for(clcommon__Consolidated_Invoice__c invoice: invoices) {
                 totalchargeAmount =0;
                 totalBillPaidAmount =0;
                 totalChargeWaivedAmount =0;
                 // a. Looping through charges
-                for(cllease__Charge__c charge: invoice.Invoice_Charges__r) {
+                for(cllease__Charge__c charge: invoice.cllease__Charges__r) {
                     totalchargeAmount += (charge.cllease__Paid_Amount__c != null ? charge.cllease__Paid_Amount__c : 0);
                     if(charge.cllease__Waive__c)
                         totalChargeWaivedAmount += charge.Total_Original_Amount__c != null ? charge.Total_Original_Amount__c : 0;
                 }
 
                 // b. Looping through Bills
-                for(cllease__Lease_account_Due_Details__c bill : invoice.Invoice_Bills__r) {
+                for(cllease__Lease_account_Due_Details__c bill : invoice.cllease__Bills__r) {
                     totalBillPaidAmount += (bill.cllease__Total_Paid_Amount__c !=null ? bill.cllease__Total_Paid_Amount__c : 0);
                 }
 
                 // Update Invoice Paid Amounts
-                invoice.Paid_Invoice_Amount__c = totalBillPaidAmount + totalchargeAmount ;
+                //invoice.Paid_Invoice_Amount__c = totalBillPaidAmount + totalchargeAmount ;
                 // Updating total charge waived amount
                 invoice.Total_of_Charge_Waived__c = totalChargeWaivedAmount;
                 // Avoiding resending Invoices to PNC again for remaining amounts. TIcket: 13061

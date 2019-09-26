@@ -1860,11 +1860,6 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Invoiced_In__c</field>
-            <table>cllease__Lease_Account__c.cllease__Dues_Details__r</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>cllease__Quote_Tax__c</field>
             <table>cllease__Lease_Account__c.cllease__Dues_Details__r</table>
         </columns>
