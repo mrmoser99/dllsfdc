@@ -138,9 +138,12 @@
                             });
                             getDocs.setCallback(this, function(response) {
                                 console.log('!!! POLLING');
-                                var state = response.getState();
+								var state = response.getState();
+								console.log(state);
                                 if (state === 'SUCCESS') {
-                                    var docs = component.get('v.documents');
+									var docs = component.get('v.documents');
+									console.log(docs.length);
+									console.log(response.getReturnValue().length);
                                     if(docs.length != response.getReturnValue().length){
                                         var assignmentAction = component.get('c.createDocumentAssosiation');
                                         assignmentAction.setParams({

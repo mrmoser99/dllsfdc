@@ -31,7 +31,7 @@ global without sharing class CAMSUtility {
     * Cams Callout
     *
     *************************************************************************************************/
-	public static void callCAMS(Map<ID,String> applicationMap){
+    public static void callCAMS(Map<ID,String> applicationMap){
 
         ID appId;
 
@@ -86,7 +86,7 @@ global without sharing class CAMSUtility {
         CAMS_Check__c cc;
 
         if (ccList.size() == 0){
-       		cc = CAMSUtility.createCamsCheckRecord(applicationMap,'CAMS CHECK');
+       		cc = CAMSUtility.createCamsCheckRecord(applicationMap,'CAMS CHECK',false);
 		}
         else{
             cc = ccList[0];
@@ -100,7 +100,7 @@ global without sharing class CAMSUtility {
             update cc;
             return;
         }
-        */
+        */ 
 
         HttpRequest reqAPI = new HttpRequest();  
 			
@@ -124,29 +124,53 @@ global without sharing class CAMSUtility {
 		gen.writeStringField('sourceSystem', cc.Source_System__c);
 		gen.writeStringField('transactionAmount', string.valueOf(cc.Transaction_Amount__c));
 		gen.writeStringField('customerName', cc.Customer_Name__c);
-		gen.writeStringField('leaseSignerName', cc.Lease_Signer_First_Name__c + ' ' + cc.Lease_Signer_Last_Name__c);
+	
 		gen.writeStringField('leaseSignerTitle', cc.Lease_Signer_Title__c);
 		gen.writeStringField('leaseSignerFirstName', cc.Lease_Signer_First_Name__c);
 		gen.writeStringField('leaseSignerLastName', cc.Lease_Signer_Last_Name__c);
 		gen.writeStringField('customerType', cc.Customer_Type__c);
-		gen.writeStringField('uniqueID', cc.name);
+		
 		gen.writeStringField('DLLCountry', cc.Dll_Country__c);
-		gen.writeStringField('trustIndicator', string.valueOf(cc.Trust__c));
-		gen.writeStringField('publiclyTradedIndicator', string.valueOf(cc.Publicly_Traded__c));
+		
+        //Hi Everyone, here are the NAICS code that will indicate the customer being a trust. So the mid office systems (or back office system scripts for one time load customer extract) can check for this to send the appropriate value for trust indicator. This logic should be used for on going CRR call and to populate the value for this field for the One time load file. 
+
+        //If NAICS code for the customer is one of the below then the Trust indicator will be a Y otherwise N.
+
+        //The final list of trust NAICS codes are as follows:
+
+        //523991 - Trust, Fiduciary, and Custody Activities
+        //525920 - Trusts, Estates, and Agency Accounts
+        //813211 - Grantmaking Foundations
+
+        if (cc.NAICS__c == '523991' || cc.NAICS__c == '525920' || cc.NAICS__c == '813211' ) 
+            cc.Trust__c = true;
+        
+        gen.writeStringField('trustIndicator', string.valueOf(cc.Trust__c));
+		
+        
+        
+        gen.writeStringField('publiclyTradedIndicator', string.valueOf(cc.Publicly_Traded__c));
 		gen.writeStringField('publiclyTradedFullSubsidiary', string.valueOf(cc.Publicly_Traded_Full_Subsidiary__c));
 		gen.writeEndObject();
 		
  		String jsonS = gen.getAsString();
-
+        system.debug('json:' + jsonS);
 		reqAPI.setBody(jsonS);  
 		Http http1 = new Http();
 	    HTTPResponse res1 = http1.send(reqAPI); 
 	    
         
+        if (res1.getStatusCode() != 200){
+            a.genesis__status__c = 'CAMS FATAL';  
+            update a;
+            return;
+        }
+        
+        
         CAMSUtility.results res = (CAMSUtility.results) System.JSON.deserialize(res1.getBody(),CAMSUtility.results.class);	
 		system.debug('result: ' + res);
         
-        if (res.code == '200'){
+        if (res.code == '200' && res.riskRating != null){
             cc.Response_Risk_Rating__c = res.riskRating;
             cc.response_case_number__c = res.caseNumber;
             cc.response_diligence__c = boolean.valueOf(res.dueDiligenceComplete);
@@ -158,9 +182,9 @@ global without sharing class CAMSUtility {
         }
 
         cc.Response_Risk_Rating__c = 'L';
-        cc.response_case_number__c = 'ohboy';
-        cc.response_diligence__c = false;
-
+        cc.response_case_number__c = res.caseNumber;
+        cc.response_diligence__c =  boolean.valueOf(res.dueDiligenceComplete);
+        cc.response_code__c = res.code;
         
 
         /* make the call here */
@@ -224,7 +248,7 @@ global without sharing class CAMSUtility {
     * Cams Check Record 
     *
     *************************************************************************************************/
-	public static CAMS_Check__c createCamsCheckRecord(Map<ID,String> applicationMap, String status){
+	public static CAMS_Check__c createCamsCheckRecord(Map<ID,String> applicationMap, String status, Boolean pep){
 		String result;
 		
 		CAMS_Check__c cc;
@@ -236,6 +260,7 @@ global without sharing class CAMSUtility {
 		}
 		
 		genesis__Applications__c a = [select genesis__Quick_Quote__c
+                                     ,genesis__account__r.naics__c
 									 from genesis__Applications__c
 									 where id = :applicationId
 									 ];
@@ -254,6 +279,8 @@ global without sharing class CAMSUtility {
 		 	cc.geography__c = 'US';
 			cc.dll_country__c = 'W';
 			cc.customer_type__c = 'Commercial';
+            cc.Confirmed_PEP__c = pep;
+            cc.naics__c = a.genesis__account__r.naics__c;
 		}
 
 		cc.status__c = status.trim();

@@ -77,7 +77,7 @@ global with sharing class AP_ManualPayment {
         r.check__c = 'CHK' + checkNumber;
         r.committed__c = false;
         r.date__c = paymentDate;
-        r.invoice__c = recordId;
+        r.consolidated_invoice__c = recordId;
         r.invoice_number__c = i.name;
         r.invoice_amount_paid__c = checkAmount;
         r.invoice_amount__c = checkAmount;

@@ -39,52 +39,96 @@ public class OFACCall implements Queueable, Database.AllowsCallouts {
     					,contract_signer__c
     					,contract_signer_last_name__c
     					,contract_signer_title__c
+						,genesis__Status__c
     				from genesis__applications__c
     				where id in :applicationMap.keySet()
     				limit 1	
     		];
-    		/* business */
-    		input1.requestType = 'Business'; 
-    		input1.street1 = app.billing_address1__r.address_line_1__c;
-    		input1.street2 = app.billing_address1__r.address_line_2__c;
-    		input1.city = app.billing_address1__r.city__c;
-    		input1.stateprovincedistrict = app.billing_address1__r.state__c;
-    		input1.postalcode = app.billing_address1__r.zip_code__c;
-    		input1.addresstype = 'Current';
-    		input1.county = app.billing_address1__r.county__c;
-    		input1.fullname = app.genesis__account__r.name;
-    		input1.ein = app.genesis__account__r.ein__c;  
+
+			if (app.genesis__Status__c <> 'OFAC APPROVED'){
+			 
+    			/* business */
+    			input1.requestType = 'Business'; 
+    			input1.street1 = app.billing_address1__r.address_line_1__c;
+    			input1.street2 = app.billing_address1__r.address_line_2__c;
+    			input1.city = app.billing_address1__r.city__c;
+    			input1.stateprovincedistrict = app.billing_address1__r.state__c;
+    			input1.postalcode = app.billing_address1__r.zip_code__c;
+    			input1.addresstype = 'Current';
+    			input1.county = app.billing_address1__r.county__c;
+    			input1.fullname = app.genesis__account__r.name;
+    			input1.ein = app.genesis__account__r.ein__c;  
     		 
-    		system.debug('************ input1: ' + input1);
-    		/* individual */
-    		input2.requestType = 'Individual';
-    		input2.title = app.Contract_Signer_Title__c;
-    		input2.last = app.contract_signer_last_name__c;
-    		input2.first = app.contract_signer__c;
-    		system.debug('************ input2: ' + input2);
+    			system.debug('************ input1: ' + input1);
+    			/* individual */
+    			input2.requestType = 'Individual';
+    			input2.title = app.Contract_Signer_Title__c;
+    			input2.last = app.contract_signer_last_name__c;
+    			input2.first = app.contract_signer__c;
+    			system.debug('************ input2: ' + input2);
     		
     		
-    		businessResult = bridger.bridgerSearch(input1);//business
-    		individualResult = bridger.bridgerSearch(input2);//individual
+    			businessResult = bridger.bridgerSearch(input1);//business
+    			individualResult = bridger.bridgerSearch(input2);//individual
     		
-			NewCoUtility.skipApplicationTrigger = true;
+				NewCoUtility.skipApplicationTrigger = true;
 
-    		if (businessResult.hit || individualResult.hit){
-	   			app.genesis__Status__c = 'OFAC DECLINED';
-    		}
-    		else{
-    			app.genesis__Status__c = 'OFAC APPROVED';
+    			if (businessResult.hit || individualResult.hit){
+	   				app.genesis__Status__c = 'OFAC DECLINED';
+    			}
+    			else{
+    				app.genesis__Status__c = 'OFAC APPROVED';
 							
-    		}
+    			}
     	
-    		update app;
+    			update app;
 
-			if (app.genesis__status__c == 'OFAC APPROVED'){ 
+			}
+			List<CAMS_Check__c> ccList = [SELECT Account_Number__c
+                                    ,Application__c
+                                    ,Application__r.name
+                                    ,Confirmed_PEP__c
+                                    ,Customer_LE_Type__c
+                                    ,Customer_Name__c
+                                    ,Product_Risk__c
+                                    ,Customer_Type__c
+                                    ,Distribution_Channel__c
+                                    ,Dll_Country__c
+                                    ,Geography__c
+                                    ,Lease_Signer_First_Name__c
+                                    ,Lease_Signer_Last_Name__c
+                                    ,Lease_Signer_Title__c
+                                    ,LS_Contract__c
+                                    ,NAICS__c
+                                    ,Name
+                                    ,OwnerId
+                                    ,Publicly_Traded_Full_Subsidiary__c
+                                    ,Publicly_Traded__c
+                                    ,Quick_Quote__c
+                                    ,Response_Case_Number__c
+                                    ,Response_Diligence__c
+                                    ,Response_Risk_Rating__c
+                                    ,Source_System__c
+                                    ,Status__c
+                                    ,Transaction_Amount__c
+                                    ,Trust__c 
+                                    ,missing_data__c
+                                    FROM CAMS_Check__c
+                     		        where application__c in :applicationMap.keySet()
+							        ];
+
+        	CAMS_Check__c cc;
+ 			
+			if (ccList.size() == 0){
+
+       			cc = CAMSUtility.createCamsCheckRecord(applicationMap,'CAMS CHECK',individualResult.hit);
+			}
+
+			if (app.genesis__Status__c == 'OFAC APPROVED'){
 				system.debug('Submitting CAMS Call now.....');
             	CAMSCall job = new CAMSCall(applicationMap);
         		System.enqueueJob(job);	   
 			}
-    		
     	}
     	catch (Exception e){
     		system.debug('***** Exception: ' + e);

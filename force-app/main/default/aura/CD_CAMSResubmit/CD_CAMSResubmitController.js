@@ -22,7 +22,7 @@
                 }
                 else{
 
-                    var msg='CAMS Check Cleared!';
+                    var msg='CAMS Check Resubmitted!';
                     component.find('notifLib').showToast({
                            'variant': 'success',
                            'message': msg,

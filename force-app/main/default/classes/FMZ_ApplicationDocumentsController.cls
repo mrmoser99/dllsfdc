@@ -34,6 +34,7 @@ public without sharing class FMZ_ApplicationDocumentsController {
 
 		Map<Id, Attachment> docMap = new Map<Id, Attachment>(documents);
 
+		system.debug('Categorized Documents: ' + categorizedDocuments);
 		for (clcommon__Category_Attachment_Association__c c : categorizedDocuments) {
 			if (String.isNotBlank(c.clcommon__Attachment_Id__c)
 					&& String.isNotBLank(c.clcommon__Document_Category__r.clcommon__Category_Name__c)) {
@@ -43,7 +44,7 @@ public without sharing class FMZ_ApplicationDocumentsController {
 				}
 			}
 		}
-
+		system.debug('docs:' + documents);
 		return documents;
 
 	}
@@ -174,6 +175,7 @@ public without sharing class FMZ_ApplicationDocumentsController {
 				Name = att.Name,
 				clcommon__Document_Category__c = category.Id
 		);
+		system.debug(association);
 		insert association;
 	}
 }

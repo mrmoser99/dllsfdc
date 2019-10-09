@@ -1,14 +1,30 @@
-trigger ChargesInvoiceTrigger on cllease__Charge__c (before insert, before update , after update) {
-	Date currentCLLeaseSystemDate = cllease.SystemDateUtil.getCurrentSystemDate();
-	// 1. Updating Transaction Sub Type Value as String in Transaction_SubType_Name__c for Roll-up Summary fields
-	if(trigger.isBefore && (trigger.isInsert || trigger.isUpdate)) {
-		// 0. Creating Transaction SubType ID, Name Map
-		Map<Id, String> txnSubTypeMap = new Map<Id, String>();
-		for(cllease__Transaction_Sub_Type__c txnSubType : [SELECT Id, Name FROM cllease__Transaction_Sub_Type__c LIMIT 1000]) {
-			txnSubTypeMap.put(txnSubType.Id, txnSubType.Name);
-		}
 
+
+/*********************************************************************************************
+*	Charges Trigger
+*			
+*
+* ChangeLog:
+*
+*	unknown date - CLS Created this class
+*
+************************************************************************************************/
+trigger ChargesInvoiceTrigger on cllease__Charge__c (before insert, before update , after update) {
+	
+	
+	Date currentCLLeaseSystemDate = cllease.SystemDateUtil.getCurrentSystemDate();
+
+	// 0. Creating Transaction SubType ID, Name Map
+	Map<Id, String> txnSubTypeMap = new Map<Id, String>();
+	for(cllease__Transaction_Sub_Type__c txnSubType : [SELECT Id, Name FROM cllease__Transaction_Sub_Type__c LIMIT 1000]) {
+		txnSubTypeMap.put(txnSubType.Id, txnSubType.Name);
+	}
+	
+
+	if(trigger.isBefore && (trigger.isInsert || trigger.isUpdate)) {
+		
 		for(cllease__Charge__c charge : trigger.new) {
+
 			if(charge.cllease__Transaction_Sub_Type__c != null) {
 				charge.Transaction_SubType_Name__c = txnSubTypeMap.get(charge.cllease__Transaction_Sub_Type__c);
 			}
@@ -29,7 +45,7 @@ trigger ChargesInvoiceTrigger on cllease__Charge__c (before insert, before updat
             	charge.cllease__Transaction_Date__c = currentCLLeaseSystemDate;
             }
 		}
-        
+		 
         /**
          * Owner: CLS-Q2
          * Date : 09/12/2019

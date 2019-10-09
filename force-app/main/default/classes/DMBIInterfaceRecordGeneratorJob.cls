@@ -675,7 +675,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
     }
     // Creating records for AgreementLineAsset and 3 Collaterals files.
     //Public static list<sobject> CreateAgrLineFeaturesAndAssets(list<Int_Agreement_Line__c> AgreementLinesList,list<cllease__Lease_Account__c> contractsList,list<Int_Asset__c> AssetRecords){
-    Public static list<sobject> CreateAgrLineAssetsAndCollaterals(list<Int_Agreement_Line__c> AgreementLinesList,list<cllease__Lease_Account__c> contractsList,list<Int_Asset__c> AssetRecords){
+    Public static list<sobject> CreateAgrLineAssetsAndCollaterals(list<Int_Agreement_Line__c> AgreementLinesList,list<cllease__Lease_Account__c> contractsList,list<Int_Asset__c> AssetRecords,map<string,string> intCodeMap,dateTime BatchStartTime ){
         list<sobject> ReturnList = new list<sobject>();
         list<int_agreement_line_asset__c> AgrLineAssetsToInsert = new list<int_agreement_line_asset__c>(); 
         //list<Int_Agreement_Line_Feature__c> AgrFeatureList = new list<Int_Agreement_Line_Feature__c>();
@@ -748,14 +748,26 @@ Public class DMBIInterfaceRecordGeneratorJob {
             }
         }
         ReturnList.addAll(AgrLineAssetsToInsert);
+        list<sobject> ControlObjectsToInsert = new list<sobject>();
+        map<string,string> HashCode = new map<string,string>();
         if(!CollateralsToInsert.isEmpty()){
             Database.insert(CollateralsToInsert,false);
+            ControlObjectsToInsert.add(createFileControlObjects('Int_Collateral__c',CollateralsToInsert.size(),HashCode,BatchStartTime,system.now(),intCodeMap));
+            //DMBIInterfaceJob.CalculateObjectCount(CollateralsToInsert);
         }
         if(!CollateralAgreementsToInsert.isEmpty()){
             Database.insert(CollateralAgreementsToInsert,false);
+            ControlObjectsToInsert.add(createFileControlObjects('Int_Collateral_Agreement__c',CollateralAgreementsToInsert.size(),HashCode,BatchStartTime,system.now(),intCodeMap));
+            
+            //DMBIInterfaceJob.CalculateObjectCount(CollateralAgreementsToInsert);
         }
         if(!CollateralPartiesToInsert.isEmpty()){
             Database.insert(CollateralPartiesToInsert,false);
+            ControlObjectsToInsert.add(createFileControlObjects('Int_Collateral_Party__c',CollateralPartiesToInsert.size(),HashCode,BatchStartTime,system.now(),intCodeMap));
+            //DMBIInterfaceJob.CalculateObjectCount(CollateralPartiesToInsert);
+        }
+        if(!ControlObjectsToInsert.isEmpty()){
+            database.insert(ControlObjectsToInsert,false);
         }
         Return ReturnList;
     }
@@ -788,13 +800,15 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Public static list<Int_Party__c> CreateParties(list<cllease__Lease_Account__c> Contracts,set<string> insertedParties,map<string,string> Codemapping){     
         // list<Int_Party__c> NewParties = new list<Int_Party__c>();
         map<string,Int_Party__c> NewPartyMap = new map<string,int_party__c>();
+        list<int_party__c> NewPartyList = new list<int_party__c>();
         Map<string,list<cllease__Contract_Parties__c>> PartiesMap = getParties(Contracts,'Id');
         for (cllease__Lease_Account__c Contract : Contracts ){
             list<cllease__Contract_Parties__c> CCPList = new list<cllease__Contract_Parties__c>();
             if(PartiesMap.containskey(Contract.Id)){CCPList.addAll(PartiesMap.get(Contract.Id));}
+            //system.debug(' #### ccpList --->'+CCPList.size());
             for (cllease__Contract_Parties__c cp : CCPList){
-                if(cp.cllease__Party_Account_Name__r.Account_Number__c!=Null&& !insertedParties.contains(String.valueOf((cp.cllease__Party_Account_Name__r.Account_Number__c)))){
-                    NewPartyMap.put(cp.cllease__Party_Account_Name__r.Account_Number__c,New Int_Party__c(
+                //if(cp.cllease__Party_Account_Name__r.Account_Number__c!=Null&& !insertedParties.contains(String.valueOf((cp.cllease__Party_Account_Name__r.Account_Number__c)))){
+                    NewPartyList.add(New Int_Party__c(
                         Party_Source_System__c = Codemapping.get(Contract.Source_System__c)
                         ,Party_Number__c = cp.cllease__Party_Account_Name__r.Account_Number__c
                         ,Party_Name__c = cp.cllease__Party_Account_Name__r.name
@@ -809,15 +823,31 @@ Public class DMBIInterfaceRecordGeneratorJob {
                         ,Legal_Form_Code__c = Codemapping.containskey(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name)?Codemapping.get(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name):''
                         //,Individual_Indicator__c = Codemapping.containskey(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name)?'1':'0'
                     ));
-                }
+                    /*NewPartyMap.put(cp.cllease__Party_Account_Name__r.Account_Number__c,New Int_Party__c(
+                        Party_Source_System__c = Codemapping.get(Contract.Source_System__c)
+                        ,Party_Number__c = cp.cllease__Party_Account_Name__r.Account_Number__c
+                        ,Party_Name__c = cp.cllease__Party_Account_Name__r.name
+                        ,Individual_Indicator__c = '0'
+                        ,Basel_Classification_Amount__c = 0
+                        ,PD_Percentage__c = 0
+                        ,Consolidated_Turnover_Amount__c = 0
+                        ,Industry_Code__c = Contract.cllease__Account__r.Industry_Code__c!=Null?Contract.cllease__Account__r.Industry_Code__c:Null
+                        ,Industry_Type_Code__c = Contract.cllease__Account__r.Industry_Code_Type__c!=Null?Contract.cllease__Account__r.Industry_Code_Type__c:Null
+                        ,Party_Contract_Name__c = contract.name
+                        ,PD_Rating_Score__c =  string.valueof(Contract.cllease__Account__r.genesis__Total_Risk_Score__c).substring(0,4) 
+                        ,Legal_Form_Code__c = Codemapping.containskey(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name)?Codemapping.get(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name):''
+                        //,Individual_Indicator__c = Codemapping.containskey(contract.cllease__Account__r.clcommon__Legal_Entity_Type__r.name)?'1':'0'
+                    ));*/
+               // }
                 
             }   
         } 
         //### INSERT on INT PARTY objects
-        if(!NewPartyMap.isEmpty()){
-            Database.insert(NewPartyMap.values(),false);  
+        if(!NewPartyList.isEmpty()){
+            Database.insert(NewPartyList,false);  
         }
-        return NewPartyMap.values();
+        system.debug(' #### NewPartyList --->'+NewPartyList.size());
+        return NewPartyList;
     }
     /*------------------------------------- IntParty creation Ends -----------------------------------------------*/
     /*------------------------------------- IntAgreementPartyfetures creation starts -----------------------------------------------*/
@@ -1074,4 +1104,6 @@ Public class DMBIInterfaceRecordGeneratorJob {
         }
         Return count;
     }
+    
+    
 }

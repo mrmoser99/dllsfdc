@@ -8,6 +8,7 @@
 *	8/9/18 	- MRM Created
 *   8/10/18 - MRM Added database logic to store response results
 *   9/5/18 	- MRM added more repsonse storage....
+*   10/1/19 - MRM added acccount update of sic code of we get one
 *
 ********************************************************************************************************************/
 global class ICSResponse {
@@ -362,11 +363,13 @@ global class ICSResponse {
 		// get the application  											
 		genesis__Quick_Quotes__c q = [	select id 
 										,name
+										,genesis__Account__c
 										from genesis__Quick_Quotes__c 
 										where name = :Input.ObtainDecisionResponse.application.ApplicationId.Trim()
 										];
 		 
-		 
+		Account acc = [select id from Account where id = :q.genesis__account__c];
+
 		String messageId;
 		
 	
@@ -592,6 +595,7 @@ global class ICSResponse {
 				e.local_legal_form_code__c = ele.Organization.LocalLegalFormCode;
 				e.industry_code_type__c = ele.Organization.LocalIndustryCode.IndustryCodeType;
 				e.industry_code_value__c = ele.Organization.LocalIndustryCode.IndustryCodeValue;
+				acc.sic = ele.Organization.LocalIndustryCode.IndustryCodeValue;
 				e.agency_id__c = ele.agencyProduct.agencyId;
 				e.agency_product_id__c = ele.agencyProduct.agencyProductId;
 				e.address_line__c = ele.address.AddressLine;
@@ -707,6 +711,7 @@ global class ICSResponse {
 		a.quick_quote__c = q.id;
 		
 		update a;
+		update acc;
 		
 		
 		q.Credit_Approval_Date__c = date.today();
