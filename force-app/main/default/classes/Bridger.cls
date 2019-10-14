@@ -114,7 +114,7 @@ public with sharing class Bridger {
     /************************************************************************************************************
     * Bridger Search
     ************************************************************************************************************/
-    public static bridgerResult bridgerSearch(Bridger.bridgerInput input){
+    public static bridgerResult bridgerSearch(Bridger.bridgerInput input, Boolean pep){
     	
     	bridger.bridgerResult result = new bridger.bridgerResult();
     	 
@@ -124,6 +124,7 @@ public with sharing class Bridger {
  		
  			Select b.User_Id__c
 			, b.Predefined_Search_Name__c
+			, b.Predefined_Search_Name_pep__c
 			, b.Password__c
 			, b.Notification_Type__c
 			, b.Notification_Role__c
@@ -140,7 +141,7 @@ public with sharing class Bridger {
 		SearchClient.endpoint_x = bridgerSettings.end_point__c; 
 		
 		XgServicesSearch.ClientContext Context = new XgServicesSearch.ClientContext();
-		Context.ClientID = bridgerSettings.client_id__c;
+		Context.ClientID = bridgerSettings.client_id__c; 
 		//Context.UserID = 'mmoser01'; 
 		//Context.Password = 'Welcome02!'; 
 		Context.UserID = bridgerSettings.user_id__c;
@@ -150,7 +151,10 @@ public with sharing class Bridger {
 
 		XgServicesSearch.SearchConfiguration Config = new XgServicesSearch.SearchConfiguration();
 
-		Config.PredefinedSearchName = bridgerSettings.predefined_search_name__c;
+		if (pep)
+			Config.PredefinedSearchName = bridgerSettings.predefined_search_name_pep__c;
+		else
+			Config.PredefinedSearchName = bridgerSettings.predefined_search_name__c;
 		Config.WriteResultsToDatabase =true;
 
 		//Assignment

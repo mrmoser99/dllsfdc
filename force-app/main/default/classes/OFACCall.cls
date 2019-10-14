@@ -3,6 +3,7 @@
 * 
 *	Change Log: 
 *	9/25/19 - MRM Created
+*   10/14/19 - MRM added call to cams
 * 
 ********************************************************************************************************************/
 public class OFACCall implements Queueable, Database.AllowsCallouts {
@@ -20,13 +21,16 @@ public class OFACCall implements Queueable, Database.AllowsCallouts {
     	genesis__Applications__c app = new genesis__applications__c(); 
     	Bridger.bridgerInput input1 = new Bridger.bridgerInput();
     	Bridger.bridgerInput input2 = new Bridger.bridgerInput();
+		Bridger.bridgerInput input3 = new Bridger.bridgerInput();
     	Boolean businessHit = false;
     	Boolean individualHit = false;
+		Boolean pepHit = false;
     	bridger.bridgerResult IndividualResult = new Bridger.bridgerResult();
         bridger.bridgerResult businessResult = new Bridger.bridgerResult();
+		bridger.bridgerResult pepResult = new Bridger.bridgerResult();
     	
     	try{
-    	
+			
     		app = [select genesis__account__r.name
     					,billing_address1__r.address_line_1__c
     					,billing_address1__r.address_line_2__c
@@ -68,23 +72,39 @@ public class OFACCall implements Queueable, Database.AllowsCallouts {
     			system.debug('************ input2: ' + input2);
     		
     		
-    			businessResult = bridger.bridgerSearch(input1);//business
-    			individualResult = bridger.bridgerSearch(input2);//individual
-    		
-				NewCoUtility.skipApplicationTrigger = true;
+    			businessResult = bridger.bridgerSearch(input1,false);//business
+    			individualResult = bridger.bridgerSearch(input2,false);//individual
 
-    			if (businessResult.hit || individualResult.hit){
+				if (!businessResult.hit && !individualResult.hit){
+					if (system.label.cams_check == 'True'){
+						pepResult = bridger.bridgerSearch(input2,true);//pep 
+					}
+				}
+
+				NewCoUtility.skipApplicationTrigger = true;
+				
+				if (businessResult.hit || individualResult.hit){
 	   				app.genesis__Status__c = 'OFAC DECLINED';
-    			}
+				}
     			else{
-    				app.genesis__Status__c = 'OFAC APPROVED';
-							
-    			}
-    	
+					if (pepResult.hit != null){
+						if (pepResult.hit){
+							app.genesis__Status__c = 'OFAC DECLINED - PEP';
+						}
+						else
+    						app.genesis__Status__c = 'OFAC APPROVED';
+					}
+					else {
+						app.genesis__Status__c = 'OFAC APPROVED';
+					}
+				}
     			update app;
 
 			}
-			List<CAMS_Check__c> ccList = [SELECT Account_Number__c
+			CAMS_Check__c cc;
+			
+			if (system.label.cams_check == 'True'){
+				List<CAMS_Check__c> ccList = [SELECT Account_Number__c
                                     ,Application__c
                                     ,Application__r.name
                                     ,Confirmed_PEP__c
@@ -99,7 +119,7 @@ public class OFACCall implements Queueable, Database.AllowsCallouts {
                                     ,Lease_Signer_Last_Name__c
                                     ,Lease_Signer_Title__c
                                     ,LS_Contract__c
-                                    ,NAICS__c
+                                    ,NAICS__c 
                                     ,Name
                                     ,OwnerId
                                     ,Publicly_Traded_Full_Subsidiary__c
@@ -116,19 +136,24 @@ public class OFACCall implements Queueable, Database.AllowsCallouts {
                                     FROM CAMS_Check__c
                      		        where application__c in :applicationMap.keySet()
 							        ];
-
-        	CAMS_Check__c cc;
- 			
-			if (ccList.size() == 0){
-
-       			cc = CAMSUtility.createCamsCheckRecord(applicationMap,'CAMS CHECK',individualResult.hit);
+				if (ccList.size() == 0){
+       				cc = CAMSUtility.createCamsCheckRecord(applicationMap,'CAMS CHECK',individualResult.hit);
+				}
+				else
+					cc = ccList[0];
 			}
-
-			if (app.genesis__Status__c == 'OFAC APPROVED'){
+			
+			if (app.genesis__Status__c == 'OFAC APPROVED' && system.label.cams_check == 'True'){
 				system.debug('Submitting CAMS Call now.....');
             	CAMSCall job = new CAMSCall(applicationMap);
         		System.enqueueJob(job);	   
 			}
+	
+			if (app.genesis__Status__c == 'OFAC DECLINED - PEP'){
+				cc.status__c = 'Held - PEP Hit';
+				update cc;
+			}
+			 
     	}
     	catch (Exception e){
     		system.debug('***** Exception: ' + e);

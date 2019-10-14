@@ -418,8 +418,8 @@ global without sharing class NewCoUtility {
     		system.debug('************ input2: ' + input2);
     		
     		
-    		businessResult = bridger.bridgerSearch(input1);//business
-    		individualResult = bridger.bridgerSearch(input2);//individual
+    		businessResult = bridger.bridgerSearch(input1,false);//business
+    		individualResult = bridger.bridgerSearch(input2,false);//individual
     		
 			NewCoUtility.skipApplicationTrigger = true;
 

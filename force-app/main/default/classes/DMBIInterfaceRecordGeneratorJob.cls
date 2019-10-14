@@ -1,3 +1,14 @@
+
+/*******************************************************************************************************************
+*   DMBI Interface Record Generator Job
+*
+* 
+*	Change Log: 
+*	10/10/19 - MRM - Added logic to update the collateral records in file control; there was a but that was inserting 
+*                    mutliple file control records for collateral, collateral party and collateral agreement.
+* 
+********************************************************************************************************************/
+
 Public class DMBIInterfaceRecordGeneratorJob {
     Public static string query = DMBIStaticVariables.Empty_str;
     public static Map<string,string> CodeMap;
@@ -766,10 +777,86 @@ Public class DMBIInterfaceRecordGeneratorJob {
             ControlObjectsToInsert.add(createFileControlObjects('Int_Collateral_Party__c',CollateralPartiesToInsert.size(),HashCode,BatchStartTime,system.now(),intCodeMap));
             //DMBIInterfaceJob.CalculateObjectCount(CollateralPartiesToInsert);
         }
+        /* MRM Change */
         if(!ControlObjectsToInsert.isEmpty()){
-            database.insert(ControlObjectsToInsert,false);
+            DMBIInterfaceRecordGeneratorJob.insertOrUpdateFileControl(ControlObjectsToInsert);
+            //database.insert(ControlObjectsToInsert,false);
         }
         Return ReturnList;
+    }
+    
+    /*******************************************************************************************************************
+    *   insertorUpdateFileControl - to prevent duplicates this code was added by MRM
+    * 
+    ********************************************************************************************************************/
+    static void insertOrUpdateFileControl( list<sobject> ControlObjectsToInsert){
+        List<Int_File_Control__c> fcList = new List<Int_File_Control__c>();
+        fcList = [SELECT Committed__c
+            ,End_DateTime_Extraction__c
+            ,File_Name__c
+            ,Hash_Total_1__c
+            ,Hash_Total_2__c
+            ,Hash_Total_3__c
+            ,Id
+            ,LastModifiedDate
+            ,LastReferencedDate
+            ,LastViewedDate
+            ,Name
+            ,Number_of_Records__c
+            ,Source_System__c
+            ,Start_DateTime_Extraction__c
+             FROM Int_File_Control__c];
+        
+        Map<String,Int_File_Control__c> fMap = new Map<String,Int_File_Control__c>();
+        
+        for (Int_File_Control__c f:fcList){
+            if (f.file_name__c.contains('Collateral')){
+                if (f.file_name__c.contains('Collateral~')){
+                    fMap.put('Collateral',f);
+                }
+                else{
+                    if (f.file_name__c.contains('CollateralParty')){
+                        fMap.put('CollateralParty',f);
+                    } 
+                    else{
+                        if (f.file_name__c.contains('CollateralAgreement')){
+                            fMap.put('CollateralAgreement',f);
+                        } 
+                    }   
+                }
+                
+            }
+        }
+
+        List<Int_File_Control__c> uList = new List<Int_File_Control__c>();
+        List<Int_File_Control__c> iList = new List<Int_File_Control__c>();
+        for (sObject f: ControlObjectsToInsert){
+           
+            Int_File_Control__c fRec = (Int_File_Control__c)f;
+            Int_File_Control__c fTemp;
+            if (fRec.file_name__c.contains('Collateral~'))
+                fTemp = fMap.get('Collateral');
+            else
+            if (fRec.file_name__c.contains('CollateralParty'))
+                fTemp = fMap.get('CollateralParty');    
+            else    
+            if (fRec.file_name__c.contains('CollateralAgreement'))
+                fTemp = fMap.get('CollateralAgreement');    
+
+
+            if (fTemp == null)
+                iList.add(frec);
+            else{
+                fTemp.number_of_Records__c = string.valueOf(integer.valueOf(fTemp.number_of_records__c) + integer.valueOf(fRec.number_of_records__c));
+                ulist.add(fTemp);
+            }
+
+        }
+         
+        if (!iList.isEmpty())
+            insert iList;
+        if (!uList.isEmpty())
+            update uList;    
     }
     
     /*------------------------------------- AGREEMENT LINE creation ends-----------------------------------------------*/
@@ -1023,7 +1110,8 @@ Public class DMBIInterfaceRecordGeneratorJob {
         datetime dT = system.now();
         // list<string> strlist = string.valueof(dt).split(' ')[1].split(':');
         String timestr = '000000';
-        map<string,string> ObjNameMap = new map<string,string>{'Int_Agreement__c'=>'Agreement',
+        map<string,string> ObjNameMap = new map<string,string>{
+            'Int_Agreement__c'=>'Agreement',
             'Int_Asset__c'=>'Asset',
             'Int_facility__c'=>'Facility',
             'Int_agreement_non_IFRS__c'=>'AgreementNonIFRS',
@@ -1038,7 +1126,34 @@ Public class DMBIInterfaceRecordGeneratorJob {
             'Int_Party_feature__c'=>'PartyFeature',
             'Int_Risk_Costs_Movements__c'=>'RiskCostsMovements',
             'Int_Delivery_controle__c'=>'DeliveryControl',
-            'Int_file_controle__c'=>'FileControl','Int_Agreement_Line__c'=>'AgreementLine','Int_Party__c'=>'Party','Int_Agreement_Classification__c'=>'AgreementClassification','Int_Agreement_Exposure__c'=>'AgreementExposure','Int_Agreement_Line_Feature__c'=>'AgreementLineFeature','Int_Agreement_Interest__c'=>'AgreementInterest','Int_Agreement_Line_Asset__c'=>'AgreementLineAsset','Int_Agreement_Feature__c'=>'AgreementFeature','Int_Agreement_Party__c'=>'AgreementParty','Int_Agreement_Payment_Schedule__c'=>'AgreementPaymentSchedule','Int_Party_External_Reference__c'=>'PartyExternalReference','Int_Party_Feature__c'=>'PartyFeature','Int_Party_Street_Address__c'=>'PartyStreetAddress','Int_Delivery_Control__c'=>'DeliveryControl','Int_File_Control__c'=>'FileControl','Int_Facility__c'=>'Facility','Int_Agreement_Non_IFRS__c'=>'AgreementNonIFRS','Int_Agreement_Provision__c'=>'AgreementProvision','Int_Asset_Feature__c'=>'AssetFeature','Int_Asset_Usage__c'=>'AssetUsage','Int_Collateral__c'=>'Collateral','Int_Collateral_Agreement__c'=>'CollateralAgreement','Int_Collateral_Party__c'=>'CollateralParty','Int_Facility_Feature__c'=>'FacilityFeature','Int_Facility_Party__c'=>'FacilityParty','Int_Party_Feature__c'=>'PartyFeature','Int_Risk_Costs_Movements__c'=>'RiskCostsMovements'};
+            'Int_file_controle__c'=>'FileControl'
+            ,'Int_Agreement_Line__c'=>'AgreementLine'
+            ,'Int_Party__c'=>'Party','Int_Agreement_Classification__c'=>'AgreementClassification'
+            ,'Int_Agreement_Exposure__c'=>'AgreementExposure'
+            ,'Int_Agreement_Line_Feature__c'=>'AgreementLineFeature'
+            ,'Int_Agreement_Interest__c'=>'AgreementInterest'
+            ,'Int_Agreement_Line_Asset__c'=>'AgreementLineAsset'
+            ,'Int_Agreement_Feature__c'=>'AgreementFeature'
+            ,'Int_Agreement_Party__c'=>'AgreementParty'
+            ,'Int_Agreement_Payment_Schedule__c'=>'AgreementPaymentSchedule'
+            ,'Int_Party_External_Reference__c'=>'PartyExternalReference'
+            ,'Int_Party_Feature__c'=>'PartyFeature'
+            ,'Int_Party_Street_Address__c'=>'PartyStreetAddress'
+            ,'Int_Delivery_Control__c'=>'DeliveryControl'
+            ,'Int_File_Control__c'=>'FileControl'
+            ,'Int_Facility__c'=>'Facility'
+            ,'Int_Agreement_Non_IFRS__c'=>'AgreementNonIFRS'
+            ,'Int_Agreement_Provision__c'=>'AgreementProvision'
+            ,'Int_Asset_Feature__c'=>'AssetFeature'
+            ,'Int_Asset_Usage__c'=>'AssetUsage'
+            ,'Int_Collateral__c'=>'Collateral'
+            ,'Int_Collateral_Agreement__c'=>'CollateralAgreement'
+            ,'Int_Collateral_Party__c'=>'CollateralParty'
+            ,'Int_Facility_Feature__c'=>'FacilityFeature'
+            ,'Int_Facility_Party__c'=>'FacilityParty'
+            ,'Int_Party_Feature__c'=>'PartyFeature'
+            ,'Int_Risk_Costs_Movements__c'=>'RiskCostsMovements'
+            };
                 return new Int_File_Control__c(
                     Source_System__c = intcode.get(DMBIStaticVariables.SourceSystem),//contract.Source_System__c,
                     Start_DateTime_Extraction__c = String.ValueOf(BatchStartTime),

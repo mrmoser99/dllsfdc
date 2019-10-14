@@ -23,7 +23,7 @@ trigger CAMSCheck on CAMS_Check__c (before update) {
 
     Integer i=0;
     for (CAMS_Check__c cc:trigger.new){
-        if (trigger.new[i].status__c.contains('Held') && !trigger.old[i].status__c.contains('Held'))
+        if (trigger.new[i].status__c.contains('Held'))
             trigger.new[i].ownerId = qMap.get('CAMS_Queue');
         else {
             if (trigger.new[i].status__c.contains('Clear') && !trigger.old[i].status__c.contains('Clear'))

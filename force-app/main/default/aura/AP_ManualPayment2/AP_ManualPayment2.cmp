@@ -44,7 +44,8 @@
                                 onchange="{! c.handleChange }"
                                 required="true"/>
 
-                <lightning:button class="slds-m-top_large" variant="brand" type="submit" label="Submit" onclick="{!c.handleSubmit}" />
+                <lightning:button class="slds-m-top_large" variant="brand" type="submit" 
+                            label="Submit" onclick="{!c.handleSubmit}" />
                 <lightning:button class="slds-m-top_large" label="Cancel" onclick="{!c.handleCancel}"/>
                
             </lightning:card>

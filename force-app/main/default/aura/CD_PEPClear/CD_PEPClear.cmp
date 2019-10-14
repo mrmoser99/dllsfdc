@@ -1,0 +1,50 @@
+<aura:component description="Clear PEP" controller="CD_CAMScontroller"
+                implements="force:lightningQuickActionWithoutHeader,force:hasRecordId" access="global">
+
+    <aura:attribute name="processing" type="Boolean" default="false"/>
+    <aura:attribute name="applicationId" type="String" default="true"/>
+    <aura:attribute name="camsRecord" type="Object" access="public" />
+    <aura:attribute name="applicationRecord" type="Object"/>
+    <aura:attribute name="recordLoadError" type="String"/>
+    <aura:attribute name="fields" type="List"/>
+    
+
+    <force:recordData aura:id="recordLoader"
+        recordId="{!v.recordId}"
+        fields="CAMS_Check__c"
+        targetFields="{!v.applicationRecord}"
+        targetError="{!v.recordLoadError}"
+    />
+    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+
+   
+
+    <lightning:recordEditForm recordId="{!v.recordId}" aura:id="recordEditForm" objectApiName="CAMS_Check__c" onsubmit="{!c.pepclear}" >
+            
+            <lightning:card title="Clear OFAC PEP Hit" iconName="utility:reset_password" >
+                <lightning:messages /> 
+                
+                <lightning:outputField fieldName="Name" />
+                <lightning:outputField fieldName="Application__c" />
+                <lightning:outputField fieldName="Status__c" />
+                <lightning:inputField fieldName="CAMS_PEP_Indicator__c" required="true" aura:id="pepind"/>
+                    
+                <lightning:button class="slds-m-top_large" variant="brand" type="submit" 
+                    label="Submit" />
+                <lightning:button class="slds-m-top_large" label="Cancel" onclick="{!c.handleCancel}"/>
+                <aura:if isTrue="{!v.processing}">
+                    <lightning:spinner
+                        variant="brand"
+                        size="medium"   
+                        alternativeText="Please Wait"
+                />
+        </aura:if>     
+            </lightning:card>
+
+    </lightning:recordEditForm>
+
+    
+
+</aura:component>
+

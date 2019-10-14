@@ -92,6 +92,7 @@ global without sharing class CAMSUtility {
             cc = ccList[0];
         }
 
+        
         /*
         if (cc.missing_data__c){
             cc.status__c = 'Held - Data Issue';
@@ -113,22 +114,55 @@ global without sharing class CAMSUtility {
 	  	JSONGenerator gen = JSON.createGenerator(true);
 			
 		gen.writeStartObject();
-		gen.writeStringField('customerID', cc.Account_Number__c);
-		gen.writeStringField('geography', cc.Geography__c);
-		gen.writeStringField('customerLEType', cc.Customer_LE_Type__c);
-		gen.writeStringField('NAICScode', cc.NAICS__c);
-		gen.writeStringField('distributionChannel', cc.Distribution_Channel__c);
-		gen.writeStringField('productRisk', cc.product_risk__c);
-		gen.writeStringField('confirmedPEP', string.valueOf(cc.Confirmed_PEP__c));
+        if (cc.Account_Number__c == null)
+            gen.writeNullField('customerID');
+        else
+	    	gen.writeStringField('customerID', cc.Account_Number__c);
+
+        if(cc.Geography__c == null)
+            gen.writeNullField('geography');
+        else
+		    gen.writeStringField('geography', cc.Geography__c);
+
+        if (cc.Customer_LE_Type__c == null)    
+		    gen.writeNullField('customerLEType');
+        else
+            gen.writeStringField('customerLEType', cc.Customer_LE_Type__c);
+        
+        if (cc.NAICS__c == null)
+		    gen.writeNullField('NAICScode');
+        else
+            gen.writeStringField('NAICScode', cc.NAICS__c);
+
+        if (cc.Distribution_Channel__c == null)
+            gen.writeNullField('distributionChannel');
+		else
+            gen.writeStringField('distributionChannel', cc.Distribution_Channel__c);
+
+        if (cc.product_risk__c == null)   
+		    gen.writeNullField('productRisk');  
+        else
+            gen.writeStringField('productRisk', cc.product_risk__c);
+
+        if (cc.Confirmed_PEP__c == null)
+            gen.writeNullField('confirmedPEP');
+        else
+		    gen.writeStringField('confirmedPEP', string.valueOf(cc.Confirmed_PEP__c));
+         
 		gen.writeStringField('applicationNumber', cc.Application__r.name);
 		gen.writeStringField('sourceSystem', cc.Source_System__c);
 		gen.writeStringField('transactionAmount', string.valueOf(cc.Transaction_Amount__c));
 		gen.writeStringField('customerName', cc.Customer_Name__c);
 	
-		gen.writeStringField('leaseSignerTitle', cc.Lease_Signer_Title__c);
+		 
+        gen.writeStringField('leaseSignerTitle', cc.Lease_Signer_Title__c);
 		gen.writeStringField('leaseSignerFirstName', cc.Lease_Signer_First_Name__c);
 		gen.writeStringField('leaseSignerLastName', cc.Lease_Signer_Last_Name__c);
-		gen.writeStringField('customerType', cc.Customer_Type__c);
+
+        if (cc.Customer_Type__c == null)
+		    gen.writeNullField('customerType');
+        else
+            gen.writeStringField('customerType', cc.Customer_Type__c);
 		
 		gen.writeStringField('DLLCountry', cc.Dll_Country__c);
 		
@@ -170,15 +204,24 @@ global without sharing class CAMSUtility {
         CAMSUtility.results res = (CAMSUtility.results) System.JSON.deserialize(res1.getBody(),CAMSUtility.results.class);	
 		system.debug('result: ' + res);
         
-        if (res.code == '200' && res.riskRating != null){
+        if (res.code == '200'){
             cc.Response_Risk_Rating__c = res.riskRating;
             cc.response_case_number__c = res.caseNumber;
             cc.response_diligence__c = boolean.valueOf(res.dueDiligenceComplete);
         }
         else{
-             a.genesis__status__c = 'CAMS FATAL';  
-             update a;
-             return;
+            if (res.code == '404'){
+                cc.status__c = 'Held - Data Issue';
+                a.genesis__status__c = 'CAMS DEFERRED'; 
+                update a;
+                update cc;  
+                return;
+            }
+            else{
+                a.genesis__status__c = 'CAMS FATAL';  
+                update a;
+                return;
+            }
         }
 
         cc.Response_Risk_Rating__c = 'L';
@@ -189,10 +232,14 @@ global without sharing class CAMSUtility {
 
         /* make the call here */
 
-        
+        if (cc.missing_data__c){
+            cc.status__c = 'Held - Data Issue';
+            a.genesis__status__c = 'CAMS REFERRED';
+        }
+
         if (cc.response_risk_rating__c == 'H'){
-             cc.status__c = 'Held - High';
-             a.genesis__status__c = 'CAMS REFERRED';
+            cc.status__c = 'Held - High';
+            a.genesis__status__c = 'CAMS REFERRED';
         }
         else
         if (cc.response_risk_rating__c == 'M'){
