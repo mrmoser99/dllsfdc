@@ -188,7 +188,7 @@ global with sharing class CD_CAMSController {
                                     where id = :cc.Application__c
         ];
 
-        a.genesis__status__c = 'OFAC APPROVED';
+        a.genesis__status__c = 'CREDIT APPROVED';
         if (cams.CAMS_PEP_Indicator__c == 'True')
             cc.confirmed_pep__c = true;
         else {

@@ -42,7 +42,7 @@
                 ,tax_amount__c
                 ,equipment__c 
                 from adjustment__c 
-                where invoice__c = :recordId
+                where consolidated_invoice__c = :recordId
                 order by equipment__c, charge_bill_name__C
           ];
         

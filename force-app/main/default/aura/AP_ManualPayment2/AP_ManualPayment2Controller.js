@@ -4,6 +4,7 @@
          
     }, 
     handleSubmit: function(component,event,helper){
+        component.set('v.isHide', true);  
         var recordId = component.get('v.recordId');
         var action = component.get('c.addPayment'); 
         console.log('record id ' + recordId);

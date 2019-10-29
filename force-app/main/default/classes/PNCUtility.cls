@@ -174,7 +174,7 @@ public with sharing class PNCUtility {
                 ,equipment__c
                 ,Charge_Bill_Name__c
                 from adjustment__c
-                where invoice__c = :invoiceId
+                where consolidated_invoice__c = :invoiceId
                 order by equipment__c, charge_bill_name__C
         ];
         

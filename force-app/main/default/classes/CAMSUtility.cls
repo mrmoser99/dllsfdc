@@ -210,7 +210,7 @@ global without sharing class CAMSUtility {
             cc.response_diligence__c = boolean.valueOf(res.dueDiligenceComplete);
         }
         else{
-            if (res.code == '404'){
+            if (res.code.startsWith('4')){
                 cc.status__c = 'Held - Data Issue';
                 a.genesis__status__c = 'CAMS DEFERRED'; 
                 update a;
@@ -224,7 +224,7 @@ global without sharing class CAMSUtility {
             }
         }
 
-        cc.Response_Risk_Rating__c = 'L';
+        cc.Response_Risk_Rating__c = res.riskRating;
         cc.response_case_number__c = res.caseNumber;
         cc.response_diligence__c =  boolean.valueOf(res.dueDiligenceComplete);
         cc.response_code__c = res.code;

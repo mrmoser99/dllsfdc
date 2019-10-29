@@ -192,7 +192,7 @@ global with sharing class AP_VoidInvoice {
         aList = [select Id
                 ,charge__c
                 from adjustment__c
-                where invoice__c = :recordId
+                where consolidated_invoice__c = :recordId
                 
         ];
         for (Adjustment__c a:aList)
@@ -285,7 +285,7 @@ global with sharing class AP_VoidInvoice {
                 ,equipment__c
                 ,Charge_Bill_Name__c
                 from adjustment__c
-                where invoice__c = :invoiceId
+                where consolidated_invoice__c = :invoiceId
                 order by equipment__c, charge_bill_name__C
           ];
         for (adjustment__c a:aList)
@@ -306,10 +306,10 @@ global with sharing class AP_VoidInvoice {
         system.debug('to delete is: ' + toDelete);
         
         
-        Adjustment__c a = [select invoice__c from Adjustment__c where id = :toDelete.id];
-        clcommon__Consolidated_Invoice__c i = [select id from clcommon__Consolidated_Invoice__c where id = :a.invoice__c];
+        Adjustment__c a = [select consolidated_invoice__c from Adjustment__c where id = :toDelete.id];
+        clcommon__Consolidated_Invoice__c i = [select id from clcommon__Consolidated_Invoice__c where id = :a.consolidated_invoice__c];
 
-        List<Adjustment__c> aList = [select id from Adjustment__c where invoice__c = :a.invoice__c ];
+        List<Adjustment__c> aList = [select id from Adjustment__c where consolidated_invoice__c = :a.consolidated_invoice__c ];
         if (aList.size() == 1){
             
             i.adjustment_status__c = 'Ready';

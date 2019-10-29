@@ -77,7 +77,7 @@ public class OFACCall implements Queueable, Database.AllowsCallouts {
 
 				if (!businessResult.hit && !individualResult.hit){
 					if (system.label.cams_check == 'True'){
-						pepResult = bridger.bridgerSearch(input2,true);//pep 
+						pepResult = bridger.bridgerSearch(input1,true);//pep 
 					}
 				}
 
@@ -142,7 +142,8 @@ public class OFACCall implements Queueable, Database.AllowsCallouts {
 				else
 					cc = ccList[0];
 			}
-			
+			system.debug('app status is:' + app.genesis__status__c);
+
 			if (app.genesis__Status__c == 'OFAC APPROVED' && system.label.cams_check == 'True'){
 				system.debug('Submitting CAMS Call now.....');
             	CAMSCall job = new CAMSCall(applicationMap);

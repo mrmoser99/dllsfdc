@@ -14,9 +14,9 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
   	*	QUERY - Get all the applications  
   	* 
   	************************************************************************************************/
-    static final string QUERY = 'SELECT genesis__Account__r.Account_Number__c, dealer__r.primary_address__r.state__c,dealer__r.Account_Number__c, dealer__r.name, Approved_Credit_Amount__c,ATS_Reference_Number__c,Billing_Address__c,Business_Contacts__c,CL_Product__c,County__c,CreatedById,CreatedDate,Credit_Approval_Date__c,Credit_Approval_Expiration_Date__c,Credit_Approval__c,Days_Convention__c,Dealer_Name__c,Dealer__c,Email_Address__c,Equipment_Description__c,Estimated_Financed_Amount__c,Estimated_Monthly_Payment__c,Est_Financed_Amt__c,genesis__Account__c,genesis__Additional_cash_required__c,genesis__Address_Line_1__c,genesis__Application__c,genesis__Business_Name__c,genesis__Cap_Reduction__c,genesis__Cash_Collected_By_Dealer__c,genesis__City__c,genesis__CL_Company__c,genesis__CL_Product__c,genesis__Collateral_Value__c,genesis__Company__c,genesis__Contact__c,genesis__Country__c,genesis__Customer_cash_available__c,genesis__Customer_Cash_Used_For__c,genesis__Documentation_charges__c,genesis__Down_Payment__c,genesis__Estimated_Selling_Price__c,genesis__Expected_Start_Date__c,genesis__Fees_Amount__c,genesis__Financed_Amount__c,genesis__First_Name__c,genesis__Last_Name__c,genesis__Lending_Product__c,genesis__Minimum_cash_Required__c,genesis__Next_Step__c,genesis__No_Of_Payments_Required_Upfront__c,genesis__Number_of_Pieces_of_Equipment__c,genesis__Other_Financed_Fees__c,genesis__Payment_Amount__c,genesis__Payment_Frequency__c,genesis__Postal_Code__c,genesis__Pricing_Method__c,genesis__Product_Type__c,genesis__Selected_Pricing_Option_Id__c,genesis__Social_Security_Number__c,genesis__Source__c,genesis__State__c,genesis__Status__c,genesis__Tax_Amount__c,genesis__Terms_Selected__c,genesis__Total_Cash_Due_from_Customer__c,genesis__Total_Customer_Cash_Required__c,genesis__Total_Dealer_Payable__c,genesis__Total_Dealer_Price__c,genesis__Total_Upfront_Payments__c,genesis__Valid_Pricing_Flag__c,genesis__Warranty_Amount__c,Id,IsDeleted,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Legal_Entity__c,Name,Oracle_Trade_up_Lease_Number__c,Oracle_Trade_Up_Quote_Amount__c,Oracle_Trade_up_Quote_Expiration_Date__c,Oracle_Trade_up_Quote_Number__c,OwnerId,Primary_Phone_number__c,Quick_Quote_Number__c,Sales_Division__c,Status_Text__c,SystemModstamp,Time_Trigger_05__c,Validation_Status__c,Validation_Time_Stamp__c,View_Record__c,With_Account__c FROM genesis__Quick_Quotes__c where genesis__Status__c != ' + '\'' + 'ENTERED' + '\'' + ' order by name';
+    static final string QUERY = 'SELECT genesis__Account__r.Account_Number__c, genesis__Application__r.lease_number__r.cllease__Lease_Status__c, dealer__r.primary_address__r.state__c,dealer__r.Account_Number__c, dealer__r.name, Approved_Credit_Amount__c,ATS_Reference_Number__c,Billing_Address__c,Business_Contacts__c,CL_Product__c,County__c,CreatedById,CreatedDate,Credit_Approval_Date__c,Credit_Approval_Expiration_Date__c,Credit_Approval__c,Days_Convention__c,Dealer_Name__c,Dealer__c,Email_Address__c,Equipment_Description__c,Estimated_Financed_Amount__c,Estimated_Monthly_Payment__c,Est_Financed_Amt__c,genesis__Account__c,genesis__Additional_cash_required__c,genesis__Address_Line_1__c,genesis__Application__c,genesis__Business_Name__c,genesis__Cap_Reduction__c,genesis__Cash_Collected_By_Dealer__c,genesis__City__c,genesis__CL_Company__c,genesis__CL_Product__c,genesis__Collateral_Value__c,genesis__Company__c,genesis__Contact__c,genesis__Country__c,genesis__Customer_cash_available__c,genesis__Customer_Cash_Used_For__c,genesis__Documentation_charges__c,genesis__Down_Payment__c,genesis__Estimated_Selling_Price__c,genesis__Expected_Start_Date__c,genesis__Fees_Amount__c,genesis__Financed_Amount__c,genesis__First_Name__c,genesis__Last_Name__c,genesis__Lending_Product__c,genesis__Minimum_cash_Required__c,genesis__Next_Step__c,genesis__No_Of_Payments_Required_Upfront__c,genesis__Number_of_Pieces_of_Equipment__c,genesis__Other_Financed_Fees__c,genesis__Payment_Amount__c,genesis__Payment_Frequency__c,genesis__Postal_Code__c,genesis__Pricing_Method__c,genesis__Product_Type__c,genesis__Selected_Pricing_Option_Id__c,genesis__Social_Security_Number__c,genesis__Source__c,genesis__State__c,genesis__Status__c,genesis__Tax_Amount__c,genesis__Terms_Selected__c,genesis__Total_Cash_Due_from_Customer__c,genesis__Total_Customer_Cash_Required__c,genesis__Total_Dealer_Payable__c,genesis__Total_Dealer_Price__c,genesis__Total_Upfront_Payments__c,genesis__Valid_Pricing_Flag__c,genesis__Warranty_Amount__c,Id,IsDeleted,LastModifiedById,LastModifiedDate,LastReferencedDate,LastViewedDate,Legal_Entity__c,Name,Oracle_Trade_up_Lease_Number__c,Oracle_Trade_Up_Quote_Amount__c,Oracle_Trade_up_Quote_Expiration_Date__c,Oracle_Trade_up_Quote_Number__c,OwnerId,Primary_Phone_number__c,Quick_Quote_Number__c,Sales_Division__c,Status_Text__c,SystemModstamp,Time_Trigger_05__c,Validation_Status__c,Validation_Time_Stamp__c,View_Record__c,With_Account__c FROM genesis__Quick_Quotes__c where genesis__Status__c != ' + '\'' + 'ENTERED' + '\'' + ' order by name';
     datetime startTime = datetime.now();
-    static final String SOURCESYSTEM = 'CLCMUS';
+    static final String SOURCESYSTEM = 'CLND';
 	
     /*********************************************************************************************
   	*	START
@@ -77,7 +77,8 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
                                 ,  dealer__r.account_number__c
                                 , lease_number__r.name
                                 , lease_number__r.cost_of_funds__c
-                                ,lease_number__r.booking_date__c
+                                , lease_number__r.cllease__Residual_Amount__c
+                                , lease_number__r.booking_date__c
                                 , genesis__Account__r.name
                                 , dealer__r.primary_address__r.state__c
                                 , genesis__Account__r.Account_Number__c
@@ -138,53 +139,110 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
         List<SAI_Application_Asset__c> aaLIst = new List<SAI_Application_Asset__c>();
 
         String status = '';
-        
+        String detailStatus = '';
+
+        /*
+        QUOTE
+        SUBMITTED
+        APPROVED
+        TERMINATED (if credit declined and qt sumbit date is > 90 days OR qt with a lease and lease terminated)
+        APPEAL
+        ACTIVATED (if qt associated with an lease in '*active*' status)
+
+        */
+        //detail status code
+        /*
+        QUOTE - n/a
+        SUBMITTED - n/a
+        CREDIT-D - if CREDIT DECLINED
+        CREDIT-A - if CREDIT APPROVED
+        NOTIFIED - n/a
+        CANCELLED - n/a
+        WITHDRAWN - if approval is > 90 days and APPROVED and no lease
+        EXPIRED - n/a
+        DECLINED - n/a
+        APPEAL - n/a
+        ACTIVATED - if CONVERTED
+        */
+
+       
+
+
         for (genesis__quick_quotes__c q:scope){
-            if (q.genesis__Status__c == 'NEW')
-                status = 'QUOTE';
-            else 
-            if (q.genesis__Status__c == 'CONVERTED TO APPLICATION')
-                status = 'APPROVED';
-            else 
-            if (q.genesis__Status__c == 'CREDIT APPROVED')
-                status = 'APPROVED';
-            else
-            if (q.genesis__Status__c == 'CREDIT DECLINED')
-             status = 'TERMINATED';
-            else
-                status = 'TERMINATED';
+            status = '';
+            detailStatus = '';
 
-            
             genesis__Applications__c a = appMap.get(q.genesis__Application__c);
-
-          
+            if (q.genesis__Status__c == 'NEW' || q.genesis__status__c == 'CREDIT SUBMITTED'){
+                status = 'SUBMITTED';
+                detailStatus = 'SUBMITTED';
+            }
+            else 
+            if (q.genesis__Status__c == 'CONVERTED TO APPLICATION'){
+                status = 'APPROVED';
+                detailStatus = 'ACTIVATED';
+                if (q.Credit_Approval_Expiration_Date__c < date.today() && q.genesis__Application__r.lease_number__c == null)
+                    detailStatus = 'WITHDRAWN';
+            }
+            else 
+            if (q.genesis__Status__c == 'CREDIT APPROVED'){
+                status = 'APPROVED';
+                detailStatus = 'CREDIT-A';
+                if (q.Credit_Approval_Expiration_Date__c < date.today() && q.genesis__Application__r.lease_number__c == null)
+                    detailStatus = 'WITHDRAWN';
+            }
+            else
+            if (q.genesis__Status__c == 'CREDIT DECLINED'){
+                status = 'TERMINATED';
+                detailStatus = 'CREDIT-D';
+            }
+            else
+            if (q.genesis__Status__c == 'CREDIT REFERRED'){
+                status = 'SUBMITTED';
+                 detailStatus = 'SUBMITTED';
+            }
+            
                 
             SAI_Application__c app;
 
             if (a != null){
                 
-                if (a.genesis__Status__c  == 'CONVERTED TO CONTRACT')
+                if (a.genesis__Status__c  == 'CONVERTED TO CONTRACT' || a.genesis__Status__c  == 'APPROVED'  ){
                     status = 'ACTIVATED';
+                }
+                    
+                Date activatedDate;
+
+                if (a.genesis__Status__c  == 'TERMINATED')
+                    activatedDate = null;
+                
+                
                 app = new SAI_Application__c(
-                                                             agreement_Original_duration__c = a.genesis__Term__c
-                                                            ,agreement_rate_percentage__c = a.genesis__Yield__c
-                                                            ,Application_Internal_Status_Detail_Code__c = null
-                                                            ,application_Internal_status_detail_date__c = null
-                                                            ,application_lost_Date__c = null
-                                                            ,application_lost_reason_code__c = null 
-                                                            ,application_registration_date__c = null
-                                                            ,base_payment_amount__c = a.genesis__Payment_Amount__c
-                                                            ,cost_of_funds_percentage__c = a.lease_number__r.cost_of_funds__c
-                                                            ,External_Application_Number__c = null
-                                                            ,residual_value_amount__c = a.genesis__Residual_Amount__c
-                                                            ,Leading_Application_Indicator__c = '0'
-                                                            ,seasonality_indicator__c = '0'
-                                                           );       
+                                                agreement_Original_duration__c = a.genesis__Term__c
+                                            );       
             }
             else {
                 app = new SAI_Application__c();
             }
 
+            if (q.genesis__Application__c != null)
+                if (q.genesis__Application__r.lease_number__c != null)
+                    if (q.genesis__Application__r.lease_number__r.cllease__Lease_Status__c.contains('ACTIVE')){
+                        app.cost_of_funds_percentage__c = a.lease_number__r.cost_of_funds__c;
+                        app.base_payment_amount__c = a.genesis__Payment_Amount__c.setScale(2);
+                        app.residual_value_amount__c = a.lease_number__r.cllease__Residual_Amount__c.setScale(2);
+                    }
+            app.seasonality_indicator__c = '0';
+            app.application_Internal_status_detail_date__c = date.valueOf(q.LastModifiedDate);
+            app.application_registration_date__c =date.valueOf(q.Credit_Approval_Date__c);
+
+            app.Leading_Application_Indicator__c = '1';
+            
+            if (a != null)
+                if (a.rate_factor__c != null)
+                    app.agreement_rate_percentage__c = a.Rate_Factor__c;
+
+            app.Application_Internal_Status_Detail_Code__c = detailStatus;
             app.Application_Internal_Status_Date__c = date.valueOf(q.LastModifiedDate);
             app.Application_Number__c = q.name;
             app.system_selling_party_number__c = q.dealer__r.Account_Number__c;
@@ -204,20 +262,22 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
             if (a != null){
                 if (a.lease_number__r.booking_date__c != null){
-                    app.agreement_activation_date__c = a.lease_number__r.booking_date__c;
+                    app.agreement_activation_date__c =  a.Equipment_Install_Date__c; 
                     app.agreement_end_date__c = a.lease_number__r.booking_date__c.addMonths(integer.valueOf(a.genesis__Term__c)); 
-                    app.agreement_start_date__c =  a.Equipment_Install_Date__c;
+                    app.agreement_start_date__c =  a.lease_number__r.booking_date__c;
 
                     if (a.genesis__Payment_Amount__c != null &&  a.genesis__Term__c   != null){
-                        app.gross_principal_amount__c = a.genesis__Payment_Amount__c *  a.genesis__Term__c;  
-                        app.net_principal_amount__c = a.genesis__Financed_Amount__c;  
-                    
+                        if (q.genesis__Application__r.lease_number__r.cllease__Lease_Status__c.contains('ACTIVE')){
+                            app.gross_principal_amount__c = ((a.genesis__Payment_Amount__c *  a.genesis__Term__c) + a.Lease_Number__r.cllease__Residual_Amount__c).setScale(2);
+                            app.net_principal_amount__c = a.genesis__Financed_Amount__c.setScale(2);
+                        }
+                         
                     }
                 } 
                 if (a.lease_number__c != null){
                     SAI_Application_Agreement__c ag = new SAI_Application_Agreement__c(application_source_system__c = SOURCESYSTEM
                                                                                 ,application_number__c = q.name
-                                                                                ,agreement_Source_system__c = SOURCESYSTEM
+                                                                                ,agreement_Source_system__c = 'CLCMUS'
                                                                                 ,agreement_number__c = a.lease_number__r.name
                     );
                     appAgreementList.add(ag);
@@ -239,13 +299,19 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
                                                                                ,Make__c = eq.Manufacturer1__c
                                                                                ,Manufacturing_Year__c = null
                                                                                ,Model__c = eq.Model1__c
-                                                                               ,Net_Principal_Amount__c = eq.genesis__Estimated_Selling_Price__c
                                                                                ,Number_Of_Units__c = 1
                                                                                ,Object_Category__c = eq.object_category_name__c
                                                                                ,Object_Category_Number__c = eq.object_category_id__c
                                                                                ,Serial_Number__c = eq.serial_number__c
                                                                                ,Vendor_Subsidy_Amount__c = null
                                                                                ,used_indicator__c = '0');
+
+                    if (q.genesis__Application__c != null) 
+                        if (q.genesis__Application__r.lease_number__c != null)
+                            if (q.genesis__Application__r.lease_number__r.cllease__Lease_Status__c.contains('ACTIVE')){                                                                     
+                                aa.Net_Principal_Amount__c = eq.genesis__Estimated_Selling_Price__c;
+                            }
+
                     aaList.add(aa);
                 }
             }
@@ -356,10 +422,10 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
                                 ,post_code__c = a1.primary_address__r.zip_code__c
                                 ,town_name__c = a1.primary_address__r.City__c
                                 ,region_name__c = a1.primary_address__r.state__c
-                                ,country_code__c = a1.primary_address__r.Country__c
+                                ,country_code__c = 'USA'
                                 ,party_source_system__c = SOURCESYSTEM
                                 ,party_number__c = a1.account_number__c
-                                ,party_address_type_code__c = 'POST'
+                                ,party_address_type_code__c = 'ESTA'
                             );
             partysalist.add(sa);                
         }
@@ -379,9 +445,23 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_Delivery_Control__c dc = new SAI_Delivery_Control__c();
         dc.delivery_source_system__c = SOURCESYSTEM;
-        dc.Delivery_Source_System_Extraction_DateTi__c  = startTime;
-        dc.interface_version__c = '3.0';
-        dc.reporting_date__C = datetime.now();
+
+        String myDate = string.valueOf(startTime);
+        myDate = myDate.replace('Z', '');
+        myDate = myDate.replace('T', ' ');
+
+        String startDate = string.valueOf(startTime);
+        startDate = myDate.replace('Z', '');
+        startDate = myDate.replace('T', ' ');
+
+        datetime endTime = datetime.now();
+        String endDate = string.valueOf(endTime);
+        endDate = myDate.replace('Z', '');
+        endDate = myDate.replace('T', ' ');
+
+        dc.Delivery_Source_System_Extraction_DateTi__c  = myDate;
+        dc.interface_version__c = '3.1';
+        dc.reporting_date__C = myDate;
 
         cllease__Office_Name__c o;
     
@@ -420,14 +500,14 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         insert appDCList;
 
-        datetime endTime = datetime.now();
+        
 
         SAI_File_Control__c fc = new SAI_File_Control__c();
         fc.source_system__c = SOURCESYSTEM;
-        fc.start_datetime_extraction__c = starttime;
-        fc.end_datetime_extraction__c = endtime;
-        fc.file_name__c = 'US~' + SOURCESYSTEM + '~Application~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc.number_of_records__c = appList.size();
+        fc.start_datetime_extraction__c = startDate;
+        fc.end_datetime_extraction__c = endDate;
+        fc.file_name__c = 'US~' + SOURCESYSTEM + '~Application~' + endTime.format('YYYY-MM-dd') + '~' +  '000000' + '.dta';
+        fc.number_of_records__c = string.valueOf(appList.size());
         fc.hash_total_1__c = 0;
         fc.hash_total_2__c = 0;
         fc.hash_total_3__c = 0;
@@ -435,10 +515,10 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_File_Control__c fc2 = new SAI_File_Control__c();
         fc2.source_system__c = SOURCESYSTEM;
-        fc2.start_datetime_extraction__c = starttime;
-        fc2.end_datetime_extraction__c = endtime;
-        fc2.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationAgreement~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc2.number_of_records__c = appAgreementList.size();
+        fc2.start_datetime_extraction__c = startDate;
+        fc2.end_datetime_extraction__c = endDate;
+        fc2.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationAgreement~' + endTime.format('YYYY-MM-dd') + '~' +  '000000' + '.dta';
+        fc2.number_of_records__c = string.valueOf(appAgreementList.size());
         fc2.hash_total_1__c = 0;
         fc2.hash_total_2__c = 0;
         fc2.hash_total_3__c = 0;
@@ -446,10 +526,10 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_File_Control__c fc3 = new SAI_File_Control__c();
         fc3.source_system__c = SOURCESYSTEM;
-        fc3.start_datetime_extraction__c = starttime;
-        fc3.end_datetime_extraction__c = endtime;
-        fc3.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationClassification~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc3.number_of_records__c = appSSList.size();
+        fc3.start_datetime_extraction__c = startDate;
+        fc3.end_datetime_extraction__c = endDate;
+        fc3.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationClassification~' + endTime.format('YYYY-MM-dd') + '~' +  '000000' + '.dta';
+        fc3.number_of_records__c = string.valueOf(appSSList.size());
         fc3.hash_total_1__c = 0;
         fc3.hash_total_2__c = 0;
         fc3.hash_total_3__c = 0;
@@ -457,10 +537,10 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_File_Control__c fc4 = new SAI_File_Control__c();
         fc4.source_system__c = SOURCESYSTEM;
-        fc4.start_datetime_extraction__c = starttime;
-        fc4.end_datetime_extraction__c = endtime;
-        fc4.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationAssetFeature' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc4.number_of_records__c = appFeatureList.size();
+        fc4.start_datetime_extraction__c = startDate;
+        fc4.end_datetime_extraction__c = endDate;
+        fc4.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationAssetFeature~' + endTime.format('YYYY-MM-dd') + '~' +  '000000' + '.dta';
+        fc4.number_of_records__c = string.valueOf(appFeatureList.size());
         fc4.hash_total_1__c = 0;
         fc4.hash_total_2__c = 0;
         fc4.hash_total_3__c = 0;
@@ -468,10 +548,10 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_File_Control__c fc5 = new SAI_File_Control__c();
         fc5.source_system__c = SOURCESYSTEM;
-        fc5.start_datetime_extraction__c = starttime;
-        fc5.end_datetime_extraction__c = endtime;
-        fc5.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationParty~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc5.number_of_records__c = appPartyList.size();
+        fc5.start_datetime_extraction__c = startDate;
+        fc5.end_datetime_extraction__c = endDate;
+        fc5.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationParty~' + endTime.format('YYYY-MM-dd') + '~' +  '000000' + '.dta';
+        fc5.number_of_records__c = string.valueOf(appPartyList.size());
         fc5.hash_total_1__c = 0;
         fc5.hash_total_2__c = 0;
         fc5.hash_total_3__c = 0;
@@ -479,10 +559,10 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_File_Control__c fc5b = new SAI_File_Control__c();
         fc5b.source_system__c = SOURCESYSTEM;
-        fc5b.start_datetime_extraction__c = starttime;
-        fc5b.end_datetime_extraction__c = endtime;
-        fc5b.file_name__c = 'US~' + SOURCESYSTEM + '~Party~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc5b.number_of_records__c = partyList.size();
+        fc5b.start_datetime_extraction__c = startDate;
+        fc5b.end_datetime_extraction__c = endDate;
+        fc5b.file_name__c = 'US~' + SOURCESYSTEM + '~Party~' + endTime.format('YYYY-MM-dd') + '~' + '000000' + '.dta';
+        fc5b.number_of_records__c = string.valueOf(partyList.size());
         fc5b.hash_total_1__c = 0;
         fc5b.hash_total_2__c = 0;
         fc5b.hash_total_3__c = 0;
@@ -490,10 +570,10 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_File_Control__c fc5c = new SAI_File_Control__c();
         fc5c.source_system__c = SOURCESYSTEM;
-        fc5c.start_datetime_extraction__c = starttime;
-        fc5c.end_datetime_extraction__c = endtime;
-        fc5c.file_name__c = 'US~' + SOURCESYSTEM + '~PartyStreetAddress~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc5c.number_of_records__c = partysaList.size();
+        fc5c.start_datetime_extraction__c = startDate;
+        fc5c.end_datetime_extraction__c = endDate;
+        fc5c.file_name__c = 'US~' + SOURCESYSTEM + '~PartyStreetAddress~' + endTime.format('YYYY-MM-dd') + '~' +  '000000' + '.dta';
+        fc5c.number_of_records__c = string.valueOf(partysaList.size());
         fc5c.hash_total_1__c = 0;
         fc5c.hash_total_2__c = 0;
         fc5c.hash_total_3__c = 0;
@@ -501,10 +581,10 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_File_Control__c fc6 = new SAI_File_Control__c();
         fc6.source_system__c = SOURCESYSTEM;
-        fc6.start_datetime_extraction__c = starttime;
-        fc6.end_datetime_extraction__c = endtime;
-        fc6.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationFacility~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc6.number_of_records__c = 0;
+        fc6.start_datetime_extraction__c = startDate;
+        fc6.end_datetime_extraction__c = endDate;
+        fc6.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationFacility~' + endTime.format('YYYY-MM-dd') + '~' +  '000000'+ '.dta';
+        fc6.number_of_records__c = '0';
         fc6.hash_total_1__c = 0;
         fc6.hash_total_2__c = 0;
         fc6.hash_total_3__c = 0;
@@ -512,10 +592,10 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_File_Control__c fc7 = new SAI_File_Control__c();
         fc7.source_system__c = SOURCESYSTEM;
-        fc7.start_datetime_extraction__c = starttime;
-        fc7.end_datetime_extraction__c = endtime;
-        fc7.file_name__c = 'US~' + SOURCESYSTEM + '~DeliveryControl~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc7.number_of_records__c = appDCList.size();
+        fc7.start_datetime_extraction__c = startDate;
+        fc7.end_datetime_extraction__c = endDate;
+        fc7.file_name__c = 'US~' + SOURCESYSTEM + '~DeliveryControl~' + endTime.format('YYYY-MM-dd') + '~' +  '000000' + '.dta';
+        fc7.number_of_records__c = string.valueOf(appDCList.size());
         fc7.hash_total_1__c = 0;
         fc7.hash_total_2__c = 0;
         fc7.hash_total_3__c = 0;
@@ -523,10 +603,10 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_File_Control__c fc8 = new SAI_File_Control__c();
         fc8.source_system__c = SOURCESYSTEM;
-        fc8.start_datetime_extraction__c = starttime;
-        fc8.end_datetime_extraction__c = endtime;
-        fc8.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationAsset~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc8.number_of_records__c = aaList.size();
+        fc8.start_datetime_extraction__c = startDate;
+        fc8.end_datetime_extraction__c = endDate;
+        fc8.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationAsset~' + endTime.format('YYYY-MM-dd') + '~' +  '000000' + '.dta';
+        fc8.number_of_records__c = string.valueOf(aaList.size());
         fc8.hash_total_1__c = 0;
         fc8.hash_total_2__c = 0;
         fc8.hash_total_3__c = 0;
@@ -534,10 +614,10 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_File_Control__c fc9= new SAI_File_Control__c();
         fc9.source_system__c = SOURCESYSTEM;
-        fc9.start_datetime_extraction__c = starttime;
-        fc9.end_datetime_extraction__c = endtime;
-        fc9.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationFeature~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc9.number_of_records__c =0;
+        fc9.start_datetime_extraction__c = startDate;
+        fc9.end_datetime_extraction__c = endDate;
+        fc9.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationFeature~' + endTime.format('YYYY-MM-dd') + '~' +  '000000' + '.dta';
+        fc9.number_of_records__c ='0';
         fc9.hash_total_1__c = 0;
         fc9.hash_total_2__c = 0;
         fc9.hash_total_3__c = 0;
@@ -546,27 +626,17 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
         SAI_File_Control__c fc10= new SAI_File_Control__c();
         fc10.source_system__c = SOURCESYSTEM;
-        fc10.start_datetime_extraction__c = starttime;
-        fc10.end_datetime_extraction__c = endtime;
-        fc10.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationSkipBillingMonths~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc10.number_of_records__c = 0;
+        fc10.start_datetime_extraction__c = startDate;
+        fc10.end_datetime_extraction__c = endDate;
+        fc10.file_name__c = 'US~' + SOURCESYSTEM + '~ApplicationSkipBillingMonths~' + endTime.format('YYYY-MM-dd') + '~' + '000000' + '.dta';
+        fc10.number_of_records__c = '0';
         fc10.hash_total_1__c = 0;
         fc10.hash_total_2__c = 0;
         fc10.hash_total_3__c = 0;
         appFCList.add(fc10);
 
 
-        SAI_File_Control__c fc11= new SAI_File_Control__c();
-        fc11.source_system__c = SOURCESYSTEM;
-        fc11.start_datetime_extraction__c = starttime;
-        fc11.end_datetime_extraction__c = endtime;
-        fc11.file_name__c = 'US~' + SOURCESYSTEM + '~FileControl~' + endTime.format('YYYY-MM-dd') + '~' +  endTime.format('MMddYY') + '.dta';
-        fc11.number_of_records__c = 13;
-        fc11.hash_total_1__c = 0;
-        fc11.hash_total_2__c = 0;
-        fc11.hash_total_3__c = 0;
-        appFCList.add(fc11);
-
+      
 
 
         insert appFCList;

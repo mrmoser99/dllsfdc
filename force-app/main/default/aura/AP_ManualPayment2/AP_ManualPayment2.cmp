@@ -5,6 +5,7 @@
     <aura:attribute name="recordId" type="String" />
     <aura:attribute name="InvoiceId" type="String"/>
     <aura:attribute name="isInvalid" type="Boolean" default="false"/>
+    <aura:attribute name="isHide" type="Boolean" default="false"/>
  
     <aura:attribute name="options" type="List" default="[
     {'label': 'Mark the invoice in PNC as Void/Expired', 'value': 'true'},
@@ -17,7 +18,7 @@
 
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
      
-    <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="Invoice__c" >
+    <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="clcommon__Consolidated_Invoice__c" >
             
             <lightning:card title="Manual Payment" iconName="utility:moneybag" >
      
@@ -45,7 +46,7 @@
                                 required="true"/>
 
                 <lightning:button class="slds-m-top_large" variant="brand" type="submit" 
-                            label="Submit" onclick="{!c.handleSubmit}" />
+                            label="Submit" onclick="{!c.handleSubmit}" disabled="{!v.isHide}" />
                 <lightning:button class="slds-m-top_large" label="Cancel" onclick="{!c.handleCancel}"/>
                
             </lightning:card>

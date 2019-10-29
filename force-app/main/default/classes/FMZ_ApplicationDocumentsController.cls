@@ -129,9 +129,8 @@ public without sharing class FMZ_ApplicationDocumentsController {
 
 		congaUrl = Label.Conga_URL + userinfo.getsessionId() + '&serverUrl=' + partnerUrl + '&QueryId=[LeaseAgreement]' +
 				LeaseQryID + ',[EQ]' + LeaseEQID + '%3Fpv0%3D' + recordId + '&TemplateId=' + LeaseTmpID +
-				'&DS7=1&OFN=LeaseAgreement&id=' + recordId.subString(0, 15);
-		//&DefaultPDF=1 Add this for PDF
-
+				'&DS7=1&OFN=LeaseAgreement&id=' + recordId.subString(0, 15) +
+				'&DefaultPDF=1'; // Add this for PDF
 		System.debug('congaUrl' + congaUrl);
 		return getCalloutToConga(congaUrl);
 	}

@@ -139,7 +139,7 @@ public with sharing class Bridger {
 		
     	XgServicesSearch.BasicHttpBinding_ISearch SearchClient = new XgServicesSearch.BasicHttpBinding_ISearch();
 		SearchClient.endpoint_x = bridgerSettings.end_point__c; 
-		
+		SearchClient.timeout_x = 120000;
 		XgServicesSearch.ClientContext Context = new XgServicesSearch.ClientContext();
 		Context.ClientID = bridgerSettings.client_id__c; 
 		//Context.UserID = 'mmoser01'; 

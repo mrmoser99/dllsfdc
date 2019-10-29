@@ -2,7 +2,7 @@
 
     <aura:attribute name="recordId" type="String" />
      
-    <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="Invoice__c" >
+    <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="clcommon__Consolidated_Invoice__c" >
             
         <lightning:layout>
             <lightning:layoutItem padding="around-large">

@@ -23,7 +23,7 @@ trigger ApplicationTrigger on genesis__Applications__c (before insert,before upd
 	    integer i = 0;
 	    for (genesis__Applications__c a:trigger.new){
 	    	if ((trigger.new[i].genesis__Status__c == 'APPROVED - DOCUMENT CHECK' && trigger.old[i].genesis__Status__c !=  'APPROVED - DOCUMENT CHECK') ||
-			   (trigger.new[i].genesis__Status__c == 'OFAC APPROVED' && trigger.old[i].genesis__Status__c !=  'OFAC APPROVED'))	
+			   (trigger.new[i].genesis__Status__c == 'CREDIT APPROVED' && trigger.old[i].genesis__Status__c !=  'CREDIT APPROVED'))	
 			{
 	    		system.debug('*************** checking bridger ******************');
 	    		Map<ID,String> inputMap = new Map<ID,String>();

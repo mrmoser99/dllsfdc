@@ -8,6 +8,8 @@ global with sharing class ApplyPaymentProcessingJob extends clcommon.DynamicJob 
 	
     private static String query;
     private static final String JOB_NAME = 'Apply Payments Processing Job';
+    public Map<String, Id> commonPaymentModesMap;
+    String onAccountPaymentMode = 'ON ACCOUNT';
 
     global ApplyPaymentProcessingJob() {
         super(JOB_NAME, initialize(null));
@@ -23,7 +25,6 @@ global with sharing class ApplyPaymentProcessingJob extends clcommon.DynamicJob 
     }
 
     public static String initialize(List<String> contractNames) {
-
       query =   ' SELECT Id, Name,                           '+
                 '   cllease__Contract__c,                    '+
                 '   cllease__Cleared__c                      '+
@@ -48,7 +49,7 @@ global with sharing class ApplyPaymentProcessingJob extends clcommon.DynamicJob 
     }
     
     public override void doExecute(Database.BatchableContext bc, List<sObject> scope) {
-          
+        doInitialize();
         Savepoint sp = database.setsavepoint();
         try {
             List<cllease__Lease_Payment_Transaction__c> paymentsToApply 
@@ -69,8 +70,9 @@ global with sharing class ApplyPaymentProcessingJob extends clcommon.DynamicJob 
 
     // Apply payments which created during the PNCInvoicePaymentProcessing.
     private void applyPayments(List<cllease__Lease_Payment_Transaction__c> pmtsToApply) {
-
+		Set<Id> craIds = new Set<Id>();
         Set<Id> pmtIds = new Set<Id>();
+        Set<Id> crIds = new Set<Id>();
         // 1. Looping all payments to get IDs
         for(cllease__Lease_Payment_Transaction__c pmt : pmtsToApply) {
             pmtIds.add(pmt.Id);
@@ -116,7 +118,8 @@ global with sharing class ApplyPaymentProcessingJob extends clcommon.DynamicJob 
                                 cllease__Other_Charges_Principal__c,
                                 cllease__Late_Charge_Principal__c,
                                 cllease__Charge__c,
-                            	cllease__Bill__c
+                            	cllease__Bill__c,
+                         		cllease__Cash_Application__c 
                             FROM cllease__Lease_Payment_Transaction__c
                             WHERE Id IN :pmtIds
                             order by cllease__Transaction_Date__c]; 
@@ -124,9 +127,75 @@ global with sharing class ApplyPaymentProcessingJob extends clcommon.DynamicJob 
         // 3. Calling CL Lease Global API to Apply Payments
         cllease.BulkLeasePaymentAction dAction = new cllease.BulkLeasePaymentAction(paymentTransactionList);
         dAction.postPayments();
+        
+        // 4. After payment processing we need to move the applied amount to zero in the cash recipt as we are moving the over applied 
+        // amount to onAccount
+        for(cllease__Lease_Payment_Transaction__c lpt : paymentTransactionList){
+            craIds.add(lpt.cllease__Cash_Application__c);
+        }
+        
+        Map<Id, clcommon__Cash_Receipt_Application__c> crApplications = new Map<Id, clcommon__Cash_Receipt_Application__c>([SELECT ID, 
+                                                                                    clcommon__Cash_Receipt__c,
+                                                                                    clcommon__Allocated_Amount__c,
+                                                                                    clcommon__Unused_Amount__c,
+                                                                                    clcommon__Receipt_Application_Status__c 
+                                                                                FROM clcommon__Cash_Receipt_Application__c
+                                                                                WHERE Id IN : craIds
+                                                                                AND clcommon__Unused_Amount__c > 0]);
+        for(clcommon__Cash_Receipt_Application__c cra : crApplications.values()){
+            crIds.add(cra.clcommon__Cash_Receipt__c);
+        }
+        
+        Map<Id, clcommon__Cash_Receipt__c> crMap = new Map<Id, clcommon__Cash_Receipt__c>([SELECT ID,
+                                                                                           			clcommon__Account__c,
+                                                                                           			clcommon__Receipt_Date__c,
+                                                                                               		clcommon__Unused_Amount__c
+                                                                                               	FROM clcommon__Cash_Receipt__c
+                                                                                               	WHERE Id IN : crIds]);
+        List<clcommon__Cash_Receipt_Application__c> craToUpdate = new List<clcommon__Cash_Receipt_Application__c>();
+        List<clcommon__Cash_Receipt__c> crToUpdate = new List<clcommon__Cash_Receipt__c>();
+        List<clcommon__Cash_Receipt__c> newCr = new List<clcommon__Cash_Receipt__c>();
+        for(cllease__Lease_Payment_Transaction__c lpt : paymentTransactionList){
+            clcommon__Cash_Receipt_Application__c crApplication = crApplications.get(lpt.cllease__Cash_Application__c);
+            if(crApplication.clcommon__Unused_Amount__c > 0){
+                clcommon__Cash_Receipt__c cr = crMap.get(crApplication.clcommon__Cash_Receipt__c);
+                if(cr.clcommon__Unused_Amount__c == crApplication.clcommon__Unused_Amount__c){
+                    clcommon__Cash_Receipt__c cashReceipt = new clcommon__Cash_Receipt__c();
+                    cashReceipt.clcommon__Account__c = cr.clcommon__Account__c;
+                    cashReceipt.clcommon__Payment_Mode__c = commonPaymentModesMap.get(onAccountPaymentMode);
+                    cashReceipt.clcommon__Receipt_Date__c = lpt.cllease__Transaction_Date__c;
+                    cashReceipt.clcommon__Receipt_Amount__c = cr.clcommon__Unused_Amount__c;
+                    cashReceipt.clcommon__Creation_Date__c  = lpt.cllease__Transaction_Date__c;
+                    cashReceipt.clcommon__Unused_Amount__c =  cr.clcommon__Unused_Amount__c;
+                    cashReceipt.clcommon__Receipt_Status__c = 'CREATED';
+                    cashReceipt.Payment_Transaction__c = lpt.Id;
+                    newCr.add(cashReceipt);
+                    cr.clcommon__Unused_Amount__c = 0;
+                    cr.clcommon__Receipt_Status__c = 'APPLIED';
+                    crToUpdate.add(cr);
+                }
+                crApplication.clcommon__Unused_Amount__c = 0;
+                craToUpdate.add(crApplication);
+            }
+        }
+        // Committing all records
+        Update craToUpdate;
+        Update crToUpdate;
+        Insert newCr;
     }
 
-    public override void doInitialize() { }
+    public override void doInitialize() { 
+        // Common payment mode for cash receipt
+        List<clcommon__Payment_Mode__c > commonPaymentModes = [SELECT Id, Name 
+                                                            FROM clcommon__Payment_Mode__c 
+                                                            LIMIT 100];
+        
+        commonPaymentModesMap = new Map<String, Id>();                                                    
+        for(clcommon__Payment_Mode__c paymentMode : commonPaymentModes) {
+            commonPaymentModesMap.put(paymentMode.Name, paymentMode.Id);
+        }
+        System.debug(LoggingLevel.ERROR, '^^^^ commonPaymentModesMap : ' + commonPaymentModesMap);
+    }
     public override void doStart(Database.BatchableContext bc) { }   
     public override void doFinish(Database.BatchableContext bc) { 
         // Query  Int_Batch_Status__c for first "Ready" on "Px Remit"  and update as completed.

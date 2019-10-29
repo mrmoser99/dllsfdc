@@ -58,9 +58,11 @@ public with sharing class ICSLogExtension {
 				(l.caller__c == 'updateICSManualDescion' && string.valueOf(response.getStatusCode()) == l.ok_return_code__c)
 			|| 
 				(l.caller__c == 'getDataRequest LOS Picked' && string.valueOf(response.getStatusCode()) == l.ok_return_code__c)
+			||
+				(l.caller__c.contains('removeCommitment'))
 				)
 			{ 	
-				log.xml_result__c = response.getBody();
+				log.xml_result__c = response.getBody() + '-' + response.getStatusCode() + '-' + response.getStatus();
 				log.status__c = 'OK';
 				insert log;
 			}

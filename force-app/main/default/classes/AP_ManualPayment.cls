@@ -45,7 +45,7 @@ global with sharing class AP_ManualPayment {
         paymentsPending = [select id 
                             from Int_PX_Remit__c 
                             where Invoice_number__c = :i.name
-                            and committed__c = false
+                            //and committed__c = false
                             ];
         
         if (i.balance_due_amount__c == 0)   {
@@ -159,8 +159,8 @@ global with sharing class AP_ManualPayment {
                 ];
             equipment = d.cllease__Contract_Equipment__r.Equipment_Description1__c;
         }
-        Adjustment__c a = new Adjustment__c(invoice__c = recordId, Adjustment_Type__c = aType, credit__c = credit, equipment__c = equipment, charge__c = chargeId, due_detail_line__c = dueId
-            ,tax_amount__c = taxAmount);
+        Adjustment__c a = new Adjustment__c(consolidated_invoice__c = recordId, Adjustment_Type__c = aType, credit__c = credit, equipment__c = equipment, charge__c = chargeId, due_detail_line__c = dueId
+            ,tax_amount__c = taxAmount); 
         
         clcommon__Consolidated_Invoice__c i = [select id from clcommon__Consolidated_Invoice__c where id = :recordId];
         i.adjustment_status__c = 'Pending Approval';
