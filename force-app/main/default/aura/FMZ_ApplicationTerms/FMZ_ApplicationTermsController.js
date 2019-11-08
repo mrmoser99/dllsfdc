@@ -1,5 +1,6 @@
 ({
     doInit: function(component, event, helper) {
+        console.log('doinit');
         helper.loadApplicationTerms(component);
         helper.loadTermOptions(component);
     },

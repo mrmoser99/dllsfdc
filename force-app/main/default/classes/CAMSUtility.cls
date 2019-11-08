@@ -8,8 +8,8 @@
 *
 **********************************************************************************************/
 global without sharing class CAMSUtility { 
-	
-	public static Boolean skipApplicationTrigger = false;
+    
+    public static Boolean skipApplicationTrigger = false;
     
     /*************************************************************************************************
     * 
@@ -26,7 +26,7 @@ global without sharing class CAMSUtility {
        public String riskRating;
    
     }
-	/*************************************************************************************************
+    /*************************************************************************************************
     * 
     * Cams Callout
     *
@@ -42,9 +42,9 @@ global without sharing class CAMSUtility {
 
         genesis__Applications__c a = [select id
                                      ,genesis__Status__c
-									 from genesis__Applications__c
-									 where id = :appId
-									 ];
+                                     from genesis__Applications__c
+                                     where id = :appId
+                                     ];
 
        
         system.debug('status is: ' + a.genesis__status__c);
@@ -80,14 +80,14 @@ global without sharing class CAMSUtility {
                                     ,Trust__c 
                                     ,missing_data__c
                                     FROM CAMS_Check__c
-                     		        where application__c = :appId
-							        ];
+                                    where application__c = :appId
+                                    ];
 
         CAMS_Check__c cc;
 
         if (ccList.size() == 0){
-       		cc = CAMSUtility.createCamsCheckRecord(applicationMap,'CAMS CHECK',false);
-		}
+            cc = CAMSUtility.createCamsCheckRecord(applicationMap,'CAMS CHECK',false);
+        }
         else{
             cc = ccList[0];
         }
@@ -104,68 +104,68 @@ global without sharing class CAMSUtility {
         */ 
 
         HttpRequest reqAPI = new HttpRequest();  
-			
+            
         reqAPI.setEndpoint(System.Label.CAMS_Endpoint);
         reqAPI.setMethod('POST');          
-		reqAPI.setHeader('Authorization', 'Bearer '+ ICVUtility.getAccessToken());
+        reqAPI.setHeader('Authorization', 'Bearer '+ ICVUtility.getAccessToken());
         reqAPI.setHeader('content-type', 'application/json');
         reqAPI.setTimeout(120000);
-        	
-	  	JSONGenerator gen = JSON.createGenerator(true);
-			
-		gen.writeStartObject();
+            
+        JSONGenerator gen = JSON.createGenerator(true);
+            
+        gen.writeStartObject();
         if (cc.Account_Number__c == null)
             gen.writeNullField('customerID');
         else
-	    	gen.writeStringField('customerID', cc.Account_Number__c);
+            gen.writeStringField('customerID', cc.Account_Number__c);
 
         if(cc.Geography__c == null)
             gen.writeNullField('geography');
         else
-		    gen.writeStringField('geography', cc.Geography__c);
+            gen.writeStringField('geography', cc.Geography__c);
 
         if (cc.Customer_LE_Type__c == null)    
-		    gen.writeNullField('customerLEType');
+            gen.writeNullField('customerLEType');
         else
             gen.writeStringField('customerLEType', cc.Customer_LE_Type__c);
         
         if (cc.NAICS__c == null)
-		    gen.writeNullField('NAICScode');
+            gen.writeNullField('NAICScode');
         else
             gen.writeStringField('NAICScode', cc.NAICS__c);
 
         if (cc.Distribution_Channel__c == null)
             gen.writeNullField('distributionChannel');
-		else
+        else
             gen.writeStringField('distributionChannel', cc.Distribution_Channel__c);
 
         if (cc.product_risk__c == null)   
-		    gen.writeNullField('productRisk');  
+            gen.writeNullField('productRisk');  
         else
             gen.writeStringField('productRisk', cc.product_risk__c);
 
         if (cc.Confirmed_PEP__c == null)
             gen.writeNullField('confirmedPEP');
         else
-		    gen.writeStringField('confirmedPEP', string.valueOf(cc.Confirmed_PEP__c));
+            gen.writeStringField('confirmedPEP', string.valueOf(cc.Confirmed_PEP__c));
          
-		gen.writeStringField('applicationNumber', cc.Application__r.name);
-		gen.writeStringField('sourceSystem', cc.Source_System__c);
-		gen.writeStringField('transactionAmount', string.valueOf(cc.Transaction_Amount__c));
-		gen.writeStringField('customerName', cc.Customer_Name__c);
-	
-		 
+        gen.writeStringField('applicationNumber', cc.Application__r.name);
+        gen.writeStringField('sourceSystem', cc.Source_System__c);
+        gen.writeStringField('transactionAmount', string.valueOf(cc.Transaction_Amount__c));
+        gen.writeStringField('customerName', cc.Customer_Name__c);
+    
+         
         gen.writeStringField('leaseSignerTitle', cc.Lease_Signer_Title__c);
-		gen.writeStringField('leaseSignerFirstName', cc.Lease_Signer_First_Name__c);
-		gen.writeStringField('leaseSignerLastName', cc.Lease_Signer_Last_Name__c);
+        gen.writeStringField('leaseSignerFirstName', cc.Lease_Signer_First_Name__c);
+        gen.writeStringField('leaseSignerLastName', cc.Lease_Signer_Last_Name__c);
 
         if (cc.Customer_Type__c == null)
-		    gen.writeNullField('customerType');
+            gen.writeNullField('customerType');
         else
             gen.writeStringField('customerType', cc.Customer_Type__c);
-		
-		gen.writeStringField('DLLCountry', cc.Dll_Country__c);
-		
+        
+        gen.writeStringField('DLLCountry', cc.Dll_Country__c);
+        
         //Hi Everyone, here are the NAICS code that will indicate the customer being a trust. So the mid office systems (or back office system scripts for one time load customer extract) can check for this to send the appropriate value for trust indicator. This logic should be used for on going CRR call and to populate the value for this field for the One time load file. 
 
         //If NAICS code for the customer is one of the below then the Trust indicator will be a Y otherwise N.
@@ -180,19 +180,19 @@ global without sharing class CAMSUtility {
             cc.Trust__c = true;
         
         gen.writeStringField('trustIndicator', string.valueOf(cc.Trust__c));
-		
+        
         
         
         gen.writeStringField('publiclyTradedIndicator', string.valueOf(cc.Publicly_Traded__c));
-		gen.writeStringField('publiclyTradedFullSubsidiary', string.valueOf(cc.Publicly_Traded_Full_Subsidiary__c));
-		gen.writeEndObject();
-		
- 		String jsonS = gen.getAsString();
+        gen.writeStringField('publiclyTradedFullSubsidiary', string.valueOf(cc.Publicly_Traded_Full_Subsidiary__c));
+        gen.writeEndObject();
+        
+        String jsonS = gen.getAsString();
         system.debug('json:' + jsonS);
-		reqAPI.setBody(jsonS);  
-		Http http1 = new Http();
-	    HTTPResponse res1 = http1.send(reqAPI); 
-	    
+        reqAPI.setBody(jsonS);  
+        Http http1 = new Http();
+        HTTPResponse res1 = http1.send(reqAPI); 
+        
         
         if (res1.getStatusCode() != 200){
             a.genesis__status__c = 'CAMS FATAL';  
@@ -201,8 +201,8 @@ global without sharing class CAMSUtility {
         }
         
         
-        CAMSUtility.results res = (CAMSUtility.results) System.JSON.deserialize(res1.getBody(),CAMSUtility.results.class);	
-		system.debug('result: ' + res);
+        CAMSUtility.results res = (CAMSUtility.results) System.JSON.deserialize(res1.getBody(),CAMSUtility.results.class);  
+        system.debug('result: ' + res);
         
         if (res.code == '200'){
             cc.Response_Risk_Rating__c = res.riskRating;
@@ -252,25 +252,25 @@ global without sharing class CAMSUtility {
             a.genesis__status__c = 'CAMS APPROVED';
         }
 
-        if (applicationMap.get(appId) == 'Resubmit' && cc.Response_Diligence__c == true){   
+        if (applicationMap.get(appId) == 'Clear' && cc.Response_Diligence__c == true){   
             cc.status__c = 'Manually Cleared';
             a.genesis__status__c = 'CAMS APPROVED';   
         }
 
         update a;
-        update cc;
-    	
+        update cc; 
+        
 
-		
-	}
+        
+    }
 
     /*************************************************************************************************
     * 
     * Cams Update Applciation Status
         *
     *************************************************************************************************/
-	
-	public static void updateApplicationStatus(Map<String,String> applicationMap){
+    
+    public static void updateApplicationStatus(Map<String,String> applicationMap){
 
         String appId;
         skipApplicationTrigger = true;
@@ -278,65 +278,65 @@ global without sharing class CAMSUtility {
         for(String s:applicationMap.keySet())
             appId = s;
 
-		genesis__Applications__c a = [select id
+        genesis__Applications__c a = [select id
                                      ,genesis__Status__c
-									 from genesis__Applications__c
-									 where id = :appId
-									 ];
-		a.genesis__Status__c = applicationMap.get(appId);
+                                     from genesis__Applications__c
+                                     where id = :appId
+                                     ];
+        a.genesis__Status__c = applicationMap.get(appId);
 
         update a;
-	}
+    }
 
 
 
-	/*************************************************************************************************
+    /*************************************************************************************************
     * 
     * Cams Check Record 
     *
     *************************************************************************************************/
-	public static CAMS_Check__c createCamsCheckRecord(Map<ID,String> applicationMap, String status, Boolean pep){
-		String result;
-		
-		CAMS_Check__c cc;
-		String applicationId;
-		system.debug('application map is: ' + applicationMap);
-		
-		for (ID cId:applicationMap.keySet()){
-			applicationId = cId;
-		}
-		
-		genesis__Applications__c a = [select genesis__Quick_Quote__c
+    public static CAMS_Check__c createCamsCheckRecord(Map<ID,String> applicationMap, String status, Boolean pep){
+        String result;
+        
+        CAMS_Check__c cc;
+        String applicationId;
+        system.debug('application map is: ' + applicationMap);
+        
+        for (ID cId:applicationMap.keySet()){
+            applicationId = cId;
+        }
+        
+        genesis__Applications__c a = [select genesis__Quick_Quote__c
                                      ,genesis__account__r.naics__c
-									 from genesis__Applications__c
-									 where id = :applicationId
-									 ];
+                                     from genesis__Applications__c
+                                     where id = :applicationId
+                                     ];
 
-		List<CAMS_Check__c> ccList = [select id 
-							from CAMS_Check__c 
-							where application__c in :applicationMap.keySet()
-							];
-		
-		if (ccList.size() != 0)
-			cc = ccList[0];
-		else{	
-			cc = new CAMS_Check__c();
-			cc.application__c = applicationId;
-			cc.quick_quote__c = a.genesis__Quick_Quote__c;
-		 	cc.geography__c = 'US';
-			cc.dll_country__c = 'W';
-			cc.customer_type__c = 'Commercial';
+        List<CAMS_Check__c> ccList = [select id 
+                            from CAMS_Check__c 
+                            where application__c in :applicationMap.keySet()
+                            ];
+        
+        if (ccList.size() != 0)
+            cc = ccList[0];
+        else{   
+            cc = new CAMS_Check__c();
+            cc.application__c = applicationId;
+            cc.quick_quote__c = a.genesis__Quick_Quote__c;
+            cc.geography__c = 'US';
+            cc.dll_country__c = 'W';
+            cc.customer_type__c = 'Commercial';
             cc.Confirmed_PEP__c = pep;
             cc.naics__c = a.genesis__account__r.naics__c;
-		}
+        }
 
-		cc.status__c = status.trim();
+        cc.status__c = status.trim();
 
-		upsert cc;
+        upsert cc;
 
         return cc;
 
         
-	}
+    }
 
 }

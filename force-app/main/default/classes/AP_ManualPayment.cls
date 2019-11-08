@@ -135,6 +135,7 @@ global with sharing class AP_ManualPayment {
         aList = [select id 
                  from Adjustment__c
                  where charge__c = :chargeId
+                 and consolidated_invoice__c = :recordid
                  ];
 
         if (!aList.isEmpty()){

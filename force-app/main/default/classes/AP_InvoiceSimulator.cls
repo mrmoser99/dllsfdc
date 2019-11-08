@@ -106,7 +106,7 @@
                 ,cllease__Contract_Equipment__r.Equipment_Description1__c
                 from cllease__Charge__c
                 where cllease__Consolidated_Invoice__c = :recordId
-                and cllease__Fee_Definition__r.name not in ('Service Fees','Estimated Property Tax')
+                and cllease__Fee_Definition__r.name not in ('Service Fees')
                 order by cllease__Contract_Equipment__r.Equipment_Description1__c
                 ];
         
@@ -303,7 +303,7 @@
                 ,cllease__Contract_Equipment__r.Equipment_Description1__c
                 from cllease__Charge__c
                 where cllease__Consolidated_Invoice__c = :recordId
-                and cllease__Fee_Definition__r.name not in ('Service Fees','Estimated Property Tax')
+                and cllease__Fee_Definition__r.name not in ('Service Fees')
                 order by cllease__Contract_Equipment__r.Equipment_Description1__c
                 ];
 
@@ -348,7 +348,7 @@
                 ,tax_amount__c
                 ,equipment__c
                 from adjustment__c
-                where invoice__c = :recordId
+                where consolidated_invoice__c = :recordId
                  order by equipment__c, charge_bill_name__C
           ];
         

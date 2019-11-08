@@ -3,14 +3,14 @@ public class ATS_util{
     public class lessee { 
         String name;
         String primaryPhoneNumber;
-        address address;
+        address address;  
             
         public lessee(String name, String primaryPhoneNumber, address address) { 
             this.name = name;
             this.primaryPhoneNumber = primaryPhoneNumber;
             this.address = address;
         }
-    }
+    }  
 
     public class address{ 
         String addressLine1;
