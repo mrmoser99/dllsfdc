@@ -6,5 +6,5 @@
         <minorNumber>9001</minorNumber>
         <namespace>genesis</namespace>
     </packageVersions>
-    <status>Active</status>
+    <status>Inactive</status>
 </ApexTrigger>

@@ -9,13 +9,13 @@
   3/26/19 - changed the code to fix a produciton problem.  this line  r.record_number__c == 0 
   			was changed to say == 0 instead of > 0
   4/12/19 - problems persisted.  changed delete logic to use invoice number = 'Delete Record'
+  12/2/19 - MRM - cls forgot to check for old invoices coming from pnc.  need to translate the invoice from old to new
 *
 **********************************************************************************************/
 trigger Int_PX_Remit on Int_PX_Remit__c (before insert, after insert) {
 	
 	public class CommonException extends Exception {}
-	
-	
+
 	if (AP_ManualPayment.manualPayment == true)  
 		return;
 
@@ -27,7 +27,25 @@ trigger Int_PX_Remit on Int_PX_Remit__c (before insert, after insert) {
 						
 	if (trigger.isBefore){
 		
+		List<clcommon__Consolidated_Invoice__c> oldInvList = [select invoiceold__r.name, name 
+														from clcommon__Consolidated_Invoice__c where
+														invoiceold__c != null];
+		Map<String,String> oldToNewInvoice = new Map<String,String>();
+		
+		for (clcommon__Consolidated_Invoice__c i:oldInvList)
+			oldToNewInvoice.put(i.invoiceold__r.name, i.name);
+			
+		system.debug('old to new map: ' + oldToNewInvoice);
+	
 		for (Int_PX_Remit__c r:trigger.new){
+			if (r.line_data__c == null){
+				if (oldToNewInvoice.get(r.invoice_number__c) != null){
+					r.old_invoice_number__c = r.invoice_number__c;
+					r.invoice_number__c = oldToNewInvoice.get(r.invoice_number__c);
+				}
+				continue;
+			}
+
 			List<String> columnList = new List<String>();
 			String line = r.line_data__c;
 			columnList = line.split('\\|');
@@ -56,6 +74,14 @@ trigger Int_PX_Remit on Int_PX_Remit__c (before insert, after insert) {
 				r.trans_source__c = columnList[5];
 				r.transaction_amount__c = decimal.valueOf(columnList[6])/100;
 				r.invoice_number__c = columnList[7];
+				system.debug(r.invoice_number__c); 
+				system.debug('found:' + oldToNewInvoice.get(r.invoice_number__c));
+				if (oldToNewInvoice.get(r.invoice_number__c) != NULL){
+					system.debug('found one');
+					r.old_invoice_number__c = r.invoice_number__c;
+					r.invoice_number__c = oldToNewInvoice.get(r.invoice_number__c);
+				}
+				
 				r.invoice_amount_paid__c = decimal.valueOf(columnList[8])/100;
 				r.line_data__c = null;
 			}
@@ -77,6 +103,8 @@ trigger Int_PX_Remit on Int_PX_Remit__c (before insert, after insert) {
 		}
 		if (!dList.isEmpty())
 			delete dList;
-			
+
+		
+	
 	}    
 }

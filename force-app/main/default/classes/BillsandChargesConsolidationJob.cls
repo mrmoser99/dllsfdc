@@ -90,7 +90,7 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
                        + 'cllease__Total_Due_Amount__c, '
                        + 'cllease__Lease_Account__c, '
                        + 'cllease__Date__c, '
-                       + 'cllease__Consolidated_Invoice__c, '
+                       + 'Invoiced_In__c, '
                        + 'cllease__Remarks__c, '
                        + 'cllease__Fee_Definition__c, '
                        + 'cllease__Fee_Definition__r.Name, '
@@ -101,7 +101,7 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
         chargeOC.addNamedParameter('allowedFees', allowedFees);
         
         String whereClause1 = ' cllease__Waive__c = false ' ;
-        whereClause1 += ' AND cllease__Consolidated_Invoice__c = null ';
+        whereClause1 += ' AND Invoiced_In__c = null ';
         whereClause1 += ' AND cllease__Fee_Definition__r.Name IN :allowedFees';
         chargeOC.setWhereClause(whereClause1);
         chargeOC.setOrderClause(' Name asc');
@@ -117,7 +117,7 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
                      + 'cllease__Lease_Account__c, '
                      + 'cllease__Total_Due_Amount__c, '
                      + 'cllease__Rental_Due_Amount__c, '
-                     + 'cllease__Consolidated_Invoice__c, '
+                     + 'Invoiced_In__c, '
                      + 'cllease__Tax_Due_Amount__c, '
                      + 'cllease__Remarks__c, '
                      + 'cllease__Tax_Processed__c ,'
@@ -126,7 +126,7 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
         billOC.addFields(billFields);
         billOC.addNamedParameter('billTypes', billTypes);
         
-        String whereClause2 = ' cllease__Consolidated_Invoice__c = null ' ;
+        String whereClause2 = ' Invoiced_In__c = null ' ;
         whereClause2 += ' AND cllease__Due_Type_Description__c IN :billTypes ';
         billOC.setWhereClause(whereClause2);
         billOC.setOrderClause(' Name asc');
@@ -220,7 +220,7 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
             }
 
             // Looping through Master List of group keys to consolidate Bills and Charges
-            Map<String, clcommon__Consolidated_Invoice__c> invoicePeriodStrMap =  new Map<String, clcommon__Consolidated_Invoice__c>();
+            Map<String, Invoice__c> invoicePeriodStrMap =  new Map<String, Invoice__c>();
 
             List<cllease__Lease_account_Due_Details__c> billsToUpdateForRemark
                                 = new List<cllease__Lease_account_Due_Details__c>();
@@ -304,7 +304,7 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
                  **/
                 if(taxComputedForAllBillsAndCharges) {
                     
-                    clcommon__Consolidated_Invoice__c  tempInvoice = new clcommon__Consolidated_Invoice__c();
+                    Invoice__c  tempInvoice = new Invoice__c();
                     tempInvoice.Invoice_Due_Date__c             = dueDate;
                     tempInvoice.Invoice_Period_Start_Date__c    = periodStartDate;
                     tempInvoice.Invoice_Period_End_Date__c      = periodEndDate;
@@ -377,11 +377,11 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
                 List<cllease__Charge__c> chargesToUpdate = new List<cllease__Charge__c>();
                 // Looping through sucessful invoices to update Invoice in Bills and charges
                 for(String invoiceGroupKey : invoicePeriodStrMap.keySet()) {
-                    clcommon__Consolidated_Invoice__c invoice = invoicePeriodStrMap.get(invoiceGroupKey);
+                    Invoice__c invoice = invoicePeriodStrMap.get(invoiceGroupKey);
                     if(invoice.Id != null) {
                         if(billsPeriodMap.get(invoiceGroupKey) != null) {
                             for(cllease__Lease_account_Due_Details__c bill : billsPeriodMap.get(invoiceGroupKey)) {
-                                bill.cllease__Consolidated_Invoice__c = invoice.Id;
+                                bill.Invoiced_In__c = invoice.Id;
                                 bill.cllease__Remarks__c = 'Successfully Processed Bill to Invoice Consolidation';
                             }
                             billsToUpdate.addAll(billsPeriodMap.get(invoiceGroupKey));
@@ -389,7 +389,7 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
                         
                         if(chargesPeriodMap.get(invoiceGroupKey) != null) {
                             for(cllease__Charge__c charge : chargesPeriodMap.get(invoiceGroupKey)) {
-                                charge.cllease__Consolidated_Invoice__c = invoice.Id;
+                                charge.Invoiced_In__c = invoice.Id;
                                 charge.cllease__Remarks__c = 'Successfully Processed Charge to Invoice Consolidation';
                             }
                             chargesToUpdate.addAll(chargesPeriodMap.get(invoiceGroupKey));
@@ -443,8 +443,8 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
         Map<String, List<cllease__Charge__c>> invoiceChargeEquipmentMap = new Map<String, List<cllease__Charge__c>>();
         
         for(cllease__Charge__c charge : chargesToUpdate) {
-            if(charge.cllease__Contract_Equipment__c != null && charge.cllease__Consolidated_Invoice__c != null) {
-                String invoiceEqpKey = charge.cllease__Consolidated_Invoice__c +'-'+charge.cllease__Contract_Equipment__c;
+            if(charge.cllease__Contract_Equipment__c != null && charge.Invoiced_In__c != null) {
+                String invoiceEqpKey = charge.Invoiced_In__c +'-'+charge.cllease__Contract_Equipment__c;
                 List<cllease__Charge__c> tempGroup = invoiceChargeEquipmentMap.get(invoiceEqpKey);
                 tempGroup = (tempGroup == null ? new List<cllease__Charge__c>() : tempGroup);
                 tempGroup.add(charge);
@@ -455,7 +455,7 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
         // Getting Bill Ids in to query Due Detials lines
         Set<Id> billIds = new Set<Id>();
         for(cllease__Lease_account_Due_Details__c bill : billsToUpdate) {
-            if(bill.cllease__Consolidated_Invoice__c != null) {
+            if(bill.Invoiced_In__c != null) {
                 billIds.add(bill.Id);
             }
         }
@@ -468,7 +468,7 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
                                                                 Estimated_Property_Tax_Tax_Amount__c,
                                                                 cllease__Contract_Equipment__c,
                                                                 cllease__Bill__c,
-                                                                cllease__Bill__r.cllease__Consolidated_Invoice__c,
+                                                                cllease__Bill__r.Invoiced_In__c,
                                                                 cllease__Remarks__c
                                                             FROM cllease__Due_Detail_Lines__c
                                                             WHERE cllease__Contract_Equipment__c != null
@@ -478,8 +478,8 @@ global with sharing class BillsandChargesConsolidationJob extends clcommon.Dynam
         // Creating Map with Key: InvoiceId-Equipment
         for(cllease__Due_Detail_Lines__c dueDetailLine : dueDetailLines) {
             if(dueDetailLine.cllease__Contract_Equipment__c != null
-                && dueDetailLine.cllease__Bill__r.cllease__Consolidated_Invoice__c != null) {
-                String invoiceEqpKey = dueDetailLine.cllease__Bill__r.cllease__Consolidated_Invoice__c +'-' + dueDetailLine.cllease__Contract_Equipment__c;
+                && dueDetailLine.cllease__Bill__r.Invoiced_In__c != null) {
+                String invoiceEqpKey = dueDetailLine.cllease__Bill__r.Invoiced_In__c +'-' + dueDetailLine.cllease__Contract_Equipment__c;
                 Decimal serviceFeeAmount = 0, serviceFeeTaxAmount = 0;
                 Decimal estimatedPropertyTaxFeeAmount =0, estimatedPropertyTaxFeeTaxAmount = 0; 
                 

@@ -316,7 +316,7 @@ public with sharing class TestPNCIntegration {
         cllease__Lease_Payment_Transaction__c pmtTxn = new cllease__Lease_Payment_Transaction__c();
         pmtTxn.cllease__Contract__c             = invoice.LS_Contract__c;
         pmtTxn.cllease__Bill__c                 = bill.Id ;
-        pmtTxn.For_Invoice__c                   = invoice.Id;
+        pmtTxn.Pmt_For_Invoice__c               = invoice.Id;
         pmtTxn.cllease__Transaction_Amount__c   = bill.cllease__Total_Due_Amount__c;
         pmtTxn.cllease__Payment_Mode__c         = achPaymentMode.Id;
         pmtTxn.cllease__Transaction_Date__c     = currentSystemDate;
@@ -326,7 +326,7 @@ public with sharing class TestPNCIntegration {
         cllease__Lease_Payment_Transaction__c pmtTxn2 = new cllease__Lease_Payment_Transaction__c();
         pmtTxn2.cllease__Contract__c             = invoice.LS_Contract__c;
         pmtTxn2.cllease__Charge__c               = charge.Id ;
-        pmtTxn2.For_Invoice__c                   = invoice.Id;
+        pmtTxn2.Pmt_For_Invoice__c               = invoice.Id;
         pmtTxn2.cllease__Transaction_Amount__c   = charge.cllease__Principal_Due__c;
         pmtTxn2.cllease__Payment_Mode__c         = achPaymentMode.Id;
         pmtTxn2.cllease__Transaction_Date__c     = currentSystemDate;

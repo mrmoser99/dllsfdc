@@ -12,9 +12,9 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>New</fullName>
+                <fullName>CAMS CHECK</fullName>
                 <default>false</default>
-                <label>New</label>
+                <label>CAMS CHECK</label>
             </value>
             <value>
                 <fullName>Auto Cleared</fullName>
@@ -37,9 +37,24 @@
                 <label>Held - Data Issue</label>
             </value>
             <value>
+                <fullName>Held - PEP Hit</fullName>
+                <default>false</default>
+                <label>Held - PEP Hit</label>
+            </value>
+            <value>
                 <fullName>Manually Cleared</fullName>
                 <default>false</default>
                 <label>Manually Cleared</label>
+            </value>
+            <value>
+                <fullName>Manual Cleared PEP</fullName>
+                <default>false</default>
+                <label>Manual Cleared PEP</label>
+            </value>
+            <value>
+                <fullName>Manually Cleared OFAC PEP</fullName>
+                <default>false</default>
+                <label>Manually Cleared OFAC PEP</label>
             </value>
         </valueSetDefinition>
     </valueSet>

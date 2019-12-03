@@ -80,6 +80,7 @@ global virtual class ContractProcessor implements clcommon.IContractProcessor {
             List<cllease__Contract_Equipment__c> contractEquips = [select id,cllease__Contract__c,External_Id__c from 
                                                                 cllease__Contract_Equipment__c 
                                                                 where cllease__Contract__c=:leaseAccount.id];
+            validateEquipment(contractEquips);
             
             for(cllease__Contract_Equipment__c contEquip : contractEquips){
                 contEquipmentIdMap.put(contEquip.External_Id__c,contEquip.id);
@@ -88,6 +89,8 @@ global virtual class ContractProcessor implements clcommon.IContractProcessor {
             
             List<cllease__Contract_Parties__c> parties = [select id,External_Id__c from cllease__Contract_Parties__c 
                                                             where cllease__Contract__c =: leaseAccount.Id];
+            validateParties(parties);
+            
             for(cllease__Contract_Parties__c party : parties){
                 partyContractPartyMap.put(party.External_Id__c,party.id);
             }
@@ -96,6 +99,9 @@ global virtual class ContractProcessor implements clcommon.IContractProcessor {
                                                            cllease__Expense_fee__c 
                                                            from cllease__Contract_Fees__c
                                                            where cllease__Contract__c=:leaseAccount.id];
+            
+            validateContractFee(contractFees);
+            
             for(cllease__Contract_Fees__c contFee:contractFees){
                 contFee.cllease__Contract_Equipment__c = contEquipmentIdMap.get(contFee.Equipment_External_Id__c);
                 feeToContractFeeMap.put(contFee.External_id__c,contFee.cllease__Expense_fee__c);
@@ -223,6 +229,35 @@ global virtual class ContractProcessor implements clcommon.IContractProcessor {
                     this.leaseAccount.cllease__Lease_Product_Name__c = products[0].id;
                 }
             }
+        }
+    }
+    
+    private void validateEquipment(List<cllease__Contract_Equipment__c> contractEquips) {
+        for(cllease__Contract_Equipment__c contractEquip : contractEquips){
+            if(contractEquip.cllease__Contract__c != null)
+                contractEquip.cllease__Contract__c = contractEquip.cllease__Contract__c;
+            if(contractEquip.External_Id__c == null)
+                contractEquip.External_Id__c = null;
+        }
+    }
+    
+    private void validateParties(List<cllease__Contract_Parties__c> parties){
+        for(cllease__Contract_Parties__c party : parties){
+            if(party.External_Id__c == null)
+                party.External_Id__c = null;
+        }
+    }
+    
+    private void validateContractFee(List<cllease__Contract_Fees__c> contractFee){
+        for(cllease__Contract_Fees__c fee : contractFee){
+            if(fee.cllease__Contract__c != null)
+                fee.cllease__Contract__c = fee.cllease__Contract__c;
+            if(fee.Equipment_External_Id__c == null)
+                fee.Equipment_External_Id__c = null;
+            if(fee.External_id__c == null)
+                fee.External_id__c = null;
+            if(fee.cllease__Expense_fee__c != null)
+                fee.cllease__Expense_fee__c = fee.cllease__Expense_fee__c;
         }
     }
 }

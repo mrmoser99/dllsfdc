@@ -11,8 +11,8 @@ public class TestBridger{
         binput.stateprovincedistrict = 'PA';
         binput.postalcode = '19335';
         binput.county = 'Chester';
-        binput.ein='23-44422';
-        binput.fullname = 'Redtail Consulting, Inc.';
+        binput.ein='23-44422'; 
+        binput.fullname = 'Redtail Consulting, Inc.'; 
         
         
         Bridger_Setting__c s = new Bridger_Setting__c();
@@ -25,13 +25,13 @@ public class TestBridger{
         s.End_Point__c = ' ';
         s.Division__c = ' ';
         s.Client_Id__c = ' ';
-        s.Account_Endpoint__c = ' ';
+        s.Account_Endpoint__c = ' ';  
         
         insert s;
         
         bridger.maintainPassword();
         bridger.bridgerResult r = new bridger.bridgerResult();
-        r = bridger.bridgerSearch(binput);
+        r = bridger.bridgerSearch(binput,false);
         
         
     }

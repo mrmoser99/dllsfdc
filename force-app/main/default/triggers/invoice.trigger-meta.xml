@@ -3,11 +3,6 @@
     <apiVersion>36.0</apiVersion>
     <packageVersions>
         <majorNumber>2</majorNumber>
-        <minorNumber>9030</minorNumber>
-        <namespace>clcommon</namespace>
-    </packageVersions>
-    <packageVersions>
-        <majorNumber>2</majorNumber>
         <minorNumber>5014</minorNumber>
         <namespace>cllease</namespace>
     </packageVersions>

@@ -21,6 +21,28 @@ public class TestContractProcessor {
         cllease__Lease_Product__c dummyLeaseProduct = cllease.TestHelper.createLeaseProduct(
                             dummyOffice,
                             dummyFeeSet);
+        
+        // Creating Default bill group
+        clcommon__Billing_Group__c billGroup = new clcommon__Billing_Group__c(Name = 'Default Bill Group');
+        insert billGroup;
+        
+        //Create payment clcommon payment spread
+        clcommon__Payment_Spread__c paymentSpread = new clcommon__Payment_Spread__c(clcommon__Spread_Description__c = 'Default Spread', clcommon__Enabled__c = 'Yes', clcommon__Tax_Configuration__c = 'DISTRIBUTE');
+        insert paymentSpread; 
+        
+        // Create GL Account
+        cllease__GL_Account__c account = new cllease__GL_Account__c(Name = 'On Account', cllease__Account_Code__c = '5007');
+        insert account;
+        
+        List<clcommon__Payment_Spread_Detail__c> spreadList = new List<clcommon__Payment_Spread_Detail__c>();
+        spreadList.add(new clcommon__Payment_Spread_Detail__c(clcommon__Contract_Management_System__c = 'CL-Lease', clcommon__Sequence_Number__c = 1,
+                                                              clcommon__Balance_Type__c = 'LEASE RECEIVABLE', clcommon__Enabled__c = 'Yes',
+                                                              clcommon__Payment_Spread__c = paymentSpread.Id));
+        spreadList.add(new clcommon__Payment_Spread_Detail__c(clcommon__Contract_Management_System__c = 'CL-Lease', clcommon__Sequence_Number__c = 2,
+                                                              clcommon__Balance_Type__c = 'FEES', clcommon__Enabled__c = 'Yes',
+                                                              clcommon__Payment_Spread__c = paymentSpread.Id));
+        insert spreadList;
+        
         Account borrowerAccount = new Account(Name = 'Borrower');
         insert borrowerAccount;
 
@@ -49,6 +71,7 @@ public class TestContractProcessor {
     @isTest
     public static void createContractsInPartialApplication() {
         querySetupData();
+        clcommon__Fee_Definition__c fee = [Select Id from clcommon__Fee_Definition__c Limit 1];
         cllease__Lease_Account__c leaseAccount = new cllease__Lease_Account__c(cllease__Financed_Amount__c = 10000,
                                                             cllease__Product_Type__c = cllease.LeaseConstants.LEASE,
                                                             cllease__Account__c = borrower.Id,
@@ -74,16 +97,23 @@ public class TestContractProcessor {
                                                 cllease__Frequency__c=cllease.LendingConstants.PAYMENT_FREQ_MONTHLY,
                                                 cllease__Payment_Amount__c=3000,cllease__Total_Payment__c=3000,
                                                 cllease__Payment_Date__c=Date.parse('07/01/2016')));
+        
+        List<cllease__Contract_Fees__c> contractFee = new List<cllease__Contract_Fees__c>();
+        contractFee.add(new cllease__Contract_Fees__c(cllease__VAT__c = 0.00, cllease__Total_Payment_Amount__c = 100, cllease__Fee_Definition__c = fee.Id,
+                        cllease__Fee_Type__c = 'OTHER FEES', cllease__Number_of_Periods__c = 12, cllease__Frequency__c = cllease.LendingConstants.PAYMENT_FREQ_MONTHLY,
+                        cllease__Amount__c = 100, cllease__start_date__c = Date.parse('07/01/2016')));
+        
         //we will a pass a dummy object instead of CL O application
         Map<String, List<SObject>> childObjects = new Map<String, List<SObject>>();
         childObjects.put('cllease__Contract_Parties__c',parties);
         childObjects.put('cllease__Contract_Equipment__c',contractEquipments);
         childObjects.put('cllease__Payment_Schedule__c',paymentDetails);
+        childObjects.put('cllease__Contract_Fees__c',contractFee);
 
         //we will a pass a dummy object instead of CL O application
         clcommon.ApplicationContractBO appContract = new clcommon.ApplicationContractBO();
         appContract.setProduct(dummyLP);
-        genesis__Applications__c app = new genesis__Applications__c(genesis__Status__c = 'CREDIT APPROVED');
+        genesis__Applications__c app = new genesis__Applications__c(genesis__Status__c = 'CAMS APPROVED');
         appContract.setApplication(app);
         appContract.setContract(leaseAccount);
         appContract.setChildObjects(childObjects);

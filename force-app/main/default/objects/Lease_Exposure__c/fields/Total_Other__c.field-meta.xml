@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Total_Other__c</fullName>
-    <description>Estimated_Property_Tax__c +</description>
     <externalId>false</externalId>
-    <formula>Origination_Fees__c +  Service_Fees__c + Termination_Quote_Fees__c +   Asset_Sale__c +  NSF_Fees__c +  Sales_Tax_on_Property_Tax__c</formula>
+    <formula>Origination_Fees__c +  Service_Fees__c + Termination_Quote_Fees__c +   Estimated_Property_Tax__c +  Asset_Sale__c +  NSF_Fees__c +  Sales_Tax_on_Property_Tax__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Total Other</label>
     <precision>18</precision>

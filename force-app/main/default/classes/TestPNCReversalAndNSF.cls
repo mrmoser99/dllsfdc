@@ -1,5 +1,6 @@
 @isTest
 public class TestPNCReversalAndNSF {
+
     @testSetup
     public static void testDataSetUp(){
         cllease__Lease_Account__c contract1 = TestHelper.createContract();
@@ -57,6 +58,10 @@ public class TestPNCReversalAndNSF {
             cllease__Transaction_Sub_Type__c = transactionSubTypes.id, 
             cllease__Enabled__c = true);
         Insert accountingLine;
+        
+        // Creating 'ON ACCOUNT PAYMENT MODE' 
+        clcommon__Payment_Mode__c onAccPmtMode = new clcommon__Payment_Mode__c(Name = 'ACH');
+        insert onAccPmtMode;
     }
     
     public static clcommon__Consolidated_Invoice__c createInvoice(Id contractId){
@@ -86,19 +91,53 @@ public class TestPNCReversalAndNSF {
     
     @isTest
     public static void testOnAccountCreationOnExcessPayment(){
+        // Common payment mode for cash receipt
+        List<clcommon__Payment_Mode__c > commonPaymentModes = [SELECT Id, Name 
+                                                            FROM clcommon__Payment_Mode__c 
+                                                            LIMIT 100];
+        Map<String, Id> commonPaymentModesMap = new Map<String, Id>();                                                    
+        for(clcommon__Payment_Mode__c paymentMode : commonPaymentModes) {
+            commonPaymentModesMap.put(paymentMode.Name, paymentMode.Id);
+        }
         List<clcommon__Fee_Definition__c> fees = [SELECT Id, Name FROM clcommon__Fee_Definition__c];
         System.debug(LoggingLevel.ERROR, '^^^^ fees : ' + fees);
         List<cllease__GL_Account__c> glAccounts = [SELECT Id FROM cllease__GL_Account__c WHERE NAME IN ('OnAccount', 'Cash') ORDER BY NAME];
-        cllease__Lease_Account__c contract = [SELECT Id, cllease__Contract_Date__c from Cllease__Lease_Account__c limit 1];
+        cllease__Lease_Account__c contract = [SELECT Id, cllease__Contract_Date__c, cllease__Account__c from Cllease__Lease_Account__c limit 1];
         clcommon__Consolidated_Invoice__c invoice = createInvoice(contract.Id);
-        invoice = [Select Id, Name from clcommon__Consolidated_Invoice__c where Id =: invoice.Id];
+        invoice.clcommon__Account__c = contract.cllease__Account__c;
+        update invoice;
+        invoice = [Select Id, Name, clcommon__Account__c from clcommon__Consolidated_Invoice__c where Id =: invoice.Id];
         List<cllease__Lease_Payment_Transaction__c> lpt = new List<cllease__Lease_Payment_Transaction__c>();
         lpt.add(new cllease__Lease_Payment_Transaction__c(cllease__Contract__c = contract.Id,
                                                           cllease__Transaction_Date__c = contract.cllease__Contract_Date__c ,
                                                           cllease__Transaction_Amount__c = 100,
                                                           cllease__Payment_Mode__c = cllease.GlobalContext.INSTANCE.getPaymentModeByName('Cash').Id,
-                                                          For_Invoice__c = invoice.Id));
+                                                          Pmt_For_Invoice__c = invoice.Id));
         Insert lpt;
+        
+        // Creation of cash receipt
+        clcommon__Cash_Receipt__c cashReceipt = new clcommon__Cash_Receipt__c();
+        cashReceipt.clcommon__Account__c = invoice.clcommon__Account__c;
+        cashReceipt.clcommon__Payment_Mode__c = commonPaymentModesMap.get('ACH');
+        cashReceipt.clcommon__Receipt_Date__c = contract.cllease__Contract_Date__c;
+        cashReceipt.clcommon__Receipt_Amount__c = 100;
+        cashReceipt.clcommon__Creation_Date__c  = contract.cllease__Contract_Date__c;
+        cashReceipt.clcommon__Unused_Amount__c =  100;
+        cashReceipt.clcommon__Receipt_Status__c = 'CREATED';
+        insert cashReceipt;
+        
+        clcommon__Cash_Receipt_Application__c cashApplication = new clcommon__Cash_Receipt_Application__c();
+        cashApplication.clcommon__Cash_Receipt__c = cashReceipt.Id;
+        cashApplication.clcommon__Creation_Date__c = contract.cllease__Contract_Date__c;
+        cashApplication.clcommon__Allocated_Amount__c  = 100;
+        cashApplication.clcommon__Receipt_Application_Status__c   = 'CREATED';
+        cashApplication.clcommon__Unused_Amount__c  = 100;
+        insert cashApplication;
+        
+        lpt[0].cllease__Cash_Application__c = cashApplication.Id;
+        update lpt;
+        
+        // Clear lpt
         cllease.BulkLeasePaymentAction leasePayment = new cllease.BulkLeasePaymentAction(lpt);
         leasePayment.postPayments();
         List<cllease__Lease_Payment_Transaction__c> pmt = [SELECT cllease__Excess__c, Invoice_Credit_Amount__c FROM cllease__Lease_Payment_Transaction__c WHERE Id=:lpt[0].Id];

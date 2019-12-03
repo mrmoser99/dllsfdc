@@ -17,49 +17,55 @@ public with sharing class TestAPIntegration {
         Account dealer = new Account(Name= 'dealer', Oracle_Vendor_ID__c = '1234567');
         insert dealer;
 
-        cllease__Transaction_Sub_Type__c txnSubType = [Select Id From cllease__Transaction_Sub_Type__c 
-                                                        Where Name = 'Service Fees - Passthrough'];
+        cllease__Transaction_Sub_Type__c txnSubType = [Select Id, Name From cllease__Transaction_Sub_Type__c 
+                                                        Where Name = 'Service Fees - Passthrough' LIMIT 1];
+        cllease__Transaction_Sub_Type__c txnSubType1 = [Select Id, Name From cllease__Transaction_Sub_Type__c 
+                                                        Where Name = 'DEALER PAYABLE FUNDING' order by createdDate LIMIT 1];
+        
+        /*for(cllease__Transaction_Sub_Type__c txnType : txnSubType1)
+            System.debug(LoggingLevel.ERROR, '^^^^ Name : ' + txnType.Name);*/
         // 1. Create Dealer Funding Transaction
-        cllease__Other_Transaction__c dealerFundtxn = new cllease__Other_Transaction__c();
-        dealerFundtxn.cllease__Lease_Account__c = contract.Id;
+        clcommon__Disbursement_Transaction__c dealerFundtxn = new clcommon__Disbursement_Transaction__c();
+        dealerFundtxn.cllease__Contract__c  = contract.Id;
         dealerFundtxn.Invoice_Number__c         = 'INV110';
         dealerFundtxn.Invoice_Date__c           = currentSystemDate;
-        dealerFundtxn.cllease__Txn_Date__c      = currentSystemDate;
-        dealerFundtxn.cllease__Txn_Amt__c       = 1000;
-        dealerFundtxn.cllease__GL_Process_Date__c   = currentSystemDate;
-        dealerFundtxn.cllease__Dealer_Name__c       = dealer.Id;
-        dealerFundtxn.cllease__Transaction_Type__c  = 'DEALER FUNDING';
+        dealerFundtxn.clcommon__Transaction_Date__c       = currentSystemDate;
+        dealerFundtxn.clcommon__Amount__c        = 1000;
+        dealerFundtxn.clcommon__GL_Process_Date__c	   = currentSystemDate;
+        dealerFundtxn.clcommon__Account__c        = dealer.Id;
+        dealerFundtxn.clcommon__Transaction_Type__c   = 'DEALER FUNDING';
         dealerFundtxn.AP_Processing_Status__c       = 'New';
-        dealerFundtxn.cllease__GL_Transaction_Flag__c       = true;
-        dealerFundtxn.cllease__Dealer_Payable_Amount__c     = 1000;
+        dealerFundtxn.clcommon__GL_Transaction_Flag__c      = true;
+        dealerFundtxn.clcommon__Dealer_Payable_Amount__c      = 1000;
+        dealerFundtxn.cllease__Transaction_Sub_Type__c = txnSubType1.Id;
         insert dealerFundtxn;
 
         // 2. Create Disbursement Transcation
-        cllease__Disbursement_Transaction__c disbTxn = new cllease__Disbursement_Transaction__c();
+        clcommon__Disbursement_Transaction__c disbTxn = new clcommon__Disbursement_Transaction__c();
         disbTxn.AP_Processing_Status__c      = 'New';
-        disbTxn.cllease__Transaction_Type__c = 'DISBURSEMENT';
-        disbTxn.cllease__Transaction_Date__c = currentSystemDate;
-        disbTxn.cllease__GL_Process_Date__c  = currentSystemDate;
+        disbTxn.clcommon__Transaction_Type__c  = 'DISBURSEMENT';
+        disbTxn.clcommon__Transaction_Date__c  = currentSystemDate;
+        disbTxn.clcommon__GL_Process_Date__c	  = currentSystemDate;
         disbTxn.Fee_Amount_To_Dealer__c      = 1000;
-        disbTxn.cllease__Amount__c   = 1000;
-        disbTxn.cllease__Account__c          = dealer.Id;
+        disbTxn.clcommon__Amount__c    = 1000;
+        disbTxn.clcommon__Account__c           = dealer.Id;
         disbTxn.cllease__Transaction_Sub_Type__c = txnSubType.Id;
-        disbTxn.cllease__Contract__c         = contract.Id;
-        disbTxn.cllease__GL_Transaction_Flag__c          = true;
+        disbTxn.cllease__Contract__c          = contract.Id;
+        disbTxn.clcommon__GL_Transaction_Flag__c           = true;
         insert disbTxn;
                                         
         // Creating and runnning the Batch jobs for General Entries Creation.
         System.Test.startTest();
             // Creating DAG
             String dagName = 'CLLease-BatchTestDAG';
-            List<String> listOfJobs = new List<String>{ 'GLTxnGeneratorJob', 'APInterfaceRecordsGeneratorJob' };
+            List<String> listOfJobs = new List<String>{ 'cllease.GLTransactionGeneratorJob', 'APInterfaceRecordsGeneratorJob' };
             TestHelper.createDAGSpecificJobs(listOfJobs, dagName);
             // Running DAG
             TestHelper.runDAG(dagName);
         System.Test.stopTest();
 
-        System.debug(LoggingLevel.ERROR, ' Dealer Funding Transactions: '+[Select Id, Name, cllease__Description__c, cllease__GL_Processing_Message__c From cllease__Other_Transaction__c]);
-        System.debug(LoggingLevel.ERROR, ' Disbursement Transactions: '+[Select Id, Name, Remark__c,cllease__GL_Processing_Message__c From cllease__Disbursement_Transaction__c]);
+        System.debug(LoggingLevel.ERROR, ' Dealer Funding Transactions: '+[Select Id, Name, Description__c, clcommon__GL_Processing_Message__c From clcommon__Disbursement_Transaction__c]);
+        System.debug(LoggingLevel.ERROR, ' Disbursement Transactions: '+[Select Id, Name, Remark__c, clcommon__GL_Processing_Message__c From clcommon__Disbursement_Transaction__c]);
 
         List<Int_OLMN_AP__c> apInterfaceRecs = [Select Vendor_Code__c    
                                             ,Invoice_Type_Lookup_Code__c

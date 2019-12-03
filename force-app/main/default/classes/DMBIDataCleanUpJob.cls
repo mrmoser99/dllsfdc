@@ -45,7 +45,7 @@ else{*/
             While(dt > system.now()){               
             }
             
-            Database.executeBatch(new DMBIInterfaceJob(),3);
+            Database.executeBatch(new DMBIInterfaceJob(),10);
             
         }
     }

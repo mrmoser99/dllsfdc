@@ -5,7 +5,7 @@ global with sharing class DMBIInterfaceJob implements Database.Batchable<sObject
     global static String query;
     public map<string,string> IntCodeMapping = new map<string,string>();
     global map<string,integer> SobjectCountMap = new map<string,integer>();
-    global set<String> DataObjSet = new set<String>{'Int_Agreement__c','Int_Agreement_Classification__c','Int_Agreement_Exposure__c','Int_Agreement_Feature__c','Int_Agreement_Interest__c','Int_Agreement_Line__c','Int_Agreement_Line_Asset__c','Int_Agreement_Party__c','Int_Agreement_Payment_Schedule__c','Int_Asset__c','Int_Party__c','Int_Party_External_Reference__c','Int_Party_Street_Address__c','Int_Collateral__c','Int_Collateral_Party__c','Int_Collateral_Agreement__c'};
+    global set<String> DataObjSet = new set<String>{'Int_Agreement__c','Int_Agreement_Classification__c','Int_Agreement_Exposure__c','Int_Agreement_Feature__c','Int_Agreement_Interest__c','Int_Agreement_Line__c','Int_Agreement_Line_Asset__c','Int_Agreement_Party__c','Int_Agreement_Payment_Schedule__c','Int_Asset__c','Int_Party__c','Int_Party_External_Reference__c','Int_Party_Street_Address__c'};
         global map<string,string> SobjectHashMap = new map<string,string>();
     global boolean isSuccess = true;
     global datetime BatchstartTime = system.now();  
@@ -44,7 +44,7 @@ global with sharing class DMBIInterfaceJob implements Database.Batchable<sObject
                         if(!AgreementLinesList.isEmpty()){
                             Database.Insert(AgreementLinesList,false);
                             ConstructControlMap('Int_Agreement_Line__c',DMBIInterfaceRecordGeneratorJob.CountInsertedRecords(AgreementLinesList));                            
-                            list<sobject> AgrLineAssetsAndCollateralsList = DMBIInterfaceRecordGeneratorJob.CreateAgrLineAssetsAndCollaterals(AgreementLinesList,contracts,AssetRecords);
+                            list<sobject> AgrLineAssetsAndCollateralsList = DMBIInterfaceRecordGeneratorJob.CreateAgrLineAssetsAndCollaterals(AgreementLinesList,contracts,AssetRecords,IntCodeMapping,BatchstartTime);
                             database.insert(AgrLineAssetsAndCollateralsList,false);
                             CalculateObjectCount(AgrLineAssetsAndCollateralsList);
                         }

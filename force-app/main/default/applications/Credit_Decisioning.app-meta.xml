@@ -8,9 +8,4 @@
     <tabs>standard-Account</tabs>
     <tabs>ICS_Application__c</tabs>
     <tabs>ICS_Log__c</tabs>
-    <tabs>CAMS_Check__c</tabs>
-    <tabs>test1__c</tabs>
-    <tabs>clcommon__Factory_Registration__c</tabs>
-    <tabs>clcommon__Payment_Mode__c</tabs>
-    <tabs>clcommon__Cash_Receipt_Application__c</tabs>
 </CustomApplication>

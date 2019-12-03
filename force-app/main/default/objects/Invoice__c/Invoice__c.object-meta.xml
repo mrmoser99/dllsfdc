@@ -55,7 +55,7 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>ControlledByParent</externalSharingModel>
-    <label>InvoiceOLD</label>
+    <label>Invoice</label>
     <nameField>
         <displayFormat>INV-{0000000000}</displayFormat>
         <label>Invoice ID</label>

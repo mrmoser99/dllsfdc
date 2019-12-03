@@ -28,7 +28,7 @@ public with sharing class TestGLIntegration {
             // Creating DAG
             String dagName = 'CLLease-BatchTestDAG';
             List<String> listOfJobs = new List<String>{ 'cllease.BillGeneratorJob',  'cllease.BillDetailGeneratorJob',
-                                        'GLTxnGeneratorJob', 'GLConsolidatedEntriesBatch' };
+                                        'cllease.GLTransactionGeneratorJob', 'GLConsolidatedEntriesBatch' };
             TestHelper.createDAGSpecificJobs(listOfJobs, dagName);
             // Running DAG
             TestHelper.runDAG(dagName);
@@ -144,7 +144,7 @@ public with sharing class TestGLIntegration {
             // Creating DAG
             String dagName = 'CLLease-BatchTestDAG';
             List<String> listOfJobs = new List<String>{ 'cllease.BillGeneratorJob', 'cllease.BillDetailGeneratorJob',
-                                        'GLTxnGeneratorJob', 'GLConsolidatedEntriesBatch', 'GLSubledgerEntriesBatch' };
+                                        'cllease.GLTransactionGeneratorJob', 'GLConsolidatedEntriesBatch', 'GLSubledgerEntriesBatch' };
             TestHelper.createDAGSpecificJobs(listOfJobs, dagName);
             // Running DAG
             TestHelper.runDAG(dagName);

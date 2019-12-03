@@ -56,6 +56,11 @@ public class ICVAsyncBookLease implements Queueable, Database.AllowsCallouts  {
     		system.debug('adding party for the lease');
     	 	ICVUtility.addParty(leaseId,'L');
     	}
+
+		/* call supertrump */
+		Map<ID,String> leaseMap = new Map<ID,String>();
+        leasemap.put(leaseId,'hello');
+        supertrumputil.sendRequest(leaseMap);
     	
 		system.debug('made it to here'); 
     	if (!Test.isRunningTest()){ 

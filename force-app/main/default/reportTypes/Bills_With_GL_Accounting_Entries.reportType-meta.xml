@@ -297,6 +297,11 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
+            <field>Invoiced_In__c</field>
+            <table>cllease__Lease_account_Due_Details__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
             <field>Unbilled_Service_and_Maintenance__c</field>
             <table>cllease__Lease_account_Due_Details__c</table>
         </columns>

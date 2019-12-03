@@ -228,6 +228,11 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
+            <field>Invoiced_In__c</field>
+            <table>cllease__Charge__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
             <field>Invoice_Period_End_Date__c</field>
             <table>cllease__Charge__c</table>
         </columns>
@@ -584,6 +589,16 @@
         <columns>
             <checkedByDefault>false</checkedByDefault>
             <field>cllease__Waive__c</field>
+            <table>cllease__Charge__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Invoiced_In__c.Id</field>
+            <table>cllease__Charge__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Invoiced_In__c.Name</field>
             <table>cllease__Charge__c</table>
         </columns>
         <masterLabel>Charges</masterLabel>

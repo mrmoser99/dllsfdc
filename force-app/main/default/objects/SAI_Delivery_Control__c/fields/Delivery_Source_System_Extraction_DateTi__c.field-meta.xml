@@ -3,7 +3,9 @@
     <fullName>Delivery_Source_System_Extraction_DateTi__c</fullName>
     <externalId>false</externalId>
     <label>Delivery Source System Extraction DateTi</label>
+    <length>50</length>
     <required>false</required>
     <trackTrending>false</trackTrending>
-    <type>DateTime</type>
+    <type>Text</type>
+    <unique>false</unique>
 </CustomField>

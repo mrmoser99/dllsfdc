@@ -56,6 +56,9 @@ public with sharing class SupertrumpUtil {
 	   	w.writeStartElement(null, 'Mode', null); //this will start with <accounts> in XML
 	 	w.writeCharacters('Lessor'); 
 		w.writeEndElement();  //end Mode
+
+		w.writeStartElement(null, 'Initialize', null); //this will start with <accounts> in XML
+	 	w.writeEndElement();  //end Mode
 		
 		w.writeStartElement(null, 'Features', null); 
 					 
@@ -102,6 +105,7 @@ public with sharing class SupertrumpUtil {
 												, Name
 												, Dealer_Charges__c
 												, Install_Date__c 
+												, Oracle_Trade_Up_Amount__c
 												From cllease__Contract_Equipment__c 
 												where cllease__Contract__c = :l.id
 												]; 
@@ -115,9 +119,15 @@ public with sharing class SupertrumpUtil {
 			supertrumputil.writekeyPair('Description',e.Equipment_Description1__c ,w);		
 			supertrumputil.writekeyPair('DeliveryDate',string.valueOf(e.Install_Date__c),w);		
 			supertrumputil.writekeyPair('ResidualKeptAsAPercent','false',w);		
-			supertrumputil.writekeyPair('Residual',string.valueOf(e.cllease__Residual_Amount__c),w);		
+			supertrumputil.writekeyPair('Residual',string.valueOf(e.cllease__Residual_Amount__c),w);	
+			if (e.oracle_Trade_Up_Amount__c != null)	
+				if (e.oracle_Trade_Up_Amount__c != 0)
+					supertrumputil.writekeyPair('Lien',string.valueOf(e.Oracle_Trade_Up_Amount__c),w);
+				else
+					supertrumputil.writekeyPair('Lien','0',w);
+
 			supertrumputil.writekeyPair('Tradein','0',w);		
-			supertrumputil.writekeyPair('Lien','0',w);	
+				
 			supertrumputil.writekeyPair('BookLife','5',w);	
 			supertrumputil.writekeyPair('TaxLife','5',w);	
 			
@@ -513,23 +523,25 @@ public with sharing class SupertrumpUtil {
     		];
     	
 			xmlOutput = SupertrumpUtil.writeXml(l);
-			
+			 
    	 		System.HttpRequest request = new System.HttpRequest();
     		//request.setEndpoint('https://pilots.x-trump.com/multiserver/stserver.aspx'); 
-    		request.setEndpoint('https://pilots.x-trump.com/generic/stserver.aspx'); 
+    		request.setEndpoint(system.label.SuperTrumpURL); 
     	
     		request.setHeader('Content-Type', 'application/xml'); 
     		request.setMethod('POST');
     		
     		request.setBody(xmlOutput); 
     		response = new System.Http().send(request); 
-    	
+			
+			system.debug('request is:' + request);
+
    		 	system.debug('Got result :' + response.getBody());
     	
     		Dom.Document doc = response.getBodyDocument();
        	 	Dom.XMLNode superTrump = doc.getRootElement();
         
-        	//system.debug(superTrumpUtil.walkThrough(superTrump,l)); 
+        	system.debug(superTrumpUtil.walkThrough(superTrump,l)); 
         	superTrumpUtil.walkThrough(superTrump,l);
         	
 			//Get Exceptions

@@ -432,11 +432,6 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Estimated_Property_Tax1__c</field>
-            <table>cllease__Lease_Account__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>Dealer_Oracle_Vendor_Id__c</field>
             <table>cllease__Lease_Account__c</table>
         </columns>
@@ -1856,6 +1851,11 @@
         <columns>
             <checkedByDefault>false</checkedByDefault>
             <field>cllease__Quote_Header__c</field>
+            <table>cllease__Lease_Account__c.cllease__Dues_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Invoiced_In__c</field>
             <table>cllease__Lease_Account__c.cllease__Dues_Details__r</table>
         </columns>
         <columns>

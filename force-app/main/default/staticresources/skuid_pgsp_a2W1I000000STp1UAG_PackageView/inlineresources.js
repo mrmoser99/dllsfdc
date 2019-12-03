@@ -43,8 +43,4 @@ $('#deal-dashboard-iframe').on('load', function() {
 });
 sessionStorage.setItem('selectApplicationId',params.row.Id);
 });
-skuid.snippet.register('CreditFacilityOFF',function(args) {var params = arguments[0],
-	$ = skuid.$;
-return false;
-});
 }(window.skuid));

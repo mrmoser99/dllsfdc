@@ -1,0 +1,36 @@
+.edq-street-element-cell {
+ position: relative;
+}
+.edq-street-element-cell .edq-address-suggestions-wrapper ul,
+.edq-street-element-cell .edq-address-suggestions-wrapper ul li {
+ background: none;
+ border: none;
+ list-style: none;
+ margin: 0;
+}
+.edq-street-element-cell .edq-address-suggestions-wrapper ul {   
+ background: #fff;
+ border: #d8dde6 1px solid;
+ left: 1px;
+ max-width: 400px;
+ margin-top: -2px;
+ outline: none;
+ padding: 0;
+ position: absolute;
+ width: 99%;
+ z-index: 1;
+}
+.edq-street-element-cell .edq-address-suggestions-wrapper ul li {
+ overflow: hidden;
+ padding: 5px 8px;
+ text-overflow: ellipsis; 
+ white-space: nowrap;
+}
+.edq-street-element-cell .edq-address-suggestions-wrapper ul li:hover, 
+.edq-street-element-cell .edq-address-suggestions-wrapper ul li.selected {
+ background: #e9ebee;
+ cursor: pointer;
+}
+#edq-cancel-button {
+    background: #f8a100;
+}

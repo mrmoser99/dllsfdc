@@ -30,6 +30,10 @@ declare module "@salesforce/resourceUrl/ConvertToContractUIBlockFix" {
     var ConvertToContractUIBlockFix: string;
     export default ConvertToContractUIBlockFix;
 }
+declare module "@salesforce/resourceUrl/DevToAcceptance" {
+    var DevToAcceptance: string;
+    export default DevToAcceptance;
+}
 declare module "@salesforce/resourceUrl/EDQConfigurations" {
     var EDQConfigurations: string;
     export default EDQConfigurations;
@@ -97,6 +101,10 @@ declare module "@salesforce/resourceUrl/OracleTradeUp_Fix_v2_19062019" {
 declare module "@salesforce/resourceUrl/PagesBfrOracleTradeUpChange" {
     var PagesBfrOracleTradeUpChange: string;
     export default PagesBfrOracleTradeUpChange;
+}
+declare module "@salesforce/resourceUrl/QuickQuoteDetail" {
+    var QuickQuoteDetail: string;
+    export default QuickQuoteDetail;
 }
 declare module "@salesforce/resourceUrl/SiteSamples" {
     var SiteSamples: string;
@@ -169,6 +177,14 @@ declare module "@salesforce/resourceUrl/skuid_ngui_production" {
 declare module "@salesforce/resourceUrl/skuid_pgsp_a2W1I000000STnSUAW_LeaseEquipment" {
     var skuid_pgsp_a2W1I000000STnSUAW_LeaseEquipment: string;
     export default skuid_pgsp_a2W1I000000STnSUAW_LeaseEquipment;
+}
+declare module "@salesforce/resourceUrl/skuid_pgsp_a2W1I000000STnfUAG_NewQuickQuote" {
+    var skuid_pgsp_a2W1I000000STnfUAG_NewQuickQuote: string;
+    export default skuid_pgsp_a2W1I000000STnfUAG_NewQuickQuote;
+}
+declare module "@salesforce/resourceUrl/skuid_pgsp_a2W1I000000STnkUAG_QuickQuoteDetail" {
+    var skuid_pgsp_a2W1I000000STnkUAG_QuickQuoteDetail: string;
+    export default skuid_pgsp_a2W1I000000STnkUAG_QuickQuoteDetail;
 }
 declare module "@salesforce/resourceUrl/skuid_pgsp_a2W1I000000STo5UAG_AnyLeaseProductAppli" {
     var skuid_pgsp_a2W1I000000STo5UAG_AnyLeaseProductAppli: string;

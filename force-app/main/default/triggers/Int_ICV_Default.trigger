@@ -22,25 +22,28 @@ trigger Int_ICV_Default on Int_ICV_Default__c (before insert, after insert) {
 			aMap.put(a.account_number__c,a);
 		
 		for (Int_ICV_Default__c d:trigger.new){
-			Decimal pd = 0;
-			if (d.probability_of_default__c == null)
-				pd = 0;
-			else
-				pd = d.probability_of_default__c;
-			
-			system.debug('account:' + d.Party_Source_System_Key_Value__c);	
-			Account temp = aMap.get(d.Party_Source_System_Key_Value__c);
-			if (pd == 1	|| d.LE_accrual_flag__c == 'Y'){
-				temp.npa_status__c = 'NON ACCRUAL';
-				uList.add(temp);
-				system.debug('default');
-			}
+			if (aMap.get(d.Party_Source_System_Key_Value__c) == null)
+				continue;
 			else{
-				temp.npa_status__c = 'ACCRUAL';
-				uList.add(temp);
-				system.debug('no default');
-			}
-					
+				Decimal pd = 0;
+				if (d.probability_of_default__c == null)
+					pd = 0;
+				else
+					pd = d.probability_of_default__c;
+			
+				system.debug('account:' + d.Party_Source_System_Key_Value__c);	
+				Account temp = aMap.get(d.Party_Source_System_Key_Value__c);
+				if (pd == 1	|| d.LE_accrual_flag__c == 'Y'){
+					temp.npa_status__c = 'NON ACCRUAL';
+					uList.add(temp);
+					system.debug('default');
+				}
+				else{
+					temp.npa_status__c = 'ACCRUAL';
+					uList.add(temp);
+					system.debug('no default');
+				}
+			}		
 		}
 		
 		if (!uList.isEmpty())

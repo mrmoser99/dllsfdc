@@ -71,11 +71,12 @@ public with sharing class TestData {
 		header = new AccountingTemplateHeader('Disbursement', 'DISBURSEMENT');
 		lines = new List<AccountingTemplateLines>();
 		lines.add(new AccountingTemplateLines('Disbursement', 'Partner Pass Through - Service', 'Disbursement Transaction', 'Disbursement Amount', 'DEALER PAYABLE', 'Accounts Payable - Service - CLS', 'Pass Through Service Clearing - CLS'));
+        lines.add(new AccountingTemplateLines('Disbursement', 'Partner Pass Through - Service', 'Disbursement Transaction', 'Disbursement Amount', 'Service Fees - Passthrough', 'Accounts Payable - Service - CLS', 'Pass Through Service Clearing - CLS'));
 		headerLinesMap.put(header, lines);
 
 		header = new AccountingTemplateHeader('Funding via Oracle AP', 'DEALER FUNDING');
 		lines = new List<AccountingTemplateLines>();
-		lines.add(new AccountingTemplateLines('Funding via Oracle AP', 'Vendor Funding', 'Funding Transaction', 'Dealer Payable Amount', 'DEALER PAYABLE', 'Accounts Payable - Vendor CLS', 'Lease Payable Clearing - CLS'));
+		lines.add(new AccountingTemplateLines('Funding via Oracle AP', 'Vendor Funding', 'Funding Transaction', 'Dealer Payable Amount', 'DEALER PAYABLE FUNDING', 'Accounts Payable - Vendor CLS', 'Lease Payable Clearing - CLS'));
 		headerLinesMap.put(header, lines);
 
 		header = new AccountingTemplateHeader('Payment', 'PAYMENT');
@@ -103,8 +104,9 @@ public with sharing class TestData {
 
 		// Creating Transacation SubType Map
         Map<String, Id> txnSubTypeMap = new Map<String, Id>();
-        for(cllease__Transaction_Sub_Type__c txnSubType : [SELECT Id, Name FROM cllease__Transaction_Sub_Type__c LIMIT 1000]) {
-            txnSubTypeMap.put(txnSubType.Name, txnSubType.Id);
+        for(cllease__Transaction_Sub_Type__c txnSubType : [SELECT Id, Name FROM cllease__Transaction_Sub_Type__c order by createdDate LIMIT 1000]) {
+            if(!txnSubTypeMap.containsKey(txnSubType.Name))
+            	txnSubTypeMap.put(txnSubType.Name, txnSubType.Id);
         }
 
 		// Creating GL Account Map
@@ -207,16 +209,16 @@ public with sharing class TestData {
 		
 		
 		//Disbursement Transaction
-		amtObj = new AmountObject('Disbursement Transaction', 'cllease__Other_Transaction__c');
+		amtObj = new AmountObject('Disbursement Transaction', 'clcommon__Disbursement_Transaction__c');
 		amtColList = new List<AmountColumn>();
 		amtColList.add(new AmountColumn('Disbursement Amount', 'Fee_Amount_To_Dealer__c'));
 		objectColumnsMap.put(amtObj, amtColList);
 		
 		
 		//Funding Transaction
-		amtObj = new AmountObject('Funding Transaction', 'cllease__Other_Transaction__c');
+		amtObj = new AmountObject('Funding Transaction', 'clcommon__Disbursement_Transaction__c');
 		amtColList = new List<AmountColumn>();
-		amtColList.add(new AmountColumn('Dealer Payable Amount', 'cllease__Dealer_Payable_Amount__c'));
+		amtColList.add(new AmountColumn('Dealer Payable Amount', 'clcommon__Dealer_Payable_Amount__c'));
 		objectColumnsMap.put(amtObj, amtColList);
 		
 		
@@ -303,7 +305,7 @@ public with sharing class TestData {
 		'SUBSIDY ACCRUAL','SUBSIDY BILLING','TAX BILLING','TAX UPFRONT','TERM RESIDUAL','TERMINATION QUOTE FEES','TERMINATION QUOTE FEES - Evergreen',
 		'TERMINATION QUOTE FEES - Tax','TERMINATION RENT','TERMINATION TAX','Test Fee','Test Fee - Evergreen','Unbilled Receivable',
 		'Unbilled Service and Maintenance','UNEARNED,LEASE INCOME','UNEARNED RESIDUAL INCOME','Upfront Tax Fees','Upfront Tax Fees - Evergreen',
-		'Upfront Tax,Fees - Tax', 'Estimated Property Tax - Tax', 'Gross Receivable Adjustment' };
+		'Upfront Tax,Fees - Tax', 'Estimated Property Tax - Tax', 'Gross Receivable Adjustment'};
 
 		for(String txnSubType : txnSubTypes) {
 			transactionSubTypes.add(new cllease__Transaction_Sub_Type__c(cllease__NPA_Flag__c = false, Name = txnSubType));
@@ -347,6 +349,7 @@ public with sharing class TestData {
 		glAccounts.add(new GLAccount('346021', true,  'Sales Tax Payable - CLS'));
 		glAccounts.add(new GLAccount('163020', true,  'Unearned Lease Income - Finance Lease - CLS'));
 		glAccounts.add(new GLAccount('164020', true,  'Unearned Residual Income - CLS'));
+        glAccounts.add(new GLAccount('12345', true,  'On Account'));
 
 		List<cllease__GL_Account__c> glAccountsToInsert = new List<cllease__GL_Account__c>();
 		for(GLAccount glaccount: glAccounts) {
@@ -366,70 +369,73 @@ public with sharing class TestData {
 	}
 
 	public static void createMovementCodes() {
+        cllease__GL_Account__c glOnAccount = [SELECT Id FROM cllease__GL_Account__c WHERE Name = 'On Account' Limit 1];
 		List<MovementCode> movementCodes = new List<MovementCode>();
 		// Transcation Movement Codes
-		movementCodes.add(new MovementCode('ACCRUAL', 	 '',	'02', '163020, 164020', 				'Accruals', 												'', ''));
-		movementCodes.add(new MovementCode('BILLING', 	 '', 	'06', '142020, 161020', 				'Billing', 													'', ''));
-		movementCodes.add(new MovementCode('BOOKING', 	 '', 	'01', '161020, 162020, 163020, 164020', 'Booking', 													'', ''));
-		movementCodes.add(new MovementCode('PAYMENT', 	 '', 	'03', '142020', 			 			'Cash Application, On Account (143000),Cash Un Application','', ''));
-		movementCodes.add(new MovementCode('RESTRUCTURE','', 	'02', '161020, 162020, 163020, 164020', 'Rebook (Restructure)', 									'', ''));
-		movementCodes.add(new MovementCode('TERMINATION','', 	'03', '', 								'Termination, Partial Termination, Recovery (203000)', 		'', ''));
+		movementCodes.add(new MovementCode('ACCRUAL', 	 '',	'02', '163020, 164020', 				'Accruals', 												'', '','',null));
+		movementCodes.add(new MovementCode('BILLING', 	 '', 	'06', '142020, 161020', 				'Billing', 													'', '','',null));
+		movementCodes.add(new MovementCode('BOOKING', 	 '', 	'01', '161020, 162020, 163020, 164020', 'Booking', 													'', '','',null));
+		movementCodes.add(new MovementCode('PAYMENT', 	 '', 	'03', '142020', 			 			'Cash Application, On Account (143000),Cash Un Application','', '','',null));
+		movementCodes.add(new MovementCode('RESTRUCTURE','', 	'02', '161020, 162020, 163020, 164020', 'Rebook (Restructure)', 									'', '','',null));
+		movementCodes.add(new MovementCode('TERMINATION','', 	'03', '', 								'Termination, Partial Termination, Recovery (203000)', 		'', '','',null));
+        movementCodes.add(new MovementCode('PAYMENT', 	 '', 	'03', '142020', 			 			'Cash Application, On Account (143000),Cash Un Application','', '','Credit',glOnAccount.Id));
+        movementCodes.add(new MovementCode('PAYMENT', 	 '', 	'03', '142020', 			 			'Cash Application, On Account (143000),Cash Un Application','', '','Debit',glOnAccount.Id));
 
 		// Tax MovementCode Codes
-		movementCodes.add(new MovementCode('TAX', 'Alaska',				'AK', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Alabama',			'AL', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Arkansas',			'AR', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Arizona',			'AZ', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'California',			'CA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Canada',				'CN', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Colorado',			'CO', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Idaho',				'ID', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Illinois',			'IL', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Indiana',			'IN', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Kansas',				'KS', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Kentucky',			'KY', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Louisiana',			'LA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Massachusetts',		'MA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Maryland',			'MD', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Maine',				'ME', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Michigan',			'MI', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Minnesota',			'MN', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Montana',			'MT', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'North Carolina',		'NC', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'North Dakota',		'ND', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Nebraska',			'NE', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'New Hampshire',		'NH', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'New Jersey',			'NJ', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'New Mexico',			'NM', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Missouri',			'MO', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Mississippi',		'MS', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Nevada',				'NV', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'New York',			'NY', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Ohio',				'OH', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Oklahoma',			'OK', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Oregon',				'OR', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Pennsylvania',		'PA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Puerto Rico',		'PR', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Rhode Island',		'RI', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'South Carolina',		'SC', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'South Dakota',		'SD', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Tennessee',			'TN', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Texas',				'TX', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Utah',				'UT', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Virginia',			'VA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Virgin Islands',		'VI', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Vermont',			'VT', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Washington',			'WA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Wisconsin',			'WI', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'West Virginia',		'WV', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Wyoming',			'WY', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Connecticut',		'CT', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'DistrictofColumbia', 'DC', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Delaware',			'DE', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Florida',			'FL', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Georgia',			'GA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Hawaii',				'HI', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
-		movementCodes.add(new MovementCode('TAX', 'Iowa',				'IA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022'));
+		movementCodes.add(new MovementCode('TAX', 'Alaska',				'AK', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022' ,'',null));
+		movementCodes.add(new MovementCode('TAX', 'Alabama',			'AL', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Arkansas',			'AR', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Arizona',			'AZ', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'California',			'CA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Canada',				'CN', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Colorado',			'CO', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Idaho',				'ID', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Illinois',			'IL', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Indiana',			'IN', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Kansas',				'KS', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Kentucky',			'KY', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Louisiana',			'LA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Massachusetts',		'MA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Maryland',			'MD', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Maine',				'ME', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Michigan',			'MI', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Minnesota',			'MN', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Montana',			'MT', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'North Carolina',		'NC', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'North Dakota',		'ND', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Nebraska',			'NE', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'New Hampshire',		'NH', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'New Jersey',			'NJ', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'New Mexico',			'NM', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Missouri',			'MO', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Mississippi',		'MS', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Nevada',				'NV', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'New York',			'NY', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Ohio',				'OH', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Oklahoma',			'OK', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Oregon',				'OR', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Pennsylvania',		'PA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Puerto Rico',		'PR', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Rhode Island',		'RI', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'South Carolina',		'SC', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'South Dakota',		'SD', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Tennessee',			'TN', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Texas',				'TX', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Utah',				'UT', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Virginia',			'VA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Virgin Islands',		'VI', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Vermont',			'VT', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Washington',			'WA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Wisconsin',			'WI', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'West Virginia',		'WV', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Wyoming',			'WY', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Connecticut',		'CT', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'DistrictofColumbia', 'DC', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Delaware',			'DE', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Florida',			'FL', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Georgia',			'GA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Hawaii',				'HI', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
+		movementCodes.add(new MovementCode('TAX', 'Iowa',				'IA', '', '',	'142022,146022, 148022, 346021', '142022, 146022, 148022','',null));
 
 		List<Movement_Code__c> movementCodesToInsert = new List<Movement_Code__c>();
 		for(MovementCode mvCode: movementCodes) {
@@ -440,7 +446,9 @@ public with sharing class TestData {
 												Transaction_Eligible_GL_Account_Codes__c	= mvCode.transactionGLAccCodes,
 												Transaction_Type_in_OLFM__c					= mvCode.olfmTransactionType,		
 												Billing_Tax_Eligible_GL_Account_Codes__c	= mvCode.billTaxGLAccCodes,
-												Payment_Tax_Eligible_GL_Account_Codes__c    = mvCode.pmtTaxGLAccCodes));
+												Payment_Tax_Eligible_GL_Account_Codes__c    = mvCode.pmtTaxGLAccCodes,
+            									Account_Type__c  = mvcode.accountType,
+            									GL_Account__c = mvcode.glAccount));
 		}
 
 		try {
@@ -503,8 +511,10 @@ public with sharing class TestData {
 		String olfmTransactionType;		
 		String billTaxGLAccCodes;
 		String pmtTaxGLAccCodes;
+        String accountType;
+        Id glAccount;
 		public MovementCode(String transactionType, String location, String movementCode, String transactionGLAccCodes, 
-				String olfmTransactionType, String billTaxGLAccCodes, String pmtTaxGLAccCodes) {
+				String olfmTransactionType, String billTaxGLAccCodes, String pmtTaxGLAccCodes, String accountType, Id glAccount) {
 			this.transactionType  		= transactionType;
 			this.location 				= location;
 			this.movementCode 			= movementCode;
@@ -512,6 +522,8 @@ public with sharing class TestData {
 			this.olfmTransactionType	= olfmTransactionType;		
 			this.billTaxGLAccCodes 		= billTaxGLAccCodes;
 			this.pmtTaxGLAccCodes 		= pmtTaxGLAccCodes;
+            this.accountType = accountType;
+            this.glAccount = glAccount;
 		}
 
 	}

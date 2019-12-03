@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Queue xmlns="http://soap.sforce.com/2006/04/metadata">
     <doesSendEmailToMembers>false</doesSendEmailToMembers>
-    <email>mark.moser@dllgroup.com</email>
     <name>CAMS Queue</name>
-    <queueMembers>
-        <users>
-            <user>cvo@leasedirect.com.newcodev</user>
-            <user>mark.moser@dllgroup.com.newcodev</user>
-            <user>smclachlan@leasedirect.com.newcodev</user>
-        </users>
-    </queueMembers>
     <queueSobject>
         <sobjectType>CAMS_Check__c</sobjectType>
     </queueSobject>

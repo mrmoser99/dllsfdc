@@ -307,6 +307,11 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
+            <field>Invoiced_In__c</field>
+            <table>cllease__Charge__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
             <field>cllease__Remarks__c</field>
             <table>cllease__Charge__c</table>
         </columns>

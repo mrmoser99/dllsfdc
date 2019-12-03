@@ -7,10 +7,24 @@
 *   10/1/18 - MRM Added line to call icv booking flow
 *   5/8/19 - MRM fix send welcome packet error when processing payment
 * This trigger sends off a welcome packet when the contract is booked
-*   
+*   05/11/19 - CLS modified to support canceled contract as part new inovice changes
 *
 ******************************************************************************/
 trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
+    
+    // Updating invoiced flag on bills and charges Codes Starts here
+    Set<Id> canceledContractsIds = new Set<Id>();
+    
+    for(cllease__Lease_Account__c contract : trigger.new){
+        if(contract.cllease__Lease_Status__c == 'CANCELED'
+          	|| contract.cllease__Lease_Status__c == 'CHARGED OFF'
+           	|| contract.cllease__Lease_Status__c == 'TERMINATED'){
+                canceledContractsIds.add(contract.Id);
+           }
+    }
+    
+    updateInvoiceDetails(canceledContractsIds);
+    // Updating invoiced flag on bills and charges Codes end 
        
     //only send welcome packet if this is a single lease update
     if (trigger.new.size() == 1){
@@ -44,5 +58,27 @@ trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
                 } 
         } 
         
+    }
+    
+    public void updateInvoiceDetails(Set<Id> canceledContractsIds){
+        List<cllease__Charge__c> charges = [SELECT ID, 
+                                            		cllease__Invoiced__c 
+                                            	FROM cllease__Charge__c 
+                                            	WHERE cllease__Lease_Account__c IN : canceledContractsIds
+                                           		AND cllease__Invoiced__c = false];
+        for(cllease__Charge__c charge : charges){
+            charge.cllease__Invoiced__c =true;
+        }
+        update charges;
+        
+        List<cllease__Lease_account_Due_Details__c> dues = [SELECT ID, 
+                                                            		cllease__Invoiced__c 
+                                                            	FROM cllease__Lease_account_Due_Details__c 
+                                                            	WHERE cllease__Lease_Account__c IN : canceledContractsIds
+                                           						AND cllease__Invoiced__c = false];
+        for(cllease__Lease_account_Due_Details__c due : dues){
+            due.cllease__Invoiced__c = true;
+        }
+        update dues;
     }
 }

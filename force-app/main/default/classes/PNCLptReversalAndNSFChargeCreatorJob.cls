@@ -143,8 +143,13 @@ global with sharing class PNCLptReversalAndNSFChargeCreatorJob extends clcommon.
             }
             System.debug(LoggingLevel.ERROR, '^^^^ newReversalTxns : ' + newReversalTxns);
             // Process all reversals.
-            cllease.IBulkPaymentReversalAction dAction = new cllease.BulkRepaymentAdjustmentAction(newReversalTxns);
-            dAction.postRepaymentsAdjusment();
+            try{
+                cllease.IBulkPaymentReversalAction dAction = new cllease.BulkRepaymentAdjustmentAction(newReversalTxns);
+                dAction.postRepaymentsAdjusment();
+            } catch(Exception e){
+                System.debug(LoggingLevel.ERROR, e.getStackTraceString());
+                throw new MyException(e.getMessage());
+            }
 
             // F. Looping through all Invoices for Creating NSF Charges in System
             for(clcommon__Consolidated_Invoice__c invoice : invoicesList) {

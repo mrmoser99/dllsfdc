@@ -34,7 +34,7 @@ public  class TestAPInvoiceSimulator {
         charge1.cllease__Original_Amount__c   = 100.00;
         charge1.Tax_Processed__c              = false;
         charge1.Tax_Component__c              = '';
-        charge1.cllease__Consolidated_Invoice__c                = inv.id;
+        charge1.cllease__Consolidated_Invoice__c = inv.id;
     
      	upsert charge1;
 
@@ -45,7 +45,7 @@ public  class TestAPInvoiceSimulator {
        // adj.Due_Detail_Line__c = bill.id;
         adj.tax_amount__c = 1.00; 
         adj.equipment__c =null;
-        adj.invoice__c = inv.id;
+        adj.Consolidated_Invoice__c = inv.id;
 
         insert adj;
 
@@ -114,7 +114,7 @@ public  class TestAPInvoiceSimulator {
        // adj.Due_Detail_Line__c = bill.id;
         adj.tax_amount__c = 1.00; 
         adj.equipment__c =null;
-        adj.invoice__c = inv.id;
+        adj.Consolidated_Invoice__c = inv.id;
 
         insert adj;
 
@@ -140,7 +140,7 @@ public  class TestAPInvoiceSimulator {
         r.check__c = 'CHK100';
         r.committed__c = false;
         r.date__c = date.today();
-        r.invoice__c = inv.id;
+        r.Consolidated_Invoice__c = inv.id;
         r.invoice_number__c = inv.name;
         r.invoice_amount_paid__c = 100.00;
         r.invoice_amount__c = 100.00;
@@ -213,7 +213,7 @@ public  class TestAPInvoiceSimulator {
        // adj.Due_Detail_Line__c = bill.id;
         adj.tax_amount__c = 1.00; 
         adj.equipment__c =null;
-        adj.invoice__c = inv.id;
+        adj.Consolidated_Invoice__c = inv.id;
 
         insert adj;
 
@@ -239,7 +239,7 @@ public  class TestAPInvoiceSimulator {
         r.check__c = 'CHK100';
         r.committed__c = false;
         r.date__c = date.today();
-        r.invoice__c = inv.id;
+        r.Consolidated_Invoice__c = inv.id;
         r.invoice_number__c = inv.name;
         r.invoice_amount_paid__c = 100.00;
         r.invoice_amount__c = 100.00;
@@ -261,11 +261,7 @@ public  class TestAPInvoiceSimulator {
         List<adjustment__c> aList = AP_VoidInvoice.getAdjustments(inv.id,0);
         AP_VoidInvoice.approve(inv.id);
         AP_VoidInvoice.getInvoice(inv.id);
-         AP_VoidInvoice.deleteAdj(aList[0]);
-
-
-
-       
+        AP_VoidInvoice.deleteAdj(aList[0]);
     }  
 
 }

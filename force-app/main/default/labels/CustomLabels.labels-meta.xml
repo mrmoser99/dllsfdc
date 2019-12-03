@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
+        <fullName>CAMS_Check</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CAMS Check</shortDescription>
+        <value>True</value>
+    </labels>
+    <labels>
+        <fullName>CAMS_Endpoint</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>CAMS Endpoint</shortDescription>
+        <value>https://apiacc.dllgroup.com/exts/cams-risk-rating/acc</value>
+    </labels>
+    <labels>
         <fullName>Conga_Quote_URL</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -51,7 +65,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>FMZ_Portal_Soap_Url</shortDescription>
-        <value>https://newcofinance.force.com/dealer/services/Soap/u/39.0/00D4F0000000aGv</value>
+        <value>https://newco--dev.my.salesforce.com//dealer/services/Soap/u/39.0/00D4F0000000aGv</value>
     </labels>
     <labels>
         <fullName>FMZ_Price_Exceeds_MSRP_Warning_Percent</fullName>
@@ -248,7 +262,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Invoice Test Contact Id</shortDescription>
-        <value>0031I00000tWCLG</value>
+        <value>0031I00000JBgde</value>
     </labels>
     <labels>
         <fullName>OFAC_Checking</fullName>
@@ -262,7 +276,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>OrgUrl</shortDescription>
-        <value>https://newco--dev.my.salesforce.com</value>
+        <value>https://newco--dev.my.salesforce.com/</value>
     </labels>
     <labels>
         <fullName>PM_Endpoint</fullName>
@@ -270,6 +284,13 @@
         <protected>false</protected>
         <shortDescription>PM Endpoint</shortDescription>
         <value>https://apiacc.dllgroup.com</value>
+    </labels>
+    <labels>
+        <fullName>SuperTrumpURL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>SuperTrumpURL</shortDescription>
+        <value>https://pilots.x-trump.com/generic/stserver.aspx</value>
     </labels>
     <labels>
         <fullName>Welcome_Email</fullName>

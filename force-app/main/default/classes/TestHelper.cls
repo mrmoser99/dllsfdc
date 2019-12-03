@@ -46,9 +46,38 @@ public with sharing class TestHelper {
         update dummyOffice;
 
         TestData.createPeriodsFor2018(dummyOffice.cllease__Calendar__c);
+        
+        // Creating Default bill group
+        clcommon__Billing_Group__c billGroup = new clcommon__Billing_Group__c(Name = 'Default Bill Group');
+        insert billGroup;
+        
+        //Create payment clcommon payment spread
+        clcommon__Payment_Spread__c paymentSpread = new clcommon__Payment_Spread__c(clcommon__Spread_Description__c = 'Default Spread', clcommon__Enabled__c = 'Yes', clcommon__Tax_Configuration__c = 'DISTRIBUTE');
+        insert paymentSpread; 
+        
+        // Create GL Account
+        cllease__GL_Account__c account = new cllease__GL_Account__c(Name = 'On Account', cllease__Account_Code__c = '5007');
+        insert account;
+        
+        List<clcommon__Payment_Spread_Detail__c> spreadList = new List<clcommon__Payment_Spread_Detail__c>();
+        spreadList.add(new clcommon__Payment_Spread_Detail__c(clcommon__Contract_Management_System__c = 'CL-Lease', clcommon__Sequence_Number__c = 1,
+                                                              clcommon__Balance_Type__c = 'LEASE RECEIVABLE', clcommon__Enabled__c = 'Yes',
+                                                              clcommon__Payment_Spread__c = paymentSpread.Id));
+        spreadList.add(new clcommon__Payment_Spread_Detail__c(clcommon__Contract_Management_System__c = 'CL-Lease', clcommon__Sequence_Number__c = 2,
+                                                              clcommon__Balance_Type__c = 'FEES', clcommon__Enabled__c = 'Yes',
+                                                              clcommon__Payment_Spread__c = paymentSpread.Id));
+        insert spreadList;
 
-        Account dummyAccount = new Account(Name = 'Sample Account');
+        Account dummyAccount = new Account(Name = 'Sample Account', clcommon__Generate_Invoice_Letter__c = true);
         insert dummyAccount;
+        
+        // Creating 'ON ACCOUNT' 
+        cllease__Transaction_Sub_Type__c onAcc = new cllease__Transaction_Sub_Type__c(Name = 'ON ACCOUNT');
+        insert onAcc;
+        
+        // Creating 'ON ACCOUNT PAYMENT MODE' 
+        clcommon__Payment_Mode__c onAccPmtMode = new clcommon__Payment_Mode__c(Name = 'ON ACCOUNT');
+        insert onAccPmtMode;
 
         // 2. Creating Sample Product with rental and Dep Streams enabled
         cllease__Lease_Product__c dummyLP    = cllease.TestHelper.createLeaseProduct(dummyOffice, dummyFeeSet);

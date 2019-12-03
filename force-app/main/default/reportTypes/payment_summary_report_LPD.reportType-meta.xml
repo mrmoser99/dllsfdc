@@ -765,11 +765,6 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Estimated_Property_Tax1__c</field>
-            <table>cllease__Lease_Account__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>cllease__Estimated_Selling_Price__c</field>
             <table>cllease__Lease_Account__c</table>
         </columns>

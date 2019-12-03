@@ -59,8 +59,7 @@
         helper.fetchAdjustments(component,event, 0);
    }, 
     handleApprove: function(component,event,helper){
-       component.set('v.isDisabled', true);  
-       var recordId = component.get('v.recordId'); 
+       var recordId = component.get('v.recordId');
        var action = component.get('c.approve');  
       
        action.setParams({

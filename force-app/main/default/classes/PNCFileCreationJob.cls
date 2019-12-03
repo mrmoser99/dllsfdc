@@ -10,7 +10,7 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
     private Integer publicCount = 0;
     private Decimal publicSum = 0.0;
     private static String query;
-    private static final String JOB_NAME = 'PNC File Creation Job';
+    private static final String JOB_NAME = 'New PNC File Creation Job';
 
     global PNCFileCreationJob() {
         super(JOB_NAME, initialize(null));
@@ -28,7 +28,7 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
     public static String initialize(List<String> InvoiceNames) {
 
         query = ' SELECT  Id, Name,                                 '
-              + '        Invoice_Period_End_Date__c,                '
+             // + '        Invoice_Period_End_Date__c,                '
               + '        void_in_pnc__c,                '
               + '        adjustment_status__c,                '
               + '        sent_to_pnc_amount__c, '
@@ -49,16 +49,16 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
               + '        LS_Contract__r.State__c,                   '
               + '        LS_Contract__r.Zip_Code__c,                '
               + '        LS_Contract__r.Customer_Primary_Phone__c,  '
-              + '        Invoice_Due_Date__c,                       '
-              + '        clcommon__Consolidated_Invoice__c,         '
+              //+ '        Invoice_Due_Date__c,                       '
+              + '		 clcommon__Due_Date__c,						'
               + '        (SELECT Id,                                '
               + '                Name,                              '
               + '                cllease__Transaction_Date__c       '
-              + '         FROM cllease_Bills__r)                    '
-              + ' FROM clcommon__Consolidated_Invoice__c                                   '
-              + ' WHERE File_Generated__c = \'No\'                  '
+              + '         FROM cllease__Bills__r)                    '
+              + ' FROM clcommon__Consolidated_Invoice__c                                    '
+              + ' WHERE (File_Generated__c = \'No\'                  '
               + ' or Adjustment_Status__c = \'Approved\'            '
-              + ' or void_in_pnc__c = true';
+              + ' or void_in_pnc__c = true)';
 
         if(InvoiceNames!=null && InvoiceNames.size() > 0) {
             String InvoiceNamesStr = '';
@@ -85,10 +85,10 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
         //                               = false for all interface records  processed
         Boolean uncommittedInterfaceRecordsExist = InterfaceTablesUnfinishedTxnsCheck.checkUnfinishedTxnsForPNCIntegration();
         System.debug('uncommittedInterfaceRecordsExist = ' + uncommittedInterfaceRecordsExist);
-        /*if(uncommittedInterfaceRecordsExist) {
+        if(uncommittedInterfaceRecordsExist) {
             throw new CLSCustomException('PNC Interface table(Int_PX_Billing__c) has unfinished transactions. '+
                                       'Please commit all transactions from Interface table and run Job again...');
-        }*/
+        }
         
         
         //AHR
@@ -128,11 +128,11 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
 
     public override void doExecute(Database.BatchableContext bc, List<sObject> scope) {
   
-		System.debug(LoggingLevel.ERROR, 'TTTTTT');
+        System.debug(LoggingLevel.ERROR, 'TTTTTT');
         Savepoint sp = database.setsavepoint();
         try {
             String linesbody='';  
-            List<clcommon__Consolidated_Invoice__c> invoiceList = (List<clcommon__Consolidated_Invoice__c>)scope;  
+            List<clcommon__Consolidated_Invoice__c > invoiceList = (List<clcommon__Consolidated_Invoice__c >)scope;  
             List<Int_PX_Billing__c> linesRecords= new List<Int_PX_Billing__c>();
             integer localcount =0;
             Decimal localsum = 0.0;
@@ -140,12 +140,12 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
             User userRec = [Select Id, cllease__Current_Branch_s_System_Date__c from user WHERE id =: UserInfo.getUserId()];
             Date TodaysDate = userRec.cllease__Current_Branch_s_System_Date__c;
             Date SystemDate = Date.newinstance(TodaysDate.year(),TodaysDate.month(),TodaysDate.day());
-            List<clcommon__Consolidated_Invoice__c> invoiceLi = new List<clcommon__Consolidated_Invoice__c>();
-            for(clcommon__Consolidated_Invoice__c record: invoiceList) {
+            List<clcommon__Consolidated_Invoice__c > invoiceLi = new List<clcommon__Consolidated_Invoice__c >();
+            for(clcommon__Consolidated_Invoice__c  record: invoiceList) {
                 linesbody = '';
-                string InvoiceDuedate = DateTime.newInstance(record.Invoice_Due_Date__c.year(),
-                                                             record.Invoice_Due_Date__c.month(),
-                                                             record.Invoice_Due_Date__c.day()).format('MM/dd/yyyy');
+                string InvoiceDuedate = DateTime.newInstance(record.clcommon__Due_Date__c.year(),
+                                                             record.clcommon__Due_Date__c.month(),
+                                                             record.clcommon__Due_Date__c.day()).format('MM/dd/yyyy');
                      
                 System.debug('Invoice_Due_Date...'+InvoiceDuedate);
                 String invoiceStmtDate;
@@ -346,8 +346,8 @@ global with sharing class PNCFileCreationJob extends clcommon.DynamicJob {
         system.debug('lines!!!'+linesfoter);
         insert new Int_PX_Billing__c(Line_Data__c = linesfoter);
         
-        if (publicCount == 0)	
-        	NewCoUtility.markBillingCommitted();
+        if (publicCount == 0)   
+            NewCoUtility.markBillingCommitted();
     }
 
     public override void doInitialize() { }

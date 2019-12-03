@@ -10,6 +10,8 @@ public class TestCongaTerminationQuote {
         
          cllease__Termination_Quote_Header__c tqh = new cllease__Termination_Quote_Header__c();
          tqh.cllease__Contract__c = LSContract.Id;
+         tqh.cllease__Requested_Termination_Date__c = date.today();
+         tqh.cllease__Termination_Date__c = date.today();
          insert tqh;
        
          apexpages.currentpage().getparameters().put('id', LSContract.Id);
@@ -33,6 +35,8 @@ public class TestCongaTerminationQuote {
         
          cllease__Termination_Quote_Header__c tqh = new cllease__Termination_Quote_Header__c();
          tqh.cllease__Contract__c = LSContract.Id;
+         tqh.cllease__Requested_Termination_Date__c = date.today();
+         tqh.cllease__Termination_Date__c = date.today();
          insert tqh;
        
          apexpages.currentpage().getparameters().put('id', LSContract.Id);
@@ -59,6 +63,9 @@ public class TestCongaTerminationQuote {
             list<cllease__Termination_Quote_Header__c> litqh = new list<cllease__Termination_Quote_Header__c>();     
             cllease__Termination_Quote_Header__c tqh = new cllease__Termination_Quote_Header__c();
             tqh.cllease__Contract__c = LSContract.Id;
+            tqh.cllease__Requested_Termination_Date__c = date.today();
+            tqh.cllease__Termination_Date__c = date.today();
+         
             insert tqh;
 			
             apexpages.currentpage().getparameters().put('id', LSContract.Id);
@@ -84,6 +91,9 @@ public class TestCongaTerminationQuote {
             list<cllease__Termination_Quote_Header__c> litqh = new list<cllease__Termination_Quote_Header__c>();     
             cllease__Termination_Quote_Header__c tqh = new cllease__Termination_Quote_Header__c();
             tqh.cllease__Contract__c = LSContract.Id;
+            tqh.cllease__Requested_Termination_Date__c = date.today();
+            tqh.cllease__Termination_Date__c = date.today();
+         
             insert tqh;
 			
             apexpages.currentpage().getparameters().put('id', LSContract.Id);
@@ -109,6 +119,9 @@ public class TestCongaTerminationQuote {
             list<cllease__Termination_Quote_Header__c> litqh = new list<cllease__Termination_Quote_Header__c>();     
             cllease__Termination_Quote_Header__c tqh = new cllease__Termination_Quote_Header__c();
             tqh.cllease__Contract__c = LSContract.Id;
+            tqh.cllease__Requested_Termination_Date__c = date.today();
+            tqh.cllease__Termination_Date__c = date.today();
+         
             insert tqh;
 			
             apexpages.currentpage().getparameters().put('id', LSContract.Id);
@@ -134,6 +147,9 @@ public class TestCongaTerminationQuote {
             list<cllease__Termination_Quote_Header__c> litqh = new list<cllease__Termination_Quote_Header__c>();     
             cllease__Termination_Quote_Header__c tqh = new cllease__Termination_Quote_Header__c();
             tqh.cllease__Contract__c = LSContract.Id;
+            tqh.cllease__Requested_Termination_Date__c = date.today();
+            tqh.cllease__Termination_Date__c = date.today();
+         
             insert tqh;
 			
             apexpages.currentpage().getparameters().put('id', LSContract.Id);

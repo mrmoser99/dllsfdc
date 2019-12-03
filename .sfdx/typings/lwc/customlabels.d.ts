@@ -1,3 +1,11 @@
+declare module "@salesforce/label/c.CAMS_Check" {
+    var CAMS_Check: string;
+    export default CAMS_Check;
+}
+declare module "@salesforce/label/c.CAMS_Endpoint" {
+    var CAMS_Endpoint: string;
+    export default CAMS_Endpoint;
+}
 declare module "@salesforce/label/c.Conga_Quote_URL" {
     var Conga_Quote_URL: string;
     export default Conga_Quote_URL;
@@ -141,6 +149,10 @@ declare module "@salesforce/label/c.OrgUrl" {
 declare module "@salesforce/label/c.PM_Endpoint" {
     var PM_Endpoint: string;
     export default PM_Endpoint;
+}
+declare module "@salesforce/label/c.SuperTrumpURL" {
+    var SuperTrumpURL: string;
+    export default SuperTrumpURL;
 }
 declare module "@salesforce/label/c.Welcome_Email" {
     var Welcome_Email: string;

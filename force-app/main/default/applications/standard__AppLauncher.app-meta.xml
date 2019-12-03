@@ -6,10 +6,4 @@
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <tabs>standard-AppLauncher</tabs>
     <tabs>clcommon__Address__c</tabs>
-    <tabs>clcommon__Billing_Group__c</tabs>
-    <tabs>clcommon__Collateral__c</tabs>
-    <tabs>test1__c</tabs>
-    <tabs>clcommon__Factory_Registration__c</tabs>
-    <tabs>clcommon__Payment_Mode__c</tabs>
-    <tabs>clcommon__Cash_Receipt_Application__c</tabs>
 </CustomApplication>

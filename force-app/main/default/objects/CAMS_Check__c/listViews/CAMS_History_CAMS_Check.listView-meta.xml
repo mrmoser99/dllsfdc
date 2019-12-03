@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CAMS_History_CAMS_Check</fullName>
+    <filterScope>Queue</filterScope>
+    <label>CAMS History</label>
+    <queue>CAMS_History</queue>
+    <sharedTo>
+        <allInternalUsers/>
+    </sharedTo>
+</ListView>

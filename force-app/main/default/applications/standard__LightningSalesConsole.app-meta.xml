@@ -21,32 +21,11 @@
     <tabs>standard-CollaborationGroup</tabs>
     <tabs>standard-File</tabs>
     <tabs>clcommon__Address__c</tabs>
-    <tabs>clcommon__Billing_Group__c</tabs>
-    <tabs>clcommon__Collateral__c</tabs>
-    <tabs>test1__c</tabs>
-    <tabs>clcommon__Factory_Registration__c</tabs>
-    <tabs>clcommon__Payment_Mode__c</tabs>
-    <tabs>clcommon__Cash_Receipt_Application__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LightningSalesConsole_UtilityBar</utilityBar>
     <workspaceConfig>
         <mappings>
             <tab>clcommon__Address__c</tab>
-        </mappings>
-        <mappings>
-            <tab>clcommon__Billing_Group__c</tab>
-        </mappings>
-        <mappings>
-            <tab>clcommon__Cash_Receipt_Application__c</tab>
-        </mappings>
-        <mappings>
-            <tab>clcommon__Collateral__c</tab>
-        </mappings>
-        <mappings>
-            <tab>clcommon__Factory_Registration__c</tab>
-        </mappings>
-        <mappings>
-            <tab>clcommon__Payment_Mode__c</tab>
         </mappings>
         <mappings>
             <tab>standard-Account</tab>
@@ -89,9 +68,6 @@
         </mappings>
         <mappings>
             <tab>standard-report</tab>
-        </mappings>
-        <mappings>
-            <tab>test1__c</tab>
         </mappings>
     </workspaceConfig>
 </CustomApplication>

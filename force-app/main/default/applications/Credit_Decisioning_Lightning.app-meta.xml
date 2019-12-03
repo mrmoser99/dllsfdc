@@ -41,11 +41,27 @@
         <type>Flexipage</type>
         <profile>Newco Admin</profile>
     </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>CAMS_Q</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>CAMS_Check__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Newco Admin</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>CAMS_Q</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>CAMS_Check__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Admin</profile>
+    </profileActionOverrides>
     <tabs>standard-home</tabs>
     <tabs>genesis__Quick_Quotes__c</tabs>
     <tabs>standard-Account</tabs>
     <tabs>ICS_Application__c</tabs>
-    <tabs>ICS_Log__c</tabs>
     <tabs>CAMS_Check__c</tabs>
+    <tabs>ICS_Log__c</tabs>
     <uiType>Lightning</uiType>
 </CustomApplication>

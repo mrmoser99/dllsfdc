@@ -15,10 +15,5 @@
     <columns>CREATED_DATE</columns>
     <columns>Invoice_Emailed__c</columns>
     <filterScope>Everything</filterScope>
-    <filters>
-        <field>LS_Contract__c</field>
-        <operation>equals</operation>
-        <value>LES-0000000311</value>
-    </filters>
     <label>All</label>
 </ListView>

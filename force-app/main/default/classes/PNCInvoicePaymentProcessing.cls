@@ -14,10 +14,10 @@ global with sharing class PNCInvoicePaymentProcessing extends clcommon.DynamicJo
     //private Int_PX_Remit__c pncBatchHeaderRecord;
     private static String query;
     private static final String JOB_NAME = 'PNC Invoice Payment Creation Job';
-    private List<clcommon__Cash_Receipt__c> cashReceipts = new List<clcommon__Cash_Receipt__c>();
-    private Map<Id, clcommon__Cash_Receipt__c> cashReceiptToRemit = new Map<Id, clcommon__Cash_Receipt__c>();
-    private Map<Id, clcommon__Cash_Receipt_Application__c> cashReceiptToApplication = new Map<Id, clcommon__Cash_Receipt_Application__c>();
-    private Map<Id, cllease__Lease_Payment_Transaction__c> cashReceiptToLpt = new Map<Id, cllease__Lease_Payment_Transaction__c>();
+    private List<clcommon__Cash_Receipt__c> cashReceipts;
+    private Map<Id, clcommon__Cash_Receipt__c> cashReceiptToRemit;
+    private Map<Id, clcommon__Cash_Receipt_Application__c> cashReceiptToApplication;
+    private Map<Id, cllease__Lease_Payment_Transaction__c> cashReceiptToLpt;
     private Map<id, Decimal> balanceCheckOnCashReceipt = new Map<Id, Decimal>();
 
     global PNCInvoicePaymentProcessing() {
@@ -158,6 +158,10 @@ global with sharing class PNCInvoicePaymentProcessing extends clcommon.DynamicJo
 
             Decimal currentPmtAmount, pxTotalPmtAmount; 
             List<cllease__Lease_Payment_Transaction__c> pmtsPerRemit;
+            cashReceipts = new List<clcommon__Cash_Receipt__c>();
+            cashReceiptToRemit = new Map<Id, clcommon__Cash_Receipt__c>();
+            cashReceiptToApplication = new Map<Id, clcommon__Cash_Receipt_Application__c>();
+            cashReceiptToLpt = new Map<Id, cllease__Lease_Payment_Transaction__c>();
             // C. Looping through all Invoices for Creating Payment Transactions in System
             for(clcommon__Consolidated_Invoice__c invoice : invoicesList) {
                 // Looping all PNC Return files per Invoices to apply payments

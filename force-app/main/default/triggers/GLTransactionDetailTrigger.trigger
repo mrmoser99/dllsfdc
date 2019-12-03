@@ -78,7 +78,9 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                                                     Contract_Install_State_Location__c,
                                                     Transaction_Eligible_GL_Account_Codes__c,
                                                     Billing_Tax_Eligible_GL_Account_Codes__c,
-                                                    Payment_Tax_Eligible_GL_Account_Codes__c
+                                                    Payment_Tax_Eligible_GL_Account_Codes__c,
+                                                    Account_Type__c,
+                                                    GL_Account__r.Name
                                                 FROM Movement_Code__c
                                                     LIMIT 1000];
         
@@ -94,13 +96,25 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
             String txnType = movementCode.CL_Lease_Transaction_Type__c;
             if(txnType == 'TAX') {
                 taxMovementCodesMap.put(movementCode.Movement_Code__c, movementCode);
-            } else {
+            } else if(movementCode.GL_Account__r.Name != null){
+                txnType += ':';
+                txnType += movementCode.GL_Account__r.Name;
+                if(movementCode.Account_Type__c == 'Debit')
+                    txnType += ':' + movementCode.Account_Type__c;
+                else
+                    txnType += ':' + movementCode.Account_Type__c;
+                txnMovementCodesMap.put(txnType, movementCode);
+            }else {
                 txnMovementCodesMap.put(txnType, movementCode);
             }
         }
 
         System.debug(LoggingLevel.ERROR, 'taxMovementCodesMap: '+taxMovementCodesMap);
         System.debug(LoggingLevel.ERROR, 'txnMovementCodesMap: '+txnMovementCodesMap);
+        
+        for(String key : txnMovementCodesMap.keySet()){
+            System.debug(LoggingLevel.ERROR, '^^^ Key : ' + key + ' : ' + txnMovementCodesMap.get(key));
+        }
 
         // 4. Updating Movement Code for Transactions and Tax
         // Note: Currently Not Checking GL Account Code for Transactions due to uneven matches
@@ -114,7 +128,7 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
             String clleaseTxnSubType    = glEntry.Transaction_Sub_Type__c;
             String remark = 'Updated Default Movement Codes...';
             
-            if(glEntry.Id == null && glEntry.cllease__Item_Name__c == 'WAIVED'){
+            if(glEntry.cllease__Charge__c != null && glEntry.cllease__Generation_Scheme__c == 'REVERSAL'){
                 glEntry.Charge_Waived__c = true;
                 glEntry.cllease__Transaction_Description__c = glEntry.cllease__Transaction_Description__c + ' -  Waive';
             }
@@ -173,6 +187,17 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                         glEntry.Movement_Code_Dr__c = movementCode.Movement_Code__c;
 
                     } else if(clLeaseTxnType == 'PAYMENT') {
+                        Movement_Code__c movementOnAccountCode;
+                        String accountName = glAccountsMap.get(glEntry.cllease__Debit_GL_Account__c).Name;
+                        System.debug(LoggingLevel.ERROR, '^^^ accountName : ' + accountName);
+                        if(accountName == 'On Account'){
+                            String txnString = clleaseTxnType;
+                            txnString += ':' + accountName + ':' + 'Debit';
+                            if(txnMovementCodesMap.containsKey(txnString))
+                                movementOnAccountCode = txnMovementCodesMap.get(txnString);
+                            System.debug(LoggingLevel.ERROR, '^^^ movementOnAccountCode : ' + movementOnAccountCode);
+                        }
+                        
                         if(glEntry.cllease__Transaction_type1__c == 'REVERSAL'){
                             glEntry.cllease__Transaction_Description__c  += '- Reversal';
                         }
@@ -180,11 +205,19 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                             && glPmtAccountString !=null 
                             && glDebitAccountCodeString !=null
                             && glPmtAccountString.containsIgnoreCase(glDebitAccountCodeString)) {
-                            glEntry.Movement_Code_Dr__c = contractsMap.get(glEntry.cllease__Contract__c).State__c;
-
-                        } else if(!clleaseTxnSubType.containsIgnoreCase('tax')){
-                            glEntry.Movement_Code_Dr__c = movementCode.Movement_Code__c;
-
+                            if(accountName == 'On Account'){
+                                glEntry.Movement_Code_Dr__c = movementOnAccountCode.Movement_Code__c;
+                            } else{
+                            	glEntry.Movement_Code_Dr__c = contractsMap.get(glEntry.cllease__Contract__c).State__c;
+                            }
+                        } else if(!clleaseTxnSubType.containsIgnoreCase('tax')){ 
+                            System.debug(LoggingLevel.ERROR, '^^^ accountName : ' + accountName);
+                            if(accountName == 'On Account'){
+                                System.debug(LoggingLevel.ERROR, '^^^ movementOnAccountCode : ' + movementOnAccountCode);
+                                glEntry.Movement_Code_Dr__c = movementOnAccountCode.Movement_Code__c;
+                            } else{
+                            	glEntry.Movement_Code_Dr__c = movementCode.Movement_Code__c;
+                            }
                         }
 
                     } else if(clLeaseTxnType == 'BILLING'
@@ -205,6 +238,7 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                 }
 
                 // b. Processing for GL Credit Account 
+                System.debug(LoggingLevel.ERROR, '^^^ movementCode : ' + movementCode);
                 if(glAccountsMap.get(glEntry.cllease__Credit_GL_Account__c) != null
                     && glAccountsMap.get(glEntry.cllease__Credit_GL_Account__c).Is_Movement_Code_Eligible__c) {
 
@@ -218,6 +252,17 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                         glEntry.Movement_Code_Cr__c = movementCode.Movement_Code__c;
 
                     } else if(clLeaseTxnType == 'PAYMENT') {
+                        Movement_Code__c movementOnAccountCode;
+                        String accountName = glAccountsMap.get(glEntry.cllease__Credit_GL_Account__c).Name;
+                        System.debug(LoggingLevel.ERROR, '^^^ accountName : ' + accountName);
+                        if(accountName == 'On Account'){
+                            String txnString = clleaseTxnType;
+                            txnString += ':' + accountName + ':' + 'Credit';
+                            if(txnMovementCodesMap.containsKey(txnString))
+                                movementOnAccountCode = txnMovementCodesMap.get(txnString);
+                            System.debug(LoggingLevel.ERROR, '^^^ movementOnAccountCode : ' + movementOnAccountCode);
+                        }
+                        
                         if(glEntry.cllease__Transaction_type1__c == 'REVERSAL'){
                             glEntry.cllease__Transaction_Description__c  += ' - Reversal';
                         }
@@ -225,11 +270,20 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                             && glPmtAccountString !=null 
                             && glCreditAccountCodeString !=null
                             && glPmtAccountString.containsIgnoreCase(glCreditAccountCodeString)) {
-                            glEntry.Movement_Code_Cr__c = contractsMap.get(glEntry.cllease__Contract__c).State__c;
+                            if(accountName == 'On Account'){
+                                glEntry.Movement_Code_Cr__c = movementOnAccountCode.Movement_Code__c;
+                            } else{
+                            	glEntry.Movement_Code_Cr__c = contractsMap.get(glEntry.cllease__Contract__c).State__c;
+                            }
 
                         } else if(!clleaseTxnSubType.containsIgnoreCase('tax')){
-                            glEntry.Movement_Code_Cr__c = movementCode.Movement_Code__c;
-
+                            System.debug(LoggingLevel.ERROR, '^^^ accountName : ' + accountName);
+                            if(accountName == 'On Account'){
+                                glEntry.Movement_Code_Cr__c = movementOnAccountCode.Movement_Code__c;
+                            } else{
+                                System.debug(LoggingLevel.ERROR, '^^^ movementCode : ' + movementCode);
+                            	glEntry.Movement_Code_Cr__c = movementCode.Movement_Code__c;
+                            }
                         }
 
                     } else if(clLeaseTxnType == 'BILLING'

@@ -6,6 +6,7 @@
 *	2/26/19 - MRM Created
     9/5/19 - MRM Changed residual to use residual amount instead of bill residual amount from equipment
     9/19/19 - MRM changed ref to invoiced_in__c tov cllease__Consolidated_Invoice__c 
+    11/14/19 - MRM changes total amount paid and estimated propert tax calculation
 *
 *   This is use to calculate exposure for one or more leases; it can handle up to 10 lease at a time....maybe less.
 
@@ -30,7 +31,7 @@
     
     Estimated Property Tax - starts with the total estimate property tax from payment streams less + sales tax on estimated property taxes
     
-    Total Amount Paid - sum of total amount paid from bills 
+    Total Amount Paid - sum of total amount paid from bills //CHANGE : DOES NOT INCLUDE TAXES
     Evergreen Rent Billed Not Paid - tax due amount from bill page
     Rent Billed Not Paid - tax due amount from bill page
     Charges: 
@@ -287,13 +288,17 @@ public with sharing class ExposureUtility {
                             exposure += leaseSetChargeBuckets.get(id).get('TERMINATION QUOTE FEES');
                         system.debug('+ Termination Quote Fees =' + exposure);
                         calcDetails +='+ Termination Quote Fees of ' +  ex.Termination_Quote_Fees__c + ' = ' + exposure + '\n';
+                        system.debug('hello ***************************');
                         
-                        exposure += ex.Estimated_Property_Tax__c;
-                        calcDetails +='+ Estimated Property Tax of ' + ex.Estimated_Property_Tax__c.setScale(2)  + ' = '  + exposure + '\n'; 
+                        ex.Est_Property_Tax__c = leaseSetChargeBuckets.get(id).get('Estimated Property Tax');
+                        if (leaseSetChargeBuckets.get(id).get('Estimated Property Tax') != null)
+                            exposure += ex.Est_Property_Tax__c;
+                        system.debug('+ Estimated Property Tax =' + ex.Est_Property_Tax__c);
+                        calcDetails +='+ Estimated Property Tax of ' + ex.Est_Property_Tax__c.setScale(2)  + ' = '  + exposure + '\n'; 
 
                         Decimal salesTax = 0;
-                        if (leaseSetChargeBuckets.get(id).get('Estimated Property Tax') != null){
-                            salesTax = leaseSetChargeBuckets.get(id).get('Estimated Property Tax');
+                        if (leaseSetChargeBuckets.get(id).get('Estimated Property Tax Tax') != null){
+                            salesTax = leaseSetChargeBuckets.get(id).get('Estimated Property Tax Tax');
                             ex.sales_tax_on_property_tax__c = salesTax.setScale(2);
                             exposure += salesTax ;
                         }
@@ -468,9 +473,8 @@ public with sharing class ExposureUtility {
         Normal Billed Not Paid  
         Evergreen Rent Billed
         Evergreen Billed Not Paid
-
-        maybe use cllease__Total_Due_Amount__c instead of cllease__rental_due_amount__c
        
+       this is the list of bills that is run through
    	********************************************************************************************/
    	public static Map<ID,Map<String,Decimal>> getBillBuckets(Set<String> leaseSet){
 
@@ -555,10 +559,10 @@ public with sharing class ExposureUtility {
                    amount = 0;
                    if (bucketMap.containsKey('Total Amount Paid')){
                        amount = bucketMap.get('Total Amount Paid');
-                       amount += d.cllease__total_paid_amount__c;
+                       amount += d.cllease__Rental_Paid_Amount__c;
                    }
                    else{
-                       amount += d.cllease__total_paid_amount__c;
+                       amount += d.cllease__Rental_Paid_Amount__c;
                    }
                     bucketMap.put('Total Amount Paid',amount);
                 }
@@ -629,7 +633,7 @@ public with sharing class ExposureUtility {
                 ,Days_Past_Due__c
                 ,Gain_Loss__c
                 ,Id
-                ,cllease__Consolidated_Invoice__c
+                
                 ,Name
                 ,Premium_Purchase_Amount__c
                 ,tax_due__c
@@ -673,15 +677,26 @@ public with sharing class ExposureUtility {
        
    	********************************************************************************************/	
      public static Map<ID,Map<String,Decimal>> getChargeBuckets(Set<String> leaseSet){
-
+        system.debug('****************** get charge buckets  ');
         Map<ID,Map<String,Decimal>> returnMap = new Map<ID,Map<String,Decimal>>();
+        Map<ID,cllease__Lease_Account__c> leaseMap = new Map<ID,cllease__Lease_Account__c>([select id, cllease__term__c from 
+                                                                        cllease__Lease_Account__c where id in :leaseSet]);
 
+        
         Map<ID,List<cllease__Charge__c>> chargeMap = ExposureUtility.getCharges(leaseSet);
-
+        Decimal totalPropertyTax = 0;
+        Integer nbrOfPTsFound = 0;
+        Integer nbrOfPTsPaid = 0;
+        Decimal propertyTaxAmount = 0;
         for (ID lID:leaseSet){  //for each lease
             
             Map<String,Decimal> bucketMap = new Map<String,Decimal>();
             if (chargeMap.get(lID) != null){
+            propertyTaxAmount = 0;
+            nbrOfPTsPaid = 0;
+            nbrOfPTsFound = 0;
+            Decimal salesTaxOnPropertyTax = 0;
+
             for (cllease__Charge__c c:chargeMap.get(lID)){ 
                 Decimal amount;
                 if (c.cllease__tax_paid_amount__c == null)
@@ -689,24 +704,59 @@ public with sharing class ExposureUtility {
                 if (bucketMap.containsKey(c.cllease__Fee_Definition__r.name)){
                     amount = bucketMap.get(c.cllease__Fee_Definition__r.name);
                     
-                    if (c.cllease__Fee_Definition__r.name == 'Estimated Property Tax')
-                        amount += c.cllease__Tax_Due__c;
+                    if (c.cllease__Fee_Definition__r.name == 'Estimated Property Tax'){
+                        propertyTaxAmount = c.cllease__Original_Amount__c;
+                        amount += c.cllease__Original_Amount__c - c.fee_paid__c;
+                        if (c.cllease__Original_Amount__c - c.fee_paid__c == 0)
+                            nbrOfPTsPaid++;
+                        nbrOfPTsFound++;
+                        if (c.Original_Tax_Amount__c == 0)
+                            salesTaxOnPropertyTax = salesTaxOnPropertyTax + 0.00;
+                        else 
+                            salesTaxOnPropertyTax = salesTaxOnPropertyTax + c.Original_Tax_Amount__c - c.tax_paid__c;
+                    }
                     else
                         amount += c.cllease__Total_Due_Amount__c;
                 }
                 else{
-                    if (c.cllease__Fee_Definition__r.name == 'Estimated Property Tax')
-                        amount = c.cllease__Tax_Due__c;
+                    if (c.cllease__Fee_Definition__r.name == 'Estimated Property Tax'){
+                        propertyTaxAmount = c.cllease__Original_Amount__c;
+                        system.debug('tax due:' + c.cllease__tax_due__c);
+                        amount = c.cllease__Original_Amount__c - c.fee_paid__c;
+                        if (c.cllease__Original_Amount__c - c.fee_paid__c == 0)
+                            nbrOfPTsPaid++;
+                        nbrOfPTsFound++;
+                        if (c.Original_Tax_Amount__c == 0)
+                            salesTaxOnPropertyTax = salesTaxOnPropertyTax + 0.00;
+                        else 
+                            salesTaxOnPropertyTax = salesTaxOnPropertyTax + c.Original_Tax_Amount__c- c.tax_paid__c;
+                    }
                     else
                         amount = c.cllease__Total_Due_Amount__c;
                 }
+                system.debug('putting in' + amount);
+
                 bucketMap.put(c.cllease__Fee_Definition__r.name,amount.setScale(2));
-            }
+            } //end of charges
+
+            system.debug('nbr of payments: ' + nbrOfPTsPaid);
+            system.debug('property tax amount: '+ propertyTaxAmount);
+            Decimal revisedAmount =  
+                (
+                    (leaseMap.get(lID).cllease__term__c  * propertyTaxAmount)
+                    - (nbrOfPTsPaid * propertyTaxAmount)
+                ).setScale(2);
+         
+            bucketMap.put('Estimated Property Tax',revisedAmount);
+            bucketMap.put('Estimated Property Tax Tax',salesTaxOnPropertyTax);
+
             returnMap.put(lID,bucketMap);
             }
-         } 
+        } //end of lease
+        
 
-         return returnMap;   
+
+        return returnMap;   
 
      }    
     /********************************************************************************************
@@ -725,6 +775,10 @@ public with sharing class ExposureUtility {
                 ,cllease__Tax_Due__c
                 ,cllease__paid_amount__c
                 ,cllease__Tax_Paid_Amount__c 
+                ,fee_paid__c
+                ,cllease__Original_Amount__c
+                ,Original_Tax_Amount__c
+                ,Tax_Paid__c
                 FROM cllease__Charge__c
                 where cllease__Lease_Account__c in :leaseSet
                 ];

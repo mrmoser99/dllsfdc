@@ -3,12 +3,14 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>Committed__c</columns>
+    <columns>Le_Accrual_Flag__c</columns>
+    <columns>LE_Source_System__c</columns>
     <columns>LE_Source_System_Key_Name__c</columns>
     <columns>Le_Source_System_Key_Value__c</columns>
     <columns>Party_Source_System_Key_Name__c</columns>
     <columns>Party_Source_System_Key_Value__c</columns>
+    <columns>Party_Source_System_Name__c</columns>
     <columns>Probability_of_Default__c</columns>
-    <columns>Le_Accrual_Flag__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

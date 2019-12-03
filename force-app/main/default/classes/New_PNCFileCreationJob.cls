@@ -56,9 +56,9 @@ global with sharing class New_PNCFileCreationJob extends clcommon.DynamicJob {
               + '                cllease__Transaction_Date__c       '
               + '         FROM cllease__Bills__r)                    '
               + ' FROM clcommon__Consolidated_Invoice__c                                    '
-              + ' WHERE File_Generated__c = \'No\'                  '
+              + ' WHERE (File_Generated__c = \'No\'                  '
               + ' or Adjustment_Status__c = \'Approved\'            '
-              + ' or void_in_pnc__c = true';
+              + ' or void_in_pnc__c = true)';
 
         if(InvoiceNames!=null && InvoiceNames.size() > 0) {
             String InvoiceNamesStr = '';

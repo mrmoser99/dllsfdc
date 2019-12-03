@@ -1,23 +1,30 @@
-global class PermissionSetCreator {
-    public static PermissionSet ps;
+public class PermissionSetCreator {
+    PermissionSet ps;
     
     public PermissionSetCreator(String PermissionSetName) {
         if (String.isNotBlank(PermissionSetName)) {
             try {
-                ps = [SELECT Id, Name, label FROM PermissionSet WHERE Name = :PermissionSetName LIMIT 1];
+            List<PermissionSet> psList = new List<PermissionSet>();
+                psList = [SELECT Id, Name, label FROM PermissionSet WHERE Name = :PermissionSetName LIMIT 1];
+                if(psList.size()>0){
+                ps = psList.get(0);
+                }
+                
+                else{
+                 System.debug('Creating new PermissionSet with the name ' + PermissionSetName);
+                 ps = new PermissionSet();
+                 ps.Name = PermissionSetName;
+                 ps.label = PermissionSetName;
+                 insert ps;
+                }
             } catch (Exception e) {
-                // Create new permissionSet
-                System.debug('Creating new PermissionSet with the name ' + PermissionSetName);
-                ps = new PermissionSet();
-                ps.Name = PermissionSetName;
-                ps.label = PermissionSetName;
-                insert ps;
+                
             }
             System.debug('PS -> ' + ps);
         }
     }
     
-    public static void grantReadOnlyPermissions(List<String> sObjList) {
+    public void grantReadOnlyPermissions(List<String> sObjList) {
         if (ps != null && sObjList.size() > 0) {
             List<ObjectPermissions> permissionList =  new List<ObjectPermissions>();
             for(String sObj : sObjList) {
@@ -32,7 +39,7 @@ global class PermissionSetCreator {
         }
     }
     
-    public static void grantRCEPermissions(List<String> sObjList) {
+    public void grantRCEPermissions(List<String> sObjList) {
         if (ps != null && sObjList.size() > 0) {
             List<ObjectPermissions> permissionList =  new List<ObjectPermissions>();
             for(String sObj : sObjList) {
@@ -49,16 +56,18 @@ global class PermissionSetCreator {
         }
     }
     
-    public static void grantReadOnlyPermissionsWithFields(List<String> sObjList) {
+    public void ReadOnlyPermissionsWithFields(List<String> sObjList) {
         if (ps != null && sObjList.size() > 0) {
             List<ObjectPermissions> permissionList =  new List<ObjectPermissions>();
             List<fieldPermissions> fieldPermisstionList =  new List<fieldPermissions>();
             for(String sObj : sObjList) {
+              if(sObj!=null){
+              system.debug('=========='+sObj+'=====');
                 ObjectPermissions op = new ObjectPermissions();
                 op.parentId = ps.Id;
                 op.SobjectType = sObj;
                 op.PermissionsRead = true;
-                //op.PermissionsViewAllRecords = true;
+               // op.PermissionsViewAllRecords = true;
                 permissionList.add(op);
                 
                 SObjectType currentObject = Schema.getGlobalDescribe().get(sObj);
@@ -78,26 +87,29 @@ global class PermissionSetCreator {
                     }
                  }
                 }
+                }
              }
             insert permissionList;
             insert fieldPermisstionList;
         }
     }
     
-    public static void grantRCEPermissionsWithFields(List<String> sObjList) {
+    public void RCEPermissionsWithFields(List<String> sObjList) {
         if (ps != null && sObjList.size() > 0) {
             List<ObjectPermissions> permissionList =  new List<ObjectPermissions>();
             List<fieldPermissions> fieldPermisstionList =  new List<fieldPermissions>();
             for(String sObj : sObjList) {
+                if(sObj!=null){
+                 system.debug('=========='+sObj+'=====');
                 ObjectPermissions op = new ObjectPermissions();
                 op.parentId = ps.Id;
                 op.SobjectType = sObj;
                 op.PermissionsCreate = true;
-                op.PermissionsDelete = true;
+                //op.PermissionsDelete = true;
                 op.PermissionsEdit = true;
-                op.PermissionsModifyAllRecords = true;
+                //op.PermissionsModifyAllRecords = true;
                 op.PermissionsRead = true;
-                op.PermissionsViewAllRecords = true;
+               // op.PermissionsViewAllRecords = true;
                 
                 permissionList.add(op);
                 
@@ -118,117 +130,10 @@ global class PermissionSetCreator {
                         fieldPermisstionList.add(fp);
                     }
                  }
+                 }
             }
             insert permissionList;
             insert fieldPermisstionList;
         }
     }  
-    
-    
-    public static void grantPackageLevelPermissions(List<String> packageList, String permissionType, boolean isToApplyFieldlevel) {
-        for(String packageNameSpace : packageList) {
-            if('custom'.equalsIgnoreCase(packageNameSpace)) {
-                grantPackageLevelPermissionsForNonManagedPackageObjects(permissionType, isToApplyFieldlevel);
-            } else {
-                //grantPackageLevelPermissions(packageNameSpace, permissionType, isToApplyFieldlevel);
-            }
-        }
     }
-    
-    @future
-    public static void grantPackageLevelPermissions(String PermissionSetName, String packageNamespace, String permissionType, boolean isToApplyFieldlevel) {
-        
-        PermissionSet ps1 = new PermissionSet();
-        ps1.Name = PermissionSetName;
-        ps1.label = PermissionSetName;
-        insert ps1;
-        
-        ps = ps1;
-        
-        if(String.isNotBlank(packageNamespace) && String.isNotBlank(permissionType)) {
-            
-            
-            if(packageNamespace.equalsIgnoreCase('CUSTOM')) {
-                grantPackageLevelPermissionsForNonManagedPackageObjects(permissionType, isToApplyFieldlevel);
-                return;
-            }
-            
-            List<String> sObjList = new List<String>();
-            if(packageNamespace.equals('loan') || packageNamespace.equals('genesis') || packageNamespace.equals('clcommon')) {
-                sObjList.add('Account');
-            }
-            
-            for ( Schema.SObjectType typ : Schema.getGlobalDescribe().values() ) {
-                Schema.DescribeSObjectResult objResult = typ.getDescribe();
-                String sobjAPIName = String.valueOf(objResult.getName());
-                
-                if ( sobjAPIName.startsWith(packageNamespace+'__') && !objResult.isCustomSetting() && objResult.isCustom()) {
-                    if(sobjAPIName.endsWith('__c')) {
-                        sObjList.add(sobjAPIName);
-                        //System.debug(sobjAPIName);
-                    }
-                }
-            }
-            System.debug('Package ' + packageNamespace + ' Object count is ' + sObjList.size());
-            if (sObjList.size() > 0) {
-                if(permissionType.equalsIgnoreCase('readonly')) {
-                    if(isToApplyFieldlevel) {
-                        // Fields level read only permissions.  
-                        grantReadOnlyPermissionsWithFields(sObjList);
-                    } else {
-                        // Only object level read only permissions.
-                        grantReadOnlyPermissions(sObjList);
-                    }
-                } else if (permissionType.equalsIgnoreCase('complete')) {
-                    if(isToApplyFieldlevel) {
-                        // Fields level RCE(Read,Create,Edit) permissions.  
-                        grantRCEPermissionsWithFields(sObjList);
-                    } else {
-                        // Only object level RCE(Read,Create,Edit) permissions.
-                        grantRCEPermissions(sObjList);
-                    }
-                }
-            }
-            
-        }
-    }
-    
-    public static void grantPackageLevelPermissionsForNonManagedPackageObjects(String permissionType, boolean isToApplyFieldlevel) {
-        List<String> sObjList = new List<String>();
-            
-            sObjList.add('Opportunity');
-            sObjList.add('Account');
-            
-            for ( Schema.SObjectType typ : Schema.getGlobalDescribe().values() ) {
-                Schema.DescribeSObjectResult objResult = typ.getDescribe();
-                String sobjAPIName = String.valueOf(objResult.getName());
-                
-                if ( !(sobjAPIName.indexOf('__') < (sobjAPIName.length()-4)) && !objResult.isCustomSetting() && objResult.isCustom()) {
-                    if(sobjAPIName.endsWith('__c')) {
-                        sObjList.add(sobjAPIName);
-                        //System.debug(sobjAPIName);
-                    }
-                }
-            }
-            
-            if (sObjList.size() > 0) {
-                if(permissionType.equalsIgnoreCase('readonly')) {
-                    if(isToApplyFieldlevel) {
-                        // Fields level read only permissions.  
-                        grantReadOnlyPermissionsWithFields(sObjList);
-                    } else {
-                        // Only object level read only permissions.
-                        grantReadOnlyPermissions(sObjList);
-                    }
-                } else if (permissionType.equalsIgnoreCase('complete')) {
-                    if(isToApplyFieldlevel) {
-                        // Fields level RCE(Read,Create,Edit) permissions.  
-                        grantRCEPermissionsWithFields(sObjList);
-                    } else {
-                        // Only object level RCE(Read,Create,Edit) permissions.
-                        grantRCEPermissions(sObjList);
-                    }
-                }
-            }
-    }
-}

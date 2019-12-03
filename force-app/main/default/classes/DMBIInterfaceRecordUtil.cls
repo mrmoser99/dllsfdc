@@ -608,6 +608,7 @@ public with sharing class DMBIInterfaceRecordUtil {
                 exposureBooked += cla.cllease__Account__r.clcommon__Indirect_Exposure__c;
             }
         }
+        system.debug('************ exposure is :' + exposurebooked + ' cla exposure is: ' + cls.exposure__c);
         return new Int_Agreement_Exposure__c(
             Agreement_Name__c = AgrMap.get(cla.name).Id,
             Exposure_Type__c = 'DLL',

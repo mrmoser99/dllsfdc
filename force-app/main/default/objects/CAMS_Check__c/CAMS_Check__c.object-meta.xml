@@ -53,14 +53,14 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
-    <label>CAMS Check</label>
+    <label>CAMS Queue</label>
     <nameField>
         <displayFormat>CAMS-{00000000}</displayFormat>
         <label>Unique Id</label>
         <trackHistory>true</trackHistory>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>CAMS Checks</pluralLabel>
+    <pluralLabel>CAMS Queue</pluralLabel>
     <searchLayouts/>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>

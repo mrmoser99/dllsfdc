@@ -18,7 +18,7 @@ trigger OnAccountPaymentFieldUpdate on cllease__Lease_Payment_Detail__c (before 
             List<cllease__Lease_Payment_Transaction__c> paymentList = [SELECT ID
                                                                        FROM cllease__Lease_Payment_Transaction__c
                                                                        WHERE ID IN : lptToLpdMap.keySet()
-                                                                       AND cllease__Payment_Mode__r.Name = 'Invoice Credit'];
+                                                                       AND cllease__Payment_Mode__r.Name = 'ON ACCOUNT'];
             for(cllease__Lease_Payment_Transaction__c pmt : paymentList){
                 if(lptToLpdMap.containsKey(pmt.Id)){
                     for(cllease__Lease_Payment_Detail__c lpd : lptToLpdMap.get(pmt.Id)){

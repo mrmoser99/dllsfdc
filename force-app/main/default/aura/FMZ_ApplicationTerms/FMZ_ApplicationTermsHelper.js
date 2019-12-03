@@ -2,7 +2,6 @@
     // load or reload terms associated with this application
     loadApplicationTerms: function(component) {
         try {
-            console.log('helllo');
             var action = component.get('c.getApplicationTerms');
             action.setParams({
                 applicationId: component.get('v.applicationId')
@@ -10,7 +9,6 @@
             action.setCallback(this, function (response) {
                 var state = response.getState();
                 if (state === 'SUCCESS') {
-                    console.log('hll');
                     component.set('v.application', response.getReturnValue());
                 } else if (state === 'ERROR') {
                     let error = response.getError();
@@ -21,23 +19,19 @@
             });
             $A.enqueueAction(action);
         } catch (e) {
-            console.log('helllo');
             console.log(e);
         }
     },
 
     loadTermOptions: function(component) {
         try {
-            console.log('helllo');
             var action = component.get('c.getTermOptions');
             action.setParams({
                 applicationId: component.get('v.applicationId')
             });
             action.setCallback(this, function (response) {
-                console.log('helllo');
                 var state = response.getState();
                 if (state === 'SUCCESS') {
-                    console.log('helllo');
                     console.log('Term Options: '+response.getReturnValue());
                     component.set('v.termOpts', response.getReturnValue());
                 } else if (state === 'ERROR') {
@@ -49,7 +43,6 @@
             });
             $A.enqueueAction(action);
         } catch (e) {
-            console.log('helllo');
             console.log(e);
         }
     },

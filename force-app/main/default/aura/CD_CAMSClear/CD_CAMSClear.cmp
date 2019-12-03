@@ -1,4 +1,4 @@
-<aura:component description="Clear CAMS" controller="CD_CAMScontroller"
+<aura:component description="Clear CAMS" controller="CD_CAMSController"
                 implements="force:lightningQuickActionWithoutHeader,force:hasRecordId" access="global">
 
     <aura:attribute name="processing" type="Boolean" default="true"/>

@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Account_Number__c</fullName>
     <externalId>false</externalId>
-    <formula>Quick_Quote__r.genesis__Account__r.Account_Number__c</formula>
+    <formula>Application__r.genesis__Account__r.EIN__c</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Account Number</label>
     <required>false</required>

@@ -45,7 +45,7 @@ public with sharing class Bridger {
  	/************************************************************************************************************
     * Maintain Bridger Password
     ************************************************************************************************************/
-    public static void maintainPassword(){
+    public static void maintainPassword(){  
     	 
     	Bridger_Setting__c bridgerSettings = [
  		
@@ -202,7 +202,7 @@ public with sharing class Bridger {
 	   	 	sid.type_x = 'EIN';
 	    	sid.number_x =input.ein;
 	    	inputEin.inputId.add(sid);
-	    	e.IDS.inputId = inputEin.inputId;
+	    	e.IDS.inputId = inputEin.inputId; 
 	    
 	    	//array of input records
 

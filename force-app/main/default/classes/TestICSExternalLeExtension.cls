@@ -1,6 +1,6 @@
 @isTest
 public class TestICSExternalLeExtension {
-    	
+  
      static TestMethod void  test1() {
     
     	cllease__lease_account__c l = createContract();
@@ -24,6 +24,7 @@ public class TestICSExternalLeExtension {
         			,Estimated_Financed_Amount__c='10000'
         			,genesis__Status__c='NEW'
     				,ats_reference_number__c = 'CLNDMSG1'
+               ,genesis__account__c = a.id
     				);
     	insert qq;  
     	
@@ -65,6 +66,14 @@ public class TestICSExternalLeExtension {
     		,industry_code_type__c = 'SIC_1234_US'
     	);
     	insert le;
+
+       //CS_External_Legal_Entity__r.ICS_Application_Request__r.quick_quote__r.genesis__account__c
+       ICS_External_LE_Fields__c lef = new ICS_External_LE_Fields__c(
+    		 ICS_External_Legal_Entity__c	= le.id
+    		,name__c = 'CMCL.EXTL.GENL.GlobalIndustryCode'
+    		,value__c = '12345'
+    	);
+    	insert lef;
     	
     	system.debug(l);
     	

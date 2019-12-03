@@ -3,7 +3,9 @@
     <fullName>End_DateTime_Extraction__c</fullName>
     <externalId>false</externalId>
     <label>End DateTime Extraction</label>
+    <length>50</length>
     <required>false</required>
     <trackTrending>false</trackTrending>
-    <type>DateTime</type>
+    <type>Text</type>
+    <unique>false</unique>
 </CustomField>
