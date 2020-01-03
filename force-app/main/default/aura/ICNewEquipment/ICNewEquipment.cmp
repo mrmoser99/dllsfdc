@@ -1,0 +1,55 @@
+<aura:component description="Add Equipment to Claim" controller="ICNewEquipment" 
+        implements="force:hasRecordId,forceCommunity:availableForAllPageTypes,lightning:actionOverride, force:lightningQuickActionWithoutHeader" access="global">  
+ 
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+    <aura:attribute name="saved" type="Boolean" default="false" />
+    <aura:attribute name="showSpinner" type="Boolean" default="true" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="leaseId" type="String" />
+    <aura:attribute name="cnum" type="String" default="{!v.recordId}" />
+    <aura:attribute name="lease" type="cllease__Lease_Account__c" default = "{
+                                                                    'sobjectType': 'cllease__Lease_Account__c',
+                                                                    }"/>
+    <aura:attribute name="title" type="String" default="New Lease Claim Equipment"/>
+    <aura:attribute name="sObjectName" type="String" default="Lease_Claim_Equipment__c"/>
+    <aura:attribute name="fields" type="String[]" default="['Name','lease_claim__c']" />
+    <aura:attribute name="options" type="List" default="[]"/>
+    <aura:attribute name="value" type="List" default=""/>
+    <aura:attribute name="EquipRecord" type="List"/>   
+    <aura:attribute name="EquipList" type="List"/>   
+
+    <lightning:notificationsLibrary aura:id="notifLib"/>
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+ 
+    
+        <lightning:recordEditForm aura:id="recordEditForm" 
+                                    objectApiName="{!v.sObjectName}" 
+                                    onload="{!c.handleLoad}"
+                                    >
+            <lightning:card title="Information">
+            
+                <lightning:messages />
+                <lightning:inputField fieldName="Name" />
+                <lightning:inputField fieldName="Lease_Claim__c" value="{!v.cnum}" aura:id="claim" disabled="true"/>
+                <lightning:inputField fieldName="LS_Contract__c" value="{!v.lease.Id}" aura:id="claimL" disabled="true"/>
+            
+                <lightning:checkboxGroup name="Select Equipment"
+                                label="Select Equipment for Claim"
+                                options="{!v.options }"
+                                value="{!v.value }"
+                                onchange="{!c.handleChange }"/>
+
+               
+            </lightning:card>
+
+                  <lightning:button class="slds-m-top_large" variant="brand" type="submit" label="Save" onclick="{!c.handleSubmit}" />
+                <lightning:button class="slds-m-top_large" label="Cancel" onclick="{!c.handleCancel}"/>
+
+        </lightning:recordEditForm>
+    
+       
+  
+    
+    
+
+</aura:component>

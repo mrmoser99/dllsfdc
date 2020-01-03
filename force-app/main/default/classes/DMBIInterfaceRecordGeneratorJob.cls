@@ -1046,13 +1046,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
     }
     //------------------------------------- PartyExternalReference creation Ends -----------------------------------------------//
     /*-------------------------------------IntAgreementParties creation starts---------------------------------------------------*/
-    Public static list<Int_Agreement_Party__c> CreateIntAgreementParties(list<Int_Agreement__c> AgreementRecords,list<cllease__Lease_Account__c> Contracts
-                                    ,list<Int_Party__c> IntParties,list<Int_Party__c> InsertedParties,map<string,string> IntCodeMapping){
-        system.debug('************************* creating agreement party records');
-        system.debug('agreement records: ' + agreementrecords);
-        system.debug('contracts: ' + contracts);
-        system.debug('intparties: ' + intparties);
-        system.debug('intcodeMapping: ' + intcodeMapping);
+    Public static list<Int_Agreement_Party__c> CreateIntAgreementParties(list<Int_Agreement__c> AgreementRecords,list<cllease__Lease_Account__c> Contracts,list<Int_Party__c> IntParties,list<Int_Party__c> InsertedParties,map<string,string> IntCodeMapping){
         Map<String,Int_party__c> IntPartyMap = new Map<String,Int_party__c>();
         //Set<Int_party__c> AllParties = new Set<Int_party__c>(IntParties);
         list<Int_Agreement_Party__c> AgrPartiesToInsert = new list<Int_Agreement_Party__c>();
@@ -1078,37 +1072,24 @@ Public class DMBIInterfaceRecordGeneratorJob {
             List<cllease__Contract_Parties__c> PartiesList = new list<cllease__Contract_Parties__c>();
             if(PartiesMap.containskey(agr.Agreement_Number__c)){
                 for(cllease__Contract_Parties__c ccp : PartiesMap.get(agr.Agreement_Number__c)){
-                    PartiesList.add(ccp); 
+                    PartiesList.add(ccp);
                 }
-                system.debug('Parties list: ' + partieslist);
-                for(String s:IntCodeMapping.keySet())
-                    system.debug('S is: ' + s);
                 for(cllease__Contract_Parties__c cp : PartiesList){
-                    system.debug('in loop: ' + cp);
                     if(IntCodeMapping.containskey(cp.cllease__Party_Type__c)) {
                         Int_Agreement_Party__c ap = CreateNewAgreementParty(agr,cp,IntPartyMap,IntCodeMapping)!=null?CreateNewAgreementParty(agr,cp,IntPartyMap,IntCodeMapping):Null;
-                        system.debug('returned ap: ' + ap);
-                        if(ap!=NULL){
-                            AgrPartiesToInsert.add(ap);
-                            system.debug('adding party: ' + ap);
-                        } 
-                         
+                        if(ap!=NULL){AgrPartiesToInsert.add(ap);}
                     }
                 } 
             }
-        } 
-        system.debug('returning parties to insert: ' + AgrPartiesToInsert);    
+        }     
         return AgrPartiesToInsert;
     }
     //@@SUBMETHOD: constructing a new Agreement Party  object 
     Private static Int_Agreement_Party__c CreateNewAgreementParty(Int_Agreement__c agr,cllease__Contract_Parties__c cp,Map<string,Int_party__c> IntPartyMap,map<string,string> IntCodeMapping){
         //set<String> PartyAgreements = new set<String>();
         Int_Agreement_Party__c Agreementparty = new Int_Agreement_Party__c();
-        //Map<string,Int_Agreement_Party__c> AgrPartyMap = new map<string,Int_Agreement_Party__c>();   
-        system.debug('in create agree party'  + intpartyMap);
-        system.debug('this is: ' + String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c));     
+        //Map<string,Int_Agreement_Party__c> AgrPartyMap = new map<string,Int_Agreement_Party__c>();        
         if(IntPartyMap.containskey(String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c))){ 
-            system.debug('************ really got one');
             int_party__c party = new int_party__c();
             party = IntPartyMap.get(String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c));
             Agreementparty.Party_Name__c = party.Id!=Null?party.Id:'';

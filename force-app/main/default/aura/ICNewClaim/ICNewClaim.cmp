@@ -1,0 +1,54 @@
+<aura:component description="New Claim"   controller="ICNewClaim"
+        implements="force:hasRecordId,forceCommunity:availableForAllPageTypes,lightning:actionOverride, force:lightningQuickActionWithoutHeader" access="global">  
+ 
+        
+        <aura:attribute name="disabled" type="Boolean" default="false" />
+        <aura:attribute name="saved" type="Boolean" default="false" />
+        <aura:attribute name="showSpinner" type="Boolean" default="true" />
+        <aura:attribute name="recordId" type="String" />
+        <aura:attribute name="lease" type="cllease__Lease_Account__c" />
+        <aura:attribute name="claim" type="Lease_Claims__c" default="{
+                                                                    'sobjectType': 'Lease_Claims__c',
+                                                                    'Acccount__c': '',
+                                                                    'Lease__c': '',
+                                                                    'Claim_Status__c' : 'New',
+                                                                    'Id' : ''
+                                                                    }"/>
+        <aura:attribute name="accountId" type="String" />
+        <aura:attribute name="leaseId" type="String" />
+        <aura:attribute name="sObjectName" type="String" default="Lease_Claims__c"/>
+
+
+        <lightning:notificationsLibrary aura:id="notifLib"/>
+        <lightning:overlayLibrary aura:id="overlayLib"/>
+ 
+    
+        <lightning:recordEditForm aura:id="recordEditForm" 
+                                    objectApiName="{!v.sObjectName}" 
+                                    onload="{!c.handleLoad}"
+                                    onsuccess="{!c.handleSuccess}"
+                                     
+                                    >
+            <lightning:card title="New Lease Claim">
+            
+                <lightning:messages />
+                <lightning:inputField fieldName="Name" />
+                <lightning:inputField fieldName="Account__c" value="{!v.claim.Account__c}" aura:id="claimAccount" disabled="true"/>
+                <lightning:inputField fieldName="Lease__c" value="{!v.claim.Lease__c}" aura:id="claimContract" disabled="true"/>
+                <lightning:inputField fieldName="Customer_Service_Rep_Name__c" value="{!v.claim.Customer_Service_Rep_Name__c}" required="true"/>
+                <lightning:inputField fieldName="Customer_Rep_Phone_Number__c" value="{!v.claim.Customer_Rep_Phone_Number__c}" aura:id="claimPhone" required="true" />
+                <lightning:inputField fieldName="Customer_Rep_Email__c" aura:id="claimEmail"  value="{!v.claim.Customer_Rep_Email__c}" required="true"/>
+               
+            </lightning:card>
+
+                <lightning:button class="slds-m-top_large" variant="brand" type="submit" label="Save" onclick="{!c.handleSubmit}" />
+                <lightning:button class="slds-m-top_large" label="Cancel" onclick="{!c.handleCancel}"/>
+
+        </lightning:recordEditForm>
+    
+       
+  
+    
+    
+
+</aura:component>	

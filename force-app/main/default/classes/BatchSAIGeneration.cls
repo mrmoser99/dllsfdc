@@ -6,7 +6,7 @@
 *
 * ChangeLog:
 *
-*	9/6/19 - MRM Created Class
+*	9/6/19 - MRM Created Class 
 *
 ************************************************************************************************/
 global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.Stateful{
@@ -264,7 +264,7 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
 
             if (app.agreement_Original_duration__c == null)
                 app.agreement_Original_duration__c = 60; 
-
+ 
             if (leaseTerminated || status == 'TERMINATED'){
                 app.agreement_rate_percentage__c = null;
                 app.agreement_Original_duration__c = null;

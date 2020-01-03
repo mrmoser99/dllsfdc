@@ -33,13 +33,15 @@ trigger Int_ICV_Default on Int_ICV_Default__c (before insert, after insert) {
 			
 				system.debug('account:' + d.Party_Source_System_Key_Value__c);	
 				Account temp = aMap.get(d.Party_Source_System_Key_Value__c);
-				if (pd == 1	|| d.LE_accrual_flag__c == 'Y'){
-					temp.npa_status__c = 'NON ACCRUAL';
+				if (pd == 1	|| d.LE_accrual_flag__c == 'N'){
+					//temp.npa_status__c = 'NON ACCRUAL';
+					temp.icv_default__c = true;
 					uList.add(temp);
 					system.debug('default');
 				}
 				else{
-					temp.npa_status__c = 'ACCRUAL';
+					//temp.npa_status__c = 'ACCRUAL';
+					temp.icv_default__c = false;
 					uList.add(temp);
 					system.debug('no default');
 				}

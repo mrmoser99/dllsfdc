@@ -17,13 +17,8 @@
     <tabs>SAI_Application_Party__c</tabs>
     <tabs>SAI_Party__c</tabs>
     <tabs>SAI_Delivery_Control__c</tabs>
-    <tabs>SAI_File_Control__c</tabs>
-    <tabs>clcommon__Billing_Group__c</tabs>
-    <tabs>clcommon__Collateral__c</tabs>
-    <tabs>test1__c</tabs>
-    <tabs>clcommon__Factory_Registration__c</tabs>
-    <tabs>clcommon__Payment_Mode__c</tabs>
-    <tabs>clcommon__Cash_Receipt_Application__c</tabs>
+    <tabs>SAI_File_Control__c</tabs> 
+   
     <tabs>SAI_Application_Asset__c</tabs>
     <tabs>SAI_Application_Asset_Feature__c</tabs>
     <tabs>SAI_Application_Facility__c</tabs>

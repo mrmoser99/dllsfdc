@@ -1008,7 +1008,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
         //set<String> PartyAgreements = new set<String>();
         Int_Agreement_Party__c Agreementparty = new Int_Agreement_Party__c();
         //Map<string,Int_Agreement_Party__c> AgrPartyMap = new map<string,Int_Agreement_Party__c>();        
-        if(IntPartyMap.containskey(String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c))){ 
+        //if(IntPartyMap.containskey(String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c))){ 
             int_party__c party = new int_party__c();
             party = IntPartyMap.get(String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c));
             Agreementparty.Party_Name__c = party.Id!=Null?party.Id:'';
@@ -1018,7 +1018,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Agreementparty.Party_Source_System__c = agr.Agreement_Source_System__c;                    
             Agreementparty.Party_Number__c = party.Party_Number__c!=Null?party.Party_Number__c:'';
             Agreementparty.Agreement_Name__c = agr.id;
-        }
+        //}
         Return Agreementparty;
     }
     /*------------------------------------- IntAgreementParties creation Ends-----------------------------------------------*/
