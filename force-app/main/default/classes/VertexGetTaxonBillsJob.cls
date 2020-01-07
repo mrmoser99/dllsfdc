@@ -73,6 +73,7 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
                         + 'cllease__Contract_Equipment__r.cllease__Tax_exemption__c, '
                         + 'cllease__Bill__c, '
                         + 'cllease__Bill__r.Name, '
+                        + 'cllease__contract__c, '
                         + 'cllease__Bill__r.cllease__Due_Type_Description__c, '
                         + 'cllease__Bill__r.cllease__Total_Due_Amount__c, '
                         + 'cllease__Bill__r.cllease__Balance_Amount__c, '

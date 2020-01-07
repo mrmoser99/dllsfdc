@@ -106,13 +106,27 @@ public class VertexUtil {
         
         Date startDate, endDate;
         Integer lengthOfContract;
+
+         set<ID> leaseSet = new Set<ID>();
+        for(cllease__Due_Detail_Lines__c dueDetailLine : dueDetailLines)        
+            leaseSet.add(dueDetailLine.cllease__Contract__c);
+
+        List<cllease__lease_account__c> leaseList = new List<cllease__Lease_Account__c>();
+        leaseList = [select booking_date__c 
+                     from cllease__lease_Account__c
+                     where id in: leaseSet
+                    ];
+        Map<Id,DateTime> leaseMap = new Map<Id,DateTime>();
+        for (cllease__lease_account__c l:leaseList)
+            leaseMap.put(l.id,l.booking_date__c);
+
         // Entering Due Detail lines details    
         for(cllease__Due_Detail_Lines__c dueDetailLine : dueDetailLines) {
             // Calculating the Length of Contract from first payment date to maturity date
             startDate = dueDetailLine.cllease__Bill__r.cllease__Lease_Account__r.cllease__First_Payment_Date__c;
             endDate   = dueDetailLine.cllease__Bill__r.cllease__Lease_Account__r.cllease__Maturity_Date__c;
             lengthOfContract = startDate.daysBetween(endDate);
-
+            String bookDate = formatDate(leaseMap.get(dueDetailLine.cllease__Contract__c));
             lineItemId = (dueDetailLine.Name != null ? dueDetailLine.Name : 'VALUE IS BLANK');
             Dom.XmlNode lineItem = invoiceRequest.addChildElement('urn:LineItem', null, null);
             lineItem.setattribute('lineItemId', lineItemId);
@@ -249,7 +263,7 @@ public class VertexUtil {
             // FlexibleDateField Tag
             Dom.XmlNode ffield31 = FFields.addChildElement('urn:FlexibleDateField',null,null);
             ffield31.setattribute('fieldId','1');
-            ffield31.addTextNode(currentSystemDateStr);
+            ffield31.addTextNode(bookDate);
             
         }
 
@@ -304,11 +318,25 @@ public class VertexUtil {
 
         Date startDate, endDate;
         Integer lengthOfContract;
+        set<ID> leaseSet = new Set<ID>();
+        for(cllease__Charge__c charge : charges)        
+            leaseSet.add(charge.cllease__lease_account__c);
+
+        List<cllease__lease_account__c> leaseList = new List<cllease__Lease_Account__c>();
+        leaseList = [select booking_date__c 
+                     from cllease__lease_Account__c
+                     where id in: leaseSet
+                    ];
+        Map<Id,DateTime> leaseMap = new Map<Id,DateTime>();
+        for (cllease__lease_account__c l:leaseList)
+            leaseMap.put(l.id,l.booking_date__c);
 
         for(cllease__Charge__c charge : charges){
             // Calculating Length of contract
             startDate = charge.cllease__Lease_Account__r.cllease__First_Payment_Date__c;
             endDate   = charge.cllease__Lease_Account__r.cllease__Maturity_Date__c;
+            String bookDate = formatDate(leaseMap.get(charge.cllease__lease_account__c));
+
             lengthOfContract = startDate.daysBetween(endDate);
 
 
@@ -449,7 +477,7 @@ public class VertexUtil {
             // FlexibleDateField Tag
             Dom.XmlNode ffield31 = FFields.addChildElement('urn:FlexibleDateField',null,null);
             ffield31.setattribute('fieldId','1');
-            ffield31.addTextNode(currentSystemDateStr);
+            ffield31.addTextNode(bookDate);
         }
         String req = scdoc.toXmlString();
         System.debug(LoggingLevel.ERROR, ' Request Str for Charge: '+ req);
