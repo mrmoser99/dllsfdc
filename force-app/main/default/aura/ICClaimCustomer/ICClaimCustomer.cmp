@@ -1,0 +1,50 @@
+<aura:component controller="IC_ClaimCustomerController" implements="force:appHostable,forceCommunity:availableForAllPageTypes">
+
+	<aura:attribute name="recordId" type="Id" default=""/>
+	<aura:attribute name="onchange" type="Aura.Action" description="Handle any data changes"/>
+
+	<aura:attribute name="claim" type="Lease_Claims__c" access="public" default="{'sobjectType' : 'Lease_Claims__c',
+																				  'Name': '',
+																				  'Customer_Rep_Phone_Number__c' : '',
+																				  'Customer_Rep_Email__c' : '',
+																				  'Customer_Service_Rep_Name__c' : ''
+																				  }"/>
+
+	<aura:attribute name="processing" type="Boolean" default="false" access="private"/>
+	<aura:attribute name="error" type="String" access="private"/>
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<aura:method name="saveAndValidate" access="public"/>
+
+	<lightning:layout multipleRows="true">
+		<lightning:layoutItem size="12" mediumDeviceSize="8" largeDeviceSize="6" >
+		
+			<lightning:input aura:id="contactname" 
+							 value="{!v.claim.Customer_Service_Rep_Name__c}"
+							 label="Customer Contact Name"
+							 required="true"
+							 messageWhenValueMissing="Name is required."
+							
+							 />
+			<lightning:input aura:id="contactphone"
+							 value="{!v.claim.Customer_Rep_Phone_Number__c}"
+                             onchange="{!c.fixFormatting}"
+							 label="Customer Contact Phone"
+							 required="true"
+							 pattern="[1-9]{1}[0-9]{9}"
+							 messageWhenPatternMismatch="Phone cannot start with 0 and should be 10 digits (NO '-')"
+							 messageWhenValueMissing="Phone is required."
+							 />
+			<lightning:input aura:id="contactemail"
+							 value="{!v.claim.Customer_Rep_Email__c}"
+							 label="Customer Contact Email"
+							 required="true"
+							 type="email"
+							 messageWhenValueMissing="Email is required."
+							 messageWhenTypeMismatch="Invalid Email Address"
+							 />
+		</lightning:layoutItem>
+	</lightning:layout>
+
+</aura:component>

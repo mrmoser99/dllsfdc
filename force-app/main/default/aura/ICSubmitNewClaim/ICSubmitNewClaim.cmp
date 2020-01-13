@@ -1,0 +1,79 @@
+<aura:component controller="ICNewClaim" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId">
+    <aura:html tag="style">
+        .slds-modal__container {
+             width : 75% !important;
+             max-width : 75% !important;
+         }
+    </aura:html> 
+
+    <aura:attribute name="onchange" type="Aura.Action" description="Handle any data changes"/>
+    
+    <aura:attribute name="applicationComplete" type="Boolean" access="private" description="true if progress is 100%" />
+    <aura:attribute name="processing" type="Boolean" default="false"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
+    <aura:method name="handleSuccess" access="public"/>
+
+    <aura:registerEvent name="appEvent" type="c:FMZ_Application_Refresh"/>
+    <div class="slds-modal_container">
+
+        
+        
+    <lightning:card title="Submit New Insurance Claim" iconName="standard:task">
+    
+        <lightning:layout verticalAlign="stretch" multipleRows="true">
+
+            <lightning:layoutItem size="12" largeDeviceSize="8" mediumDeviceSize="12" smallDeviceSize="12"
+                                  class="slds-p-right_x-small slds-p-bottom_x-small">
+                             
+                <c:FMZ_SetupAssistant aura:id="progress"
+                                      progressText="Complete all the steps below to submit an insurance claim."
+                                      progressValue="0">
+
+                    <c:FMZ_SetupAssistantStep aura:id="customer" stepTitle="Edit Customer" stepNumber="1"
+                                              onnext="{!c.handleCustomerNext}">
+                        
+                        <c:ICClaimCustomer aura:id="customerForm"
+                            recordId="{!v.recordId}"
+                            />
+
+                    </c:FMZ_SetupAssistantStep>
+
+                    <c:FMZ_SetupAssistantStep aura:id="equipment" stepTitle="Select Equipment" stepNumber="2"
+                                              onnext="{!c.handleEquipmentNext}">
+
+                        <c:ICClaimEquipment aura:id="equipmentForm"
+                                            recordId="{!v.recordId}"
+                        />
+
+                    </c:FMZ_SetupAssistantStep>
+
+                    <c:FMZ_SetupAssistantStep aura:id="notes" stepTitle="Documentation" stepNumber="3"
+                                              onnext="{!c.handleNotesNext}">
+
+                        <c:ICClaimNotes aura:id="notesForm"
+                                              recordId="{!v.recordId}"
+                        />
+ 
+                    </c:FMZ_SetupAssistantStep>
+
+                   
+
+                </c:FMZ_SetupAssistant>
+            
+            </lightning:layoutItem>
+          <aura:if isTrue="{!v.processing}">
+                <lightning:spinner variant="brand" size="medium" alternativeText="Please Wait"/>
+            </aura:if>
+           
+        </lightning:layout>
+       
+            <lightning:button label="Submit" class="slds-button slds-button_brand slds-button_success slds-button_stretch" onclick="{!c.navigateToRecord}"
+            disabled="{!not(v.applicationComplete)}" />
+       
+    </lightning:card>
+        
+    </div>
+    
+    
+</aura:component>
