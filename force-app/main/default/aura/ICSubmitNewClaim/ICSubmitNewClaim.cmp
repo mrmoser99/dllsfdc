@@ -23,7 +23,7 @@
     
         <lightning:layout verticalAlign="stretch" multipleRows="true">
 
-            <lightning:layoutItem size="12" largeDeviceSize="8" mediumDeviceSize="12" smallDeviceSize="12"
+            <lightning:layoutItem size="8" largeDeviceSize="8" mediumDeviceSize="12" smallDeviceSize="12"
                                   class="slds-p-right_x-small slds-p-bottom_x-small">
                              
                 <c:FMZ_SetupAssistant aura:id="progress"
@@ -62,15 +62,14 @@
                 </c:FMZ_SetupAssistant>
             
             </lightning:layoutItem>
-          <aura:if isTrue="{!v.processing}">
+            <aura:if isTrue="{!v.processing}">
                 <lightning:spinner variant="brand" size="medium" alternativeText="Please Wait"/>
             </aura:if>
-           
+            <lightning:layoutItem size="8" largeDeviceSize="8" mediumDeviceSize="12" smallDeviceSize="12" class="slds-p-right_x-small slds-p-bottom_x-small">
+                <lightning:button label="Submit" class="slds-button slds-button_brand slds-button_success slds-button_stretch" onclick="{!c.navigateToRecord}"
+                    disabled="{!not(v.applicationComplete)}" />
+            </lightning:layoutItem>
         </lightning:layout>
-       
-            <lightning:button label="Submit" class="slds-button slds-button_brand slds-button_success slds-button_stretch" onclick="{!c.navigateToRecord}"
-            disabled="{!not(v.applicationComplete)}" />
-       
     </lightning:card>
         
     </div>
