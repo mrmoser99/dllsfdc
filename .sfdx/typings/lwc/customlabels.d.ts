@@ -18,6 +18,10 @@ declare module "@salesforce/label/c.Credit_Engine" {
     var Credit_Engine: string;
     export default Credit_Engine;
 }
+declare module "@salesforce/label/c.Default_Rate" {
+    var Default_Rate: string;
+    export default Default_Rate;
+}
 declare module "@salesforce/label/c.Environment" {
     var Environment: string;
     export default Environment;

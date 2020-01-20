@@ -17,7 +17,7 @@ public without sharing class IC_ClaimNotesController {
 
 		for (Attachment a:documents)
 			a.name = a.name.replace('temp_' + recordId + '_','');
-		
+		system.debug('docs:' + documents);
 		return documents;
 
 	}

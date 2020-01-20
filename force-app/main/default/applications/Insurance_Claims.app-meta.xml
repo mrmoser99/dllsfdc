@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#0070D2</headerColor>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>Insurance Claims</label>
+    <navType>Standard</navType>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Claim</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Lease_Claims__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>NewCo Dealer Portal Manager</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Claim</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Lease_Claims__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>NewCo Dealer Portal SUPER User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Claim</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Lease_Claims__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>NewCo Dealer Portal User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Claim</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Lease_Claims__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Partner Community User</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Claim</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Lease_Claims__c</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Admin</profile>
+    </profileActionOverrides>
+    <tabs>standard-home</tabs>
+    <tabs>Lease_Claims__c</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>Insurance_Claims_UtilityBar</utilityBar>
+</CustomApplication>

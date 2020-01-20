@@ -100,8 +100,11 @@ global with sharing class DMBIInterfaceJob implements Database.Batchable<sObject
                 ConstructControlMap('Int_Party_Street_Address__c',DMBIInterfaceRecordGeneratorJob.CountInsertedRecords(AgreementsToInsert1));//    
             }
             if(!AgreementsToInsert2.isEmpty()){
+                System.debug('before insert count--->'+AgreementsToInsert2.size());
                 Database.insert(AgreementsToInsert2,False);
+                //insert AgreementsToInsert2;
                 ConstructControlMap('Int_Agreement_Party__c',DMBIInterfaceRecordGeneratorJob.CountInsertedRecords(AgreementsToInsert2));//    
+                
             }
             if(!AgreementsToInsert3.isEmpty()){
                 database.insert(AgreementsToInsert3,false);

@@ -2,8 +2,8 @@
 *   DMBI Interface Record Generator Job
 *
 * 
-*	Change Log: 
-*	10/10/19 - MRM - Added logic to update the collateral records in file control; there was a but that was inserting 
+*   Change Log: 
+*   10/10/19 - MRM - Added logic to update the collateral records in file control; there was a but that was inserting 
 *                    mutliple file control records for collateral, collateral party and collateral agreement.
 * 
 ********************************************************************************************************************/
@@ -932,7 +932,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
         if(!NewPartyList.isEmpty()){
             Database.insert(NewPartyList,false);  
         }
-        system.debug(' #### NewPartyList --->'+NewPartyList.size());
+        //system.debug(' #### NewPartyList --->'+NewPartyList.size());
         return NewPartyList;
     }
     /*------------------------------------- IntParty creation Ends -----------------------------------------------*/
@@ -1057,6 +1057,9 @@ Public class DMBIInterfaceRecordGeneratorJob {
                 IntPartyMap.put(ip.Party_Number__c, new int_party__c(id=ip.id,Party_Number__c=ip.Party_Number__c));
             }
         }
+        for(Int_party__c ip1 : [SELECT id,Party_Number__c FROM Int_party__c Where Party_Number__c NOT IN : IntPartyMap.keyset() AND CreatedDate = today]){
+            IntPartyMap.put(ip1.Party_Number__c,Ip1);
+        }
         //constructing agreement map
         for(Int_Agreement__c agr : AgreementRecords){
             AgreementMap.put(agr.Agreement_Number__c,new int_agreement__c (id = agr.Id,Agreement_Source_System__c=agr.Agreement_Source_System__c,Agreement_Number__c=agr.Agreement_Number__c));
@@ -1071,15 +1074,19 @@ Public class DMBIInterfaceRecordGeneratorJob {
         for (int_agreement__c agr :AgreementRecords){
             List<cllease__Contract_Parties__c> PartiesList = new list<cllease__Contract_Parties__c>();
             if(PartiesMap.containskey(agr.Agreement_Number__c)){
+                //System.debug(agr.Agreement_Number__c+'--parties-->'+PartiesMap.get(agr.Agreement_Number__c).size());
                 for(cllease__Contract_Parties__c ccp : PartiesMap.get(agr.Agreement_Number__c)){
                     PartiesList.add(ccp);
                 }
                 for(cllease__Contract_Parties__c cp : PartiesList){
                     if(IntCodeMapping.containskey(cp.cllease__Party_Type__c)) {
                         Int_Agreement_Party__c ap = CreateNewAgreementParty(agr,cp,IntPartyMap,IntCodeMapping)!=null?CreateNewAgreementParty(agr,cp,IntPartyMap,IntCodeMapping):Null;
-                        if(ap!=NULL){AgrPartiesToInsert.add(ap);}
+                        if(ap!=NULL){
+                            system.debug('ap---->'+ap);
+                            AgrPartiesToInsert.add(ap);
+                        }
                     }
-                } 
+                }//system.debug('AgrPartiesToInsert size--->'+AgrPartiesToInsert.size()); 
             }
         }     
         return AgrPartiesToInsert;
@@ -1088,7 +1095,9 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Private static Int_Agreement_Party__c CreateNewAgreementParty(Int_Agreement__c agr,cllease__Contract_Parties__c cp,Map<string,Int_party__c> IntPartyMap,map<string,string> IntCodeMapping){
         //set<String> PartyAgreements = new set<String>();
         Int_Agreement_Party__c Agreementparty = new Int_Agreement_Party__c();
-        //Map<string,Int_Agreement_Party__c> AgrPartyMap = new map<string,Int_Agreement_Party__c>();        
+        //Map<string,Int_Agreement_Party__c> AgrPartyMap = new map<string,Int_Agreement_Party__c>(); 
+        //system.debug('intPartyMapKeys'+IntPartyMap.keyset());
+        //system.debug('Agreement number---->'+String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c));
         if(IntPartyMap.containskey(String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c))){ 
             int_party__c party = new int_party__c();
             party = IntPartyMap.get(String.valueof(cp.cllease__Party_Account_Name__r.Account_Number__c));

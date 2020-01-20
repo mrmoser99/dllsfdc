@@ -118,6 +118,7 @@ global class InvoiceMigration implements Database.Batchable<sObject>{
             for(Invoice__c invoiceOld : invoiceList){
                 for(cllease__Lease_account_Due_Details__c bill : invoiceOld.Invoice_Bills__r){
                     bill.cllease__Consolidated_Invoice__c = newInvoiceToOldInvoice.get(bill.Invoiced_In__c);
+                    bill.cllease__Invoiced__c = true;
                     billsToUpdate.add(bill);
                 }
             }
@@ -125,6 +126,7 @@ global class InvoiceMigration implements Database.Batchable<sObject>{
             for(Invoice__c invoiceOld : invoiceList){
                 for(cllease__Charge__c charge : invoiceOld.Invoice_Charges__r){
                     charge.cllease__Consolidated_Invoice__c = newInvoiceToOldInvoice.get(charge.Invoiced_In__c);
+                    charge.cllease__Invoiced__c = true;
                     chargesToUpdate.add(charge);
                 }
             }

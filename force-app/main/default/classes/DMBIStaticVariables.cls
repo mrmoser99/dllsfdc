@@ -11,7 +11,7 @@ public class DMBIStaticVariables {
         'cllease__Total_Dealer_Charges__c,cllease__Subsidy1__c,Interim_Rent__c,Billed_Not_Paid__c,cllease__First_Payment_Date__c,Net_Trade_Up_Amount__c,Net_Dealer_Funding__c,Exposure__c, '+
         'cllease__Account__r.clcommon__direct_Exposure__c,cllease__Account__r.clcommon__Indirect_Exposure__c,cllease__Account__r.All_Address__c,cllease__Address__r.clcommon__Zip_Code__c,cllease__Address__r.clcommon__City__c,cllease__Address__r.clcommon__State_Province__c,cllease__Account__r.Industry_Code__c,cllease__Account__r.Industry_Code_Type__c '+
         ' FROM cllease__Lease_Account__c '+ //select () FROM cllease__Lease_Account__c limit 26
-        ' WHERE cllease__Lease_Status__c in (\'ACTIVE - GOOD STANDING\',\'ACTIVE - BAD STANDING\', \'ACTIVE – MATURED\',\'EVERGREEN\',\'TERMINATED\',\'CHARGED OFF\') ';//NetInvestmentJobbatch AND id=\'a6J550000004tsb\'
+        ' WHERE cllease__Lease_Status__c in (\'ACTIVE - GOOD STANDING\',\'ACTIVE - BAD STANDING\', \'ACTIVE – MATURED\',\'EVERGREEN\',\'TERMINATED\',\'CHARGED OFF\')   ';//NetInvestmentJobbatch AND id IN (\'a6J1I000000p6c7\' , \'a6J1I000001610H\')
     
     /*-------Rental stremas query ---- */
     public static list<cllease__Rental_Stream__c> getRentalStreams(list<cllease__Lease_Account__c> clleaseContractsList){

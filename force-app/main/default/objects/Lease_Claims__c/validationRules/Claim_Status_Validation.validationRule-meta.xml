@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Claim_Status_Validation</fullName>
+    <active>true</active>
+    <errorConditionFormula>Text(Claim_Status__c) != &#39;New&#39; &amp;&amp;  TExt(Claim_Status__c) != &#39;Submitted&#39; &amp;&amp; text(Claim_Status__c) != &#39;Withdrawn&#39; &amp;&amp;  ( $Profile.Name = &#39;NewCo Dealer Portal Manager&#39; || $Profile.Name = &#39;NewCo Dealer Portal SUPER User&#39; || $Profile.Name = &#39;NewCo Dealer Portal User&#39;)</errorConditionFormula>
+    <errorMessage>Claim status cannot be changed once submitted to Newco!</errorMessage>
+</ValidationRule>

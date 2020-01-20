@@ -37,6 +37,13 @@
         <value>ICS</value>
     </labels>
     <labels>
+        <fullName>Default_Rate</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Default Rate</shortDescription>
+        <value>.0183</value>
+    </labels>
+    <labels>
         <fullName>Environment</fullName>
         <language>en_US</language>
         <protected>false</protected>

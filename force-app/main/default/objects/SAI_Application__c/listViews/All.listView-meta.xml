@@ -11,8 +11,10 @@
     <columns>Application_Internal_Status_Date__c</columns>
     <columns>Application_Internal_Status_Detail_Code__c</columns>
     <columns>Application_Internal_Status_Detail_Date__c</columns>
-    <columns>Application_Registration_Date__c</columns>
-    <columns>Residual_Value_Amount__c</columns>
+    <columns>System_Selling_Party_Description__c</columns>
+    <columns>System_Selling_Party_Number__c</columns>
+    <columns>System_Program_Description__c</columns>
+    <columns>System_Program_Number__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

@@ -1,8 +1,8 @@
 <aura:component controller="ICNewClaim" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId">
     <aura:html tag="style">
         .slds-modal__container {
-             width : 75% !important;
-             max-width : 75% !important;
+             width : 33% !important;
+             max-width : 33% !important;
          }
     </aura:html> 
 
@@ -23,7 +23,7 @@
     
         <lightning:layout verticalAlign="stretch" multipleRows="true">
 
-            <lightning:layoutItem size="8" largeDeviceSize="8" mediumDeviceSize="12" smallDeviceSize="12"
+            <lightning:layoutItem size="12" largeDeviceSize="12" mediumDeviceSize="12" smallDeviceSize="12"
                                   class="slds-p-right_x-small slds-p-bottom_x-small">
                              
                 <c:FMZ_SetupAssistant aura:id="progress"
@@ -65,7 +65,7 @@
             <aura:if isTrue="{!v.processing}">
                 <lightning:spinner variant="brand" size="medium" alternativeText="Please Wait"/>
             </aura:if>
-            <lightning:layoutItem size="8" largeDeviceSize="8" mediumDeviceSize="12" smallDeviceSize="12" class="slds-p-right_x-small slds-p-bottom_x-small">
+            <lightning:layoutItem size="12" largeDeviceSize="12" mediumDeviceSize="12" smallDeviceSize="12" class="slds-p-right_x-small slds-p-bottom_x-small">
                 <lightning:button label="Submit" class="slds-button slds-button_brand slds-button_success slds-button_stretch" onclick="{!c.navigateToRecord}"
                     disabled="{!not(v.applicationComplete)}" />
             </lightning:layoutItem>

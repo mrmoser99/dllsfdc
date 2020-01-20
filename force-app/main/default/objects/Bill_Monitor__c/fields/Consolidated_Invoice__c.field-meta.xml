@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Consolidated_Invoice__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <externalId>false</externalId>
+    <label>Consolidated Invoice</label>
+    <referenceTo>clcommon__Consolidated_Invoice__c</referenceTo>
+    <relationshipLabel>Bill Monitor</relationshipLabel>
+    <relationshipName>Bill_Monitor</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -2,7 +2,7 @@ public class JobSharing {
    
    public static boolean manualShareRead(Id recordId, Id userOrGroupId){
       // Create new sharing object for the custom object Job.
-      ContentNote__Share jobShr  = new ContentNote__Share();
+      Lease_OLM_Quote__Share jobShr  = new Lease_OLM_Quote__Share();
    
       // Set the ID of record being shared.
       jobShr.ParentId = recordId;
