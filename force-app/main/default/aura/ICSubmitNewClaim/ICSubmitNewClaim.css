@@ -4,4 +4,9 @@
  .THIS.slds-modal__container {
     width : 40% !important;
     max-width : 40% !important;
+
+ }
+
+.THIS.hideDiv {
+    display: none;
 }

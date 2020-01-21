@@ -1,10 +1,46 @@
 ({
     onInit: function(component, event, helper) {
-        console.log('on init');
-        let customer = component.find('customer');
-        customer.set('v.collapsed', false);
-         
+        var action = component.get("c.getLease");
+        action.setParams({
+            "recordId": component.get('v.recordId')
+        }); 
+
+        action.setCallback(this, function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                var lease = response.getReturnValue();
+               
+                component.set('v.lease', lease);
+                console.log('***' + lease.Insurance_Fees1__c + '***');
+                if (lease.Insurance_Fees1__c == "0"){
+
+                    setTimeout(()=>{
+                        let quickActionClose = $A.get("e.force:closeQuickAction");
+                        quickActionClose.fire();
+                    },1);
+                    
+                    var msg='Cannot submit claim if insurance not chosen on lease!';
+                    component.find('notifLib').showToast({
+                                       'variant': 'error',
+                                       'message': msg,
+                                       'mode': 'sticky'
+                    });
+                    
+                    
+                }
+                else{
+                    let customer = component.find('customer');
+                    customer.set('v.collapsed', false);
+                }
+            }
+        });
+        $A.enqueueAction(action);
+
+        
+    
+             
     },
+   
     handleCustomerNext: function(component, event, helper) {
         let customer = component.find('customer'),
             customerForm = component.find('customerForm');

@@ -16,6 +16,7 @@ global with sharing class ICNewClaim {
 
         cllease__Lease_Account__c c = [select id
                             ,Name
+                            ,Insurance_Fees1__c
                             ,cllease__Account__c
                             from cllease__Lease_Account__c
                             where id = :recordid

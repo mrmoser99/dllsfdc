@@ -7,19 +7,21 @@
     </aura:html> 
 
     <aura:attribute name="onchange" type="Aura.Action" description="Handle any data changes"/>
-    
+    <lightning:notificationsLibrary aura:id="notifLib"/>
     <aura:attribute name="applicationComplete" type="Boolean" access="private" description="true if progress is 100%" />
     <aura:attribute name="processing" type="Boolean" default="false"/>
-
+    
+    <aura:attribute name="lease" type="String" default=""/>
     <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
     <aura:method name="handleSuccess" access="public"/>
 
     <aura:registerEvent name="appEvent" type="c:FMZ_Application_Refresh"/>
-    <div class="slds-modal_container">
-
-        
-        
-    <lightning:card title="Submit New Insurance Claim" iconName="standard:task">
+    
+     
+    <div aura:id="popup" class="slds-modal_container" >
+    
+      
+    <lightning:card title="Submit New Insurance Claim" iconName="standard:task" >
     
         <lightning:layout verticalAlign="stretch" multipleRows="true">
 
@@ -73,6 +75,5 @@
     </lightning:card>
         
     </div>
-    
     
 </aura:component>
