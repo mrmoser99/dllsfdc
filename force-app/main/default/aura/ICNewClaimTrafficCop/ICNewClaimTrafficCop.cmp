@@ -1,3 +1,0 @@
-<aura:component implements="force:lightningQuickActionWithoutHeader,force:hasRecordId">
-    <aura:handler name="init" value="{!this}" action="{!c.navigateToMyComponent}"/>
-</aura:component>	

@@ -67,6 +67,19 @@ global with sharing class ICNewClaim {
         c.Claim_status__c = 'Submitted';
         update c;
 
+        ContentNote cn = new ContentNote();
+        cn.Title = 'Initial Note'; 
+        String body = notes;
+        cn.Content = Blob.valueOf(body.escapeHTML4());
+        insert cn;
+
+        ContentDocumentLink link2 = new ContentDocumentLink();
+        link2.ContentDocumentId = cn.id;
+        link2.LinkedEntityId = c.id;
+        link2.ShareType = 'V';
+        link2.Visibility = 'AllUsers';
+        insert link2;
+
         Note n = new Note();
         n.body = notes;
         n.parentId = c.id;
@@ -113,7 +126,7 @@ global with sharing class ICNewClaim {
             cDocLink.ContentDocumentId = conDocument;//Add ContentDocumentId
             cDocLink.LinkedEntityId = c.id;//Add attachment parentId
             cDocLink.ShareType = 'I';//V - Viewer permission. C - Collaborator permission. I - Inferred permission.
-            cDocLink.Visibility = 'InternalUsers';//AllUsers, InternalUsers, SharedUsers
+            //cDocLink.Visibility = 'InternalUsers';//AllUsers, InternalUsers, SharedUsers
             Insert cDocLink;
         }
         
