@@ -1,0 +1,14 @@
+<template>
+    <lightning-card title="Results">
+
+        <lightning-button variant="neutral" label="Refresh" onclick={onRefresh} slot="actions">
+		</lightning-button>
+        <template if:true={loading}>
+            <lightning-spinner alternative-text="Loading"></lightning-spinner>
+        </template>
+        <lightning-datatable key-field="rowId" data={jobDetails} columns={columnConfig} >
+        </lightning-datatable>
+
+    </lightning-card>
+
+</template>

@@ -1,8 +1,8 @@
 <aura:component controller="ICNewClaim" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId">
     <aura:html tag="style">
         .slds-modal__container {
-             width : 33% !important;
-             max-width : 33% !important;
+             width : 45% !important;
+             max-width : 45% !important;
          }
     </aura:html> 
 

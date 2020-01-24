@@ -1,0 +1,23 @@
+<template>
+	
+	<template if:true={loading}>
+		<lightning-spinner alternative-text="Loading"></lightning-spinner>
+	</template>
+	<lightning-layout vertical-align="top" multiple-rows>
+		<lightning-layout-item padding="around-small" size="12" small-device-size="12" medium-device-size="3" large-device-size="12">
+			
+		</lightning-layout-item>
+        <lightning-layout-item padding="around-small" size="12" small-device-size="12" medium-device-size="3" large-device-size="2">
+			<c-batch-utility-nav  onnavitemselected={handleNavItemSelected}> <!-- this receives the published event from the nav page -->
+
+			</c-batch-utility-nav>
+		</lightning-layout-item>
+
+		<template if:true={dJobView}>  
+			<lightning-layout-item padding="around-small" size="12" small-device-size="12" medium-device-size="3" large-device-size="10">
+				<c-batch-utility-activites></c-batch-utility-activites>
+			</lightning-layout-item>
+		</template>		
+	</lightning-layout>
+
+</template>
