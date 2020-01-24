@@ -2,7 +2,6 @@ import { LightningElement, wire, track } from "lwc";
 
 import getJobDetails from "@salesforce/apex/BatchUtility.getJobDetails";
 
-
 export default class BatchUtilityActivites extends LightningElement {
   @track jobDetails;
   
@@ -16,7 +15,7 @@ export default class BatchUtilityActivites extends LightningElement {
     {
       label: "Completed Date",
       fieldName: "CompletedDate",
-      type: "datetime"
+      type: "string"
     },
     {
       label: "Apex Class Name",
@@ -47,7 +46,7 @@ export default class BatchUtilityActivites extends LightningElement {
     this.jobDetails = [];
     //console.log('data is : ' + JSON.stringify (data));
    
-    console.log('running wire' + this.refreshExecute);
+    
     if (data) {
       data.forEach(r => {
         this.jobDetails.push({
@@ -61,9 +60,9 @@ export default class BatchUtilityActivites extends LightningElement {
       });
       
       this.loading = false;
-      console.log('loding is: ' + this.loading);
+    
     } else if (error) {
-        console.log('error is: ' + error);
+    
         this.error = error;
     }
   }
@@ -71,14 +70,11 @@ export default class BatchUtilityActivites extends LightningElement {
   onRefresh(){
      
     var today = new Date();
-     
-     this.loading = true;
-    
-     this.refreshExecute  = today.getSeconds() + today.getMilliseconds();
+    this.loading = true;
+    this.refreshExecute  = today.getSeconds() + today.getMilliseconds();
   }
 
   getLoading(){
-     
     return this.loading;
   }
 }

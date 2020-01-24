@@ -1,5 +1,6 @@
 import { LightningElement,  track } from 'lwc';
 import runJob from "@salesforce/apex/BatchUtility.runJob"; 
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 
 
@@ -11,9 +12,12 @@ export default class batchUtilityManger extends LightningElement {
 
 	@track viewMode = 'none';
 	@track loading= false;
+	_title = 'Notice';
+    message = 'The daily job has been submitted!';
+	variant = 'Success';
 	
 	handleNavItemSelected(event) {
-		console.log('handle event received');
+		
 		const selectedItemName = event.detail.itemName;
 		
 		if (selectedItemName === 'djobview') {
@@ -23,14 +27,22 @@ export default class batchUtilityManger extends LightningElement {
 				this.message = 'Error received: code' + error.errorCode + ', ' +
 					'message ' + error.body.message;
 			});
+
 			this.viewMode = VIEW_DAILY_RESULTS;
+			const evt = new ShowToastEvent({
+				title: this._title,
+				message: this.message,
+				variant: this.variant
+            });
+            this.dispatchEvent(evt);
+         
 		}
-		console.log('this viewMode=' + selectedItemName);
+	
 	}
 
 
 	get dJobView() {
-		console.log('getting job view');
+	
 		return (this.viewMode === VIEW_DAILY_RESULTS);
 	}
 

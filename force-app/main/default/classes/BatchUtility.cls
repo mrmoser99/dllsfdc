@@ -13,11 +13,11 @@ public with sharing class BatchUtility {
         public class wrapJobDetail{
                 
                 @AuraEnabled public String ApexClassName {get;set;}
-                @AuraEnabled public DateTime CompletedDate  {get;set;} 
+                @AuraEnabled public String CompletedDate  {get;set;} 
                 @AuraEnabled public String JobType {get;set;}
                 @AuraEnabled public Integer NumberOfErrors {get;set;}
                 @AuraEnabled public String Status {get;set;}
-                @AuraEnabled public DateTime CreatedDate {get;set;}
+                @AuraEnabled public String CreatedDate {get;set;}
                 @AuraEnabled public String ExtendedStatus {get;set;}
                 @AuraEnabled public AsyncApexJob j{ get; set; }
 
@@ -25,14 +25,15 @@ public with sharing class BatchUtility {
                 public wrapJobDetail(String name, AsyncApexJob j){
                         
                         ApexClassName = name;
-                        CompletedDate = j.CompletedDate;
+                        if (j.CompletedDate != null)
+                                CompletedDate = j.CompletedDate.format();
                         JobType = j.JobType;
                         if (j.NumberOfErrors == null || j.NumberOfErrors == 0)
                                 NumberOfErrors = 0;
                         else
                                 NumberOfErrors = j.NumberOfErrors;
                         Status = j.Status;
-                        CreatedDate = j.CreatedDate;
+                        CreatedDate = j.CreatedDate.format();
                         ExtendedStatus = j.ExtendedStatus;
                         j=j;
                 }
