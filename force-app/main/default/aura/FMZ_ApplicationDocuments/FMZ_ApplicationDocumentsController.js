@@ -10,9 +10,9 @@
 
 	handleGenerate: function(component, event, helper) {
 		try {
-			if (!helper.isInputValid(component)) {
-				return;
-			}
+			//if (!helper.isInputValid(component)) {
+			//	return;
+			//}
             console.log('handleGenerate AppId: '+component.get('v.applicationId'));
 			component.set('v.processing', true);
 			helper.updateApplication(component)
