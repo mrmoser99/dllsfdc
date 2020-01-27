@@ -1,3 +1,12 @@
+/*****************************************************************************************************
+
+Change Log:
+
+1/27/20 - Removed email from going to sam at fortimize.  Added orgwide email id
+
+
+***************************************************************************************************** */
+
 public class FMZ_PortfolioManager {
     @AuraEnabled 
      public static PMUtility.ServiceContractData getData (String customerName
@@ -52,24 +61,40 @@ public class FMZ_PortfolioManager {
    // Email TearSheet or Quote
    @AuraEnabled
    public static void emailTearSheetOrQuote (String subject, String body) {
-       Id userId = UserInfo.getUserId();
-       List<User> userList = [SELECT Name, Email FROM User WHERE Id =: userId];
-       List<String> emails = new List<String>();
-       emails.add(userList[0].Email);
-       emails.add('samantha.kemme@fortimize.com');
+        Id userId = UserInfo.getUserId();
+        List<User> userList = [SELECT Name, Email FROM User WHERE Id =: userId];
+       
+        List<String> emailTo = new List<String>();
+        List<String> emailCc = new List<String>();
 
-       List<Messaging.SingleEmailMessage> mails =  new List<Messaging.SingleEmailMessage>();
+        OrgWideEmailAddress ow = [select id
+                                ,Address
+                                ,DisplayName
+                                from OrgWideEmailAddress 
+                                where DisplayName = 'NewCo Customer Service'
+                                ];
 
-       Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-       mail.setToAddresses(emails);
-       mail.setReplyTo('noreply@dll.com');
-       mail.setSenderDisplayName(userList[0].Name);
-       mail.setSubject(subject);
-       mail.setHtmlBody(body);
+       
 
-       mails.add(mail);
 
-       Messaging.sendEmail(mails);
+        //MRM removed this
+        //emails.add('samantha.kemme@fortimize.com');
+
+        List<Messaging.SingleEmailMessage> mails =  new List<Messaging.SingleEmailMessage>();
+
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        emailTo.add(userList[0].Email);
+        emailCc.add(ow.Address);
+       
+        mail.setCcAddresses(emailCc);
+        mail.setToAddresses(emailTo);
+        mail.setOrgWideEmailAddressId(ow.id);
+        mail.setSubject(subject);
+        mail.setHtmlBody(body);
+
+        mails.add(mail);
+
+        Messaging.sendEmail(mails);
    }
 
    // Email Support
