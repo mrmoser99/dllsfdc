@@ -1,3 +1,16 @@
+/*************************************************************************************************** 
+*
+* BatchUtility Controller Class
+
+ Change Log:
+
+ 1/27/20 - MRM Created Class to support the utility application (allows testers to run daily batch job)
+
+*       
+*
+*
+*
+******************************************************************************************************/
 public with sharing class BatchUtility {
 	@AuraEnabled 
         public static String runJob() {
@@ -57,8 +70,9 @@ public with sharing class BatchUtility {
 			and ApexClassId != null
                         and JobType = 'BatchApex'
 			order by CreatedDate desc
+                        limit 22
 		];
-		Set<String> keySet = new Set<String>();
+		Set<String> keySet = new Set<String>();  
 
 		for (AsyncApexJob a :aList) {
 		    keySet.add(a.ApexClassId);
