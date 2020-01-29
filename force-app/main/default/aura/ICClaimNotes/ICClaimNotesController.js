@@ -1,6 +1,7 @@
 ({
 	doInit: function(component, event, helper) {
 		try {
+			console.log('new note');
 			component.set('v.showError',false);
 			component.set('v.errorMessage',null);
 			//helper.loadApplication(component);

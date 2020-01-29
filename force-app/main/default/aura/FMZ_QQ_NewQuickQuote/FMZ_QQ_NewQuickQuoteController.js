@@ -1,5 +1,7 @@
 ({
     doInit: function(component, event, helper) {
+        var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+        alert('Chrome?' + isChrome);
         var recordId = component.get('v.recordId');
         if (recordId) {
             component.set('v.accountId', recordId);

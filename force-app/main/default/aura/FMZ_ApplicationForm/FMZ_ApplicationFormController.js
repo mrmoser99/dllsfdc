@@ -1,5 +1,6 @@
 ({
     onInit: function(component, event, helper) {
+       
         helper.loadCompletion(component);
         helper.getApp(component);
     },

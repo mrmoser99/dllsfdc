@@ -1,5 +1,12 @@
 ({
   doInit: function(component, event, helper) {
+    var isChrome = !!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime);
+    //alert('Chrome?' + isChrome);
+    if (!isChrome) {
+        alert('This application requires Chrome!');
+        return;
+    }
+
     var recordId = component.get("v.recordId");
     var tradeUpDetails = component.get("v.tradeUpDetails");
     if (recordId) {

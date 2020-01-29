@@ -9,6 +9,7 @@
 *   8/10/18 - MRM Added database logic to store response results
 *   9/5/18 	- MRM added more repsonse storage....
 *   10/1/19 - MRM added acccount update of sic code of we get one
+*   1/27/20 - MRM added a line to update account with the ein if returned
 *
 ********************************************************************************************************************/
 global class ICSResponse {
@@ -619,6 +620,8 @@ global class ICSResponse {
 					ICS_External_Id__c ex = new ICS_External_Id__c();
 					ex.ICS_External_Legal_Entity__c = e.id;
 					ex.type__c = ei.ExternalIdType;
+					if (ex.type__c == 'FEIN')
+						acc.EIN__c = ei.ExternalIdValue.substring(0,2) + '-' + ei.ExternalIdValue.subString(2,9);
 					ex.value__c = ei.ExternalIdValue;
 					eList.add(ex);
 				}
