@@ -38,15 +38,16 @@
     },
     // load or reload installation addresses for the application account
     loadPicklistOptions: function(component) {
-//        this.loadFieldOpts(component, 'Service_Escalate__c', 'v.serviceEscalateOpts');
+        this.loadFieldOpts(component, 'Service_Escalate__c', 'v.serviceEscalateOpts');
         this.loadFieldOpts(component, 'Frequency__c', 'v.frequencyOpts');
-//        this.loadFieldOpts(component, 'Escalation_Frequency__c', 'v.escalateFreqOpts');
-//        this.loadFieldOpts(component, 'Escalate_Service_On__c', 'v.escalateOnOpts');
-//        this.loadFieldOpts(component, 'Escalation_Type__c', 'v.escalateTypeOpts');
+        this.loadFieldOpts(component, 'Escalation_Frequency__c', 'v.escalateFreqOpts');
+        this.loadFieldOpts(component, 'Escalate_Service_On__c', 'v.escalateOnOpts');
+        this.loadFieldOpts(component, 'Escalation_Type__c', 'v.escalateTypeOpts');
         var action = component.get('c.getEquipmentOptions');
         action.setParams({
             applicationId : component.get('v.applicationId')
         });
+      
         action.setCallback(this, function(response) {
             var state = response.getState();
             if (state === 'SUCCESS') {

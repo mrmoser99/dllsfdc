@@ -1,3 +1,11 @@
+/***********************************************************************************************************************************
+ * 
+ * Change Log:
+
+  1/29/2020 - MRM Allow all Terms from Rate Card
+
+
+ *******************************************************************************************************************************/ 
 public without sharing class FMZ_ApplicationTermsController {
 
     @AuraEnabled
@@ -41,9 +49,9 @@ public without sharing class FMZ_ApplicationTermsController {
 
         for(Integer i = 0; i < oldOptions.size(); i++){
             Integer term = (Integer) oldOptions[i];
-            if(math.mod((Integer) term, 12) == 0){
+            //if(math.mod((Integer) term, 12) == 0){
                 termOptions.add(oldOptions[i]);
-            }
+            //}
         }
 
         return termOptions;

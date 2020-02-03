@@ -1,6 +1,6 @@
 ({
     doInit: function(component, event, helper) {
-        //helper.loadApplicationFees(component);
+        helper.loadApplicationFees(component);
         helper.loadPicklistOptions(component);
         var action = component.get('c.getFeeName');
         action.setParams({

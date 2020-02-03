@@ -1,3 +1,11 @@
+<!-- 
+
+* Change Log:
+
+  1/30/2020 - MRM added autofill="nope" to keep address from filling from browser autofill
+
+  -->
+
 <aura:component
   description="New Credit Approval"
   implements="force:lightningQuickActionWithoutHeader,force:hasRecordId"
@@ -123,12 +131,14 @@
                     class="input-is-required"
                     onchange="{!c.lookupChange}"
                     value="{!v.accountId}"
+                    autocomplete="nope"
                   />
                   <aura:set attribute="else">
                     <lightning:inputField
                       fieldName="genesis__Business_Name__c"
                       aura:id="inputFieldAccountId"
                       class="input-is-required"
+                      autocomplete="nope2"
                     />
                   </aura:set>
                 </aura:if>
@@ -141,6 +151,7 @@
                     fieldName="{!f.fieldPath}"
                     aura:id="inputFieldPhone"
                     class="{!f.required?'input-is-required':''}"
+                    autocomplete="nope"
                   />
                   <aura:if isTrue="{!v.invalidFormatPhone}">
                     <div class="slds-text-color_error"
@@ -156,12 +167,14 @@
                         fieldName="{!f.fieldPath}"
                         aura:id="inputFieldFinance"
                         class="{!f.required?'input-is-required':''}"
+                        autocomplete="nope"
                       />
                       <aura:set attribute="else">
                         <lightning:inputField
                           fieldName="{!f.fieldPath}"
                           aura:id="inputField"
                           class="{!f.required?'input-is-required':''}"
+                          autocomplete="nope"
                         />
                       </aura:set>
                     </aura:if>
@@ -178,6 +191,7 @@
               onchange="{!c.findMatchingAddresses}"
               required="true"
               messageWhenValueMissing="Street Address is Required"
+              autocomplete="nope"
             />
             <div aura:id="matchesOverlay" class="no-display match_overlay">
               <aura:iteration items="{!v.matches}" var="match">
@@ -196,6 +210,7 @@
               label="City"
               required="true"
               messageWhenValueMissing="City is Required"
+              autocomplete="nope"
             />
             <lightning:input
               aura:id="county"
@@ -203,6 +218,7 @@
               label="County"
               required="true"
               messageWhenValueMissing="County is Required"
+              autocomplete="nope"
             />
             <lightning:input
               aura:id="state"
@@ -210,6 +226,7 @@
               label="State"
               required="true"
               messageWhenValueMissing="State is Required"
+              autocomplete="nope"
             />
             <lightning:input
               aura:id="postalCode"
@@ -217,6 +234,7 @@
               label="Postal Code"
               required="true"
               messageWhenValueMissing="Postal Code is Required"
+              autocomplete="nope"
             />
             <lightning:input
               aura:id="validStatus"
