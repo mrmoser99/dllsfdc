@@ -1,0 +1,65 @@
+{
+  "status": 0,
+  "result": [
+    {
+      "createdById": "0051I000003x4UkQAI",
+      "createdByName": "Jan Matteson",
+      "createdDate": "2018-12-17T14:00:42.000Z",
+      "fileName": "moderation/Dealer.Block_banned_keywords.rule",
+      "fullName": "Dealer.Block_banned_keywords",
+      "id": "0LJ1I000000ZBJ9WAO",
+      "lastModifiedById": "0051I000003x4UkQAI",
+      "lastModifiedByName": "Jan Matteson",
+      "lastModifiedDate": "2018-12-17T14:00:42.000Z",
+      "type": "ModerationRule"
+    },
+    {
+      "createdById": "0051I000003x4UkQAI",
+      "createdByName": "Jan Matteson",
+      "createdDate": "2018-12-17T14:00:42.000Z",
+      "fileName": "moderation/Dealer.Flag_banned.rule",
+      "fullName": "Dealer.Flag_banned",
+      "id": "0LJ1I000000ZBJAWA4",
+      "lastModifiedById": "0051I000003x4UkQAI",
+      "lastModifiedByName": "Jan Matteson",
+      "lastModifiedDate": "2018-12-17T14:00:42.000Z",
+      "type": "ModerationRule"
+    },
+    {
+      "createdById": "0051I000003x4UkQAI",
+      "createdByName": "Jan Matteson",
+      "createdDate": "2018-12-17T14:00:42.000Z",
+      "fileName": "moderation/Dealer.Review_the_first_post.rule",
+      "fullName": "Dealer.Review_the_first_post",
+      "id": "0LJ1I000000ZBJDWA4",
+      "lastModifiedById": "0051I000003x4UkQAI",
+      "lastModifiedByName": "Jan Matteson",
+      "lastModifiedDate": "2018-12-17T14:00:42.000Z",
+      "type": "ModerationRule"
+    },
+    {
+      "createdById": "0051I000003x4UkQAI",
+      "createdByName": "Jan Matteson",
+      "createdDate": "2018-12-17T14:00:42.000Z",
+      "fileName": "moderation/Dealer.Replace_banned.rule",
+      "fullName": "Dealer.Replace_banned",
+      "id": "0LJ1I000000ZBJCWA4",
+      "lastModifiedById": "0051I000003x4UkQAI",
+      "lastModifiedByName": "Jan Matteson",
+      "lastModifiedDate": "2018-12-17T14:00:42.000Z",
+      "type": "ModerationRule"
+    },
+    {
+      "createdById": "0051I000003x4UkQAI",
+      "createdByName": "Jan Matteson",
+      "createdDate": "2018-12-17T14:00:42.000Z",
+      "fileName": "moderation/Dealer.Freeze_for_frequent_posting.rule",
+      "fullName": "Dealer.Freeze_for_frequent_posting",
+      "id": "0LJ1I000000ZBJBWA4",
+      "lastModifiedById": "0051I000003x4UkQAI",
+      "lastModifiedByName": "Jan Matteson",
+      "lastModifiedDate": "2018-12-17T14:00:42.000Z",
+      "type": "ModerationRule"
+    }
+  ]
+}
