@@ -132,7 +132,7 @@ global without sharing class NewCoUtility {
     * SendWelcome Packet
     *
     *************************************************************************************************/
-   	
+   	 
     public static void sendWelcomePacket(Map<ID,String> leaseMap){
     	
     
@@ -157,7 +157,7 @@ global without sharing class NewCoUtility {
 			contactMap.put(c.id,userinfo.getSessionId());
 			
 			if (addrList.size() != 0){
-	  			NewCoUtility.congaWelcomePacket(leaseMap,contactMap);
+	  			NewCoUtility.congaWelcomePacket(leaseMap);
 	  		
     		}
     		else{
@@ -165,15 +165,24 @@ global without sharing class NewCoUtility {
     		}
 		}
 		
-    }  
+	}  
+	 
     /****************************************************************************************
     *
     * CONGA WELCOME PACKET
     *
     ****************************************************************************************/
     @future(callout=true)
-    public static void congaWelcomePacket(Map<ID,String> leaseMap, Map<ID,String> contactMap){
-    	
+    public static void congaWelcomePacket(Map<ID,String> leaseMap){ 
+		
+		OrgWideEmailAddress ow = [select id
+                                ,Address
+                                ,DisplayName
+                                from OrgWideEmailAddress 
+                                where DisplayName = 'NewCo Customer Service'
+                                ];
+
+
     	List<clcommon__Category_Attachment_Association__c> aList = new List<clcommon__Category_Attachment_Association__c>();
     	
     	
@@ -182,11 +191,14 @@ global without sharing class NewCoUtility {
       	
       	
       	lease = [	Select c.cllease__Account__r.Id
-      				, c.cllease__Account__c
-      				, c.dealer_name__c
-      				, c.Contract_Signer__c 
-      				, c.application__c
-      				, c.cllease__application_number__c
+      				, cllease__Account__c
+      				, dealer_name__c
+      				, Contract_Signer__c 
+					  , application__c
+					  ,name
+					, cllease__application_number__c
+					,cllease__Dealer__c
+					, Bill_To_Contact_Id__c
       				From cllease__Lease_Account__c c
       				where id in :leaseMap.keySet() 
       			];
@@ -221,9 +233,9 @@ global without sharing class NewCoUtility {
     	for (clcommon__Category_Attachment_Association__c a:aList)
     		aSet.add(a.clcommon__Attachment_id__c);
     			
-    	
+    	Account act = [select primary_contact__c from Account where id = :lease.cllease__Dealer__c];
     		
-    	Contact c = [select id,email from Contact where id in :contactMap.keySet()];
+    	Contact c = [select id,email from Contact where id = :act.primary_contact__c];
     	
     	System.debug('here');
     	
@@ -236,12 +248,19 @@ global without sharing class NewCoUtility {
 		'&queryId=' + system.label.welcome_query1 + '?pv0='+ lease.cllease__Account__r.id +  
 		'&queryId=' + system.label.welcome_query2 + '?pv0=' + lease.Id + 
 		'&DefaultPDF=1' +
+		'&AC0=1' + 
+		'&AC1=' + 'Welcome+Packet+Sent' + 
+		'&LG4=1' + 
+		'&AttachmentParentId=' + lease.cllease__Dealer__c +
+		'&LGAttachOption=0' + 
+		'&EmailRelatedToId=' + lease.cllease__Dealer__c +
+		'&LGParentId=' + lease.cllease__Dealer__c +
 		'&LG3=2&APIMode=1&OFN=Welcome';		
 		
 		
 		String myURL = 'https://composer.congamerge.com/composer8/index.html';
        	congaUrl=myURL+'?sessionId='+
-       	 		contactMap.get(c.id)+
+		   		UserInfo.getSessionId()+
         		'&serverUrl='+
         		partnerUrl
        		 	+parms;
@@ -275,8 +294,14 @@ global without sharing class NewCoUtility {
 			
 		mail.setToAddresses(toAddresses);
 		
-		mail.setOrgWideEmailAddressId(system.label.welcome_email);
 		
+		mail.setOrgWideEmailAddressId(system.label.welcome_email);
+
+		List<String> ccList = new List<String>();
+		ccList.add(ow.address);
+
+		mail.setCCAddresses(ccList);
+
 		String signer = lease.contract_signer__c ;
 		if (signer == null)
 			signer = '';
@@ -285,7 +310,7 @@ global without sharing class NewCoUtility {
 		if (dealer == null)
 			dealer = '';
 			
-		mail.setSubject(signer + ' - ' + dealer + ' Executed Lease & Welcome Package');
+		mail.setSubject(dealer + ' Executed Lease & Welcome Package for Lease: ' + lease.name);
     	
     	List<Messaging.Emailfileattachment> fileAttachments = new List<Messaging.Emailfileattachment>();
 		for (Attachment a : attList){
@@ -312,8 +337,6 @@ global without sharing class NewCoUtility {
 		
 		mail.setFileAttachments(fileAttachments);
 		
-    	NewCoUtility.deleteContact(contactMap);
-    	
     	Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
     	
     	System.debug('after email');

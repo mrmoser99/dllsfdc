@@ -8,6 +8,7 @@
 *   5/8/19 - MRM fix send welcome packet error when processing payment
 * This trigger sends off a welcome packet when the contract is booked
 *   05/11/19 - CLS modified to support canceled contract as part new inovice changes
+*   2/4/2020 - remove welcome packet send from trigger
 *
 ******************************************************************************/
 trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
@@ -25,14 +26,24 @@ trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
     
     updateInvoiceDetails(canceledContractsIds);
     // Updating invoiced flag on bills and charges Codes end 
-       
+    system.debug('***************************************   trigger' + userinfo.getUserId());
+    system.debug('***************************************   trigger' + userinfo.getUserId()); 
+    system.debug('***************************************   trigger' + userinfo.getUserId()); system.debug('***************************************   trigger' + userinfo.getUserId()); system.debug('***************************************   trigger' + userinfo.getUserId()); system.debug('***************************************   trigger' + userinfo.getUserId()); system.debug('***************************************   trigger' + userinfo.getUserId());
+
+
+ 
+    system.debug('***************************************   trigger' + userinfo.getUserId());
+    system.debug('***************************************   trigger' + userinfo.getUserId());
+    system.debug('***************************************   trigger' + userinfo.getUserId());
+    system.debug('***************************************   trigger' + userinfo.getUserId());
+
     //only send welcome packet if this is a single lease update
     if (trigger.new.size() == 1){
-         
+        system.debug('evaluate welcome flag');
         Map<ID,String> leaseMap = new Map<ID,String>(); 
-        if  (
-            (!trigger.old[0].cllease__Lease_Status__c.contains('ACTIVE') 
-            && trigger.new[0].cllease__Lease_Status__c.contains('ACTIVE') ) 
+         if  (
+             (!trigger.old[0].cllease__Lease_Status__c.contains('ACTIVE') 
+             && trigger.new[0].cllease__Lease_Status__c.contains('ACTIVE') ) 
         
         || (trigger.old[0].welcome_package_requested__c == false &&
             trigger.new[0].welcome_package_requested__c == true)
