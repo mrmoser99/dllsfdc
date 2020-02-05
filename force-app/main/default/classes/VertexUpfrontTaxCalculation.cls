@@ -68,10 +68,10 @@ Global class VertexUpfrontTaxCalculation
                     vertexLog.Category__c='UPFRONT_TAX-VERTEX TAX CALL';
                     insert vertexLog;
                 } 
-                else {
+                /*else {
                     res = VertexHttpResponseGenerator.vertexUpFrontApplicationHTTPResponse(applicationid);
                 }
-                
+                */
                        
                 string resString = res.getbody() ;
                 System.debug(' Response Code: '+resString);

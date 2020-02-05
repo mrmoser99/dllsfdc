@@ -86,6 +86,14 @@ declare module "@salesforce/resourceUrl/Fix_SelectPricing" {
     var Fix_SelectPricing: string;
     export default Fix_SelectPricing;
 }
+declare module "@salesforce/resourceUrl/Flowers" {
+    var Flowers: string;
+    export default Flowers;
+}
+declare module "@salesforce/resourceUrl/Huskies" {
+    var Huskies: string;
+    export default Huskies;
+}
 declare module "@salesforce/resourceUrl/NGTaskListUpdateforNewcoChecklist31July" {
     var NGTaskListUpdateforNewcoChecklist31July: string;
     export default NGTaskListUpdateforNewcoChecklist31July;

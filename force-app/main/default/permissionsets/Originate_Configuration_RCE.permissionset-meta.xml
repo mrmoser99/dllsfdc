@@ -336,6 +336,26 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Application_Fee__c.Escalate_Service_On__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Application_Fee__c.Escalation_Frequency__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Application_Fee__c.Escalation_Type__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Application_Fee__c.Escalation_Value__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Application_Fee__c.Fee_Amount__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -357,6 +377,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Application_Fee__c.Number_of_Payments__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Application_Fee__c.Service_Escalate__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -4562,6 +4587,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Lease_Claims__c.Insurance_Claim_Number__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Lease_Claims__c.Lease__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

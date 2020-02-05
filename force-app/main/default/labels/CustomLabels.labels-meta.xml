@@ -37,6 +37,20 @@
         <value>ICS</value>
     </labels>
     <labels>
+        <fullName>DefaultEscalationFrequency</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>DefaultEscalationFrequency</shortDescription>
+        <value>MONTHLY</value>
+    </labels>
+    <labels>
+        <fullName>DefaultFrequencyValue</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>DefaultFrequencyValue</shortDescription>
+        <value>3</value>
+    </labels>
+    <labels>
         <fullName>Default_Rate</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -286,6 +300,13 @@
         <value>https://newco--dev.my.salesforce.com/</value>
     </labels>
     <labels>
+        <fullName>Org_Wide_Email</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Org Wide Email</shortDescription>
+        <value>0D21I000000CdKt</value>
+    </labels>
+    <labels>
         <fullName>PM_Endpoint</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -330,6 +351,13 @@ The NewCo Team&lt;br/&gt;
         <protected>false</protected>
         <shortDescription>Welcome Ins Doc</shortDescription>
         <value>0151I000000XidX</value>
+    </labels>
+    <labels>
+        <fullName>Welcome_Packet_Email_Template</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Welcome Packet Email Template</shortDescription>
+        <value>00X4F000000iHKW</value>
     </labels>
     <labels>
         <fullName>Welcome_Query1</fullName>

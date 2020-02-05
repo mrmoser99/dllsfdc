@@ -24,13 +24,33 @@
         <senderType>OrgWideEmailAddress</senderType>
         <template>cnotify__Notification_Templates/Newco_ICV_Into_Default</template>
     </alerts>
+    <alerts>
+        <fullName>Tax_Exemption_Email_Account</fullName>
+        <description>Tax Exemption Email Account</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>chandi.freeman@dllgroup.com.newco</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>mark.moser@dllgroup.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>smclachlan@leasedirect.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>cnotify__Notification_Templates/Tax_Exempt_Account</template>
+    </alerts>
     <rules>
         <fullName>Account Out of Default</fullName>
         <actions>
             <name>Account_out_of_Default</name>
             <type>Alert</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>Account.ICV_Default__c</field>
             <operation>equals</operation>

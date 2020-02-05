@@ -18,6 +18,14 @@ declare module "@salesforce/label/c.Credit_Engine" {
     var Credit_Engine: string;
     export default Credit_Engine;
 }
+declare module "@salesforce/label/c.DefaultEscalationFrequency" {
+    var DefaultEscalationFrequency: string;
+    export default DefaultEscalationFrequency;
+}
+declare module "@salesforce/label/c.DefaultFrequencyValue" {
+    var DefaultFrequencyValue: string;
+    export default DefaultFrequencyValue;
+}
 declare module "@salesforce/label/c.Default_Rate" {
     var Default_Rate: string;
     export default Default_Rate;
@@ -150,6 +158,10 @@ declare module "@salesforce/label/c.OrgUrl" {
     var OrgUrl: string;
     export default OrgUrl;
 }
+declare module "@salesforce/label/c.Org_Wide_Email" {
+    var Org_Wide_Email: string;
+    export default Org_Wide_Email;
+}
 declare module "@salesforce/label/c.PM_Endpoint" {
     var PM_Endpoint: string;
     export default PM_Endpoint;
@@ -173,6 +185,10 @@ declare module "@salesforce/label/c.Welcome_HTML_Body" {
 declare module "@salesforce/label/c.Welcome_Ins_Doc" {
     var Welcome_Ins_Doc: string;
     export default Welcome_Ins_Doc;
+}
+declare module "@salesforce/label/c.Welcome_Packet_Email_Template" {
+    var Welcome_Packet_Email_Template: string;
+    export default Welcome_Packet_Email_Template;
 }
 declare module "@salesforce/label/c.Welcome_Query1" {
     var Welcome_Query1: string;
