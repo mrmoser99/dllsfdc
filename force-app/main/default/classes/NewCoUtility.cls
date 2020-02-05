@@ -7,6 +7,7 @@
 * 2/15/18 - MRM Created
 * 9/19/19 - MRM Changed invoice__c to clcommon__Consolidated_Invoice__c
 * 9/24/19 - MRM added cams check to process
+* 2/5/20 - MRM added logic to allow for welcome packet to run for portal users
 *
 **********************************************************************************************/
 global without sharing class NewCoUtility { 
@@ -134,43 +135,28 @@ global without sharing class NewCoUtility {
     *************************************************************************************************/
    	 
     public static void sendWelcomePacket(Map<ID,String> leaseMap){
-    	
-    
-      	cllease__Lease_Account__c lease = new cllease__Lease_Account__c();
-      	
-      	lease = [	Select c.cllease__Account__r.Id, c.cllease__Account__c 
-      				From cllease__Lease_Account__c c
-      				where id in :leaseMap.keySet() 
-      			];
-      
-      	List<Address__c> addrList = [select  id
-								, email_address__c
-								from Address__c 
-								where account__c = :lease.cllease__Account__r.id
-								and bill_to_usage__c = true
-								limit 1];
-		
-		if (addrList.size() != 0){
-			Contact c = new Contact(firstname='test', lastname='conga',email=addrList[0].email_address__c);
-			insert c;
-			Map<ID,String> contactMap = new Map<ID,String>();
-			contactMap.put(c.id,userinfo.getSessionId());
-			
-			if (addrList.size() != 0){
-	  			NewCoUtility.congaWelcomePacket(leaseMap);
+      		
+		NewCoUtility.congaWelcomePacket(leaseMap);
 	  		
-    		}
-    		else{
-    			NewCoUtility.deleteContact(contactMap);
-    		}
-		}
-		
-	}  
+    }  
 	 
     /****************************************************************************************
     *
     * CONGA WELCOME PACKET
-    *
+	*
+	* Get this:
+	*
+		To allow for a portal user to get a welcome packet (via conga) without a license I 
+		did the following:
+			
+		1) Added trigger to the category attachement association so that when a doc is attached
+		   to the 08 Execution category, it will set the trigger new packet workflow to true
+		2) This will then execute the trigger new packet workflow which will call the outbound
+		   message to update the welcome package request flag.  they key here is that an outbound
+		   message can run with a different user id that has a conga license.
+		3) In turn the outbound message triggers the clleaseLeaseAccount trigger that actually
+		   generates and send the welcome packet email.
+
     ****************************************************************************************/
     @future(callout=true)
     public static void congaWelcomePacket(Map<ID,String> leaseMap){ 
@@ -182,10 +168,7 @@ global without sharing class NewCoUtility {
                                 where DisplayName = 'NewCo Customer Service'
                                 ];
 
-
     	List<clcommon__Category_Attachment_Association__c> aList = new List<clcommon__Category_Attachment_Association__c>();
-    	
-    	
     	
     	cllease__Lease_Account__c lease = new cllease__Lease_Account__c();
       	
@@ -194,8 +177,8 @@ global without sharing class NewCoUtility {
       				, cllease__Account__c
       				, dealer_name__c
       				, Contract_Signer__c 
-					  , application__c
-					  ,name
+					, application__c
+					, name
 					, cllease__application_number__c
 					,cllease__Dealer__c
 					, Bill_To_Contact_Id__c
@@ -204,16 +187,18 @@ global without sharing class NewCoUtility {
       			];
     	system.debug('app nbr: ' + lease.cllease__application_number__c);
     	 
-    	genesis__Applications__c app = [select id 
+		genesis__Applications__c app = [select id 
+										, ownerId
     									from genesis__Applications__c 
     									where name = :lease.cllease__application_number__c];
     									
-    									
-    	clcommon__Document_Definition__c dc = new clcommon__Document_Definition__c();
+		User u = [select email from User where id = :app.ownerId];							
+
+		clcommon__Document_Definition__c dc = new clcommon__Document_Definition__c();
     	
     	dc = [	select id 
     		  	from clcommon__Document_Definition__c
-    		  	where name = '08 Execution' 
+    		  	where name = '01 Lease Agreement' 
     			]; 
     	
     	system.debug('lease app: ' + lease.application__c);  
@@ -232,12 +217,10 @@ global without sharing class NewCoUtility {
     	
     	for (clcommon__Category_Attachment_Association__c a:aList)
     		aSet.add(a.clcommon__Attachment_id__c);
-    			
-    	Account act = [select primary_contact__c from Account where id = :lease.cllease__Dealer__c];
-    		
-    	Contact c = [select id,email from Contact where id = :act.primary_contact__c];
     	
-    	System.debug('here');
+    		
+    	//Contact c = [select id,email from Contact where id = :act.primary_contact__c];
+    	
     	
     	String version = '/services/Soap/u/39.0/';
  		String partnerUrl = Url.getSalesforceBaseUrl().toExternalForm()+version+UserInfo.getOrganizationId();  
@@ -251,10 +234,10 @@ global without sharing class NewCoUtility {
 		'&AC0=1' + 
 		'&AC1=' + 'Welcome+Packet+Sent' + 
 		'&LG4=1' + 
-		'&AttachmentParentId=' + lease.cllease__Dealer__c +
+		'&AttachmentParentId=' + lease.cllease__Account__c +
 		'&LGAttachOption=0' + 
-		'&EmailRelatedToId=' + lease.cllease__Dealer__c +
-		'&LGParentId=' + lease.cllease__Dealer__c +
+		'&EmailRelatedToId=' + lease.cllease__Account__c +
+		'&LGParentId=' + lease.cllease__Account__c  +
 		'&LG3=2&APIMode=1&OFN=Welcome';		
 		
 		
@@ -286,10 +269,10 @@ global without sharing class NewCoUtility {
    
 		List<String> toAddresses = new List<String>();
 		if (system.label.environment == 'PROD')
-			toAddresses.add(c.email);
+			toAddresses.add(lease.Bill_To_Contact_Id__c);
 		else{
-			c.email = 'mark.moser@dllgroup.com';
-			toAddresses.add(c.email);
+			toAddresses.add('mark.moser@dllgroup.com');
+			toAddresses.add('SMcLachlan@leasedirect.com');
 		}
 			
 		mail.setToAddresses(toAddresses);
@@ -301,6 +284,7 @@ global without sharing class NewCoUtility {
 		ccList.add(ow.address);
 
 		mail.setCCAddresses(ccList);
+		mail.setTargetObjectId(lease.Bill_To_Contact_Id__c);
 
 		String signer = lease.contract_signer__c ;
 		if (signer == null)
@@ -336,6 +320,8 @@ global without sharing class NewCoUtility {
 		mail.setHTMLBody(system.label.welcome_html_body);
 		
 		mail.setFileAttachments(fileAttachments);
+
+		mail.setSaveAsActivity(true);
 		
     	Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
     	

@@ -8,7 +8,7 @@
 *   5/8/19 - MRM fix send welcome packet error when processing payment
 * This trigger sends off a welcome packet when the contract is booked
 *   05/11/19 - CLS modified to support canceled contract as part new inovice changes
-*   2/4/2020 - remove welcome packet send from trigger
+*   2/4/2020 - modify welcome packet send
 *
 ******************************************************************************/
 trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
@@ -26,17 +26,7 @@ trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
     
     updateInvoiceDetails(canceledContractsIds);
     // Updating invoiced flag on bills and charges Codes end 
-    system.debug('***************************************   trigger' + userinfo.getUserId());
-    system.debug('***************************************   trigger' + userinfo.getUserId()); 
-    system.debug('***************************************   trigger' + userinfo.getUserId()); system.debug('***************************************   trigger' + userinfo.getUserId()); system.debug('***************************************   trigger' + userinfo.getUserId()); system.debug('***************************************   trigger' + userinfo.getUserId()); system.debug('***************************************   trigger' + userinfo.getUserId());
-
-
- 
-    system.debug('***************************************   trigger' + userinfo.getUserId());
-    system.debug('***************************************   trigger' + userinfo.getUserId());
-    system.debug('***************************************   trigger' + userinfo.getUserId());
-    system.debug('***************************************   trigger' + userinfo.getUserId());
-
+   
     //only send welcome packet if this is a single lease update
     if (trigger.new.size() == 1){
         system.debug('evaluate welcome flag');

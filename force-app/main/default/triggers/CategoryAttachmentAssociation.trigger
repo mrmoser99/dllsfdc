@@ -14,7 +14,7 @@ trigger CategoryAttachmentAssociation on clcommon__Category_Attachment_Associati
    
     //get a list of attachmen ids
     for (clcommon__Category_Attachment_Association__c a: trigger.new){
-        if (attachMap.get(a.id).clcommon__Document_Category__r.clcommon__Document_Definition__r.name == '08 Execution')
+        if (attachMap.get(a.id).clcommon__Document_Category__r.clcommon__Document_Definition__r.name == '01 Lease Agreement')
             attachmentIdSet.add(a.clcommon__Attachment_Id__c);
     }
 
