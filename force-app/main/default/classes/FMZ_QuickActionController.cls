@@ -1,12 +1,13 @@
 /**
  * Created by samuelmeyers on 11/8/18.
+ * 2/6/20 - fixed app approve status
  */
 
 public with sharing class FMZ_QuickActionController {
     private static final String BASE_URL = System.Label.FMZ_Dealer_Community_Base_URL;
 
     private static List<String> appApprovedStrings = new List<String>{
-            'CREDIT APPROVED'
+            'CAMS APPROVED'
     };
     private static List<String> appInProgressStrings = new List<String>{
             'NEW - ENTERED',
