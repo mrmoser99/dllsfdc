@@ -19,6 +19,10 @@ trigger CategoryAttachmentAssociation on clcommon__Category_Attachment_Associati
     }
 
     system.debug('attachment id set: ' + attachmentIdSet); 
+
+    if (attachmentIdSet.isEmpty())
+        return;
+        
     //find the parents of the attachment
     Map<ID,ID> attachmentParentIdMap = new Map<ID,ID>();
     List<Attachment> aList = new List<Attachment>();
@@ -52,10 +56,15 @@ trigger CategoryAttachmentAssociation on clcommon__Category_Attachment_Associati
     //
     
     for (clcommon__Category_Attachment_Association__c a: trigger.new){
-        system.debug('found lease number' + applicationMap.get(attachmentParentIdMap.get(a.clcommon__Attachment_Id__c)).lease_number__c);
-        cllease__Lease_Account__c l  = [select id from cllease__Lease_Account__c where id = :applicationMap.get(attachmentParentIdMap.get(a.clcommon__Attachment_Id__c)).lease_number__c];
-        l.Trigger_New_Packet_Workflow__c= true;
-        update l;
+        if (!applicationMap.isEmpty())
+            if (applicationMap.get(attachmentParentIdMap.get(a.clcommon__Attachment_Id__c)).lease_number__c == null)
+                continue;
+            else{
+                system.debug('found lease number' + applicationMap.get(attachmentParentIdMap.get(a.clcommon__Attachment_Id__c)).lease_number__c);
+                cllease__Lease_Account__c l  = [select id from cllease__Lease_Account__c where id = :applicationMap.get(attachmentParentIdMap.get(a.clcommon__Attachment_Id__c)).lease_number__c];
+                l.Trigger_New_Packet_Workflow__c= true;
+                update l;
+            }
     }
     
     

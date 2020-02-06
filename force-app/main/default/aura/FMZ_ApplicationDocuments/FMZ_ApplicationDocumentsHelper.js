@@ -211,6 +211,8 @@
 					action.setCallback(that, function (response) {
 						console.log('finished upload');
 						let state = response.getState();
+						console.log('state is: ' + state);
+						console.log('response is: ' + response);
 						if (state === 'SUCCESS') {
 							resolve(response.getReturnValue());
 						} else if (state === 'ERROR') {
