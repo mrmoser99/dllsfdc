@@ -83,7 +83,7 @@
                         &nbsp;{!f.Fee__r.Name}</div>
                     <lightning:select aura:id="equipmentSelect"  variant="label-hidden" label=" " class="label-hidden"
                                       onchange="{!c.handleEquipmentBlur}" required="false" value="{!f.Equipment__c}"
-                                      disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees'}">
+                                      disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees' || f.Fee__r.Name == 'Estimated Property Tax'}">
                         <option value="">--Select Equipment--</option>
                         <aura:iteration items="{!v.equipmentOpts}" var="a">
                             <option value="{!a.value}"
@@ -95,10 +95,10 @@
                     <lightning:input aura:id="paymentCount" type="number" label=" "
                             variant="label-hidden" value="{!f.Number_of_Payments__c}"
                             placeholder="Total Payments" onchange="{!c.handleEquipmentChange}" onblur="{!c.handleEquipmentBlur}"
-                            disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees'}"/>
+                            disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees' || f.Fee__r.Name == 'Estimated Property Tax' }"/>
                     <lightning:select aura:id="frequency" variant="label-hidden" label=" " class="label-hidden" value="{!f.Frequency__c}"
                                       onchange="{!c.handleEquipmentBlur}" required="false" 
-                                      disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees'}">
+                                      disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees' || f.Fee__r.Name == 'Estimated Property Tax'}">
                         <option value="">--Select Frequency--</option>
                         <aura:iteration items="{!v.frequencyOpts}" var="a">
                             <option value="{!a.value}"
@@ -111,10 +111,10 @@
                                      variant="label-hidden" placeholder="Fee Amount" value="{!f.Amount__c}"
                                      required="true" min="0.01" messageWhenValueMissing="Fee Amount is required."
                                      onchange="{!c.handleEquipmentChange}" onblur="{!c.handleEquipmentBlur}"
-                                     disabled="{!f.Fee__r.Name == 'Estimated Property Tax' || f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees'}"/>
+                                     disabled="{!f.Fee__r.Name == 'Estimated Property Tax' || f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees' || f.Fee__r.Name == 'Estimated Property Tax'}"/>
                     <ui:inputDate aura:id="dueDate" required="true" format="M/d/yyyy" displayDatePicker="true"
                             value="{!f.Start_Date__c}" change="{!c.handleEquipmentChange}" blur="{!c.handleEquipmentBlur}"
-                            disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees'}" />
+                            disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees' || f.Fee__r.Name == 'Estimated Property Tax'}" />
                 </td>
                 <!--<td>-->
                     <!--<div class="{!(f.Fee__r.Name == 'Service Fees' ? 'hidden' : '')}">-->
