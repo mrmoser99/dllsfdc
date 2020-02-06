@@ -83,6 +83,13 @@ public without sharing class FMZ_ApplicationDocumentsController {
 	}
 
 	@AuraEnabled
+	public static void deleteDoc(String documentId) {
+		system.debug('Document id is: ' + documentId);
+		Attachment a = [Select id from Attachment where id = :documentId];
+		delete a;
+	}
+
+	@AuraEnabled
 	public static void callCongaTrigger(Id applicationId){
 		genesis__Applications__c app = new genesis__Applications__c(Id = applicationId, Lease_Document_Trigger__c = true);
 		update app;

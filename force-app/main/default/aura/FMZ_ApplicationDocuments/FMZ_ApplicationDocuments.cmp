@@ -1,7 +1,9 @@
 <aura:component controller="FMZ_ApplicationDocumentsController">
     <ltng:require scripts="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"/>
+	<aura:attribute name="value" type="String" access="global" description="Button value"/> 
 
 	<aura:attribute name="applicationId" type="Id"/>
+	<aura:attribute name="selectedDocumentId" type="String"/>
 	<aura:attribute name="onchange" type="Aura.Action" description="Handle any data changes"/>
 	<aura:attribute name="setIntervalId" type="Integer"/>
 	<aura:attribute name="application" type="genesis__Applications__c"
@@ -70,7 +72,7 @@
 		</div>
 	</aura:if>
 
-	<table class="slds-table slds-table_bordered slds-table_striped slds-max-medium-table_stacked-horizontal slds-m-top_medium ssslds-border_left ssslds-border_right">
+	<table class="slds-table slds-table_bordered slds-table_striped slds-max-medium-table_stacked-horizontal slds-m-top_medium ssslds-border_left ssslds-border_right" id="docTable">
 		<thead>
 		<tr class="slds-line-height_reset">
 			<th scope="col" style="width:2rem;">
@@ -85,11 +87,14 @@
 			<th class="slds-text-title_caps" scope="col">
 				<div class="slds-truncate" title="Document Date">Upload Date</div>
 			</th>
+			<th class="slds-text-title_caps" scope="col">
+				<div class="slds-truncate" title="Action">Action</div>
+			</th>
 		</tr>
 		</thead>
 		<tbody>
 		<aura:iteration items="{!v.documents}" var="d">
-			<tr class="slds-hint-parent">
+			<tr class="slds-hint-parent"  >
 				<td><lightning:icon iconName="doctype:attachment" size="small"/></td>
 				<td>
 					<a href="{!'../servlet/servlet.FileDownload?file='+d.Id}" target="_blank">{!d.Name}</a>
@@ -102,6 +107,12 @@
 												 year="numeric" month="2-digit" day="2-digit"
 												 hour="numeric" minute="2-digit"/>
 				</td>
+				<td>
+					<div onclick="{!c.handleDelete}" data-value="{!d.Id}">
+						<lightning:button label="Delete" title="Delete"  />
+					</div>
+				</td>
+
 			</tr>
 		</aura:iteration>
 		<aura:if isTrue="{!empty(v.documents)}">

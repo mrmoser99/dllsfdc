@@ -23,6 +23,29 @@
 		}
 	},
 
+	deleteDocument: function(component) {
+		try {
+			var action = component.get('c.deleteDoc');
+			action.setParams({
+				documentId: component.get('v.selectedDocumentId')
+			});
+			action.setCallback(this, function (response) {
+				var state = response.getState();
+				if (state === 'SUCCESS') {
+					component.set('v.processing', false);
+				} else if (state === 'ERROR') {
+					let error = response.getError();
+					if (error && error[0]) {
+						console.log(error[0].message);
+					}
+				}
+			});
+			$A.enqueueAction(action);
+		} catch (e) {
+			console.log(e);
+		}
+	},
+
 	// load application documents
 	loadDocuments: function(component) {
 		try {
@@ -82,6 +105,7 @@
 			console.log(e);
 		}
 	},
+	
 
 	isInputValid: function(component) {
 		let inputFields = component.find('docInput'),

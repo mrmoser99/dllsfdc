@@ -86,6 +86,36 @@
 				component.set('v.processing', false);
 				toast.fire();
 			}));
+	},
+
+	handleDelete: function(component, event, helper) {
+		
+		component.set('v.processing', true);
+		var ctarget = event.currentTarget;
+		var id_str = ctarget.dataset.value;
+		component.set('v.selectedDocumentId', id_str);
+		
+		helper.deleteDocument(component);
+		
+		let toast = $A.get('e.force:showToast');
+		toast.setParams({
+					type: 'success',
+					mode: 'dismissable',
+					duration: '2000',
+					message: 'Document was deleted!'
+		});
+				
+		toast.fire();
+		
+		
+		
+		helper.loadDocuments(component);
+
+		component.set('v.processing', false);
+		
+		
+		
 	}
 
+	
 })
