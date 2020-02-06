@@ -1,6 +1,6 @@
 /**
  * Created by samuelmeyers on 11/8/18.
- * 2/6/20 - fixed app approve status
+ * 2/6/20 - MRM fixed app approve status
  */
 
 public with sharing class FMZ_QuickActionController {
@@ -14,7 +14,7 @@ public with sharing class FMZ_QuickActionController {
             'NEW - CREDIT PULLED',
             'NEW - IN CREDIT CHECK',
             'NEW - IN REVIEW',
-            'NEW - PRICING GENERATED',
+            'NEW - PRICING GENERATED', 
             'NEW - CHECKLIST GENERATED'
     };
     private static List<String> qqApprovedStrings = new List<String>{
