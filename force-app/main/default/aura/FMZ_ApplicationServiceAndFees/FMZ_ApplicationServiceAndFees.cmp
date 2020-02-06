@@ -28,6 +28,7 @@
 
     <!-- FEE LOOKUP AND ADD -->
     <lightning:layout verticalAlign="start" multipleRows="true">
+         
         <lightning:layoutItem size="6" largeDeviceSize="6" mediumDeviceSize="8" smallDeviceSize="12"
                               class="slds-p-right_x-small">
             <c:Lookup aura:id="lookup" selection="{!v.selection}" onSearch="{!c.lookupSearch}"
@@ -81,7 +82,8 @@
                     <div class="slds-text-title_bold slds-p-top_xx-small slds-p-bottom_medium">
                         &nbsp;{!f.Fee__r.Name}</div>
                     <lightning:select aura:id="equipmentSelect"  variant="label-hidden" label=" " class="label-hidden"
-                                      onchange="{!c.handleEquipmentBlur}" required="false" value="{!f.Equipment__c}">
+                                      onchange="{!c.handleEquipmentBlur}" required="false" value="{!f.Equipment__c}"
+                                      disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees'}">
                         <option value="">--Select Equipment--</option>
                         <aura:iteration items="{!v.equipmentOpts}" var="a">
                             <option value="{!a.value}"
@@ -92,9 +94,11 @@
                 <td>
                     <lightning:input aura:id="paymentCount" type="number" label=" "
                             variant="label-hidden" value="{!f.Number_of_Payments__c}"
-                            placeholder="Total Payments" onchange="{!c.handleEquipmentChange}" onblur="{!c.handleEquipmentBlur}"/>
+                            placeholder="Total Payments" onchange="{!c.handleEquipmentChange}" onblur="{!c.handleEquipmentBlur}"
+                            disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees'}"/>
                     <lightning:select aura:id="frequency" variant="label-hidden" label=" " class="label-hidden" value="{!f.Frequency__c}"
-                                      onchange="{!c.handleEquipmentBlur}" required="false">
+                                      onchange="{!c.handleEquipmentBlur}" required="false" 
+                                      disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees'}">
                         <option value="">--Select Frequency--</option>
                         <aura:iteration items="{!v.frequencyOpts}" var="a">
                             <option value="{!a.value}"
@@ -107,9 +111,10 @@
                                      variant="label-hidden" placeholder="Fee Amount" value="{!f.Amount__c}"
                                      required="true" min="0.01" messageWhenValueMissing="Fee Amount is required."
                                      onchange="{!c.handleEquipmentChange}" onblur="{!c.handleEquipmentBlur}"
-                                     disabled="{!f.Fee__r.Name == 'Estimated Property Tax' || f.Fee__r.Name == 'Insurance Fees'}"/>
+                                     disabled="{!f.Fee__r.Name == 'Estimated Property Tax' || f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees'}"/>
                     <ui:inputDate aura:id="dueDate" required="true" format="M/d/yyyy" displayDatePicker="true"
-                            value="{!f.Start_Date__c}" change="{!c.handleEquipmentChange}" blur="{!c.handleEquipmentBlur}" />
+                            value="{!f.Start_Date__c}" change="{!c.handleEquipmentChange}" blur="{!c.handleEquipmentBlur}"
+                            disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees'}" />
                 </td>
                 <!--<td>-->
                     <!--<div class="{!(f.Fee__r.Name == 'Service Fees' ? 'hidden' : '')}">-->
