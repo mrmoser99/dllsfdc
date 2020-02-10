@@ -6,7 +6,7 @@ public with sharing class FMZ_QuickActionController_Temp {
     private static final String BASE_URL = System.Label.FMZ_Dealer_Community_Base_URL;
 
     private static List<String> appApprovedStrings = new List<String>{
-            'CREDIT APPROVED'
+            'CAMS APPROVED'
     };
     private static List<String> appInProgressStrings = new List<String>{
             'NEW - ENTERED',

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Oracle_Trade_up_Notification</fullName>
+        <ccEmails>tejo.banumulyo@q2ebanking.com</ccEmails>
+        <description>Oracle Trade up Notification</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>smclachlan@leasedirect.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>DefaultWorkflowUser</senderType>
+        <template>unfiled$public/Oracle_Trade_up_Email</template>
+    </alerts>
+    <alerts>
+        <fullName>Tax_Exemption_Email</fullName>
+        <ccEmails>chandi.freeman@dllgroup.com</ccEmails>
+        <description>Tax Exemption Email</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>mark.moser@dllgroup.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>smclachlan@leasedirect.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>cnotify__Notification_Templates/Tax_Exempt</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>Evergreen_Eligibility</fullName>
+        <field>Evergreen_Eligibility__c</field>
+        <literalValue>0</literalValue>
+        <name>Evergreen Eligibility</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Evergreen_Eligible</fullName>
+        <field>Evergreen_Eligibility__c</field>
+        <literalValue>1</literalValue>
+        <name>Evergreen Eligible</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Evergreen_Term_Setup</fullName>
+        <field>cllease__Evergreen_Term__c</field>
+        <formula>0</formula>
+        <name>Evergreen Term Setup</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Termination_Date</fullName>
+        <field>Termination_Date__c</field>
+        <formula>NOW()</formula>
+        <name>Termination Date</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Termination_Date1</fullName>
+        <field>Termination_Date__c</field>
+        <formula>Now ()</formula>
+        <name>Termination Date</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>UpdateFinalNoticeLetterSent_NO</fullName>
+        <field>Final_Notice_Letter_Sent__c</field>
+        <literalValue>NO</literalValue>
+        <name>UpdateFinalNoticeLetterSent = NO</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_New_Flag</fullName>
+        <field>Trigger_New_Packet_Workflow__c</field>
+        <literalValue>0</literalValue>
+        <name>Update New Flag</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_Welcome_Flag</fullName>
+        <field>Welcome_Package_Requested__c</field>
+        <literalValue>0</literalValue>
+        <name>Update Welcome Flag</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>cllease__Status_Partial_to_Pending</fullName>
+        <field>cllease__Lease_Status__c</field>
+        <literalValue>Pending Approval</literalValue>
+        <name>Status Partial to Pending</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>cllease__Status_Pending_to_Approved</fullName>
+        <field>cllease__Lease_Status__c</field>
+        <literalValue>Approved</literalValue>
+        <name>Status Pending to Approved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>cllease__Status_Pending_to_Rejected</fullName>
+        <field>cllease__Lease_Status__c</field>
+        <literalValue>Canceled</literalValue>
+        <name>Status Pending to Rejected</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>cllease__Update_Approval_Date</fullName>
+        <field>cllease__Approval_Date__c</field>
+        <formula>cllease__Branch__r.cllease__Current_System_Date__c</formula>
+        <name>Update Approval Date</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <outboundMessages>
+        <fullName>Welcome_Packet_Conga_Call</fullName>
+        <apiVersion>47.0</apiVersion>
+        <endpointUrl>https://workflow.congamerge.com/OBMListener.ashx</endpointUrl>
+        <fields>Id</fields>
+        <fields>Welcome_Packet__c</fields>
+        <fields>cllease__Account__c</fields>
+        <includeSessionId>true</includeSessionId>
+        <integrationUser>interface.user@dllgroup.com</integrationUser>
+        <name>Welcome Packet Conga Call</name>
+        <protected>false</protected>
+        <useDeadLetterQueue>false</useDeadLetterQueue>
+    </outboundMessages>
+    <rules>
+        <fullName>Dollar Out Evergreen</fullName>
+        <actions>
+            <name>Evergreen_Term_Setup</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>cllease__Lease_Account__c.Purchase_Option__c</field>
+            <operation>equals</operation>
+            <value>One Dollar Buyout</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Evergreen Eligibility</fullName>
+        <actions>
+            <name>Evergreen_Eligible</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>cllease__Lease_Account__c.cllease__Evergreen_Term__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
+        </criteriaItems>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Evergreen Eligibility Zero</fullName>
+        <actions>
+            <name>Evergreen_Eligibility</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>cllease__Lease_Account__c.cllease__Evergreen_Term__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </criteriaItems>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Oracle Trade up Email</fullName>
+        <actions>
+            <name>Oracle_Trade_up_Notification</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>cllease__Lease_Account__c.cllease__Active_flag__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>cllease__Lease_Account__c.Oracle_Trade_Up_Quote_Amount__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Termination Date</fullName>
+        <actions>
+            <name>Termination_Date</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Termination_Date1</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <formula>TEXT (cllease__Lease_Status__c) = &#39;TERMINATED&#39;</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Trigger New Packet</fullName>
+        <actions>
+            <name>Update_New_Flag</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Update_Welcome_Flag</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Welcome_Packet_Conga_Call</name>
+            <type>OutboundMessage</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>cllease__Lease_Account__c.Trigger_New_Packet_Workflow__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Update Final Notice Letter sent to NO</fullName>
+        <actions>
+            <name>UpdateFinalNoticeLetterSent_NO</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <criteriaItems>
+            <field>cllease__Lease_Account__c.cllease__Lease_Status__c</field>
+            <operation>equals</operation>
+            <value>ACTIVE - GOOD STANDING</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>cllease__Lease_Account__c.Final_Notice_Letter_Sent__c</field>
+            <operation>equals</operation>
+            <value>YES</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <tasks>
+        <fullName>check</fullName>
+        <assignedTo>mark.moser@dllgroup.com</assignedTo>
+        <assignedToType>user</assignedToType>
+        <dueDateOffset>0</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>Not Started</status>
+        <subject>check</subject>
+    </tasks>
+</Workflow>

@@ -597,6 +597,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>FMZ_QuickActionController_Temp</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>FMZ_WelcomeMessageController</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -1106,6 +1110,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>TestVertexUpfrontTaxCalculation</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>TestWelcomePacket</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -7980,6 +7988,21 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Salesperson__c.CRM_User_Id__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Salesperson__c.First_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Salesperson__c.Last_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Supertrump_Log__c.Derived_Product_Name__c</field>
         <readable>false</readable>
@@ -8561,6 +8584,10 @@
     <tabVisibilities>
         <tab>SAI_Party__c</tab>
         <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Salesperson__c</tab>
+        <visibility>DefaultOff</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>Supertrump_Log__c</tab>
