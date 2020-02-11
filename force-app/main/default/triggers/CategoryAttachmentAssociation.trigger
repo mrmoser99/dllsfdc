@@ -11,6 +11,9 @@ trigger CategoryAttachmentAssociation on clcommon__Category_Attachment_Associati
    
     Set<ID> attachmentIdSet = new Set<ID>();
     Set<ID> applicationIdSet = new Set<ID>();
+
+    
+
    
     //get a list of attachmen ids
     for (clcommon__Category_Attachment_Association__c a: trigger.new){
@@ -54,17 +57,24 @@ trigger CategoryAttachmentAssociation on clcommon__Category_Attachment_Associati
     system.debug('app id to app map' + applicationMap);
 
     //
-    
+    List<cllease__Lease_Account__c> lList = new List<cllease__Lease_Account__c>();
+
     for (clcommon__Category_Attachment_Association__c a: trigger.new){
         if (!applicationMap.isEmpty())
             if (applicationMap.get(attachmentParentIdMap.get(a.clcommon__Attachment_Id__c)).lease_number__c == null)
                 continue;
             else{
                 system.debug('found lease number' + applicationMap.get(attachmentParentIdMap.get(a.clcommon__Attachment_Id__c)).lease_number__c);
-                cllease__Lease_Account__c l  = [select id from cllease__Lease_Account__c where id = :applicationMap.get(attachmentParentIdMap.get(a.clcommon__Attachment_Id__c)).lease_number__c];
+                cllease__Lease_Account__c l  = new cllease__Lease_Account__c();
+                l.id = applicationMap.get(attachmentParentIdMap.get(a.clcommon__Attachment_Id__c)).lease_number__c;
                 l.Trigger_New_Packet_Workflow__c= true;
-                update l;
+                lList.add(l);
+                
             }
+    }
+
+    if (!lList.isEmpty()){
+        update lList;
     }
     
     
