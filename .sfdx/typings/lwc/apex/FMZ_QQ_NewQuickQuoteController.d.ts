@@ -1,3 +1,6 @@
+declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.checkCustomerName" {
+  export default function checkCustomerName(param: {customerName: any}): Promise<any>;
+}
 declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.getAccountId" {
   export default function getAccountId(param: {recordId: any}): Promise<any>;
 }
@@ -27,4 +30,10 @@ declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.getDealerInfo" {
 }
 declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.submitForApproval" {
   export default function submitForApproval(param: {qqId: any}): Promise<any>;
+}
+declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.emailSupport" {
+  export default function emailSupport(param: {subject: any, body: any}): Promise<any>;
+}
+declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.getEnvVariables" {
+  export default function getEnvVariables(): Promise<any>;
 }

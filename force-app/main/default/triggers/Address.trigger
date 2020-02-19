@@ -10,7 +10,9 @@
 *
 ******************************************************************************/
 trigger Address on Address__c (before insert, before update) {
-    
+	
+	 
+
     Set<ID> accountIdSet = new Set<ID>();
     
     for (Address__c a:trigger.new){

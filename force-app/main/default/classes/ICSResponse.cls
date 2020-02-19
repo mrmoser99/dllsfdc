@@ -10,6 +10,7 @@
 *   9/5/18 	- MRM added more repsonse storage....
 *   10/1/19 - MRM added acccount update of sic code of we get one
 *   1/27/20 - MRM added a line to update account with the ein if returned
+*   2/17/20 - MRM added e status error message
 *
 ********************************************************************************************************************/
 global class ICSResponse {
@@ -329,7 +330,7 @@ global class ICSResponse {
 		system.debug('******************* SUBMIT ICS RESPONSE ***************************************');
 		system.debug(Input.results);
 		/* record types */
-			List<RecordType> rList = [select id
+		List<RecordType> rList = [select id
 								  ,developername 
 								  from RecordType 
 								  where developerName in ('List_Of_Similars', 'Decision')
@@ -1000,6 +1001,17 @@ global class ICSResponse {
 		ICS_Application__c a;
 		genesis__Quick_Quotes__c q;
 		
+		/* record types */
+		List<RecordType> rList = [select id
+								  ,developername 
+								  from RecordType 
+								  where developerName in ('List_Of_Similars', 'Decision')
+								  and sObjectType = 'ICS_Application__c'];
+		
+		Map<String,String> rMap = new Map<String,String>();
+		for (RecordType r:rList)
+			rMap.put(r.developername, r.id);
+			
 		try{
 			if (AdditionalAttributes!= null){
 				if (AdditionalAttributes.Attribute != null){
@@ -1048,7 +1060,10 @@ global class ICSResponse {
 			else{ //Status == 'E'
 				a.ownerid = gmap.get('Credit');
 				a.status__c = 'ICS Failure';
+				a.E_Status_Error_Message__c = Results.Result.MsgData;
+				a.recordtypeid = rMap.get('Decision');
 				ICS_Log__c l = new ICS_Log__c();
+			
 				l.xml__c = string.valueOf(AdditionalAttributes) + string.valueOf(Results);
 				l.quick_quote__c = a.quick_quote__c;
 				l.caller__c = 'ICSResponse' + '-' + Results.ReturnStatus;

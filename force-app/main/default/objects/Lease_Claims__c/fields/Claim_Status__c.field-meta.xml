@@ -37,11 +37,6 @@
                 <label>Pending - Waiting on Customer</label>
             </value>
             <value>
-                <fullName>Pending - Waiting on Vendor Install</fullName>
-                <default>false</default>
-                <label>Pending - Waiting on Vendor Install</label>
-            </value>
-            <value>
                 <fullName>Approved</fullName>
                 <default>false</default>
                 <label>Approved</label>
@@ -60,6 +55,12 @@
                 <fullName>Paid</fullName>
                 <default>false</default>
                 <label>Paid</label>
+            </value>
+            <value>
+                <fullName>Pending - Waiting on Vendor Install</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Pending - Waiting on Vendor Install</label>
             </value>
         </valueSetDefinition>
     </valueSet>

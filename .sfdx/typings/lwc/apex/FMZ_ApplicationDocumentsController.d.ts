@@ -10,6 +10,9 @@ declare module "@salesforce/apex/FMZ_ApplicationDocumentsController.uploadAttach
 declare module "@salesforce/apex/FMZ_ApplicationDocumentsController.updateApplication" {
   export default function updateApplication(param: {app: any}): Promise<any>;
 }
+declare module "@salesforce/apex/FMZ_ApplicationDocumentsController.deleteDoc" {
+  export default function deleteDoc(param: {documentId: any}): Promise<any>;
+}
 declare module "@salesforce/apex/FMZ_ApplicationDocumentsController.callCongaTrigger" {
   export default function callCongaTrigger(param: {applicationId: any}): Promise<any>;
 }

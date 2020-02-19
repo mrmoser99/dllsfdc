@@ -12,9 +12,19 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>Accident</fullName>
+                <default>false</default>
+                <label>Accident</label>
+            </value>
+            <value>
                 <fullName>Fire</fullName>
                 <default>false</default>
                 <label>Fire</label>
+            </value>
+            <value>
+                <fullName>Flood</fullName>
+                <default>false</default>
+                <label>Flood</label>
             </value>
             <value>
                 <fullName>Hurricane</fullName>
@@ -22,9 +32,24 @@
                 <label>Hurricane</label>
             </value>
             <value>
+                <fullName>Lightning/Power Surge</fullName>
+                <default>false</default>
+                <label>Lightning/Power Surge</label>
+            </value>
+            <value>
                 <fullName>Other</fullName>
                 <default>false</default>
                 <label>Other</label>
+            </value>
+            <value>
+                <fullName>Vandalism</fullName>
+                <default>false</default>
+                <label>Vandalism</label>
+            </value>
+            <value>
+                <fullName>Water</fullName>
+                <default>false</default>
+                <label>Water</label>
             </value>
         </valueSetDefinition>
     </valueSet>

@@ -22,7 +22,7 @@ global without sharing class NewCoUtility {
     public static date convertDate(String inDate){
     	
     	Date outDate;
-    	Integer year, month, day; 
+    	Integer year, month, day;  
 				
     	/*
     		mm/dd/yyyy
