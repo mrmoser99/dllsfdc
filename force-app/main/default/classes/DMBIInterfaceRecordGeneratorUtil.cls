@@ -602,7 +602,12 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Agreement_Source_System__c = intcode.get(cla.Source_System__c),
             Agreement_Number__c = cla.name
             ,Value_AlphaNumeric__c = (FeatureName=='LOCALBUCODE')?cla.Business_Unit_Name__c:NULL
-            ,Value_Numeric__c = (FeatureName=='GROSSAR' || FeatureName=='GROSSARUSGAAP') ? (ScaleToTwoDecimal(cla .cllease__Term__c*cla.cllease__Payment_Amount__c)) : (FeatureName=='OPENAR') ? ScaleToTwoDecimal(cla.Bill_Not_Paid_Rent__c) : (FeatureName=='ONACCOUNT') ? ScaleToTwoDecimal(cla.cllease__Excess__c):0
+            ,Value_Numeric__c = (FeatureName=='GROSSAR' || FeatureName=='GROSSARUSGAAP') 
+               ? (ScaleToTwoDecimal(cla .cllease__Term__c*cla.cllease__Payment_Amount__c)) 
+               : (FeatureName=='OPENAR') ? ScaleToTwoDecimal(cla.Bill_Not_Paid_Rent__c) 
+               : (FeatureName=='ONACCOUNT') ? ScaleToTwoDecimal(cla.cllease__Excess__c)
+               : (FeatureName=='LOCALBUCODE') ? null
+               :0
             ,Feature_Name__c = FeatureName
         );
     }

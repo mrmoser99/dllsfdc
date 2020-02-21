@@ -157,12 +157,22 @@ Public class DMBIInterfaceRecordGeneratorJob {
     Private static Int_Agreement__c CreateNewAgreement(cllease__Lease_Account__c cla, map<string,string> Codemap,List<cllease__Rental_Stream__c> CRSList,List<cllease__Residual_Stream__c> ResList,string str,List<cllease__Contract_Equipment__c> ceList,list<cllease__Lease_Payment_Transaction__c> PTList){
         //Codemap = getIntMapping();
         String AmortizationTypeCode = cla.cllease__Residual_Amount__c > 0?'OTHER':'FRENCH';
+        String daysInArrears;
+        if (cla.cllease__Days_Past_Due__c == null)
+            daysInArrears = null;
+        else {
+            if (string.valueOf(cla.cllease__Days_Past_Due__c) == '0')
+                daysInArrears = null;
+            else
+                daysInArrears = string.valueOf(cla.cllease__Days_Past_Due__c);
+        }
+        
         Return new Int_Agreement__c(
             Funding_Rate__c = cla.Cost_of_Funds__c,
             Costs_Of_Funds_Percentage__c = cla.Cost_of_Funds__c,
-            EAD_Ex_Ante__c = 0,
-            EAD_Ex_Post__c = 0,
-            Risk_Costs__c = 0,
+            EAD_Ex_Ante__c = null,
+            EAD_Ex_Post__c = null,
+            Risk_Costs__c = null,
             Securitization_Identifier__c = '',
             Syndication_Percentage__c = Null,
             //GL_Code_Block__c = CalculateGLCodeBlock(cla.cllease__GL_Transaction_Details__r),
@@ -170,12 +180,12 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Floating_Rate_Cap__c = Null,
             Floating_Rate_Code__c = '',
             Floating_Rate_Currency_Code__c = '',
-            Floating_Rate_Floor__c = 0,
+            Floating_Rate_Floor__c = null,
             Floating_Rate_Freq_Refresh_Code__c = '',
             Floating_Rate_Frequency__c = '',
             Floating_Rate_Period_End_Date__c = Null,
-            Floating_Rate_Spread__c = 0,   
-            LGD_Percentage__c = 0,
+            Floating_Rate_Spread__c = null,   
+            LGD_Percentage__c = null,
             //LGD_Lookup_Type_Code__c = Codemap.containsKey(cla.cllease__Contract_Equipments__r[0].Master_Asset_Type__c)?Codemap.get(cla.cllease__Contract_Equipments__r[0].Master_Asset_Type__c):'',
             LGD_Lookup_Type_Code__c = CalculateLGDLookUpTypeCode(ceList,Codemap),
             Current_Interest_Rate_Type_Code__c = 'FIXED',
@@ -184,7 +194,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Down_Payment_Amount__c = cla.cllease__Down_Payment__c!=Null?ScaleToTwoDecimal(cla.cllease__Down_Payment__c):0,
             Agreement_Source_System__c = Codemap.get(cla.Source_System__c),
             Agreement_Number__c = cla.Name,
-            System_Selling_Party_Description__c = cla.cllease__Dealer__r.genesis__Vendor_Type__c,
+            //System_Selling_Party_Description__c = cla.cllease__Dealer__r.genesis__Vendor_Type__c,
             Arrears_Amount__c = cla.cllease__Delinquent_Amount__c!=Null?ScaleToTwoDecimal(cla.cllease__Delinquent_Amount__c):0,
             Agreement_Rate__c = cla.cllease__Yield__c!=Null?ScaleToTwoDecimal(cla.cllease__Yield__c):0,
             //Net_Principal_Amount__c = ScaleToTwoDecimal(cla.cllease__Financed_Amount__c),
@@ -205,12 +215,14 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Fixed_Rate_Period_End_Date__c = cla.cllease__Maturity_Date__c!=Null?cla.cllease__Maturity_Date__c:system.today(),
             Payment_Frequency_Code__c = Codemap.containskey(cla.cllease__Payment_Frequency__c)?(Codemap.get(cla.cllease__Payment_Frequency__c)!=Null?Codemap.get(cla.cllease__Payment_Frequency__c):'M'):'M',//Codemap.get(cla.cllease__Payment_Frequency__c)!=Null?Codemap.get(cla.cllease__Payment_Frequency__c):'M',
             Payment_Type_Code__c = Codemap.containskey(cla.cllease__Payment_Method__c)?codemap.get(cla.cllease__Payment_Method__c):'NULL',
-            Days_In_Arrears__c = String.valueof(cla.cllease__Days_Past_Due__c)!=NULL?String.valueof(cla.cllease__Days_Past_Due__c):'0',
+            Days_In_Arrears__c = daysInArrears,
             Agreement_Original_Duration__c= string.valueof(cla.cllease__Term__c),
             Deposit_Payment_Amount__c= ScaleToTwoDecimal(cla.cllease__Security_Deposit_Amount__c),
             Agreement_Start_Date__c= cla.cllease__Amort_Start_Date__c,
             Agreement_Termination_Date__c=cla.Termination_Date__c,
             System_Program_Number__c = cla.Dealer_Program__r.name,
+            System_Program_Description__c = cla.Dealer_Program__r.name,
+            System_Selling_Party_Description__c = cla.cllease__Dealer__r.name,
             Brokered_Indicator__c = '0',
             Billing_Collection_Indicator__c = '0',
             Encumbered_Indicator__c = '0',
@@ -227,6 +239,8 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Currency_Code__c = cla.cllease__Currency_Code__c!=Null?cla.cllease__Currency_Code__c:'USD',
             Accrued_Interest_Amount__c = ScaleToTwoDecimal(CalculateAccruedInterestAmountFromRentalStream(CRSList)),
             Residual_Value_Booked__c = ScaleToTwoDecimal(cla.cllease__Residual_Amount__c)
+
+            
         );
     }
     private static map<string,list<cllease__Residual_Stream__c>> getResidualStreamMap(list<cllease__Lease_Account__c> clleaseContractsList ){
@@ -569,8 +583,8 @@ Public class DMBIInterfaceRecordGeneratorJob {
                 asset_type_Number__c = cce.Asset_Type_ID__c,
                 //Inventory_Book_Value__c = ScaleToTwoDecimal(cce.cllease__Equipment_Calculated_Cost__c),
                 //Inventory_Sale_Amount__c = ScaleToTwoDecimal(cce.cllease__Estimated_Selling_Price__c),
-                Inventory_Book_Value__c = ScaleToTwoDecimal((AssetWBMap.containsKey(cce.name) && AssetWBMap.get(cce.name).Sale_Price__c !=Null)?AssetWBMap.get(cce.name).Sale_Price__c:Null),
-                Inventory_Sale_Amount__c = ScaleToTwoDecimal((AssetWBMap.containsKey(cce.name) && AssetWBMap.get(cce.name).Sale_Price__c !=Null)?AssetWBMap.get(cce.name).Sale_Price__c:Null),
+                Inventory_Book_Value__c = null,  //ScaleToTwoDecimal((AssetWBMap.containsKey(cce.name) && AssetWBMap.get(cce.name).Sale_Price__c !=Null)?AssetWBMap.get(cce.name).Sale_Price__c:Null),
+                Inventory_Sale_Amount__c = null, //ScaleToTwoDecimal((AssetWBMap.containsKey(cce.name) && AssetWBMap.get(cce.name).Sale_Price__c !=Null)?AssetWBMap.get(cce.name).Sale_Price__c:Null),
                 Asset_Recording_Method_Code__c = 'GARD',
                 Global_Master_Asset_Type_Code__c = intCodeMap.containsKey(cce.Master_Asset_Type__c)?intCodeMap.get(cce.Master_Asset_Type__c):'118',
                 Global_Master_Asset_Type__c = cce.Master_Asset_Type__c!=Null?cce.Master_Asset_Type__c:'GMST',//mandatory
@@ -607,7 +621,12 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Agreement_Source_System__c = intcode.get(cla.Source_System__c),
             Agreement_Number__c = cla.name
             ,Value_AlphaNumeric__c = (FeatureName=='LOCALBUCODE')?cla.Business_Unit_Name__c:NULL
-            ,Value_Numeric__c = (FeatureName=='GROSSAR' || FeatureName=='GROSSARUSGAAP') ? (ScaleToTwoDecimal(cla .cllease__Term__c*cla.cllease__Payment_Amount__c)) : (FeatureName=='OPENAR') ? ScaleToTwoDecimal(cla.Bill_Not_Paid_Rent__c) : (FeatureName=='ONACCOUNT') ? ScaleToTwoDecimal(cla.cllease__Excess__c):0
+            ,Value_Numeric__c = (FeatureName=='GROSSAR' || FeatureName=='GROSSARUSGAAP') 
+            ? (ScaleToTwoDecimal(cla .cllease__Term__c*cla.cllease__Payment_Amount__c)) 
+            : (FeatureName=='OPENAR') ? ScaleToTwoDecimal(cla.Bill_Not_Paid_Rent__c) 
+            : (FeatureName=='ONACCOUNT') ? ScaleToTwoDecimal(cla.cllease__Excess__c)
+            : (FeatureName=='LOCALBUCODE') ? null
+            :0
             ,Feature_Name__c = FeatureName
         );
     }
@@ -635,13 +654,18 @@ Public class DMBIInterfaceRecordGeneratorJob {
                 AgreementLinesToInsert.add(
                     new Int_Agreement_Line__c(
                         Agreement_Name__c = AgrMap.get(eq.cllease__Contract__r.Name).Id
-                        //,Agreement_Line_Start_Date__c = contract.cllease__Contract_Date__c
-                        ,Agreement_Line_Start_Date__c = eq.Invoice_Date__c
+                        ,Agreement_Line_Start_Date__c = contract.cllease__Contract_Date__c
+                        //,Agreement_Line_Start_Date__c = eq.Invoice_Date__c
                         ,Agreement_Line_Maturity_Date__c = contract.cllease__Maturity_Date__c
                         //,Agreement_Line_Status_Code__c = status
                         ,Agreement_Line_Status_Code__c =  intcode.containsKey(eq.Contract_Status__c)?intcode.get(eq.Contract_Status__c):''
                         //,Net_Principal_Balance_Amount__c = ScaleToTwoDecimal((eq.Rent_Amount__c*CountRentalStream(contract.cllease__Rental_Streams__r))+ eq.Bill_Residual_Amount__c)
-                        ,Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(AgrMap.get(eq.cllease__Contract__r.Name).Net_Principal_Balance_Amount__c*(contract.cllease__Financed_Amount__c!=0?eq.cllease__Estimated_Selling_Price__c/contract.cllease__Financed_Amount__c:1))
+                       
+                        ,Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(AgrMap.get(eq.cllease__Contract__r.Name).Net_Principal_Balance_Amount__c*(contract.cllease__Financed_Amount__c!=0
+                        ?eq.cllease__Estimated_Selling_Price__c/contract.cllease__Financed_Amount__c
+                        :1))
+                       
+                       
                         ,Net_Residual_Value__c = Contract.cllease__Lease_Status__c == 'EVERGREEN'?ScaleToTwoDecimal(CalculateNetResidualAmount(contract.cllease__Residual_Streams__r,contract.cllease__Residual_Amount__c,eq.cllease__Residual_Amount__c)):Null
                         //,Hard_Costs_Amount__c = ScaleToTwoDecimal(eq.cllease__Estimated_Selling_Price__c!=Null?eq.cllease__Estimated_Selling_Price__c:0)
                         //,Soft_Costs_Amount__c = ScaleToTwoDecimal((eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0)-(eq.Net_Trade_Up_Amount__c!=Null?eq.Net_Trade_Up_Amount__c:0)) 
