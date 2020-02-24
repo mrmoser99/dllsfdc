@@ -81,6 +81,7 @@ global with sharing class DMBIInterfaceJob implements Database.Batchable<sObject
                         CalculateHashCode(AgreementsToInsert7);     
                     }
                     AgreementsToInsert3.AddAll(DMBIInterfaceRecordGeneratorJob.CreateAgreementInterests(AgreementRecords,contracts));
+                    
                     if(!AgreementsToInsert3.isEmpty()){
                         CalculateObjectCount(AgreementsToInsert3);  
                         CalculateHashCode(AgreementsToInsert3);     
@@ -107,7 +108,9 @@ global with sharing class DMBIInterfaceJob implements Database.Batchable<sObject
                 
             }
             if(!AgreementsToInsert3.isEmpty()){
-                database.insert(AgreementsToInsert3,false);
+                System.debug('before insert count--->'+AgreementsToInsert3.size());
+                //database.insert(AgreementsToInsert3,false);
+                insert AgreementsToInsert3; 
             }
             if(!AgreementsToInsert4.isEmpty()){
                 Insert AgreementsToInsert4;

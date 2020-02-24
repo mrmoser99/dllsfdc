@@ -480,6 +480,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
         if(!IncomeStrmList.isEmpty() && !AgreementMap.isEmpty()){
             AgreementInterestsToInsert.addAll(CreateNewAgreementInterest(AgreementMap,IncomeStrmList,ResidualStrmList));    
         }
+        system.debug('************************** ' + AgreementInterestsToInsert.size()) ;
         return AgreementInterestsToInsert;
     }
     //@@SUBMETHOD: constructing a new Int__Agreement_Interest__c object
