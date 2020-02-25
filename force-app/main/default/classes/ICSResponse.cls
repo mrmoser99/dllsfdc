@@ -11,6 +11,19 @@
 *   10/1/19 - MRM added acccount update of sic code of we get one
 *   1/27/20 - MRM added a line to update account with the ein if returned
 *   2/17/20 - MRM added e status error message
+*   2/24/2020 - MRM dont update ein if masked
+*	2/25/2020 - MRM Legal Name:
+*
+	1)	Legal Name: 
+		a.	The Legal Name hierarchy is as follows: 
+			i.	Take it from the Party Record if an existing party.  
+			ii.	If new party, first look at ExternalEntity Node for D&B Legal Name.  
+			iii.	If no D&B legal name, next look for Experian. 
+			iv.	If no Experian, take the Paynet value. 
+			v.	If none of the above, use the screen in B during credit decision to add the Legal name manually. 
+
+
+
 *
 ********************************************************************************************************************/
 global class ICSResponse {
@@ -585,7 +598,9 @@ global class ICSResponse {
 		system.debug('********************************** here0');
 		if(!hList.isEmpty())
 			insert hList;
-		 
+		
+		Boolean foundLegalName = false;
+		
 		if (Input.ObtainDecisionResponse.Customer.ExternalLegalEntities != null
 		&& Input.ObtainDecisionResponse.Customer.ExternalLegalEntities.ExternalLegalEntity != null){
 			for (ExternalLegalEntity ele:Input.ObtainDecisionResponse.Customer.ExternalLegalEntities.ExternalLegalEntity){
@@ -606,6 +621,46 @@ global class ICSResponse {
 				e.postal_code__c = ele.address.PostalCode;
 				e.country_code__c = ele.address.CountryCode;
 			
+
+				/*
+				
+					a.	The Legal Name hierarchy is as follows: 
+						i.	Take it from the Party Record if an existing party.  
+						ii.	If new party, first look at ExternalEntity Node for D&B Legal Name.  
+						iii.	If no D&B legal name, next look for Experian. 
+						iv.	If no Experian, take the Paynet value. 
+						v.	If none of the above, use the screen in B during credit decision to add the Legal name manually. 
+
+		 				global class ExternalLegalEntity {
+    						webservice ExternalIds ExternalIds;
+   							webservice AgencyProduct AgencyProduct;
+    						webservice Organization Organization;
+    						webservice Address Address;
+    						webservice PhoneRecords PhoneRecords;
+    					webservice Fields Fields;
+				*/
+				
+				if (!foundLegalName){
+					if (ele.agencyProduct.agencyId == 'US_DNB'){
+						acc.name = ele.Organization.LegalName;
+						foundLegalName = true;
+					}
+					else{
+						if (ele.agencyProduct.agencyId == 'US_EXPERIAN'){
+							acc.name = ele.Organization.LegalName;
+							foundLegalName = true;
+						}
+						else {
+							if (ele.agencyProduct.agencyId == 'US_PAYNET'){
+								acc.name = ele.Organization.LegalName;
+								foundLegalName = true;
+							}
+						}
+					}
+				}
+
+
+
 				if (ele.PhoneRecords != null){
 					for	 (PhoneRecord pr:ele.PhoneRecords.PhoneRecord){
 						if (pr.phoneNumber != null)
@@ -616,12 +671,13 @@ global class ICSResponse {
 				
 				insert e;
 			
+
 				List<ICS_External_Id__c> eList = new List<ICS_External_Id__c>();
 				for (ExternalId ei:ele.ExternalIds.ExternalId){
 					ICS_External_Id__c ex = new ICS_External_Id__c();
 					ex.ICS_External_Legal_Entity__c = e.id;
 					ex.type__c = ei.ExternalIdType;
-					if (ex.type__c == 'FEIN')
+					if (ex.type__c == 'FEIN' && !ei.ExternalIdValue.contains('*'))
 						acc.EIN__c = ei.ExternalIdValue.substring(0,2) + '-' + ei.ExternalIdValue.subString(2,9);
 					ex.value__c = ei.ExternalIdValue;
 					eList.add(ex);
@@ -639,7 +695,7 @@ global class ICSResponse {
 					lef.ICS_External_Legal_Entity__c = e.id;
 					fList.add(lef);  
 				}
-		system.debug('********************************** here0');
+		 
 				if(!fList.isEmpty())
 					insert fList;
 					
@@ -866,7 +922,7 @@ global class ICSResponse {
 						ex.value__c = ei.ExternalIdValue;
 						eList.add(ex);
 					}
-			system.debug('here');
+					system.debug('here');
 					if(!eList.isEmpty())
 						insert eList;
 					

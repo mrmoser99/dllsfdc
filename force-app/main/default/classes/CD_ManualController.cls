@@ -3,7 +3,7 @@
 * change log:
 *
 * 2/7/19 - MRM - Class to help make credit decision app a lightning applicaiton;approve,decline,rescore actions
-*
+* 
 *
 *
 *
@@ -33,7 +33,9 @@ global with sharing class CD_ManualController {
     				,system_approval_limit__c
     				,manual_approval_limit__c
     				,kyc__c
-    				,error__c
+					,error__c
+					,legal_name__c
+			
     		from ICS_Application__c		
     		where id = :applicationId
     		];
@@ -54,10 +56,13 @@ global with sharing class CD_ManualController {
     			,genesis__account__c
     			,Primary_Phone_number__c
     			,Estimated_Financed_Amount__c
-    			,genesis__Account__r.Id 
+				,genesis__Account__r.Id 
+			
     		from genesis__Quick_Quotes__c
-    		where id = :a.quick_quote__c];
-    	
+			where id = :a.quick_quote__c];
+			
+		List<Account> acctList = [select id from Account where id = :q.genesis__account__c];
+		
     	ICS_Application__c temp = 
     		[ Select i.Name
     		, (Select Id, IsDeleted, LinkedEntityId, ContentDocumentId, Title, CreatedById, CreatedDate
@@ -133,8 +138,15 @@ global with sharing class CD_ManualController {
 		q.Approved_Credit_Amount__c = a.Manual_Approval_Limit__c;
 		q.ATS_Reference_Number__c = a.message_id__c;	
 		q.Credit_Approval_Expiration_Date__c =  date.today().addDays(90);		
-    
-    	update a;
+	
+		q.genesis__Business_Name__c = a.legal_name__c;
+		
+		if (!acctList.isEmpty()){
+			acctList[0].name = a.legal_name__c;
+			update acctList;
+		}
+		
+		update a;
     	update q;
     	
     	/* call the service to register manaul decline with ICS */
