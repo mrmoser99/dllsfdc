@@ -8,11 +8,13 @@
 * 9/19/19 - MRM Changed invoice__c to clcommon__Consolidated_Invoice__c
 * 9/24/19 - MRM added cams check to process
 * 2/5/20 - MRM added logic to allow for welcome packet to run for portal users
+* 2/26/2020 - MRM added maintain parents class
 *
 **********************************************************************************************/
 global without sharing class NewCoUtility { 
 	
 	public static Boolean skipApplicationTrigger = false;
+	public static Boolean skipAccountTrigger = false;
     
     /*************************************************************************************************
     *
@@ -342,7 +344,150 @@ global without sharing class NewCoUtility {
     		
     		
     }
-    
+	/*************************************************************************************************
+    * 
+    * delete loan wolf
+    *
+    *************************************************************************************************/
+	public static void deleteLoneWolf(Set<ID> parentSet){
+		
+		List<Account> aDeleteList = new List<Account>();
+
+		List<Account> kidsList = [select id from account where parentId in :parentSet];
+		if (kidsList.size() <= 1){
+			Account d  = [select id from Account where id in :parentSet];
+			aDeleteList.add(d);
+		}
+
+		if (!aDeleteList.isEmpty())
+			delete aDeleteList;	
+			
+	}
+	/*************************************************************************************************
+    * 
+    * maintain ein parents
+    *
+    *************************************************************************************************/
+
+	public static void maintainParents(Set<ID> accountSet){
+		skipAccountTrigger = true;
+
+		RecordType rte= [select id from RecordType where developername = 'EIN' and sOBjectType = 'Account' and isActive = true]; 
+
+		RecordType rtl = [select id from RecordType where developername = 'Lessee' and sOBjectType = 'Account' and isActive = true]; 
+
+		RecordType rtd = [select id from RecordType where developername = 'Dealer' and sOBjectType = 'Account' and isActive = true]; 
+
+		
+
+		List<Account> aUpdateList = new List<Account>();
+	
+		List<Account> aDeleteList = new List<Account>();
+
+		List<Account> processList = new List<Account>();
+		List<Account> relatedList = new List<Account>();
+		List<Account> parentList = new List<Account>();
+
+		processList = [select ein__c, parentId, recordTypeId from account where id in :accountSet limit 1];
+
+		if (processList[0].recordTypeId != rtl.id)
+			return;
+
+		Set<String> einSet = new Set<String>();
+
+		for (Account a:processList)
+			if (a.ein__c != null)
+				einSet.add(a.ein__c);
+		
+		relatedList = [select ein__c, parentId from account where ein__c in :einSet and id not in: accountSet and name not in :einSet];
+
+		parentList = [select name, parentId from account where name in :einSet];
+
+		Map<String,Account> einParentMap = new Map<String,Account>();
+		for (Account a:parentlist)
+			einParentMap.put(a.name,a);
+		
+
+		Map<String,List<Account>> einRelatedMap = new Map<String,List<Account>>();
+		
+		for (Account a:relatedList){
+			List<Account> temp = new List<Account>();
+
+			if (einRelatedMap.get(a.ein__c) == null){
+				temp.add(a);
+				einRelatedMap.put(a.ein__c,temp);
+			}
+			else{
+				temp = einRelatedMap.get(a.ein__c);
+				temp.add(a);
+			}
+
+		}
+
+		clcommon__Legal_Entity__c le = [select id from clcommon__Legal_Entity__c where name = 'Corporation' limit 1];
+
+		system.debug('PROCESS LIST: ' + processList);
+		system.debug('einrelatedmap: ' + einRelatedMap);
+		system.debug('einparentmap:' + einParentMap);
+		Account a1;
+
+		Set<ID> parentsRemovedSet = new Set<ID>();
+
+		for (Account a:processList){
+			 
+			if (einRelatedMap.size() == 0){
+				parentsRemovedSet.add(a.parentId);
+				a.parentId = null;
+				
+				aUpdateList.add(a);
+				continue;
+			}
+
+			if (einRelatedMap.get(a.ein__c).isEmpty())
+				continue;
+			else {
+				//check if parent ein exists
+				if (einParentMap.get(a.ein__c) == null){  //no existing parent
+					//create parent
+					a1 = new Account(name = a.ein__c, ein__c = a.ein__c, clcommon__Legal_Entity_Type__c = le.id, recordtypeId = rte.id);
+					insert a1;
+					a.parentId = a1.id;
+					aUpdateList.add(a);
+				}
+				else{
+					a.parentId = einParentMap.get(a.ein__c).id;
+					aUpdateList.add(a);
+				}
+				
+				//update related accounts
+				for (Account a2:einRelatedMap.get(a.ein__c)){
+					a2.parentId = a.parentId;
+					aUpdateList.add(a2);
+				}
+				
+				
+			}
+		}
+
+		if (!aUpdateList.isEmpty())
+			update aUpdateList;
+
+		system.debug('parentsremovd list: ' + parentsRemovedSet);
+		if (!parentsRemovedSet.isEmpty()){
+			for (ID p:parentsRemovedset){
+				List<Account> kidsList = [select id from account where parentId = :p];
+				if (kidsList.size() <= 1){
+					Account d  = [select id from Account where id = :p];
+					aDeleteList.add(d);
+				}
+			}
+		}
+
+		if (!aDeleteList.isEmpty())
+			delete aDeleteList;
+
+		 
+	}
     
     /*************************************************************************************************
     * 

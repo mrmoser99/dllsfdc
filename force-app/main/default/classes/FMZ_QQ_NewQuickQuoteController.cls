@@ -129,7 +129,8 @@ public without sharing class FMZ_QQ_NewQuickQuoteController {
                         Phone = qq.Primary_Phone_number__c,
                         Email_Address__c = qq.Email_Address__c,
                         RecordTypeId = lesseeRecTypeId,
-                        clcommon__Legal_Entity_Type__c = legalEntity.Id
+                        clcommon__Legal_Entity_Type__c = legalEntity.Id,
+                        dealer__c = dealer.id
                 );
 
                 // THE DUPLICATE RULE BLOCKS ALL DUPS

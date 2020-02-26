@@ -22,6 +22,7 @@
 			iv.	If no Experian, take the Paynet value. 
 			v.	If none of the above, use the screen in B during credit decision to add the Legal name manually. 
 
+	2/26/2020 - MRM Added logic to combine accounts under parent ein account
 
 
 *
@@ -383,7 +384,7 @@ global class ICSResponse {
 										where name = :Input.ObtainDecisionResponse.application.ApplicationId.Trim()
 										];
 		 
-		Account acc = [select id from Account where id = :q.genesis__account__c];
+		Account acc = [select id, ein__c from Account where id = :q.genesis__account__c];
 
 		String messageId;
 		
@@ -682,6 +683,8 @@ global class ICSResponse {
 					ex.value__c = ei.ExternalIdValue;
 					eList.add(ex);
 				}
+
+				 
 		
 				if(!eList.isEmpty())
 					insert eList;
