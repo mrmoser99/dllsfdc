@@ -119,7 +119,8 @@ public class DMBIStaticVariables {
                     Upfront_Tax_Amount__c,
                     Net_Trade_Up_Amount__c,
                     Dealer_Charges__c,
-                    Contract_Status__c 
+                    Contract_Status__c ,
+                    Total_Equipment_Cost__c
                 FROM cllease__Contract_Equipment__c 
                 WHERE cllease__Contract__c IN : ContractList Order by createddate DESC];
     }

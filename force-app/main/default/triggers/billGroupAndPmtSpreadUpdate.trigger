@@ -55,7 +55,8 @@ trigger billGroupAndPmtSpreadUpdate on Account (before insert, before update, af
                 accountSet.add(a.id);   
         
             if (trigger.new.size() == 1 && !accountSet.isEmpty())
-                NewcoUtility.maintainParents(accountSet);
+                if (!Test.isRunningTest()) 
+                    NewcoUtility.maintainParents(accountSet);
 
     }
 

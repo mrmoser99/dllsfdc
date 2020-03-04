@@ -47,6 +47,11 @@ Public class DMBIInterfaceRecordGeneratorJob {
     }
     //@@SUBMETHOD: constructing a new Int__agreement Exposure object
     Private static Int_Agreement_Exposure__c CreateNewAgreementExposure(cllease__Lease_Account__c cla,map<string,int_agreement__c> agrMap, map<string,string> intmap,list<cllease__Rental_Stream__c> RSList){
+        if ( cla.cllease__Delinquent_Amount__c == 0)
+            cla.cllease__Days_Past_Due__c = null;
+
+       
+
         Return new Int_Agreement_Exposure__c(
             Agreement_Name__c = AgrMap.get(cla.name).Id,
             Exposure_Type__c = 'DLL',
@@ -54,11 +59,11 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Exposure_Booked__c = cla.Exposure__c!=Null?ScaleToTwoDecimal(cla.Exposure__c):0,
             Agreement_Source_System__c = intmap.get(cla.Source_System__c),
             Agreement_Number__c = cla.name,
-            Days_In_Arrears__c = string.valueof(cla.cllease__Days_Past_Due__c)!=Null?string.valueof(cla.cllease__Days_Past_Due__c):'0',
+            Days_In_Arrears__c = string.valueof(cla.cllease__Days_Past_Due__c)!=Null?string.valueof(cla.cllease__Days_Past_Due__c):null,
             Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(CalculateNetPrincipalBalanceAmountFromRentalStream(RSList)),
             Accrued_Interest_Amount__c = ScaleToTwoDecimal(CalculateAccruedInterestAmountFromRentalStream(RSList)),
-            Other_Arrears_Amount__c = 0,
-            Other_Days_in_Arrears__c = '0'
+            Other_Arrears_Amount__c = null,
+            Other_Days_in_Arrears__c = null
         );
     }
     //@@SUBMETHOD: Summing up Lease_Income of rental stream records to calculate AccruedInterestAmount 
@@ -218,7 +223,8 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Days_In_Arrears__c = daysInArrears,
             Agreement_Original_Duration__c= string.valueof(cla.cllease__Term__c),
             Deposit_Payment_Amount__c= ScaleToTwoDecimal(cla.cllease__Security_Deposit_Amount__c),
-            Agreement_Start_Date__c= cla.cllease__Amort_Start_Date__c,
+            //MRM 3/3/2020 changed requested by paula.
+            Agreement_Start_Date__c= cla.cllease__First_Payment_Date__c,
             Agreement_Termination_Date__c=cla.Termination_Date__c,
             System_Program_Number__c = cla.Dealer_Program__r.name,
             System_Program_Description__c = cla.Dealer_Program__r.name,
@@ -656,26 +662,17 @@ Public class DMBIInterfaceRecordGeneratorJob {
                     new Int_Agreement_Line__c(
                         Agreement_Name__c = AgrMap.get(eq.cllease__Contract__r.Name).Id
                         ,Agreement_Line_Start_Date__c = contract.cllease__Contract_Date__c
-                        //,Agreement_Line_Start_Date__c = eq.Invoice_Date__c
                         ,Agreement_Line_Maturity_Date__c = contract.cllease__Maturity_Date__c
-                        //,Agreement_Line_Status_Code__c = status
                         ,Agreement_Line_Status_Code__c =  intcode.containsKey(eq.Contract_Status__c)?intcode.get(eq.Contract_Status__c):''
-                        //,Net_Principal_Balance_Amount__c = ScaleToTwoDecimal((eq.Rent_Amount__c*CountRentalStream(contract.cllease__Rental_Streams__r))+ eq.Bill_Residual_Amount__c)
-                       
-                        ,Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(AgrMap.get(eq.cllease__Contract__r.Name).Net_Principal_Balance_Amount__c*(contract.cllease__Financed_Amount__c!=0
-                        ?eq.cllease__Estimated_Selling_Price__c/contract.cllease__Financed_Amount__c
-                        :1))
-                       
-                       
                         ,Net_Residual_Value__c = Contract.cllease__Lease_Status__c == 'EVERGREEN'?ScaleToTwoDecimal(CalculateNetResidualAmount(contract.cllease__Residual_Streams__r,contract.cllease__Residual_Amount__c,eq.cllease__Residual_Amount__c)):Null
-                        //,Hard_Costs_Amount__c = ScaleToTwoDecimal(eq.cllease__Estimated_Selling_Price__c!=Null?eq.cllease__Estimated_Selling_Price__c:0)
-                        //,Soft_Costs_Amount__c = ScaleToTwoDecimal((eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0)-(eq.Net_Trade_Up_Amount__c!=Null?eq.Net_Trade_Up_Amount__c:0)) 
                         ,Hard_Costs_Amount__c = ScaleToTwoDecimal(eq.Dealer_Charges__c!=Null?eq.Dealer_Charges__c:0)
                         ,Soft_Costs_Amount__c = ScaleToTwoDecimal((eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0) + (eq.Net_Trade_Up_Amount__c!=Null?eq.Net_Trade_Up_Amount__c:0)) 
                         ,Purchase_Type_Code__c = intcode.containskey(contract.Purchase_Option__c)?intcode.get(contract.Purchase_Option__c):''
                         ,Residual_Value_Booked__c = ScaleToTwoDecimal(eq.cllease__Residual_Amount__c)
-                        //,Net_Principal_Amount__c = ScaleToTwoDecimal((eq.Dealer_Charges__c!=Null?eq.Dealer_Charges__c:0) + (eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0))
-                        ,Net_Principal_Amount__c = ScaleToTwoDecimal((eq.Dealer_Charges__c!=Null?eq.Dealer_Charges__c:0) + (eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0) + (eq.Net_Trade_Up_Amount__c!=Null?eq.Net_Trade_Up_Amount__c:0))
+                        
+                        ,Net_Principal_Amount__c = eq.Total_Equipment_Cost__c
+                        ,Net_Principal_Balance_Amount__c = contract.cllease__Financed_Amount__c
+                       
                         ,Agreement_Source_System__c = intcode.get(contract.Source_System__c)
                         ,Agreement_Number__c = contract.name
                         ,Agreement_Line_Number__c = eq.name

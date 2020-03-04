@@ -36,7 +36,8 @@ public with sharing class DMBIConstants {
     										' 	cllease__Dealer__r.genesis__Vendor_Type__c, 				'+
     										' 	cllease__Dealer__r.Account_Number__c, 						'+
     										' 	Business_Unit_Name__c, 										'+
-    										' 	cllease__Excess__c, 										'+
+											' 	cllease__Excess__c,											'+ 	
+											'   dealer__r.name												'+
     										' 	cllease__Days_Convention__c, 								'+
     										' 	Bill_Not_Paid_Rent__c, 										'+
     										' 	cllease__Payment_Amount__c, 								'+
@@ -168,7 +169,8 @@ public with sharing class DMBIConstants {
         									' 		Upfront_Tax_Amount__c,									'+
         									' 		Net_Trade_Up_Amount__c,									'+
         									' 		Dealer_Charges__c,										'+
-        									' 		Contract_Status__c 										'+
+											' 		Contract_Status__c, 									'+ 
+											'		Total_Equipment_Cost__c	     							'+
         									' 	FROM cllease__Contract_Equipments__r 						'+
         									' 	ORDER by createddate DESC)									'+
         								    ' FROM cllease__Lease_Account__c 								'+
