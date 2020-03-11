@@ -1,3 +1,14 @@
+/**********************************************************************************************************************
+ * 
+ * 
+ * Change Log:
+ *  
+ *  3/11/2020 - MRM - added upfront tax to display on this page
+ * 
+ * 
+ * 
+ */
+
 public without sharing class FMZ_ApplicationEquipmentController {
 
     @AuraEnabled
@@ -9,7 +20,7 @@ public without sharing class FMZ_ApplicationEquipmentController {
                     Serial_Number__c, genesis__Equipment__r.MSRP__c,
                     Product_Type1__c, genesis__Estimated_Selling_Price__c, Manufacturer__c,
                     Install_Address1__c, Tax_Exempt__c, Installation_Date__c, genesis__Application__r.Trade_Up_Quote__c,
-                    Oracle_Trade_Up_Amount__c, Upfront_Tax_Amount__c
+                    Oracle_Trade_Up_Amount__c, Upfront_Tax_Amount__c, genesis__tax_amount__c
             FROM genesis__Application_Equipment__c
             WHERE genesis__Application__c = :applicationId
             ORDER BY CreatedDate];
@@ -20,7 +31,7 @@ public without sharing class FMZ_ApplicationEquipmentController {
 
     private final static Integer MAX_RESULTS = 5;
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static List<LookupSearchResult> search(String searchTerm, List<String> selectedIds) {
 
         searchTerm = '*' + searchTerm + '*';

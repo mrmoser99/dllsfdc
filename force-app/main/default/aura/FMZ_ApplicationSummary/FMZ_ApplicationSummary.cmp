@@ -306,6 +306,15 @@
         </td>
       </tr>
       <tr>
+        <td class="slds-text-title_bold">Upfront Tax</td>
+       
+       
+        <td>
+            <lightning:formattedNumber value="{!v.application.genesis__Tax_Amount__c}"
+                style="currency" currencyCode="USD"/> 
+        </td>
+      </tr>
+      <tr>
         <td colspan="2">
           <div
             class="slds-text-heading--small slds-text-color_success slds-m-top_medium"
@@ -325,10 +334,13 @@
             style="currency"
             currencyCode="USD"
           />
-          <!--<lightning:formattedNumber value="{!v.application.Pre_Upfront_Tax_Payment_Amount1__c}"-->
-          <!--style="currency" currencyCode="USD"/>-->
+          *
         </td>
+        
+     
+       
       </tr>
+       
       <tr>
         <td class="slds-text-title_bold new-highlight">Services</td>
         <td class="new-highlight">
@@ -392,6 +404,11 @@
             style="currency"
             currencyCode="USD"
           /><!-- include v.application.Pre_Upfront_Tax_Payment_Amount__c -->
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          * Includes <ui:outputNumber  format="$.00" value="{!v.application.genesis__Tax_Amount__c *  v.application.Pricing_Rate_Factor__c}"/> of Upfront Tax
         </td>
       </tr>
       <tr>

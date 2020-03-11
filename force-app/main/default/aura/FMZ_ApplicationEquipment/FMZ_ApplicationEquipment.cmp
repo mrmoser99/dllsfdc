@@ -70,7 +70,7 @@
                             </aura:iteration>
                         </lightning:select>
                     </td>
-                    <td>
+                    <td> 
                         <lightning:input aura:id="serialnum" type="text" maxlength="100" label=" " required="true"
                                          variant="label-hidden" value="{!e.Serial_Number__c}"
                                          messageWhenValueMissing="Serial Number is required."
@@ -80,13 +80,12 @@
 									  value="{!e.Installation_Date__c}"
 									  change="{!c.handleEquipmentChange}" blur="{!c.handleEquipmentBlur}"/>
                     </td>
-                    <td>
+                    <td> 
                         <div class="slds-p-top_x-small">
-							<lightning:formattedNumber value="{!e.genesis__Equipment__r.MSRP__c}" style="currency"
-													   maximumFractionDigits="0" currencyCode="USD"/>
+                            <lightning:formattedNumber value="{!e.genesis__Equipment__r.MSRP__c}" maximumFractionDigits="0" style="currency" currencyCode="USD"/> 
                         </div>
                     </td>
-                    <td>
+                    <td> 
                         <lightning:input aura:id="price" type="number" formatter="currency" step="0.01" label=" "
                                          value="{!e.genesis__Estimated_Selling_Price__c}"
                                          variant="label-hidden" placeholder="Enter Selling Price"
@@ -106,10 +105,10 @@
                                                     style="currency" currencyCode="USD"/>
                          </div>
                       </aura:if>
-						<!--<div class="slds-p-top_x-small">-->
-							<!--Upfront Tax:&nbsp;<lightning:formattedNumber value="{!e.Upfront_Tax_Amount__c}" style="currency"-->
-													   <!--maximumFractionDigits="0" currencyCode="USD"/>-->
-						<!--</div>-->
+						<div class="slds-p-top_x-small"> 
+							Upfront Tax:&nbsp;<lightning:formattedNumber value="{!e.genesis__Tax_Amount__c}" style="currency"
+													   maximumFractionDigits="0" currencyCode="USD"/>
+						</div>
             						<div class="slds-p-top_x-small">
             							<lightning:input aura:id="exempt" type="checkbox" label="Tax Exempt"
             											 value="{!e.Tax_Exempt__c}" onchange="{!c.handleEquipmentBlur}"
