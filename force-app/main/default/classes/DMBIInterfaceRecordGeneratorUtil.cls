@@ -185,8 +185,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
             //Net_Principal_Amount__c = ScaleToTwoDecimal(cla.cllease__Financed_Amount__c),
             //Net_Principal_Amount__c = ScaleToTwoDecimal(CalculateNetPrincipalAmount(cla.cllease__Residual_Amount__c,cla.cllease__Rental_Streams__r,cla.cllease__Residual_Streams__r)),
             //Net_Principal_Amount__c = ScaleToTwoDecimal(cla.cllease__Total_Dealer_Charges__c - (cla.cllease__Subsidy1__c!=Null?cla.cllease__Subsidy1__c:0) - (cla.Interim_Rent__c!=Null?cla.Interim_Rent__c:0)),
-            Net_Principal_Amount__c = ScaleToTwoDecimal((cla.Net_Dealer_Funding__c!=Null && cla.Net_Dealer_Funding__c!=0)?cla.Net_Dealer_Funding__c:((cla.Net_Trade_Up_Amount__c==Null || cla.Net_Trade_Up_Amount__c==0) && cla.cllease__Total_Dealer_Charges__c!=Null?cla.cllease__Total_Dealer_Charges__c:0)),
-            Maturity_Options_Code__c = 'ETNOFEE',
+             Maturity_Options_Code__c = 'ETNOFEE',
             Hyperion_Base_Entity__c = 'BEQUS',
             Amortization_Type_Code__c = AmortizationTypeCode,
             Payment_Method_Code__c = CalculatePaymentmethodCode(PTList,Codemap),
@@ -218,7 +217,12 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Payment_Frequency_Principal_Code__c= codemap.containskey(cla.cllease__Payment_Frequency__c)?codemap.get(cla.cllease__Payment_Frequency__c):'',
             Payment_Frequency_Interest_Code__c = codemap.containskey(cla.cllease__Payment_Frequency__c)?codemap.get(cla.cllease__Payment_Frequency__c):'',
             //Net_Principal_Balance_Amount__c = (cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c)!=Null?(ScaleToTwoDecimal(cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c)):0,
-            Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c - CalculateUnearnedRentalIncome(CRSList) - CalculateUnearnedResidualIncome(ResList)+ cla.Billed_Not_Paid__c),
+            //nightmare calculations removed MRM 3/5/2020
+            //Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c - CalculateUnearnedRentalIncome(CRSList) - CalculateUnearnedResidualIncome(ResList)+ cla.Billed_Not_Paid__c),
+            //Net_Principal_Amount__c = ScaleToTwoDecimal((cla.Net_Dealer_Funding__c!=Null && cla.Net_Dealer_Funding__c!=0)?cla.Net_Dealer_Funding__c:((cla.Net_Trade_Up_Amount__c==Null || cla.Net_Trade_Up_Amount__c==0) && cla.cllease__Total_Dealer_Charges__c!=Null?cla.cllease__Total_Dealer_Charges__c:0)),
+            Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(cla.cllease__Financed_Amount__c),
+            Net_Principal_Amount__c = ScaleToTwoDecimal((cla.Net_Dealer_Funding__c!=Null && cla.Net_Dealer_Funding__c!=0)?cla.Net_Dealer_Funding__c:((cla.Net_Trade_Up_Amount__c==Null || cla.Net_Trade_Up_Amount__c==0) && cla.cllease__Total_Dealer_Charges__c!=Null?cla.cllease__Total_Dealer_Charges__c:0)),
+          
             Currency_Code__c = cla.cllease__Currency_Code__c!=Null?cla.cllease__Currency_Code__c:'USD',
             Accrued_Interest_Amount__c = ScaleToTwoDecimal(CalculateAccruedInterestAmountFromRentalStream(CRSList)),
             Residual_Value_Booked__c = ScaleToTwoDecimal(cla.cllease__Residual_Amount__c)
@@ -568,7 +572,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
                 Inventory_Sale_Amount__c = ScaleToTwoDecimal((AssetWBMap.containsKey(cce.name) && AssetWBMap.get(cce.name).Sale_Price__c !=Null)?AssetWBMap.get(cce.name).Sale_Price__c:Null),
                 Asset_Recording_Method_Code__c = 'GARD',
                 Global_Master_Asset_Type_Code__c = intCodeMap.containsKey(cce.Master_Asset_Type__c)?intCodeMap.get(cce.Master_Asset_Type__c):'118',
-                Global_Master_Asset_Type__c = cce.Master_Asset_Type__c!=Null?cce.Master_Asset_Type__c:'GMST',//mandatory
+                Global_Master_Asset_Type__c = 'Office Equipment',
                 Object_Category_Number__c = cce.Object_Category_ID__c!=Null?cce.Object_Category_ID__c:'0',//mandatory
                 Asset_Number__c = cce.name,//cce.Asset_ID__c!=Null?cce.Asset_ID__c:string.valueOf(integer.valueof(math.random()*10000000)),//mandatory
                 Number_Of_Units__c = '1'//NopEquipment

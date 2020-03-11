@@ -6,7 +6,8 @@
 *
 * ChangeLog:
 *
-*	9/6/19 - MRM Created Class 
+*	9/6/19 - MRM Created Class
+*   3/4/2020 - MRM Revisions from feedback 
 *
 ************************************************************************************************/
 global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.Stateful{
@@ -181,7 +182,12 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
             else 
             if (q.genesis__Status__c == 'CONVERTED TO APPLICATION'){
                 status = 'APPROVED';
-                detailStatus = 'ACTIVATED';
+                //MRM 3/4/2020
+                if (q.genesis__Application__r.lease_number__c == null)
+                    detailStatus = 'APPROVED';
+                else {
+                    detailStatus = 'ACTIVATED';
+                }
                 if (q.Credit_Approval_Expiration_Date__c < date.today() && q.genesis__Application__r.lease_number__c == null)
                     detailStatus = 'WITHDRAWN';
             }
@@ -325,8 +331,8 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
                                                                                ,Asset_Type__c =eq.asset_type_id__c 
                                                                                ,Dealer_Subsidy_Amount__c = null
                                                                                ,External_Reference_Asset__c = null 
-                                                                               ,Global_Master_Asset_Type__c = eq.master_asset_type__c
-                                                                               ,Global_Master_Asset_Type_Code__c = eq.master_asset_type_id__c
+                                                                               ,Global_Master_Asset_Type__c =  'Office Equipment'
+                                                                               ,Global_Master_Asset_Type_Code__c = '107'
                                                                                ,Grace_Period__c = null
                                                                                ,Make__c = eq.Manufacturer1__c
                                                                                ,Manufacturing_Year__c = null
@@ -382,7 +388,7 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
             SAI_Application_Classification__c ss3 = new SAI_Application_Classification__c(application_source_system__c = SOURCESYSTEM
                                                                                         ,application_number__c =  q.name
                                                                                         ,Application_Classification_Type_Code__c = 'SL'
-                                                                                        ,Application_Classification_Code__c = 'HUB-' + q.dealer__r.primary_address__r.state__c
+                                                                                        ,Application_Classification_Code__c = 'PHL' //'HUB-' + q.dealer__r.primary_address__r.state__c
                                                                                         );
             appSSList.add(ss3);
 
@@ -466,7 +472,8 @@ global class BatchSAIGeneration implements Database.Batchable<SObject>,Database.
                                ,post_code__c = a1.primary_address__r.zip_code__c
                                 ,town_name__c = a1.primary_address__r.City__c
                                 ,region_name__c = a1.primary_address__r.state__c
-                                ,country_code__c = 'USA'
+                                //3/4/2020 MRM  changed to us from usa
+                                ,country_code__c = 'US'
                                 ,party_source_system__c = SOURCESYSTEM
                                 ,party_number__c = a1.account_number__c
                                 ,party_address_type_code__c = 'ESTA'

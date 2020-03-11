@@ -1,5 +1,5 @@
 <aura:component controller="FMZ_ApplicationServiceAndFeesController">
-
+ 
     <aura:attribute name="applicationId" type="Id"/>
     <aura:attribute name="onchange" type="Aura.Action" description="Handle any data changes"/>
 
@@ -79,17 +79,31 @@
                     <lightning:icon iconName="standard:partner_marketing_budget" size="small"/>
                 </td>
                 <td>
+                    <aura:if isTrue="{!f.Service_Escalate__c != 'YES'}">
                     <div class="slds-text-title_bold slds-p-top_xx-small slds-p-bottom_medium">
                         &nbsp;{!f.Fee__r.Name}</div>
-                    <lightning:select aura:id="equipmentSelect"  variant="label-hidden" label=" " class="label-hidden"
+                    </aura:if>
+
+                    <aura:if isTrue="{!f.Service_Escalate__c == 'YES'}">
+                        <div class="slds-text-title_bold slds-p-top_xx-small slds-p-bottom_medium">
+                            &nbsp; {!f.Fee__r.Name} - Escalation</div>
+                    </aura:if>
+
+                    <aura:if isTrue="{!f.Service_Escalate__c != 'YES'}">
+                        <lightning:select aura:id="equipmentSelect"  variant="label-hidden" label=" " class="label-hidden"
                                       onchange="{!c.handleEquipmentBlur}" required="false" value="{!f.Equipment__c}"
-                                      disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees' || f.Fee__r.Name == 'Estimated Property Tax'}">
-                        <option value="">--Select Equipment--</option>
-                        <aura:iteration items="{!v.equipmentOpts}" var="a">
-                            <option value="{!a.value}"
+                                      disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees' || f.Fee__r.Name == 'Estimated Property Tax' || f.Service_Escalate__c == 'YES'}">
+                            <option value="">--Select Equipment--</option>
+                            <aura:iteration items="{!v.equipmentOpts}" var="a">
+                                <option value="{!a.value}"
                                     selected="{!a.value==f.Equipment__c}">{!a.label}</option>
-                        </aura:iteration>
-                    </lightning:select>
+                            </aura:iteration>
+                        </lightning:select>
+                    </aura:if>
+                     
+                    <aura:if isTrue="{!f.Service_Escalate__c == 'YES'}">
+                        <lightning:textarea value="{!f.Equipment_List__c}" disabled="true" />
+                    </aura:if>
                 </td>
                 <td>
                     <lightning:input aura:id="paymentCount" type="number" label=" "
@@ -116,53 +130,7 @@
                             value="{!f.Start_Date__c}" change="{!c.handleEquipmentChange}" blur="{!c.handleEquipmentBlur}"
                             disabled="{!f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees' || f.Fee__r.Name == 'Estimated Property Tax'}" />
                 </td>
-                <!--<td>-->
-                    <!--<div class="{!(f.Fee__r.Name == 'Service Fees' ? 'hidden' : '')}">-->
-                        <!--This Fee Can't Escalate-->
-                    <!--</div>-->
-                    <!--<lightning:select aura:id="serviceEscalate" variant="label-hidden" label=" " class="{!'label-hidden' + (f.Fee__r.Name != 'Service Fees' ? ' hidden' : '')}"-->
-                                      <!--onchange="{!c.handleEquipmentBlur}" required="false" value="{!f.Service_Escalate__c}"-->
-                                        <!--disabled="{!f.Fee__r.Name != 'Service Fees'}">-->
-                        <!--<option value="">&#45;&#45;Does Service Escalate?&#45;&#45;</option>-->
-                        <!--<aura:iteration items="{!v.serviceEscalateOpts}" var="a">-->
-                            <!--<option value="{!a.value}"-->
-                                    <!--selected="{!a.value==f.Service_Escalate__c}">{!a.label}</option>-->
-                        <!--</aura:iteration>-->
-                    <!--</lightning:select>-->
-                    <!--<lightning:select aura:id="escalateFreq" variant="label-hidden" label=" " class="{!'label-hidden' + (f.Service_Escalate__c != 'YES' ? ' hidden' : '')}"-->
-                                      <!--onchange="{!c.handleEquipmentBlur}" required="false" value="{!f.Escalation_Frequency__c}"-->
-                                      <!--disabled="{!f.Fee__r.Name != 'Service Fees' &amp;&amp; f.Service_Escalate__c != 'YES'}">-->
-                        <!--<option value="">&#45;&#45;Escalation Freqency&#45;&#45;</option>-->
-                        <!--<aura:iteration items="{!v.escalateFreqOpts}" var="a">-->
-                            <!--<option value="{!a.value}"-->
-                                    <!--selected="{!a.value==f.Escalation_Frequency__c}">{!a.label}</option>-->
-                        <!--</aura:iteration>-->
-                    <!--</lightning:select>-->
-
-                    <!--<lightning:select aura:id="escalateOn" variant="label-hidden" label=" " class="{!'label-hidden' + (f.Service_Escalate__c != 'YES' ? ' hidden' : '')}"-->
-                                      <!--onchange="{!c.handleEquipmentBlur}" required="false" value="{!f.Escalate_Service_On__c}"-->
-                                      <!--disabled="{!f.Fee__r.Name != 'Service Fees' &amp;&amp; f.Service_Escalate__c != 'YES'}">-->
-                        <!--<option value="">&#45;&#45;Escalate On&#45;&#45;</option>-->
-                        <!--<aura:iteration items="{!v.escalateOnOpts}" var="a">-->
-                            <!--<option value="{!a.value}"-->
-                                    <!--selected="{!a.value==f.Escalate_Service_On__c}">{!a.label}</option>-->
-                        <!--</aura:iteration>-->
-                    <!--</lightning:select>-->
-
-                    <!--<lightning:select aura:id="escalateType" variant="label-hidden" label=" " class="{!'label-hidden' + (f.Service_Escalate__c != 'YES' ? ' hidden' : '')}"-->
-                                      <!--onchange="{!c.handleEquipmentBlur}" required="false" value="{!f.Escalation_Type__c}"-->
-                                      <!--disabled="{!f.Fee__r.Name != 'Service Fees' &amp;&amp; f.Service_Escalate__c != 'YES'}">-->
-                        <!--<option value="">&#45;&#45;Escalation Type&#45;&#45;</option>-->
-                        <!--<aura:iteration items="{!v.escalateTypeOpts}" var="a">-->
-                            <!--<option value="{!a.value}"-->
-                                    <!--selected="{!a.value==f.Escalation_Type__c}">{!a.label}</option>-->
-                        <!--</aura:iteration>-->
-                    <!--</lightning:select>-->
-                    <!--<lightning:input aura:id="escalateValue" type="number"  step="0.1" label=" "-->
-                                     <!--variant="label-hidden" placeholder="Escalation Value" class="{!(f.Service_Escalate__c != 'YES' ? 'hidden' : '')}"-->
-                                     <!--value="{!f.Escalation_Value__c}" onchange="{!c.handleEquipmentChange}" onblur="{!c.handleEquipmentBlur}"-->
-                                     <!--disabled="{!f.Fee__r.Name != 'Service Fees' &amp;&amp; f.Service_Escalate__c != 'YES'}" />-->
-                <!--</td>-->
+                
                 <td class="slds-text-align_center">
 
                     <p class="{!(f.Fee__r.Name == 'Estimated Property Tax' || f.Fee__r.Name == 'Insurance Fees' || f.Fee__r.Name == 'Origination Fees') ? '' : 'slds-hide'}">No Action Available</p>

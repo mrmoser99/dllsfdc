@@ -1,5 +1,5 @@
 <aura:component controller="FMZ_ApplicationServiceAndFeesController">
-
+2.0
     <aura:attribute name="applicationId" type="Id"/>
     <aura:attribute name="feeDefId" type="Id"/>
     <aura:attribute name="feeId" type="Id"/>
@@ -39,7 +39,7 @@
             <lightning:dualListbox aura:id="equipmentList"
                                    name="equipment"
                                    required="{!v.feeName == 'Service Fees'}" 
-                                   label= "Select Equipment"
+                                   label= "Select Equipment 1.0"
                                    sourceLabel="Available"
                                    selectedLabel="Selected"
                                    fieldLevelHelp="Select equipment to add this fee for."

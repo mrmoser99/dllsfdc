@@ -1,0 +1,70 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 2,
+        "passing": 2,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Mar 4, 2020 9:48 AM",
+        "testExecutionTime": "11127 ms",
+        "testTotalTime": "11127 ms",
+        "commandTime": "19404 ms",
+        "hostname": "https://newco--Dev.my.salesforce.com",
+        "orgId": "00D4F0000001BgcUAE",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7074F00001DLNjH",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v48.0/tooling/sobjects/ApexTestResult/07M4F000004f2N0UAI"
+            },
+            "Id": "07M4F000004f2N0UAI",
+            "QueueItemId": "7094F000000hOyiQAE",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7074F00001DLNjHQAX",
+            "MethodName": "Test1",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v48.0/tooling/sobjects/ApexClass/01p4F000001gXmVQAU"
+                },
+                "Id": "01p4F000001gXmVQAU",
+                "Name": "TestBatchUtility",
+                "NamespacePrefix": null
+            },
+            "RunTime": 80,
+            "FullName": "TestBatchUtility.Test1"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v48.0/tooling/sobjects/ApexTestResult/07M4F000004f2N1UAI"
+            },
+            "Id": "07M4F000004f2N1UAI",
+            "QueueItemId": "7094F000000hOyiQAE",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7074F00001DLNjHQAX",
+            "MethodName": "Test2",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v48.0/tooling/sobjects/ApexClass/01p4F000001gXmVQAU"
+                },
+                "Id": "01p4F000001gXmVQAU",
+                "Name": "TestBatchUtility",
+                "NamespacePrefix": null
+            },
+            "RunTime": 11047,
+            "FullName": "TestBatchUtility.Test2"
+        }
+    ]
+}

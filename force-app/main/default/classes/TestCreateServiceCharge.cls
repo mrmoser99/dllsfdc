@@ -154,7 +154,7 @@ private class TestCreateServiceCharge
         appfee.Frequency__c             = 'MONTHLY';
         appfee.Parent_id__c             = null;
         appfee.Parent_Application_Fee__c= null;
-        appfee.IsDelete__c              = false;
+        appfee.IsDelete__c              = false; 
         //appfee.Number_of_Payments__c  = 36 
         appfee.Number_of_Terms__c       = 36;
         appfee.Prorate_Per_Asset__c     = false;
@@ -274,7 +274,7 @@ private class TestCreateServiceCharge
         appfee.Escalation_Frequency__c  = 'ANNUAL';
         appfee.Number_of_Payments__c    =  33;
         appfee.Escalation_Type__c       = 'Percent %';
-        appfee.Escalation_Value__c      = 10;
+        appfee.Escalation_Value__c      = 10; 
         appfee.Fee__c                   = f.fee__r.id;
         appfee.Amount__c                = 50;
         appfee.Frequency__c             = 'MONTHLY';
