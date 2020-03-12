@@ -5,11 +5,11 @@
     <columns>Agreement_Name__c</columns>
     <columns>Agreement_Number__c</columns>
     <columns>Net_Principal_Amount__c</columns>
+    <columns>Net_Principal_Balance_Amount__c</columns>
     <columns>Hard_Costs_Amount__c</columns>
     <columns>Soft_Costs_Amount__c</columns>
     <columns>Residual_Value_Booked__c</columns>
     <columns>Net_Residual_Value__c</columns>
-    <columns>Net_Principal_Balance_Amount__c</columns>
     <columns>Purchase_Type_Code__c</columns>
     <columns>Agreement_Line_Maturity_Date__c</columns>
     <columns>Agreement_Line_Number__c</columns>

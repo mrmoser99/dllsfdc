@@ -91,6 +91,9 @@ public without sharing class FMZ_ApplicationController {
 			if (result != 'SUCCESS') {
 				return result;
 			}
+
+			
+
 			// 2 - Generate Pricing
 			result = genesis.SkuidPricingCtrl.generatePricing(applicationId);
 			if (result != 'Pricing Generated...') {
@@ -168,7 +171,17 @@ public without sharing class FMZ_ApplicationController {
 			throw new AuraHandledException(e.getMessage());
 		}
 
+	}
+	
+	@AuraEnabled
+    public static void calcUpfrontTax(String applicationId) {
+    
+        genesis__Applications__c a = [select name FROM genesis__Applications__c where id = :applicationId];
+
+        VertexUpfrontTaxCalculation.VertexGetUpfrontTax(a.name);
+        
     }
+
 
     @AuraEnabled
 	public static Boolean[] checkCompletion(Id applicationId,  String[] sections) {

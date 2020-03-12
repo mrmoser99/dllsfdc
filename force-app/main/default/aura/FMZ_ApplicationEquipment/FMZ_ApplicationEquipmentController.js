@@ -168,12 +168,15 @@
     },
 
     handleRefresh: function(component, event, helper){
+        
+       
         var source = event.getParam('source');
+        console.log('source of handlerefresh is:' + source);
         if (source === 'FMZ_ApplicationLocations') {
             helper.loadInstallAddresses(component);
             //helper.helpSaveAndValidate(component);
         } else if (source === 'FMZ_ApplicationForm') {
-        	//helper.refreshUpfrontTax(component);
+        	helper.refreshUpfrontTax(component);
 		}
     }
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All</fullName>
+    <columns>NAME</columns>
+    <columns>Amount__c</columns>
+    <columns>Escalate_Service_On__c</columns>
+    <columns>Escalation_Frequency__c</columns>
+    <columns>Frequency__c</columns>
+    <columns>Escalation_Value__c</columns>
+    <columns>Number_Of_Payments__c</columns>
+    <columns>Start_Date__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All Records</label>
+</ListView>

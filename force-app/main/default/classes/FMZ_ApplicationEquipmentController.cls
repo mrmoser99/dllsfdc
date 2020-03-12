@@ -60,6 +60,17 @@ public without sharing class FMZ_ApplicationEquipmentController {
     }
 
     @AuraEnabled
+    public static void calcUpfrontTax(String applicationId) {
+    
+        genesis__Applications__c a = [select name FROM genesis__Applications__c where id = :applicationId];
+
+        VertexUpfrontTaxCalculation.VertexGetUpfrontTax(a.name);
+        
+    }
+
+    
+
+    @AuraEnabled
     public static void addEquipment(String applicationId, String equipmentId) {
 
         genesis__Applications__c app =
@@ -86,6 +97,8 @@ public without sharing class FMZ_ApplicationEquipmentController {
 
         insert equipment;
 
+        
+
     }
 
     @AuraEnabled
@@ -96,6 +109,8 @@ public without sharing class FMZ_ApplicationEquipmentController {
 
         delete equipment;
 
+        
+
     }
 
     @AuraEnabled
@@ -105,6 +120,8 @@ public without sharing class FMZ_ApplicationEquipmentController {
                 (genesis__Application_Equipment__c)JSON.deserialize(equipmentString, genesis__Application_Equipment__c.class);
 
         update equipment;
+
+       
 
     }
 

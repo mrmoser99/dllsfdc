@@ -179,7 +179,29 @@
 						if (onChangeAction) {
 							$A.enqueueAction(onChangeAction);
 						}
-            var action = component.get('c.getEquipment');
+            
+                        console.log('upfront tax call');
+
+                        var action1 = component.get('c.calcUpfrontTax');
+                        action1.setParams({
+                            applicationId: component.get('v.applicationId')
+                        });
+                        action1.setCallback(this, function(response) {
+                            var state = response.getState();
+                            if (state === 'SUCCESS') {
+                                var x = 1;
+                            } else if (state === 'ERROR') {
+                                let error = response.getError();
+                                if (error && error[0]) {
+                                    console.log(error[0].message);
+                                }
+                            }
+                        });
+                        $A.enqueueAction(action1);
+            
+            
+            
+                        var action = component.get('c.getEquipment');
             action.setParams({
                 applicationId: component.get('v.applicationId')
             });
@@ -277,42 +299,44 @@
         return locationsValid && serialNumsValid && pricesValid && installDatesValid;
     },
 
-//	refreshUpfrontTax: function(component) {
-//    	try {
-//			let action = component.get('c.getEquipment');
-//			action.setParams({
-//				applicationId: component.get('v.applicationId')
-//			});
-//			action.setCallback(this, function (response) {
-//				let state = response.getState(),
-//					equipment = component.get('v.equipment'),
-//					equipmentUpdates = response.getReturnValue();
-//				if (state === 'SUCCESS') {
-//					if (equipment && equipmentUpdates) {
-//						let equipmentUpdateMap = equipmentUpdates.reduce(function (map, item) {
-//							map[item.Id] = item;
-//							return map;
-//						}, {});
-//						equipment.forEach(function(item) {
-//							let update = equipmentUpdateMap[item.Id];
-//							item.Upfront_Tax_Amount__c = update.Upfront_Tax_Amount__c;
-//						});
-//						component.set('v.equipment', equipment);
-//					}
-//				} else if (state === 'ERROR') {
-//					let error = response.getError();
-//					if (error && error[0]) {
-//						console.log(error[0].message);
-//					}
-//				}
-//			});
-//			$A.enqueueAction(action);
-//		} catch (e) {
-//    		console.log(e);
-//		}
-//	},
+	refreshUpfrontTax: function(component) {
+    	try {
+            console.log('in refresh up front tax');
+			let action = component.get('c.getEquipment');
+			action.setParams({
+				applicationId: component.get('v.applicationId')
+			});
+			action.setCallback(this, function (response) {
+				let state = response.getState(),
+					equipment = component.get('v.equipment'),
+					equipmentUpdates = response.getReturnValue();
+				if (state === 'SUCCESS') {
+					if (equipment && equipmentUpdates) {
+						let equipmentUpdateMap = equipmentUpdates.reduce(function (map, item) {
+							map[item.Id] = item;
+    						return map;
+						}, {});
+						equipment.forEach(function(item) {
+							let update = equipmentUpdateMap[item.Id];
+							item.Upfront_Tax_Amount__c = update.Upfront_Tax_Amount__c;
+						});
+						component.set('v.equipment', equipment);
+					}
+				} else if (state === 'ERROR') {
+					let error = response.getError();
+					if (error && error[0]) {
+						console.log(error[0].message);
+					}
+				}
+			});
+			$A.enqueueAction(action);
+		} catch (e) {
+    		console.log(e);
+		}
+	}, 
 
     equipmentHasChanged: function(data) {
+         
         var evt = $A.get('e.c:FMZ_Application_Refresh');
         evt.setParams({
             source: 'FMZ_ApplicationEquipment',

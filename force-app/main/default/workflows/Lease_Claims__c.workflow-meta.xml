@@ -1,11 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Insurance_Claim_Submitted</fullName>
+        <description>Insurance Claim Submitted</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>chandi.freeman@dllgroup.com.newco</recipient>
+            <type>user</type>
+        </recipients>
+        <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>unfiled$public/Insurance_Claim_Submitted</template>
+    </alerts>
     <rules>
-        <fullName>Add Account</fullName>
+        <fullName>Claim Submitted</fullName>
         <active>false</active>
         <criteriaItems>
-            <field>Lease_Claims__c.CreatedDate</field>
-            <operation>notEqual</operation>
+            <field>Lease_Claims__c.Claim_Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Insurance Claim Submitted</fullName>
+        <actions>
+            <name>Insurance_Claim_Submitted</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Lease_Claims__c.Claim_Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted</value>
         </criteriaItems>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>

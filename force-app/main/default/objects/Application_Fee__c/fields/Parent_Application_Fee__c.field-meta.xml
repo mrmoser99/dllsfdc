@@ -5,7 +5,7 @@
     <externalId>false</externalId>
     <label>Parent Application Fee</label>
     <referenceTo>Application_Fee__c</referenceTo>
-    <relationshipLabel>Application Fees</relationshipLabel>
+    <relationshipLabel>Application Fees (Parent Application Fee)</relationshipLabel>
     <relationshipName>Application_Fees</relationshipName>
     <required>false</required>
     <trackHistory>false</trackHistory>

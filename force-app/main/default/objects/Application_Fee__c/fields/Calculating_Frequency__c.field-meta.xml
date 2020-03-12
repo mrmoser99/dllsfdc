@@ -2,11 +2,6 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Calculating_Frequency__c</fullName>
     <externalId>false</externalId>
-    <formula>IF(ISPICKVAL(Escalation_Frequency__c ,&#39;ANNUAL&#39;),12, 
-IF(ISPICKVAL(Escalation_Frequency__c ,&#39;QUARTERLY&#39;),3, 
-IF(ISPICKVAL(Escalation_Frequency__c ,&#39;MONTHLY&#39;),1,
-IF(ISPICKVAL(Escalation_Frequency__c ,&#39;SEMI-ANNUAL&#39;),6,0))))</formula>
-    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Calculating Frequency</label>
     <precision>18</precision>
     <required>false</required>

@@ -1,0 +1,235 @@
+<apex:page lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}" standardController="cllease__Termination_Quote_Header__c"
+    extensions="TerminationQuoteGenController"
+    sidebar="{!IF($CurrentPage.Parameters.modal == 'true', false, true)}">
+<apex:include pageName="clcommon__mintTheme"/>
+
+    <apex:stylesheet value="{!IF($CurrentPage.Parameters.modal == 'true', $Resource.cllease__modalheaderStyle,'')}" />
+    <apex:stylesheet value="{!$Resource.cllease__MFIStyles}" />
+    <script
+        src="{!URLFOR($Resource.cllease__jQueryFiles, 'js/jquery-1.8.3.min.js')}" />
+    <script src="{!URLFOR($Resource.cllease__helperclose)}" />
+    <script>
+        j$ = jQuery.noConflict();
+    </script>
+
+    <script>
+        function confirmCancel() {
+            var isConfirm = confirm("Are you sure you want to cancel?");
+            if(isConfirm){
+                return this.parent.parent.window.close();
+            }
+        }
+
+    </script>
+
+    <script type="text/javascript"
+        src="{!URLFOR($Resource.cllease__jQueryFiles, 'js/jquery-1.8.3.min.js')}" />
+
+    <script>
+
+        function testify(){
+            alert(j$('').length);
+        };
+
+      function scrolify(tblAsJQueryObject, height){
+        var oTbl = tblAsJQueryObject;
+
+        // for very large tables you can remove the four lines below
+        // and wrap the table with <div> in the mark-up and assign
+        // height and overflow property
+        var oTblDiv = $("<div/>");
+        oTblDiv.css('height', height);
+        oTblDiv.css('overflow-y','scroll');
+        oTbl.wrap(oTblDiv);
+
+        // save original width
+        oTbl.attr("data-item-original-width", oTbl.width());
+        oTbl.find('thead tr td').each(function(){
+            $(this).attr("data-item-original-width",$(this).width());
+        });
+        oTbl.find('tbody tr:eq(0) td').each(function(){
+            $(this).attr("data-item-original-width",$(this).width());
+        });
+
+
+        // clone the original table
+        var newTbl = oTbl.clone();
+
+        // remove table header from original table
+        oTbl.find('thead tr').remove();
+        // remove table body from new table
+        newTbl.find('tbody tr').remove();
+
+        oTbl.parent().parent().prepend(newTbl);
+        newTbl.wrap("<div/>");
+
+        // replace ORIGINAL COLUMN width
+        newTbl.width(newTbl.attr('data-item-original-width'));
+        newTbl.find('thead tr td').each(function(){
+            $(this).width($(this).attr("data-item-original-width"));
+        });
+        oTbl.width(oTbl.attr('data-item-original-width'));
+        oTbl.find('tbody tr:eq(0) td').each(function(){
+            $(this).width($(this).attr("data-item-original-width"));
+        });
+    }
+
+    function callScroll() {
+        scrolify($('.scrollableFixedHeader'), 300); // 160 is height
+    }
+
+    </script>
+
+
+
+    <apex:stylesheet value="{!IF($CurrentPage.Parameters.modal == 'true', $Resource.cllease__modalheaderStyle,'')}" />
+    <apex:sectionHeader title="Termination Quote" />
+    <br></br>
+    <br></br>
+
+    <div style="height:800px;">
+
+        <apex:form id="terminationQuoteForm" >
+        <apex:pageMessages />
+        <apex:pageBlock id="TerminationQuote">
+
+        <apex:pageblockButtons location="top">
+             <cllease:BusyButton name="Approve Quote" busyName="Approving"
+                        actionTo="{!approveQuote}"
+                        rendered="{!termQuoteHeader.cllease__Status__c=='GENERATED'}"
+                        oncomplete="({!closeModal}===true) ? closeIframe('{!cllease__Termination_Quote_Header__c.cllease__Contract__c}') : {};"
+                        reRenderTo="terminationQuoteForm" />
+
+             <cllease:BusyButton name="Accept Quote" busyName="Accepting"
+                        actionTo="{!acceptQuote}"
+                        rendered="{!termQuoteHeader.cllease__Status__c=='APPROVED'}"
+                        oncomplete="({!closeModal}===true) ? closeIframe('{!cllease__Termination_Quote_Header__c.cllease__Contract__c}') : {};"
+                        reRenderTo="terminationQuoteForm" />
+
+            <cllease:BusyButton name="Cancel Quote" busyName="Canceling"
+                        actionTo="{!cancelQuote}"
+                        rendered="{!(termQuoteHeader.cllease__Status__c=='GENERATED' || termQuoteHeader.cllease__Status__c=='APPROVED'||termQuoteHeader.cllease__Status__c=='ACCEPTED')}"
+                        oncomplete="({!closeModal}===true) ? closeIframe('{!cllease__Termination_Quote_Header__c.cllease__Contract__c}') : {};"
+                        reRenderTo="terminationQuoteForm" />
+
+            <cllease:BusyButton name="Process Quote" busyName="Processing"
+                        actionTo="{!processQuote}"
+                        rendered="{!termQuoteHeader.cllease__Status__c=='ACCEPTED'}"
+                        oncomplete="({!closeModal}===true) ? closeIframe('{!cllease__Termination_Quote_Header__c.cllease__Contract__c}') : {};"
+                        reRenderTo="terminationQuoteForm" />
+
+            <cllease:BusyButton name="Process Termination" busyName="Processing"
+                        actionTo="{!processTermination}"
+                        rendered="{!termQuoteHeader.cllease__Status__c=='PROCESSED'}"
+                        oncomplete="({!closeModal}===true) ? closeIframe('{!cllease__Termination_Quote_Header__c.cllease__Contract__c}') : {};"
+                        reRenderTo="terminationQuoteForm" />
+
+
+             <apex:commandButton value="Exit" action="{!exitQuote}"
+                          onclick="closeIframe()" id="cBtn" />
+        </apex:pageblockButtons>
+
+        <br></br>
+        <br></br>
+
+        <apex:pageblockSection columns="2" id="Cont">
+        <apex:pageBlockSectionItem >
+            <apex:outputLabel >Quote Number</apex:outputLabel>
+            <apex:outputField value="{!termQuoteHeader.Name}" />
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem >
+            <apex:outputLabel >Lease Contract</apex:outputLabel>
+            <apex:outputField value="{!termQuoteHeader.cllease__Contract__c}" />
+        </apex:pageBlockSectionItem>
+        </apex:pageblockSection>
+
+        <apex:pageblockSection columns="2" id="quote">
+            <apex:outputField value="{!termQuoteHeader.cllease__Requested_Termination_Date__c}" html-disabled="true"/>
+            <apex:outputField value="{!termQuoteHeader.cllease__Termination_Date__c}" html-disabled="true"/>
+            <apex:outputField value="{!termQuoteHeader.cllease__Effective_From__c}" html-disabled="true"/>
+            <apex:outputField value="{!termQuoteHeader.cllease__Quote_Type__c}" />
+            <apex:outputField value="{!termQuoteHeader.cllease__Effective_To__c}"/>
+            <!-- <apex:outputField value="{!termQuoteHeader.cllease__Quote_Type__c}" /> -->
+            <apex:outputField value="{!termQuoteHeader.cllease__Quote_Reason__c}" />
+            <apex:outputField value="{!termQuoteHeader.cllease__Quote_Amount__c}" />
+            <apex:outputField value="{!termQuoteHeader.cllease__Status__c}" />
+            <apex:outputField value="{!termQuoteHeader.cllease__Full_Termination__c}" label="Full Termination" />
+            <apex:outputField value="{!termQuoteHeader.cllease__Early_Termination__c}" label="Early Termination" />
+            <apex:outputField value="{!termQuoteHeader.cllease__Termination_With_Purchase__c}" label="Termination With Purchase" />
+            <apex:outputField value="{!termQuoteHeader.cllease__Rebate_Percentage__c}"/>
+            <apex:outputField value="{!termQuoteHeader.cllease__Third_Party_Sale__c}"/>
+
+        </apex:pageblockSection>
+
+        <br></br>
+        <br></br>
+        </apex:pageBlock>
+
+        <apex:pageBlock >
+            <apex:pageblockSection rendered="{!termQuoteHeader.cllease__Status__c!='TERMINATION PROCESSED'}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Total number of equipment : </apex:outputLabel>
+                    <apex:outputText >{!totalEquipments}</apex:outputText>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel >Number of equipment selected for termination : </apex:outputLabel>
+                    <apex:outputText >{!noOfSelectedEquipments}</apex:outputText>
+                </apex:pageBlockSectionItem>
+            </apex:pageblockSection>
+            <apex:pageblockTable id="equipmentTbl" value="{!equipments}"  var="equipment" headerClass="fixedHeader" styleClass="scrollableFixedHeader" rendered="{!termQuoteHeader.cllease__is_Equipment_Termination__c}">
+
+                <apex:repeat value="{!$ObjectType.cllease__Contract_Equipment__c.FieldSets.cllease__TerminationFieldSet}" var="field">
+                    <apex:column headerValue="{!field.Label}" >
+                        <apex:outputField value="{!equipment.eqp[field]}"/>
+                    </apex:column>
+                </apex:repeat>
+
+            </apex:pageblockTable>
+
+            <apex:pageblockTable id="equipmentTbl2" value="{!equipments}"  var="equipment" headerClass="fixedHeader" styleClass="scrollableFixedHeader" rendered="{!NOT(termQuoteHeader.cllease__is_Equipment_Termination__c)}">
+
+                <apex:repeat value="{!$ObjectType.clcommon__Equipment_Detail__c.FieldSets.cllease__TerminationFieldSet}" var="field">
+                    <apex:column headerValue="{!field.Label}" >
+                        <apex:outputField value="{!equipment.eqpDetail[field]}"/>
+                    </apex:column>
+                </apex:repeat>
+
+            </apex:pageblockTable>
+        </apex:pageBlock>
+
+
+        <apex:pageBlock >
+        <apex:pageBlockSection title="Quote Lines" collapsible="false" id="pageBlock" columns="1">
+         <apex:pageBlockTable value="{!quoteLines}" var="line" id="myTable" rowClasses="odd,even" styleClass="tableClass">
+                <apex:column >
+                    <apex:facet name="header">Line Type</apex:facet>
+                    <apex:outputField rendered="{!!line.editable}" value="{!line.currentLine.cllease__Line_Type__c}" style="width:70px"/>
+                    <apex:outputField rendered="{!line.editable}" value="{!line.currentLine.cllease__Line_Type__c}"  style="width:70px"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Amount</apex:facet>
+                    <apex:outputField rendered="{!!line.editable}" value="{!line.currentLine.cllease__Amount__c}" style="width:70px"/>
+                    <apex:inputField rendered="{!line.editable}"   value="{!line.currentLine.cllease__Amount__c}"  style="width:70px"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Action </apex:facet>
+                    <apex:commandbutton action="{!enableRowEditAction}" rendered="{!!line.editable&&termQuoteHeader.cllease__Status__c !='ACCEPTED'&&termQuoteHeader.cllease__Status__c!='CANCELED'&&termQuoteHeader.cllease__Status__c!='TERMINATION PROCESSED'}" value="Edit" reRender="myTable">
+                        <apex:param name="eventId" value="{!line.counterNumber}" assignTo="{!editableLineNumber}" />
+                    </apex:commandButton>
+                    <apex:commandbutton action="{!saveRowEditAction}" rendered="{!line.editable&&termQuoteHeader.cllease__Status__c!='ACCEPTED'&&termQuoteHeader.cllease__Status__c!='CANCELED'&&termQuoteHeader.cllease__Status__c!='TERMINATION PROCESSED'}" value="Save" reRender="terminationQuoteForm">
+                        <apex:param name="eventId" value="{!line.counterNumber}" assignTo="{!editableLineNumber}" />
+                    </apex:commandButton>
+
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlockSection>
+        </apex:pageBlock>
+
+
+
+
+
+    </apex:form>
+    </div>
+
+</apex:page>

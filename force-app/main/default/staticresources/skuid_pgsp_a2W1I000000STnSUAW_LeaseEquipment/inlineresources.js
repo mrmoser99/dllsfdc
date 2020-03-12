@@ -96,4 +96,89 @@ skuid.snippet.register('PageRefresh',function(args) {var params = arguments[0],
 	$ = skuid.$;
 window.location.reload();
 });
+skuid.snippet.register('EquipmentSelection',function(args) {var field = arguments[0],    
+$ = skuid.$;
+var value = skuid.utils.decodeHTML(arguments[1]);
+
+console.log(field);
+console.log(value);
+
+if (field.mode === 'edit') {
+    // create list of earlier selected details
+    //$.each( field.model.getRows(), function(i,row) {
+        //var selectedEqpList = '';
+        /*console.log(row.Selected_Equipment__c);
+        if(row.Selected_Equipment__c !== null && row.Selected_Equipment__c !== undefined) {
+            selectedEqpList = row.Selected_Equipment__c;
+            console.log('inside if statement');
+        }
+        */
+    	//console.log(selectedEqpList);
+    	var eqpList = [];
+    	skuid.$.each(skuid.model.getModel('AppEquipmentModel').getRows(), function(i,row) {
+    	    console.log(row.Name);
+    	    //var previousSelected = selectedEqpList.includes(row.Name);
+    	    //console.log(previousSelected);
+    	    
+    		eqpList.push({
+    			active: true, 
+    			defaultValue: true,
+    			label : row.Name,
+    			value : row.Name
+    		});
+    	});
+    	
+    	var customMultiselect = skuid.ui.renderers.MULTIPICKLIST.edit({
+    			entries 	: eqpList,
+    			required 	: false,
+    			value 		: value
+    		}).change(function(newValue) {
+    			var selectedOptions = '';
+    			for(i = 0; i < newValue.target.selectedOptions.length; i++) {
+    			    if(i === (newValue.target.selectedOptions.length-1)) {
+    			        selectedOptions += newValue.target.selectedOptions[i].value;
+    			    } else {
+    			        selectedOptions += newValue.target.selectedOptions[i].value + ', ';
+    			    }
+    			}
+    
+    			//Update the row in the target object
+    			field.model.updateRow(field.row, 'Selected_Equipment__c', selectedOptions);
+    		});
+    	//Append the MULTIPICKLIST to the DOM element
+    	field.element.append(customMultiselect);
+    //});
+	
+} else if(field.mode === 'read') {
+	//If the mode is anything other than edit, display the field as Text
+	$.each( field.model.getRows(), function(i,row){
+        var formattedValue = '';
+        var fieldValue = row.Selected_Equipment__c;
+    	/*if(fieldValue !== null) {
+    		formattedValue = fieldValue.split(';').sort().join(', ');
+    	}*/
+    	skuid.ui.fieldRenderers.TEXT.read(field, fieldValue);
+    });
+}
+});
+skuid.snippet.register('UpdateEquipment',function(args) {var params = arguments[0],
+	$ = skuid.$;
+var appEqpModel = skuid.model.getModel('AppEquipmentModel');
+
+alert('Please (Re)Generate Pricing as Equipment Details Modified...');
+
+// Save updates
+appEqpModel.save({
+    callback: function (result) {
+        if (result.totalsuccess) {
+            //alert('New Quote Id: ' + appRow.Id); 
+        } else {
+            alert('Error: ' + result.insertResults[0]); 
+            console.log(result.insertResults[0]);          
+        }
+    }
+});
+
+window.location.reload();
+});
 }(window.skuid));

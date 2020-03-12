@@ -10,7 +10,7 @@ public class VertexUtil {
     private static String taxPmtTypev= 'ST'; 
     private static String leaseTypev = 'A';
     private static String titleTxfrv = 'I';        
-    private static String taxBasisv  = 'Stream';       
+    private static String taxBasisv  = 'N/A';//'Stream';       
     private static String intDisclv  = 'N';            
     private static String vendPaidv  = 'N';            
     private static String alev       = 'F';            
@@ -23,7 +23,7 @@ public class VertexUtil {
     private static String qrsCodev   = '0';
     // upfront tax related variables
     private static String upfronttransCodev = 'ORIG';
-    private static String UpfronttaxPmtTypev= '';
+    private static String UpfronttaxPmtTypev= 'VALUE IS BLANK';
     private static String upfrontreqReasonv = 'BOOKING';
     private static String alevFalse         = 'F';
 
@@ -491,7 +491,7 @@ public class VertexUtil {
     } 
 
     // This method newly added for calculating Vertex Upfront tax by Q2/CLS
-    public static Dom.Document getUpfrontXml(list<genesis__Application_Equipment__c> eupApp) { 
+    public static Dom.Document getUpfrontXml(list<genesis__Application_Equipment__c> appEqpList) { 
            
         // Getting Vertex API Configuration from customerom settings & Validating
         VertexApi__c vertexConfig = CLSCustomUtil.getVertexConfiguration();
@@ -503,7 +503,7 @@ public class VertexUtil {
         String xsi     = (vertexConfig.XSI__c != null ? vertexConfig.XSI__c : 'urn:vertexinc:o-series:tps:8:0');
 
        // DateTime currentSystemDate  =   cllease.SystemDateUtil.getCurrentSystemDate();
-        DateTime Commencementdate  = eupApp[0].genesis__Application__r.genesis__Expected_Start_Date__c;
+        DateTime Commencementdate  = appEqpList[0].genesis__Application__r.genesis__Expected_Start_Date__c;
         String CommencementdateStr =   formatDate(Commencementdate);
             
         //Creating XML Formation Starts here
@@ -537,20 +537,20 @@ public class VertexUtil {
         Integer lengthOfContract;
         // Entering Application Equipment details    
          list<genesis__Application_Equipment__c> equpmentlist = new list<genesis__Application_Equipment__c>();
-         for(genesis__Application_Equipment__c app : eupApp) {
+         for(genesis__Application_Equipment__c appEqp : appEqpList) {
              
             // Calculating the Length of Contract from first payment date to maturity date
-            //startDate =app.genesis__Application__r.genesis__Expected_Start_Date__c;
+            //startDate =appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
             //system.debug('start date'+startDate) ;
-            //endDate   = app.genesis__Application__r.genesis__Expected_Close_Date__c;
+            //endDate   = appEqp.genesis__Application__r.genesis__Expected_Close_Date__c;
             // end date going to check calculation
             // DateTime currentSystemDate  =   cllease.SystemDateUtil.getCurrentSystemDate();
-            System.debug('*****appFirstPAYEMNTDATE'+app.genesis__Application__r.genesis__Expected_Start_Date__c);
-            Date appFirstPmtDate = app.genesis__Application__r.genesis__Expected_Start_Date__c;
-            System.debug('****pmtFrequency********'+app.genesis__Application__r.genesis__Payment_Frequency__c);
-            String pmtFrequency = app.genesis__Application__r.genesis__Payment_Frequency__c;
-            System.debug('****genesisterm'+app.genesis__Application__r.genesis__Term__c);
-            Decimal term = app.genesis__Application__r.genesis__Term__c;
+            System.debug('*****appFirstPAYEMNTDATE'+appEqp.genesis__Application__r.genesis__Expected_Start_Date__c);
+            Date appFirstPmtDate = appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
+            System.debug('****pmtFrequency********'+appEqp.genesis__Application__r.genesis__Payment_Frequency__c);
+            String pmtFrequency = appEqp.genesis__Application__r.genesis__Payment_Frequency__c;
+            System.debug('****genesisterm'+appEqp.genesis__Application__r.genesis__Term__c);
+            Decimal term = appEqp.genesis__Application__r.genesis__Term__c;
 
             endDate = cllease.DateUtil.getNextCycleDate(appFirstPmtDate,
                                                            appFirstPmtDate.day(),
@@ -560,7 +560,7 @@ public class VertexUtil {
             lengthOfContract = appFirstPmtDate.daysBetween(endDate);
             system.debug('length in days'+lengthOfContract);
 
-            lineItemId = (app.id != null ? app.id : 'VALUE IS BLANK');
+            lineItemId = (appEqp.id != null ? appEqp.id : 'VALUE IS BLANK');
             Dom.XmlNode lineItem = invoiceRequest.addChildElement('urn:LineItem', null, null);
             lineItem.setattribute('lineItemId', lineItemId);
             // Start: Customer Tag
@@ -568,29 +568,38 @@ public class VertexUtil {
             customer.setattribute('isTaxExempt','false');
            
             Dom.XmlNode destination = customer.addChildElement('urn:Destination', null, null);
-            String cityValue    =  (app.Install_Address1__r.City__c != null ? app.Install_Address1__r.City__c : 'VALUE IS BLANK');
+            String cityValue    =  (appEqp.Install_Address1__r.City__c != null ? appEqp.Install_Address1__r.City__c : 'VALUE IS BLANK');
             Dom.XmlNode city    = destination.addChildElement('urn:City',null,null);
             city.addTextNode(cityValue);
 
-            String mainDivisionValue = (app.Install_Address1__r.State__c != null ? app.Install_Address1__r.State__c : 'VALUE IS BLANK');
+            String mainDivisionValue = (appEqp.Install_Address1__r.State__c != null ? appEqp.Install_Address1__r.State__c : 'VALUE IS BLANK');
             Dom.XmlNode mainDivision = destination.addChildElement('urn:MainDivision',null,null);
             mainDivision.addTextNode(mainDivisionValue);
 
-            String zipCodeValue  = (app.Install_Address1__r.Zip_Code__c != null ? app.Install_Address1__r.Zip_Code__c : 'VALUE IS BLANK');
+            String zipCodeValue  = (appEqp.Install_Address1__r.Zip_Code__c != null ? appEqp.Install_Address1__r.Zip_Code__c : 'VALUE IS BLANK');
             Dom.XmlNode zipCode  = destination.addChildElement('urn:PostalCode',null,null);
             zipCode.addTextNode(zipCodeValue);
             // End: Customer Tag
 
             // Product name value is GARD__c value in application equipment
-            String productValue = (app.GARD__c != null ? app.GARD__c : 'VALUE IS BLANK');
+            String productValue = (appEqp.GARD__c != null ? appEqp.GARD__c : 'VALUE IS BLANK');
             lineItem.addChildElement('urn:Product',null,null).addTextNode(productValue);
             
             // ExtendedPrice Tag
-            Decimal ddlAmount = (app.genesis__Estimated_Selling_Price__c !=null ? app.genesis__Estimated_Selling_Price__c : 0.00);
+            Decimal ddlAmount = (appEqp.genesis__Estimated_Selling_Price__c !=null ? appEqp.genesis__Estimated_Selling_Price__c : 0.00);
             ddlAmount = cllease.ValueUtil.round(ddlAmount, 2 , 'Nearest');
             String extdPrice = String.valueof(ddlAmount);
             lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(extdPrice);
             lineItem.addChildElement('urn:Cost',null,null).addTextNode(extdPrice);
+
+            // calculating Purchase Options flag details
+            if(appEqp.genesis__Application__r.Purchase_Option__c == 'Fair Market Value') {
+                contrTypev  = 'FMV';
+                leaseTypev  = 'A';
+            } else if(appEqp.genesis__Application__r.Purchase_Option__c == 'One Dollar Buyout') {
+                contrTypev  = 'CSC';
+                leaseTypev  = 'D';
+            }
             
             // Start: FlexibleCodeField Tag
             Dom.XmlNode FFields =  lineItem.addChildElement('urn:FlexibleFields',null,null);
@@ -621,7 +630,7 @@ public class VertexUtil {
             Dom.XmlNode ffield9 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield9.setattribute('fieldId','9');
             ffield9.addTextNode('CLS-genesis__Application_Equipment__c');
-            assetNumber = (app.Name != null ? app.Name :'VALUE IS BLANK');
+            assetNumber = (appEqp.Serial_Number__c != null ? appEqp.Serial_Number__c :'VALUE IS BLANK');
             Dom.XmlNode ffield10 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield10.setattribute('fieldId','10');
             ffield10.addTextNode(assetNumber);
@@ -637,14 +646,14 @@ public class VertexUtil {
             Dom.XmlNode ffield14 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield14.setattribute('fieldId','14');
             ffield14.addTextNode(slbc);
-            String duetype = (app.name != null ? app.name : 'VALUE IS BLANK');
+            String duetype = (appEqp.name != null ? appEqp.name : 'VALUE IS BLANK');
             Dom.XmlNode ffield15 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield15.setattribute('fieldId','15');
             ffield15.addTextNode(duetype);
             Dom.XmlNode ffield16 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield16.setattribute('fieldId','16');
             ffield16.addTextNode(upfrontreqReasonv);
-            AppliNumber = (app.genesis__Application__r.Name != null ? app.genesis__Application__r.Name : 'VALUE IS BLANK');
+            AppliNumber = (appEqp.genesis__Application__r.Name != null ? appEqp.genesis__Application__r.Name : 'VALUE IS BLANK');
             Dom.XmlNode ffield17 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield17.setattribute('fieldId','17');
             ffield17.addTextNode(AppliNumber);
@@ -655,14 +664,14 @@ public class VertexUtil {
 
             // Start: FlexibleNumericField Tag
             /*Integer LengthofAppContract ;
-            Date sdate=app.genesis__Application__r.genesis__Expected_Start_Date__c;
+            Date sdate=appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
             system.debug('starttttt date'+sdate); 
-            Date mdate=app.genesis__Application__r.genesis__Expected_Close_Date__c; 
+            Date mdate=appEqp.genesis__Application__r.genesis__Expected_Close_Date__c; 
             system.debug('Closeeee date'+sdate); 
             LengthofAppContract = sdate.daysBetween(Date.valueOf(mdate));
             System.debug('lengthhhhhhhh of contract'+LengthofAppContract) ;*/
 
-            Date sdate=app.genesis__Application__r.genesis__Expected_Start_Date__c;
+            Date sdate=appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
             
             Dom.XmlNode ffield21 = FFields.addChildElement('urn:FlexibleNumericField',null,null);
             ffield21.setattribute('fieldId','1');

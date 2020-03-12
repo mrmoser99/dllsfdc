@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Escalate_Service_On__c</fullName>
+    <externalId>false</externalId>
+    <label>Escalate Service On</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Total Payment</fullName>
+                <default>false</default>
+                <label>Total Payment</label>
+            </value>
+            <value>
+                <fullName>Service Only</fullName>
+                <default>false</default>
+                <label>Service Only</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

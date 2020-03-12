@@ -4,6 +4,9 @@ declare module "@salesforce/apex/FMZ_ApplicationEquipmentController.getEquipment
 declare module "@salesforce/apex/FMZ_ApplicationEquipmentController.search" {
   export default function search(param: {searchTerm: any, selectedIds: any}): Promise<any>;
 }
+declare module "@salesforce/apex/FMZ_ApplicationEquipmentController.calcUpfrontTax" {
+  export default function calcUpfrontTax(param: {applicationId: any}): Promise<any>;
+}
 declare module "@salesforce/apex/FMZ_ApplicationEquipmentController.addEquipment" {
   export default function addEquipment(param: {applicationId: any, equipmentId: any}): Promise<any>;
 }

@@ -1,0 +1,203 @@
+<apex:page lightningStylesheets="{!$User.UIThemeDisplayed == 'Theme4d'}" standardController="cllease__Termination_Quote_Header__c"
+    extensions="TerminationQuoteViewController"
+    sidebar="{!IF($CurrentPage.Parameters.modal == 'true', false, true)}">
+<apex:include pageName="clcommon__mintTheme"/>
+
+    <apex:stylesheet value="{!IF($CurrentPage.Parameters.modal == 'true', $Resource.cllease__modalheaderStyle,'')}" />
+    <apex:stylesheet value="{!$Resource.cllease__MFIStyles}" />
+    <script
+        src="{!URLFOR($Resource.cllease__jQueryFiles, 'js/jquery-1.8.3.min.js')}" />
+    <script src="{!URLFOR($Resource.cllease__helperclose)}" />
+    <script>
+        j$ = jQuery.noConflict();
+    </script>
+
+    <script type="text/javascript"
+        src="{!URLFOR($Resource.cllease__jQueryFiles, 'js/jquery-1.8.3.min.js')}" />
+
+    <script>
+
+        function testify(){
+            alert(j$('').length);
+        };
+
+      function scrolify(tblAsJQueryObject, height){
+        var oTbl = tblAsJQueryObject;
+
+        // for very large tables you can remove the four lines below
+        // and wrap the table with <div> in the mark-up and assign
+        // height and overflow property
+        var oTblDiv = $("<div/>");
+        oTblDiv.css('height', height);
+        oTblDiv.css('overflow-y','scroll');
+        oTbl.wrap(oTblDiv);
+
+        // save original width
+        oTbl.attr("data-item-original-width", oTbl.width());
+        oTbl.find('thead tr td').each(function(){
+            $(this).attr("data-item-original-width",$(this).width());
+        });
+        oTbl.find('tbody tr:eq(0) td').each(function(){
+            $(this).attr("data-item-original-width",$(this).width());
+        });
+
+
+        // clone the original table
+        var newTbl = oTbl.clone();
+
+        // remove table header from original table
+        oTbl.find('thead tr').remove();
+        // remove table body from new table
+        newTbl.find('tbody tr').remove();
+
+        oTbl.parent().parent().prepend(newTbl);
+        newTbl.wrap("<div/>");
+
+        // replace ORIGINAL COLUMN width
+        newTbl.width(newTbl.attr('data-item-original-width'));
+        newTbl.find('thead tr td').each(function(){
+            $(this).width($(this).attr("data-item-original-width"));
+        });
+        oTbl.width(oTbl.attr('data-item-original-width'));
+        oTbl.find('tbody tr:eq(0) td').each(function(){
+            $(this).width($(this).attr("data-item-original-width"));
+        });
+    }
+
+    function callScroll() {
+        scrolify($('.scrollableFixedHeader'), 300); // 160 is height
+    }
+
+    </script>
+
+
+
+    <apex:stylesheet value="{!IF($CurrentPage.Parameters.modal == 'true', $Resource.cllease__modalheaderStyle,'')}" />
+    <apex:sectionHeader title="Create New Termination Quote" />
+    <br></br>
+    <br></br>
+
+    <div style="height:600px;">
+
+        <apex:form id="terminationQuoteForm" >
+        <apex:pageMessages id="PageMessage"/>
+        <apex:pageBlock id="TerminationQuote">
+
+        <apex:pageblockButtons location="top">
+             <cllease:BusyButton disabled="{!isTerminationNotPossible}" name="Save"
+                        busyName="Saving"
+                        actionTo="{!saveQuote}"
+                        oncomplete="({!closeModal}===true) ? closeIframe('{!cllease__Termination_Quote_Header__c.cllease__Contract__c}') : {};"
+                        reRenderTo="terminationQuoteForm" />
+
+             <apex:commandButton value="Cancel" action="{!cancelQuote}"
+                          onclick="closeIframe()" id="cBtn" immediate="true"/>
+        </apex:pageblockButtons>
+
+        <br></br>
+        <br></br>
+
+        <apex:pageblockSection columns="1" id="Cont">
+        <apex:pageBlockSectionItem >
+            <apex:outputLabel >Lease Contract</apex:outputLabel>
+            <apex:outputField value="{!cllease__Termination_Quote_Header__c.cllease__Contract__c}" />
+        </apex:pageBlockSectionItem>
+        <apex:pageBlockSectionItem rendered="{!debugOn}">
+            <apex:outputLabel >debug string</apex:outputLabel>
+            <apex:outputText value="{!debugStr}" />
+        </apex:pageBlockSectionItem>
+        </apex:pageblockSection>
+
+        <br> </br>
+
+        <apex:pageblockSection columns="2" id="quote">
+            <apex:inputField value="{!termQuoteHeader.cllease__Quote_Type__c}">
+                <apex:actionSupport event="onchange"
+                    action="{!computeDatesAsPerMatchingConfig}"
+                    rerender="quote" status="effective termination date...">
+                </apex:actionSupport>
+            </apex:inputField>
+            <apex:inputField value="{!termQuoteHeader.cllease__Quote_Reason__c}">
+                <apex:actionSupport event="onchange"
+                    action="{!computeDatesAsPerMatchingConfig}"
+                    rerender="quote" status="effective termination date...">
+                </apex:actionSupport>
+            </apex:inputField>
+            <apex:inputField value="{!termQuoteHeader.cllease__Requested_Termination_Date__c}">
+                <apex:actionSupport event="onchange"
+                    action="{!computeEffectiveTermindationDate}"
+                    rerender="quote" status="effective termination date...">
+                </apex:actionSupport>
+            </apex:inputField>
+            <apex:outputField value="{!termQuoteHeader.cllease__Termination_Date__c}"/>
+            <apex:outputField value="{!termQuoteHeader.cllease__Effective_From__c}"  />
+            <apex:inputField value="{!termQuoteHeader.cllease__Effective_To__c}"/>
+            <apex:inputcheckbox value="{!termQuoteHeader.cllease__Full_Termination__c}" label="Full Termination">
+               <apex:actionSupport event="onclick" action="{!checkEquipment}" rerender="equipmentDetail" status="Updating...">
+                   <!--<apex:actionStatus startText="Updating..."></apex:actionStatus>-->
+               </apex:actionSupport>
+            </apex:inputcheckbox>
+            <!--<apex:inputCheckbox value="{!equipmentLevelTermination}" label="Termination on Equipment Level ? ">
+                <apex:actionSupport event="onclick" action="{!getEquipmentList}" rerender="equipmentDetail" status="Updating...">
+                   
+               </apex:actionSupport>
+            </apex:inputCheckbox> -->
+            <apex:inputField value="{!termQuoteHeader.cllease__Rebate_Percentage__c}" rendered="{!termQuoteHeader.cllease__Third_Party_Sale__c}">
+                <apex:actionSupport event="onchange" action="{!validateThirdPartySaleRebate}" rerender="quote, PageMessage"></apex:actionSupport>
+            </apex:inputField>
+
+        </apex:pageblockSection>
+
+        <br></br>
+        <br></br>
+        </apex:pageBlock>
+
+        <apex:pageBlock id="equipmentDetail">
+        <apex:pageblockSection >
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel >Total number of equipment : </apex:outputLabel>
+                <apex:outputText >{!noOfEquipments}</apex:outputText>
+            </apex:pageBlockSectionItem>
+            <!-- <apex:pageBlockSectionItem >
+                <apex:outputLabel >Number of equipment selected for termination : </apex:outputLabel>
+                <apex:outputText >{!noOfSelectedEquipments}</apex:outputText>
+            </apex:pageBlockSectionItem> -->
+        </apex:pageblockSection>
+        <apex:outputPanel id="equipments" rendered="{!showEquipments}">
+            <apex:pageblockTable id="equipmentTbl" value="{!equipmentDetails}"  var="equipment" headerClass="fixedHeader" styleClass="scrollableFixedHeader" rendered="{!equipmentLevelTermination}">
+
+                <apex:column headerValue="Select Equipment">
+                    <apex:inputCheckbox value="{!equipment.isSelected}" disabled="{!termQuoteHeader.cllease__Full_Termination__c}"/>
+                </apex:column>
+
+                <apex:repeat value="{!$ObjectType.cllease__Contract_Equipment__c.FieldSets.cllease__TerminationFieldSet}" var="field">
+                    <apex:column headerValue="{!field.Label}" >
+                        <apex:outputField value="{!equipment.eqp[field]}"/>
+                    </apex:column>
+                </apex:repeat>
+
+            </apex:pageblockTable>
+
+            <apex:pageblockTable id="equipmentTbl2" value="{!equipmentDetails}"  var="equipment" headerClass="fixedHeader" styleClass="scrollableFixedHeader" rendered="{!NOT(equipmentLevelTermination)}">
+
+                <apex:column headerValue="Select Equipment Detail">
+                    <apex:inputCheckbox value="{!equipment.isSelected}" disabled="{!termQuoteHeader.cllease__Full_Termination__c}"/>
+                </apex:column>
+
+                <apex:repeat value="{!$ObjectType.clcommon__Equipment_Detail__c.FieldSets.cllease__TerminationFieldSet}" var="field">
+                    <apex:column headerValue="{!field.Label}" >
+                        <apex:outputField value="{!equipment.eqpDetail[field]}"/>
+                    </apex:column>
+                </apex:repeat>
+
+            </apex:pageblockTable>
+       </apex:outputPanel>
+
+        <br></br>
+        <br></br>
+        </apex:pageBlock>
+
+    </apex:form>
+    </div>
+
+</apex:page>

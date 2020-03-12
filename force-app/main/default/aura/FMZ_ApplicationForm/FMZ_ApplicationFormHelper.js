@@ -118,13 +118,16 @@
 
     updatePricing: function(component) {
         try {
+            
             console.log('updatePricing background');
+
             let action = component.get('c.generatePricing'),
                 applicationId = component.get('v.applicationId'),
                 appSummary = component.find('appSummary');
             action.setParams({
                 applicationId: applicationId
             });
+
             action.setBackground();
             action.setCallback(this, function (response) {
                 let state = response.getState();
