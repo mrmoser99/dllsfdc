@@ -4,14 +4,13 @@
  *
  **/
 public with sharing class CLLeaseTerminationQuoteServices {
-    public CLLeaseTerminationQuoteServices() {
+    
 
-    }
-
-    public void generateTerminationQuotes(String contractId) {
+    public static void generateTerminationQuotes(String contractId) {
         // 1. Extract Contract Details for termination
         Set<Id> contractIdSet = new Set<Id>{contractId};
-        String query = TerminationUtil.getContractsForTermination(null, contractIdSet, null);
+        String fields = TerminationUtil.getTerminationLineFieldAPINames();
+        String query = TerminationUtil.getContractsForTermination(fields, contractIdSet, null);
         cllease__Lease_Account__c contract = Database.query(query);
 
         // 2. Create Map of Map<Id, Equipment> for Equipmments to Terminate (all Equipments for DLL)
@@ -59,7 +58,7 @@ public with sharing class CLLeaseTerminationQuoteServices {
         // Retrieve termination Quotes for for API call
     }
 
-    public void processTerminationQuote(String contractId, String terminationQuoteId) {
+    public static void processTerminationQuote(String contractId, String terminationQuoteId) {
         // 0. Extract Contract Details for termination
         Set<Id> contractIdSet = new Set<Id>{contractId};
         String query = TerminationUtil.getContractsForTermination(null, contractIdSet, null);

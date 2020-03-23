@@ -39,7 +39,8 @@ global class VertexUpfrontTaxCalculation {
                                     genesis__Application__r.genesis__Payment_Frequency__c,
                                     genesis__Application__r.genesis__Term__c,
                                     genesis__Application__r.Purchase_Option__c,
-                                    GARD__c 
+                                    gard__c
+                                   
                                 From genesis__Application_Equipment__c 
                                 Where genesis__Application__r.Name = :applicationName];
 

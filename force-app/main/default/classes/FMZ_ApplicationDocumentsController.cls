@@ -91,7 +91,19 @@ public without sharing class FMZ_ApplicationDocumentsController {
 
 	@AuraEnabled
 	public static void callCongaTrigger(Id applicationId){
+		system.debug('triggering non esign');
 		genesis__Applications__c app = new genesis__Applications__c(Id = applicationId, Lease_Document_Trigger__c = true);
+		update app;
+		//List<Attachment> atts = [SELECT Id FROM Attachment WHERE ParentId =: applicationId ORDER BY CreatedDate DESC];
+        //wait(30000); List<Attachment> newAtts = [SELECT Id FROM Attachment WHERE ParentId =: applicationId ORDER BY CreatedDate DESC];
+        //if(atts.size() != newAtts.size()){createDocumentAssosiation(newAtts[0].Id);}
+	}
+
+	@AuraEnabled
+	public static void callCongaTriggerEsign(Id applicationId){
+		system.debug('triggering esign');
+		genesis__Applications__c app = new genesis__Applications__c(Id = applicationId, Lease_Document_Trigger_Esign__c = true );
+                                        
 		update app;
 		//List<Attachment> atts = [SELECT Id FROM Attachment WHERE ParentId =: applicationId ORDER BY CreatedDate DESC];
         //wait(30000); List<Attachment> newAtts = [SELECT Id FROM Attachment WHERE ParentId =: applicationId ORDER BY CreatedDate DESC];

@@ -267,7 +267,7 @@ public with sharing class TerminationQuoteAction {
 
             tempHeader = contractId2QuoteHeaderMap.get(leaseAccount.Id);
             if(tempHeader == null) {
-                tempHeader = populateTermQuoteForLeaseAccount(leaseAccount);
+                tempHeader = populateTermQuoteForLeaseAccount(leaseAccount, null);
             }
 
             //header was not populated by populateTermQuoteForLeaseAccount
@@ -310,13 +310,12 @@ public with sharing class TerminationQuoteAction {
     *
     *  @param  leaseAccount
     */
-    public cllease__Termination_Quote_Header__c populateTermQuoteForLeaseAccount(cllease__Lease_Account__c leaseAccount) {
+    public cllease__Termination_Quote_Header__c populateTermQuoteForLeaseAccount(cllease__Lease_Account__c leaseAccount, cllease__Termination_Config__c tempConfig) {
         TerminationActionUnit.TerminationContract termContract;
         termContract = new TerminationActionUnit.TerminationContract(leaseAccount);
-        cllease__Termination_Config__c tempConfig = getMatchingTerminationConfig(leaseAccount, null);
+        
         if(tempConfig == null) {
-            throw new CLSCustomException('TerminationConfig not found for Product : ' + leaseAccount.cllease__Lease_Product_Name__r.Name
-                + ' for Lease Account ' + leaseAccount.Name);
+            tempConfig = getMatchingTerminationConfig(leaseAccount, null);
         }
 
         cllease__Termination_Quote_Header__c tempHeader;
@@ -344,19 +343,17 @@ public with sharing class TerminationQuoteAction {
         try {
             
             // 3. QuoteHeader Initialization: Use quoteHeader from the map if it's a REST API call
-            if(termQtUnit.qh == null
+            /*if(termQtUnit.qh == null
                 && contractQuoteHeaderAPICallMap != null
                 && isBulkAPICall) {
                 termQtUnit.qh = contractQuoteHeaderAPICallMap.get(leaseAccount.Name);
                 isAPICall = false; // if quoteHeader map is passed then set isAPICall to false
-            }
+            }*/
 
-            // QuoteHeader == null can be possible in case of batch jobs and API calls
-            if(termQtUnit.qh == null) {
-                termQtUnit.qh = new cllease__Termination_Quote_Header__c();
-                // if quoteHeader is null then this was not invoked through the REST API
-                // set isBulkAPICall to false
-                isBulkAPICall = false;
+            cllease__Termination_Quote_Header__c tempHeader;
+            if(tempHeader == null) {
+                tempHeader      = populateTermQuoteForLeaseAccount(leaseAccount, terminationConfig);
+                termQtUnit.qh   = tempHeader;
             }
 
             // Since we could already be having the matching terminationConfig which is being passed

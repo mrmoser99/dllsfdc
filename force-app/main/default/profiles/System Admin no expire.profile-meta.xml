@@ -8132,11 +8132,6 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>true</editable>
-        <field>Service_Fee_Escalation_Config__c.Equipment__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>false</editable>
         <field>Service_Fee_Escalation_Config__c.Escalate_Service_On__c</field>
         <readable>false</readable>
@@ -8155,6 +8150,11 @@
         <editable>false</editable>
         <field>Service_Fee_Escalation_Config__c.Frequency__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Fee_Escalation_Config__c.Is_Service_Escalate__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>

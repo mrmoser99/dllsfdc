@@ -38,7 +38,9 @@ public with sharing class EscalateServiceFeeTriggerHandler {
                                                                     genesis__Term__c,
                                                                     genesis__Payment_Frequency__c,
                                                                     Total_Equipment_Selling_Price__c,
-                                                                    genesis__Expected_First_Payment_Date__c
+                                                                    genesis__Expected_First_Payment_Date__c,
+                                                                    (SELECT Id, Name
+                                                                    FROM genesis__Application_Equipments__r)
                                                                 FROM genesis__Applications__c
                                                                 WHERE Id IN :applicationIdSet]);
         // Validate & Assign defaults
@@ -53,21 +55,28 @@ public with sharing class EscalateServiceFeeTriggerHandler {
             if(config.Start_Date__c == null) {
                 config.Start_Date__c = app.genesis__Expected_First_Payment_Date__c;
             }
+            if(config.Escalation_Frequency__c == null) {
+                //config.addError('Please Select Escalation Frequency...');
+                config.Escalation_Frequency__c = 'ANNUAL';
+            }
+            if(config.Is_Service_Escalate__c == null) {
+                config.Escalation_Frequency__c = 'YES';
+            }
             if(config.Escalate_Service_On__c == null) {
                 config.addError('Please Select Escalation Service On as either Service Only or Total Payment...');
             }
             if(config.Amount__c <= 0) {
                 config.addError('The Amount cannot be less than equal to Zero...');
             }
-            if(config.Escalation_Value__c <= 0) {
-                config.addError('The Escalation Percantage cannot be less than equal to Zero...');
+            if(config.Escalation_Value__c <= 0 || config.Escalation_Value__c > 15) {
+                config.addError('The Escalation Percantage should be in between 0% and 15%...');
             }
             if(config.Number_of_Payments__c > app.genesis__Term__c) {
                 config.addError('Number of Payments Cannot be Greater than Genesis Lease Term...');
             }
-            if(config.Escalation_Frequency__c == null) {
-                config.addError('Please Select Escalation Frequency...');
-            }
+            /*if(config.Selected_Equipment__c == null) {
+                config.addError('Please Select atleast One Equipment for Service Escalation...');
+            }*/
             
             // Contract Maturity Date Calculation
             Date contractMaturityDate = cllease.DateUtil.getNextCycleDate(
@@ -119,19 +128,27 @@ public with sharing class EscalateServiceFeeTriggerHandler {
                 eqpList = eqpListStr.split(',');
             }
 
-            Set<String> eqpSet = new Set<String>(eqpList);
+            // looping through List to add detials to set
+            Set<String> eqpSet = new Set<String>();
+            for(String eqpName : eqpList) {
+                eqpSet.add(eqpName.trim());
+            }
+            
             // Looping through all Equipments and create Map<Name, Id> for Equipments
             Decimal totalEqpSellingPrice = 0;
             Map<String, genesis__Application_Equipment__c> eqpNameIdMap = new Map<String, genesis__Application_Equipment__c>();
             for(genesis__Application_Equipment__c appEqp : app.genesis__Application_Equipments__r) {
                 eqpNameIdMap.put(appEqp.Name, appEqp);
+                // adding equipment name if list str is null (which means no equipment selected from screen and escalate for all equipment)
+                if(eqpListStr == null) {
+                    eqpList.add(appEqp.Name);
+                    eqpSet.add(appEqp.Name);
+                }
+
                 if(eqpSet.contains(appEqp.Name)) {
                     totalEqpSellingPrice += appEqp.genesis__Estimated_Selling_Price__c;
                 }
-                // adding equipment name if list str is null
-                if(eqpListStr == null) {
-                    eqpList.add(appEqp.Name);
-                }
+                
             }
 
             if(config.Number_Of_Payments__c == null) {
@@ -156,6 +173,14 @@ public with sharing class EscalateServiceFeeTriggerHandler {
             Date escalationStartDate = config.Start_Date__c;
             //Decimal escalationAmountForLastPeriod = 0;
             Decimal escalationPercentage = config.Escalation_Value__c; // which is always percentage
+
+            // Reset details incase if Is_Service_Escalate__c = NO for single Application Fee generation per Equipment without Service Fee Escalation
+            if(config.Is_Service_Escalate__c == 'NO') {
+                remainingEscalationTerms    = serviceFeeTerms; 
+                noOfEscalationMonths        = serviceFeeTerms;
+                escalationPeriods = 1;
+
+            }
             // Looping the escalation periods for creating the Application Fee details.
             // Do Esclation Service Fee Calculations 
             // 1. Service Only, Total Payment

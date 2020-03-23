@@ -30,6 +30,26 @@ declare module "@salesforce/label/c.Default_Rate" {
     var Default_Rate: string;
     export default Default_Rate;
 }
+declare module "@salesforce/label/c.Docusign_Endpoint" {
+    var Docusign_Endpoint: string;
+    export default Docusign_Endpoint;
+}
+declare module "@salesforce/label/c.Docusign_Lease_Agreement" {
+    var Docusign_Lease_Agreement: string;
+    export default Docusign_Lease_Agreement;
+}
+declare module "@salesforce/label/c.Docusign_Lease_Query" {
+    var Docusign_Lease_Query: string;
+    export default Docusign_Lease_Query;
+}
+declare module "@salesforce/label/c.Docusign_Send_As_User_Id" {
+    var Docusign_Send_As_User_Id: string;
+    export default Docusign_Send_As_User_Id;
+}
+declare module "@salesforce/label/c.Docusign_Signing_Group" {
+    var Docusign_Signing_Group: string;
+    export default Docusign_Signing_Group;
+}
 declare module "@salesforce/label/c.Environment" {
     var Environment: string;
     export default Environment;

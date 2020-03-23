@@ -565,8 +565,29 @@ public class VertexUtil {
             lineItem.setattribute('lineItemId', lineItemId);
             // Start: Customer Tag
             Dom.XmlNode customer = lineItem.addChildElement('urn:Customer',null,null);
-            customer.setattribute('isTaxExempt','false');
-           
+
+            // Tax Exemption 
+            Boolean isTaxExempted = false;
+            // 1. Always check for Tax Exemption from Account , if not exempted check for equipment
+            if(appEqp.genesis__Application__c != null
+                && appEqp.genesis__Application__r.genesis__Account__c != null)  {
+                // TODO: Needs to change Salesforce only support 3 levels for pulling values
+                isTaxExempted = appEqp.genesis__Application__r.genesis__Account__r.Tax_Exempt__c;
+                system.debug('AccountTax Exemption :'+ isTaxExempted);
+            } 
+            // 2. Check for Equipment's Tax Exempt only if Account is not Exempted
+            if(isTaxExempted == false){
+                isTaxExempted = appEqp.Tax_Exempt__c;
+                system.debug('Equipment Tax Exemption: '+isTaxExempted);
+            }
+            
+            if(isTaxExempted) {
+                customer.setattribute('isTaxExempt','true');
+                customer.setattribute('exemptionReasonCode','MISS');
+            } else {
+                customer.setattribute('isTaxExempt','false');
+            }
+
             Dom.XmlNode destination = customer.addChildElement('urn:Destination', null, null);
             String cityValue    =  (appEqp.Install_Address1__r.City__c != null ? appEqp.Install_Address1__r.City__c : 'VALUE IS BLANK');
             Dom.XmlNode city    = destination.addChildElement('urn:City',null,null);

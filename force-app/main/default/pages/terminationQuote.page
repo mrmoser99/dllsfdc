@@ -184,11 +184,11 @@
                     <apex:inputCheckbox value="{!equipment.isSelected}" disabled="{!termQuoteHeader.cllease__Full_Termination__c}"/>
                 </apex:column>
 
-                <apex:repeat value="{!$ObjectType.clcommon__Equipment_Detail__c.FieldSets.cllease__TerminationFieldSet}" var="field">
+                <!--<apex:repeat value="{!$ObjectType.clcommon__Equipment_Detail__c.FieldSets.cllease__TerminationFieldSet}" var="field">
                     <apex:column headerValue="{!field.Label}" >
                         <apex:outputField value="{!equipment.eqpDetail[field]}"/>
                     </apex:column>
-                </apex:repeat>
+                </apex:repeat> -->
 
             </apex:pageblockTable>
        </apex:outputPanel>

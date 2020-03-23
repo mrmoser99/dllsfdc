@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RemoteSiteSetting xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Salesforce Metadata API remote site. Created by the DocuSign eSignature for Salesforce package.</description>
     <disableProtocolSecurity>false</disableProtocolSecurity>
     <isActive>true</isActive>
-    <url>https://cs93.salesforce.com</url>
+    <url>https://newco--dev--dsfs.cs93.visual.force.com</url>
 </RemoteSiteSetting>

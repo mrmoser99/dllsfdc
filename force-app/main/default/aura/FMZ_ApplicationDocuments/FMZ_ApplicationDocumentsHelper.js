@@ -143,6 +143,30 @@
 	},
 
 	// generate application agreement
+	generateAgreementEsign: function(component) {
+		console.log('generating agreement for 11esign');
+		var action = component.get('c.callCongaTriggerEsign'); 
+		action.setParams({
+			applicationId: component.get('v.applicationId')
+        });
+        action.setCallback(this, function (response) {
+        	var state = response.getState();
+        	if (state === 'SUCCESS') {
+				let toast = $A.get('e.force:showToast');
+				toast.setParams({
+					type: 'success',
+					mode: 'dismissable',
+					message: 'Electronic Signature has been requested!'
+				});
+				component.set('v.processing', false);
+				toast.fire();
+			}
+		});
+		$A.enqueueAction(action);
+	// generate application agreement
+		
+	},
+
 	generateAgreement: function(component) {
 		try {
 			let p = new Promise($A.getCallback(function(resolve, reject) {

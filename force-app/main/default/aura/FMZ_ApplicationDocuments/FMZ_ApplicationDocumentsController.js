@@ -42,6 +42,21 @@
 		}
 	},
 
+	handleGenerateEsign: function(component, event, helper) {
+		try {
+			//if (!helper.isInputValid(component)) {
+			//	return;
+			//}
+            console.log('handleGenerate Esign for AppId: '+component.get('v.applicationId'));
+			component.set('v.processing', true);
+			helper.updateApplication(component);
+			helper.generateAgreementEsign(component);
+				
+		} catch (e) {
+            console.log('CLICK CATCH');
+			console.log(e);
+		}
+	},
 	// validate required fields and at least one document
 	saveAndValidate: function(component, event, helper) {
 		try {

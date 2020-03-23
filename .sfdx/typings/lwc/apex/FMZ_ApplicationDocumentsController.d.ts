@@ -16,6 +16,9 @@ declare module "@salesforce/apex/FMZ_ApplicationDocumentsController.deleteDoc" {
 declare module "@salesforce/apex/FMZ_ApplicationDocumentsController.callCongaTrigger" {
   export default function callCongaTrigger(param: {applicationId: any}): Promise<any>;
 }
+declare module "@salesforce/apex/FMZ_ApplicationDocumentsController.callCongaTriggerEsign" {
+  export default function callCongaTriggerEsign(param: {applicationId: any}): Promise<any>;
+}
 declare module "@salesforce/apex/FMZ_ApplicationDocumentsController.generateLeaseDocument" {
   export default function generateLeaseDocument(param: {applicationId: any}): Promise<any>;
 }
