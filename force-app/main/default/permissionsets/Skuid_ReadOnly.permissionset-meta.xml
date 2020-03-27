@@ -16164,10 +16164,6 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>clcommon__Address__c</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
         <tab>genesis__Applications__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>

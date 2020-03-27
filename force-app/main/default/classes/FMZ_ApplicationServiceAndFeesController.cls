@@ -192,9 +192,10 @@ public without sharing class FMZ_ApplicationServiceAndFeesController {
         c.Start_Date__c=Date.newInstance(2020, 02, 13);
         insert c;
 */
-        if (fee.Service_Escalate__c == 'YES') {
+        //if (fee.Service_Escalate__c == 'YES') {
             Service_Fee_Escalation_Config__c c = new Service_Fee_Escalation_Config__c();
             c.amount__c = fee.amount__c;
+            c.Is_Service_Escalate__c = fee.service_escalate__c;
             c.application__c = fee.application__c;
             c.application_fee__c = fee.id;
             c.escalate_service_on__c = fee.escalate_service_on__c;
@@ -206,7 +207,7 @@ public without sharing class FMZ_ApplicationServiceAndFeesController {
             c.start_date__c = fee.start_date__c;
             system.debug('c is: ' + c); 
             insert c;
-        }
+        //}
 
     }
 

@@ -9320,6 +9320,10 @@
         <visible>false</visible>
     </recordTypeVisibilities>
     <tabVisibilities>
+        <tab>Address__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>Annual_View__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
@@ -9654,10 +9658,6 @@
     <tabVisibilities>
         <tab>clcommon__Actors__c</tab>
         <visibility>DefaultOn</visibility>
-    </tabVisibilities>
-    <tabVisibilities>
-        <tab>clcommon__Address__c</tab>
-        <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>clcommon__Agreement__c</tab>

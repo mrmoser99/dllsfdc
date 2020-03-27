@@ -36,6 +36,7 @@
             fee : component.get('v.fee'),
             equipment : component.get('v.selectedEquipment')
         });
+        console.log('calling addallfees');
         action.setCallback(this, function(response) {
             var state = response.getState();
             if (state === 'SUCCESS') {

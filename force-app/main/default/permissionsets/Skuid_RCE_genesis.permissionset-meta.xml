@@ -16051,10 +16051,6 @@
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>
-        <tab>clcommon__Address__c</tab>
-        <visibility>Visible</visibility>
-    </tabSettings>
-    <tabSettings>
         <tab>skuid__Page_Assignment__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>

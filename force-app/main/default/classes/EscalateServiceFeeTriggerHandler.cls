@@ -55,24 +55,33 @@ public with sharing class EscalateServiceFeeTriggerHandler {
             if(config.Start_Date__c == null) {
                 config.Start_Date__c = app.genesis__Expected_First_Payment_Date__c;
             }
-            if(config.Escalation_Frequency__c == null) {
+
+            if(config.Is_Service_Escalate__c == null) {
+                config.Is_Service_Escalate__c = 'YES';
+            }
+
+            if(config.Escalation_Frequency__c == null && config.Is_Service_Escalate__c == 'YES') {
                 //config.addError('Please Select Escalation Frequency...');
                 config.Escalation_Frequency__c = 'ANNUAL';
             }
-            if(config.Is_Service_Escalate__c == null) {
-                config.Escalation_Frequency__c = 'YES';
-            }
-            if(config.Escalate_Service_On__c == null) {
+            
+            if(config.Escalate_Service_On__c == null && config.Is_Service_Escalate__c == 'YES') {
                 config.addError('Please Select Escalation Service On as either Service Only or Total Payment...');
             }
             if(config.Amount__c <= 0) {
                 config.addError('The Amount cannot be less than equal to Zero...');
             }
-            if(config.Escalation_Value__c <= 0 || config.Escalation_Value__c > 15) {
+            if(( config.Escalation_Value__c == null || config.Escalation_Value__c <= 0 || config.Escalation_Value__c > 15 ) && config.Is_Service_Escalate__c == 'YES') {
                 config.addError('The Escalation Percantage should be in between 0% and 15%...');
+            }
+            if(config.Is_Service_Escalate__c == 'NO') {
+                config.Escalation_Value__c = 0;
             }
             if(config.Number_of_Payments__c > app.genesis__Term__c) {
                 config.addError('Number of Payments Cannot be Greater than Genesis Lease Term...');
+            }
+            if(config.Amount__c == null) {
+                config.addError('Please enter the Amount for Service Escalation Configuration...');
             }
             /*if(config.Selected_Equipment__c == null) {
                 config.addError('Please Select atleast One Equipment for Service Escalation...');
@@ -160,9 +169,9 @@ public with sharing class EscalateServiceFeeTriggerHandler {
 
             Integer noOfEscalationMonths = 0;
             Integer serviceFeeTerms = config.Number_Of_Payments__c.intValue();
-            if(config.Escalation_Frequency__c == 'ANNUAL') {
+            //if(config.Escalation_Frequency__c == 'ANNUAL' ) {
                 noOfEscalationMonths = 12;
-            }
+            //}
 
             Integer escalationPeriods   = Math.ceil(serviceFeeTerms/noOfEscalationMonths).intvalue();// + 1;
             if(Math.mod(serviceFeeTerms, noOfEscalationMonths) > 0) {
