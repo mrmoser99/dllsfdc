@@ -5,9 +5,11 @@
 	3.  Put sic code on account level
 *	4. 	Delete Quick Quote Commitment
 *	5.  Delete Quick Quote Party
+*	6.  Book Upfront Tax
 *	
 *	Change Log:
 *	10/1/18 - MRM Created
+*   3/31/2020 - MRM added book upfront tax
 *   
 ********************************************************************************************************************/
 public class ICVAsyncBookLease implements Queueable, Database.AllowsCallouts  {
@@ -67,6 +69,8 @@ public class ICVAsyncBookLease implements Queueable, Database.AllowsCallouts  {
     		ICVAsyncAddCommitment job = new ICVAsyncAddCommitment(leaseId);
         	System.enqueueJob(job);
     	} 	
+		
+		
     	
     	ICVUtility.setSICCode(lMap);   
     }

@@ -15,7 +15,11 @@ public class ICVAsyncRemoveParty implements Queueable, Database.AllowsCallouts {
     	
     	system.debug('Execute Remove Party Performed for ' + system.now());
     	
-    	 
+    	if (!Test.isRunningTest()){ 
+
+    		ICVAsyncBookUpfrontTax job = new ICVAsyncBookUpfrontTax(quoteId);
+        	System.enqueueJob(job);
+    	} 	
     }
     
 }

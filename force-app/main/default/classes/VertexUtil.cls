@@ -1,6 +1,9 @@
 /**
  * Author: Cloud Lending Solutions
  * Description: Following has utilities for vertex callouts
+ * 
+ * Change Log: 
+ *    MRM 3/31/2020 correct up front tax
  **/
 public class VertexUtil {
 
@@ -491,6 +494,9 @@ public class VertexUtil {
     } 
 
     // This method newly added for calculating Vertex Upfront tax by Q2/CLS
+    /**********************************************************************************************************************
+    *  UPFRONT XML QUOTE
+    *******************************************************************************************************************************/
     public static Dom.Document getUpfrontXml(list<genesis__Application_Equipment__c> appEqpList) { 
            
         // Getting Vertex API Configuration from customerom settings & Validating
@@ -525,7 +531,7 @@ public class VertexUtil {
         Dom.XmlNode uid =   login.addChildElement('urn:UserName',null,null).addTextNode(vertexConfig.Username__c);
         Dom.XmlNode pwd =   login.addChildElement('urn:Password', null,null).addTextNode(vertexConfig.Password__c);
             
-        Dom.XmlNode invoiceRequest = vertexEnvelope.addChildElement('urn:InvoiceRequest',null,null);
+        Dom.XmlNode invoiceRequest = vertexEnvelope.addChildElement('urn:QuotationRequest',null,null);
         invoiceRequest.setattribute('documentDate',CommencementdateStr);
         invoiceRequest.setattribute('transactionType','LEASE');
             
@@ -603,7 +609,7 @@ public class VertexUtil {
             // End: Customer Tag
 
             // Product name value is GARD__c value in application equipment
-            String productValue = (appEqp.GARD__c != null ? appEqp.GARD__c : 'VALUE IS BLANK');
+            String productValue = (appEqp.GARD_Code__c != null ? appEqp.GARD_code__c : 'VALUE IS BLANK');
             lineItem.addChildElement('urn:Product',null,null).addTextNode(productValue);
             
             // ExtendedPrice Tag
@@ -626,28 +632,28 @@ public class VertexUtil {
             Dom.XmlNode FFields =  lineItem.addChildElement('urn:FlexibleFields',null,null);
             Dom.XmlNode ffield1 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield1.setattribute('fieldId','1');
-            ffield1.addTextNode(upfronttransCodev);
+            ffield1.addTextNode('ORIG');
             Dom.XmlNode ffield2 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield2.setattribute('fieldId','2');
-             ffield2.addTextNode(contrTypev);
+            ffield2.addTextNode('FMV');
             Dom.XmlNode ffield3 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield3.setattribute('fieldId','3');
-            ffield3.addTextNode(UpfronttaxPmtTypev);
+            ffield3.addTextNode('UC');
             Dom.XmlNode ffield4 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield4.setattribute('fieldId','4');
-            ffield4.addTextNode(leaseTypev);
+            ffield4.addTextNode('A');
             Dom.XmlNode ffield5 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield5.setattribute('fieldId','5');
-            ffield5.addTextNode(titleTxfrv);
+            ffield5.addTextNode('I');
             Dom.XmlNode ffield6 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield6.setattribute('fieldId','6');
-            ffield6.addTextNode(taxBasisv);
+            ffield6.addTextNode('N/A');
             Dom.XmlNode ffield7 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield7.setattribute('fieldId','7');
-            ffield7.addTextNode(intDisclv);
+            ffield7.addTextNode('N');
             Dom.XmlNode ffield8 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield8.setattribute('fieldId','8');
-            ffield8.addTextNode(vendPaidv);
+            ffield8.addTextNode('N');
             Dom.XmlNode ffield9 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield9.setattribute('fieldId','9');
             ffield9.addTextNode('CLS-genesis__Application_Equipment__c');
@@ -663,24 +669,24 @@ public class VertexUtil {
             ffield12.addTextNode('0');
             Dom.XmlNode ffield13 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield13.setattribute('fieldId','13');
-            ffield13.addTextNode(alevFalse);
+            ffield13.addTextNode('');
             Dom.XmlNode ffield14 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield14.setattribute('fieldId','14');
-            ffield14.addTextNode(slbc);
+            ffield14.addTextNode('F');
             String duetype = (appEqp.name != null ? appEqp.name : 'VALUE IS BLANK');
             Dom.XmlNode ffield15 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield15.setattribute('fieldId','15');
-            ffield15.addTextNode(duetype);
+            ffield15.addTextNode(appEqp.Name);
             Dom.XmlNode ffield16 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield16.setattribute('fieldId','16');
-            ffield16.addTextNode(upfrontreqReasonv);
+            ffield16.addTextNode('BOOKING');
             AppliNumber = (appEqp.genesis__Application__r.Name != null ? appEqp.genesis__Application__r.Name : 'VALUE IS BLANK');
             Dom.XmlNode ffield17 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield17.setattribute('fieldId','17');
             ffield17.addTextNode(AppliNumber);
             Dom.XmlNode ffield18 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield18.setattribute('fieldId','18');
-            ffield18.addTextNode(upTaxAmtv);
+            ffield18.addTextNode('0');
             // End: FlexibleCodeField Tag
 
             // Start: FlexibleNumericField Tag
@@ -725,6 +731,264 @@ public class VertexUtil {
         return scdoc;
     }
     
+
+    /**********************************************************************************************************************
+    *  UPFRONT XML BOOKING
+    *   if not tax don't bother.
+    *******************************************************************************************************************************/
+    public static Dom.Document getUpfrontXmlBook(list<genesis__Application_Equipment__c> appEqpList) { 
+        
+
+        Decimal totalTax = 0;
+        for(genesis__Application_Equipment__c appEqp : appEqpList) {
+            System.debug('******************** tax amount is: ' + appEqp.genesis__Tax_Amount__c);
+            totalTax = totalTax + appEqp.genesis__Tax_Amount__c;
+        }    
+
+        if (totalTax == 0){
+            system.debug('********************************************** no upfront tax for booking was found; returning! ***************************');
+            return null;
+        }
+
+
+        // Getting Vertex API Configuration from customerom settings & Validating
+        VertexApi__c vertexConfig = CLSCustomUtil.getVertexConfiguration();
+        validateVertexConfig(vertexConfig);
+
+        System.debug(LoggingLevel.ERROR, ' Vertex Configuration: ' + vertexConfig);        
+
+        String soapNS  = (vertexConfig.soapNS__c != null ? vertexConfig.soapNS__c : 'http://schemas.xmlsoap.org/soap/envelope/');
+        String xsi     = (vertexConfig.XSI__c != null ? vertexConfig.XSI__c : 'urn:vertexinc:o-series:tps:8:0');
+
+       // DateTime currentSystemDate  =   cllease.SystemDateUtil.getCurrentSystemDate();
+        DateTime Commencementdate  = appEqpList[0].genesis__Application__r.genesis__Expected_Start_Date__c;
+        String CommencementdateStr =   formatDate(Commencementdate);
+            
+        //Creating XML Formation Starts here
+        String AppliNumber, contractDate, contractTerm, contractType, transactionCode, taxPaymentType; 
+        String dueAmount, assetNumber, lineItemId;
+
+        // Creating DOM for XML
+        Dom.Document scdoc = new Dom.Document();
+        Dom.XmlNode envelope = scdoc.createRootElement('Envelope', soapNS, 'soapenv');
+        envelope.setNamespace('urn', xsi);
+        
+        Dom.XmlNode header = envelope.addChildElement('Header', soapNS, null);
+        
+        Dom.XmlNode body = envelope.addChildElement('Body', soapNS, null);
+        Dom.XmlNode vertexEnvelope = body.addChildElement('urn:VertexEnvelope',xsi,'');
+        vertexEnvelope.setNamespace('xsi','http://www.w3.org/2001/XMLSchema-instance');
+            
+        Dom.XmlNode login =  vertexEnvelope.addChildElement('urn:Login', null,null);
+        Dom.XmlNode uid =   login.addChildElement('urn:UserName',null,null).addTextNode(vertexConfig.Username__c);
+        Dom.XmlNode pwd =   login.addChildElement('urn:Password', null,null).addTextNode(vertexConfig.Password__c);
+            
+        Dom.XmlNode invoiceRequest = vertexEnvelope.addChildElement('urn:DistributeTaxRequest',null,null);
+        invoiceRequest.setattribute('documentDate',CommencementdateStr);
+        invoiceRequest.setattribute('transactionType','LEASE');
+            
+        Dom.XmlNode seller  =  invoiceRequest.addChildElement('urn:Seller',null,null);
+        seller.addChildElement('urn:Company',null,null).addTextNode(vertexConfig.Company__c);
+        seller.addChildElement('urn:Division',null,null).addTextNode(vertexConfig.Division__c);
+        
+       
+        
+
+        Date startDate, endDate;
+        Integer lengthOfContract;
+        // Entering Application Equipment details    
+         list<genesis__Application_Equipment__c> equpmentlist = new list<genesis__Application_Equipment__c>();
+         for(genesis__Application_Equipment__c appEqp : appEqpList) {
+
+            if (appEqp.genesis__Tax_Amount__c == 0)
+                continue;
+             
+            // Calculating the Length of Contract from first payment date to maturity date
+            //startDate =appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
+            //system.debug('start date'+startDate) ;
+            //endDate   = appEqp.genesis__Application__r.genesis__Expected_Close_Date__c;
+            // end date going to check calculation
+            // DateTime currentSystemDate  =   cllease.SystemDateUtil.getCurrentSystemDate();
+            System.debug('*****appFirstPAYEMNTDATE'+appEqp.genesis__Application__r.genesis__Expected_Start_Date__c);
+            Date appFirstPmtDate = appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
+            System.debug('****pmtFrequency********'+appEqp.genesis__Application__r.genesis__Payment_Frequency__c);
+            String pmtFrequency = appEqp.genesis__Application__r.genesis__Payment_Frequency__c;
+            System.debug('****genesisterm'+appEqp.genesis__Application__r.genesis__Term__c);
+            Decimal term = appEqp.genesis__Application__r.genesis__Term__c;
+
+            endDate = cllease.DateUtil.getNextCycleDate(appFirstPmtDate,
+                                                           appFirstPmtDate.day(),
+                                                           pmtFrequency,
+                                                           (Integer)term, true);
+            system.debug('emd date'+endDate) ;
+            lengthOfContract = appFirstPmtDate.daysBetween(endDate);
+            system.debug('length in days'+lengthOfContract);
+
+            lineItemId = (appEqp.id != null ? appEqp.id : 'VALUE IS BLANK');
+            Dom.XmlNode lineItem = invoiceRequest.addChildElement('urn:LineItem', null, null);
+            lineItem.setattribute('lineItemId', lineItemId);
+            // Start: Customer Tag
+            Dom.XmlNode customer = lineItem.addChildElement('urn:Customer',null,null);
+
+            // Tax Exemption 
+            Boolean isTaxExempted = false;
+            // 1. Always check for Tax Exemption from Account , if not exempted check for equipment
+            if(appEqp.genesis__Application__c != null
+                && appEqp.genesis__Application__r.genesis__Account__c != null)  {
+                // TODO: Needs to change Salesforce only support 3 levels for pulling values
+                isTaxExempted = appEqp.genesis__Application__r.genesis__Account__r.Tax_Exempt__c;
+                system.debug('AccountTax Exemption :'+ isTaxExempted);
+            } 
+            // 2. Check for Equipment's Tax Exempt only if Account is not Exempted
+            if(isTaxExempted == false){
+                isTaxExempted = appEqp.Tax_Exempt__c;
+                system.debug('Equipment Tax Exemption: '+isTaxExempted);
+            }
+            
+            if(isTaxExempted) {
+                customer.setattribute('isTaxExempt','true');
+                customer.setattribute('exemptionReasonCode','MISS');
+            } else {
+                customer.setattribute('isTaxExempt','false');
+            }
+
+            Dom.XmlNode destination = customer.addChildElement('urn:Destination', null, null);
+            String cityValue    =  (appEqp.Install_Address1__r.City__c != null ? appEqp.Install_Address1__r.City__c : 'VALUE IS BLANK');
+            Dom.XmlNode city    = destination.addChildElement('urn:City',null,null);
+            city.addTextNode(cityValue);
+
+            String mainDivisionValue = (appEqp.Install_Address1__r.State__c != null ? appEqp.Install_Address1__r.State__c : 'VALUE IS BLANK');
+            Dom.XmlNode mainDivision = destination.addChildElement('urn:MainDivision',null,null);
+            mainDivision.addTextNode(mainDivisionValue);
+
+            String zipCodeValue  = (appEqp.Install_Address1__r.Zip_Code__c != null ? appEqp.Install_Address1__r.Zip_Code__c : 'VALUE IS BLANK');
+            Dom.XmlNode zipCode  = destination.addChildElement('urn:PostalCode',null,null);
+            zipCode.addTextNode(zipCodeValue);
+            // End: Customer Tag
+
+            // Product name value is GARD__c value in application equipment
+            String productValue = (appEqp.GARD_Code__c != null ? appEqp.GARD_code__c : 'VALUE IS BLANK');
+            lineItem.addChildElement('urn:Product',null,null).addTextNode(productValue);
+            
+            // ExtendedPrice Tag
+            Decimal ddlAmount = (appEqp.genesis__Estimated_Selling_Price__c !=null ? appEqp.genesis__Estimated_Selling_Price__c : 0.00);
+            ddlAmount = cllease.ValueUtil.round(ddlAmount, 2 , 'Nearest');
+            String extdPrice = String.valueof(ddlAmount);
+            lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(extdPrice);
+            lineItem.addChildElement('urn:Cost',null,null).addTextNode(extdPrice);
+            lineItem.addChildElement('urn:InputTotalTax',null,null).addTextNode(string.valueOf(appEqp.genesis__Tax_Amount__c));
+
+            // calculating Purchase Options flag details
+            if(appEqp.genesis__Application__r.Purchase_Option__c == 'Fair Market Value') {
+                contrTypev  = 'FMV';
+                leaseTypev  = 'A';
+            } else if(appEqp.genesis__Application__r.Purchase_Option__c == 'One Dollar Buyout') {
+                contrTypev  = 'CSC';
+                leaseTypev  = 'D';
+            }
+            
+            // Start: FlexibleCodeField Tag
+            Dom.XmlNode FFields =  lineItem.addChildElement('urn:FlexibleFields',null,null);
+            Dom.XmlNode ffield1 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield1.setattribute('fieldId','1');
+            ffield1.addTextNode('ORIG');
+            Dom.XmlNode ffield2 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield2.setattribute('fieldId','2');
+            ffield2.addTextNode('FMV');
+            Dom.XmlNode ffield3 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield3.setattribute('fieldId','3');
+            ffield3.addTextNode('UC');
+            Dom.XmlNode ffield4 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield4.setattribute('fieldId','4');
+            ffield4.addTextNode('A');
+            Dom.XmlNode ffield5 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield5.setattribute('fieldId','5');
+            ffield5.addTextNode('I');
+            Dom.XmlNode ffield6 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield6.setattribute('fieldId','6');
+            ffield6.addTextNode('N/A');
+            Dom.XmlNode ffield7 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield7.setattribute('fieldId','7');
+            ffield7.addTextNode('N');
+            Dom.XmlNode ffield8 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield8.setattribute('fieldId','8');
+            ffield8.addTextNode('N');
+            Dom.XmlNode ffield9 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield9.setattribute('fieldId','9');
+            ffield9.addTextNode('CLS-genesis__Application_Equipment__c');
+            assetNumber = (appEqp.Serial_Number__c != null ? appEqp.Serial_Number__c :'VALUE IS BLANK');
+            Dom.XmlNode ffield10 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield10.setattribute('fieldId','10');
+            ffield10.addTextNode(assetNumber);
+            Dom.XmlNode ffield11 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield11.setattribute('fieldId','11');
+            ffield11.addTextNode('0');
+            Dom.XmlNode ffield12 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield12.setattribute('fieldId','12');
+            ffield12.addTextNode('0');
+            Dom.XmlNode ffield13 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield13.setattribute('fieldId','13');
+            ffield13.addTextNode('');
+            Dom.XmlNode ffield14 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield14.setattribute('fieldId','14');
+            ffield14.addTextNode('F');
+            String duetype = (appEqp.name != null ? appEqp.name : 'VALUE IS BLANK');
+            Dom.XmlNode ffield15 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield15.setattribute('fieldId','15');
+            ffield15.addTextNode(appEqp.Name);
+            Dom.XmlNode ffield16 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield16.setattribute('fieldId','16');
+            ffield16.addTextNode('BOOKING');
+            AppliNumber = (appEqp.genesis__Application__r.Name != null ? appEqp.genesis__Application__r.Name : 'VALUE IS BLANK');
+            Dom.XmlNode ffield17 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield17.setattribute('fieldId','17');
+            ffield17.addTextNode(appEqp.genesis__Application__r.Lease_Number__r.name);
+            Dom.XmlNode ffield18 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
+            ffield18.setattribute('fieldId','18');
+            ffield18.addTextNode('0');
+            // End: FlexibleCodeField Tag
+
+            // Start: FlexibleNumericField Tag
+            /*Integer LengthofAppContract ;
+            Date sdate=appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
+            system.debug('starttttt date'+sdate); 
+            Date mdate=appEqp.genesis__Application__r.genesis__Expected_Close_Date__c; 
+            system.debug('Closeeee date'+sdate); 
+            LengthofAppContract = sdate.daysBetween(Date.valueOf(mdate));
+            System.debug('lengthhhhhhhh of contract'+LengthofAppContract) ;*/
+
+            Date sdate=appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
+            
+            Dom.XmlNode ffield21 = FFields.addChildElement('urn:FlexibleNumericField',null,null);
+            ffield21.setattribute('fieldId','1');
+            ffield21.addTextNode(String.valueOf(lengthOfContract));
+            Dom.XmlNode ffield22 = FFields.addChildElement('urn:FlexibleNumericField',null,null);
+            ffield22.setattribute('fieldId','2');
+            ffield22.addTextNode(cumulTaxv);
+            Dom.XmlNode ffield23 = FFields.addChildElement('urn:FlexibleNumericField',null,null);
+            ffield23.setattribute('fieldId','3');
+            ffield23.addTextNode(slbPaidv);
+            Dom.XmlNode ffield24 = FFields.addChildElement('urn:FlexibleNumericField',null,null);
+            ffield24.setattribute('fieldId','4');
+            ffield24.addTextNode(qtpCodev);
+            Dom.XmlNode ffield25 = FFields.addChildElement('urn:FlexibleNumericField',null,null);
+            ffield25.setattribute('fieldId','5');
+            ffield25.addTextNode(qrsCodev);
+            // End: FlexibleNumericField Tag
+
+            // FlexibleDateField Tag
+            string appsdate = formatDate(sdate);
+            Dom.XmlNode ffield31 = FFields.addChildElement('urn:FlexibleDateField',null,null);
+            ffield31.setattribute('fieldId','1');
+            ffield31.addTextNode(appsdate);
+            
+        }
+
+        String req = scdoc.toXmlString();
+        System.debug(LoggingLevel.ERROR, ' Request Str for Application Equipment: '+ req);
+
+        return scdoc;
+    }
     // formate the Date to String
     private static String formatDate(DateTime d) {
         return d.year() + '-' + d.month() + '-' + d.day();
