@@ -3,7 +3,7 @@
   <aura:attribute name="recalculating" type="Boolean" default="false" />
   <aura:attribute name="pricingMessage" type="String" />
 
-  <aura:attribute name="application" type="Object" access="private" />
+  <aura:attribute name="application" type="Object" access="public" />
   <aura:attribute name="approval" type="Object" access="private" />
   <aura:attribute name="billing" type="Object" access="private" />
   <aura:attribute name="locations" type="List" access="private" />
@@ -106,7 +106,7 @@
         </td>
       </tr>
       <aura:if
-        isTrue="{! not(greaterthanorequal(v.approval.Estimated_Financed_Amount__c - (v.application.genesis__Financed_Amount__c),  0))}"
+        isTrue="{! not(greaterthanorequal((v.approval.Estimated_Financed_Amount__c * 1.15) - (v.application.genesis__Financed_Amount__c),  0))}"
       >
         <!-- +(empty(v.application.genesis__Other_Financed_fees__c) ? 0 : v.application.genesis__Other_Financed_fees__c) -->
         <tr>
@@ -409,9 +409,10 @@
       <tr>
         <td colspan="2">
           * Includes <ui:outputNumber  format="$.00" value="{!v.application.genesis__Tax_Amount__c *  v.application.Pricing_Rate_Factor__c}"/> of Upfront Tax
+          
         </td>
       </tr>
-      <tr>
+      <tr> 
         <td colspan="2" class="slds-is-relative">
           <aura:if isTrue="{!v.recalculating}">
             Recalculating...

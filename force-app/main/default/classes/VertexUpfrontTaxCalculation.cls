@@ -81,6 +81,10 @@ global class VertexUpfrontTaxCalculation {
                 vertexLog.Response_XML__c = res.getBody();
             }
 
+            if (responseCode == 500){
+                throw new CLSCustomException('Upfront Tax Calculations failed, please verify logs for more details');
+            }
+
         } catch(Exception e) {
             // A. Insert batch process log for exceptions
             insert new cllease__Batch_Process_Log__c(Name='VertexUpfrontTaxCalculation: ', cllease__Date__c=system.today(), 
@@ -142,6 +146,9 @@ global class VertexUpfrontTaxCalculation {
                     if(appToUpdate == null) {
                         appToUpdate = new genesis__Applications__c(Id = appEqp.genesis__Application__c, genesis__Tax_Amount__c = 0);
                     }
+                    system.debug('****** updating app with a tax amount');
+                    system.debug('equipment tax is: ' + eqpTaxAmount);
+
                     appToUpdate.genesis__Tax_Amount__c += eqpTaxAmount;
                     appToUpdateMap.put(appToUpdate.Id, appToUpdate);
                 }
@@ -151,6 +158,7 @@ global class VertexUpfrontTaxCalculation {
                 }
 
                 if(appToUpdateMap.size() > 0) {
+                    system.debug('****** app to update' + appToUpdateMap);
                     update appToUpdateMap.values();
                 }
             }

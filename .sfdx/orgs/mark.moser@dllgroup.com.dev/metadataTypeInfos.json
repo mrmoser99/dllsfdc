@@ -1,6 +1,29 @@
 {
     "sourceApiVersion": "48.0",
     "typeDefs": {
+        "Audience": {
+            "metadataName": "Audience",
+            "isAddressable": true,
+            "isSourceTracked": true,
+            "ext": "audience",
+            "hasContent": false,
+            "defaultDirectory": "audience",
+            "nameForMsgs": "Audience",
+            "nameForMsgsPlural": "Audiences",
+            "contentIsBinary": false,
+            "hasStandardMembers": false,
+            "deleteSupported": true,
+            "decompositionConfig": {
+                "strategy": "nonDecomposed",
+                "workspaceStrategy": "nonDecomposed",
+                "commitStrategy": "fineGrainTracking",
+                "metadataName": "Audience",
+                "useSparseComposition": false,
+                "decompositions": [],
+                "contentStrategy": "nonDecomposedContent"
+            },
+            "hasVirtualSubtypes": false
+        },
         "AppointmentSchedulingPolicy": {
             "metadataName": "AppointmentSchedulingPolicy",
             "isAddressable": true,
