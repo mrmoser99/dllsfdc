@@ -147,7 +147,7 @@
         let equipment = component.get('v.equipment'),
             lookup = component.find('lookup');
         try {
-            if (!Boolean(equipment) || equipment.length == 0) {
+            if (!Boolean(equipment) || equipment.length == 0 ) {
                 $A.util.addClass(lookup, 'slds-has-error');
                 component.set('v.error', 'Please add equipment to the application.')
                 return false;
@@ -158,6 +158,7 @@
                 component.set('v.error', null)
                 return true;
             }
+            
         } catch (e) {
             console.log(e);
         }
@@ -172,53 +173,70 @@
 			});
 			action.setCallback(this, function (response) {
 				try {
+                    component.set('v.taxerror',false);
+                    console.log('setting tax error to false');
 					let state = response.getState(),
 						onChangeAction = component.get('v.onchange');
 					if (state === 'SUCCESS') {
 						this.equipmentHasChanged(component.get('v.equipment'));
 						if (onChangeAction) {
 							$A.enqueueAction(onChangeAction);
-						}
-            
-                        console.log('upfront tax call');
+                        }
 
+                        console.log('upfront tax call v2');
                         var action1 = component.get('c.calcUpfrontTax');
                         action1.setParams({
                             applicationId: component.get('v.applicationId')
                         });
                         action1.setCallback(this, function(response) {
-                            var state = response.getState();
-                            if (state === 'SUCCESS') {
-                                var x = 1;
-                            } else if (state === 'ERROR') {
-                                let error = response.getError();
-                                if (error && error[0]) {
-                                    console.log(error[0].message);
-                                }
+                        var state = response.getState();
+                        console.log('state is' + state);
+                        if (state === 'SUCCESS') {
+                            var x = 1;
+                        } else if (state === 'ERROR') {
+                            let error = response.getError();
+                            if (error && error[0]) {
+                                console.log(error[0].message);
                             }
+                            console.log('setting tax error to true');
+                            component.set('v.taxerror',true);
+                           
+                            let toast = $A.get('e.force:showToast');
+                                    toast.setParams({
+                                    title: 'Error',
+                                    mode: 'Sticky',
+                                    message: 'Upfront tax calculation error. The address(es) on the equipment are causing tax calculation errors.  Please contact support!',
+                                    type: 'Error'
+                            });
+                            toast.fire();
+                            
+                         }
                         });
                         $A.enqueueAction(action1);
             
+                   
             
             
-                        var action = component.get('c.getEquipment');
-            action.setParams({
-                applicationId: component.get('v.applicationId')
-            });
-            action.setCallback(this, function(response) {
-                var state = response.getState();
-                if (state === 'SUCCESS') {
-                    var equipment = response.getReturnValue();
-                    component.set('v.equipment', response.getReturnValue());
-                } else if (state === 'ERROR') {
-                    let error = response.getError();
-                    if (error && error[0]) {
-                        console.log(error[0].message);
-                    }
-                }
-            });
-            $A.enqueueAction(action);
-					} else if (state === 'ERROR') {
+            
+                    var action = component.get('c.getEquipment');
+                        action.setParams({
+                             applicationId: component.get('v.applicationId')
+                        });
+                        action.setCallback(this, function(response) {
+                        var state = response.getState();
+                        if (state === 'SUCCESS') {
+                            var equipment = response.getReturnValue();
+                            component.set('v.equipment', response.getReturnValue());
+                        } else if (state === 'ERROR') {
+                             let error = response.getError();
+                            if (error && error[0]) {
+                                 console.log(error[0].message);
+                            }
+                        }
+                    });
+                    $A.enqueueAction(action);
+                    
+                    } else if (state === 'ERROR') {
 						let error = response.getError();
 						if (error && error[0]) {
 							if (error[0].message) {
@@ -254,7 +272,14 @@
 			locationsValid,
 			serialNumsValid,
 			pricesValid,
-			installDatesValid;
+            installDatesValid,
+            upfrontTaxValid;
+        if(component.get('v.taxerror') == true)
+            upfrontTaxValid = false;
+        else
+            upfrontTaxValid = true;
+
+        console.log('***** is equipment valid: ' + upfrontTaxValid);
 
         if(!Array.isArray(locations)){
              locations = [locations];
@@ -296,7 +321,10 @@
                 return validFields;
             }
         }, true);
-        return locationsValid && serialNumsValid && pricesValid && installDatesValid;
+
+        console.log('upfront tax valid is: ' + upfrontTaxValid);
+
+        return locationsValid && serialNumsValid && pricesValid && installDatesValid && upfrontTaxValid;
     },
 
 	refreshUpfrontTax: function(component) {

@@ -83,14 +83,18 @@ global class VertexUpfrontTaxCalculation {
 
             if (responseCode == 500){
                 throw new CLSCustomException('Upfront Tax Calculations failed, please verify logs for more details');
+                return 'Tax calculation error.  Please contact support!';
+            
             }
+
+            return null;
 
         } catch(Exception e) {
             // A. Insert batch process log for exceptions
             insert new cllease__Batch_Process_Log__c(Name='VertexUpfrontTaxCalculation: ', cllease__Date__c=system.today(), 
             cllease__Message__c='Error is '+e.getmessage() +' in line number: '+ e.getlinenumber());
             // B. Skip the process in case of any exception during initial Callout Exception
-            throw new CLSCustomException('Upfront Tax Calculations failed, please verify logs for more details');
+            throw new CLSCustomException('Upfront Tax Calculations failed, please contact support!');
 
         } finally {
             // Logging the Vertex Request

@@ -4,13 +4,15 @@
     <aura:attribute name="onchange" type="Aura.Action" description="Handle any data changes"/>
 
     <aura:attribute name="equipment" type="List" access="private"/>
+   
+    
     <aura:attribute name="searchString" type="String" access="private"/>
     <aura:attribute type="List" name="selection" default="[]" access="private"/>
     <aura:attribute name="processing" type="Boolean" default="false" access="private"/>
     <aura:attribute name="error" type="String" access="private"/>
     <aura:attribute name="installAddresses" type="List" access="private"/>
     <aura:attribute name="totalEquipmentCost" type="Double" access="private"/>
-
+    <aura:attribute name="taxerror" type="Boolean" default="false"/>
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
     <aura:handler event="c:FMZ_Application_Refresh" action="{!c.handleRefresh}"/>
 
@@ -68,6 +70,7 @@
                             <aura:iteration items="{!v.installAddresses}" var="a">
                                 <option value="{!a.Id}" selected="{!a.Id==e.Install_Address1__c?true:false}">{!a.Address_Line_1__c},{!a.City__c},&nbsp;{!a.State__c}</option>
                             </aura:iteration>
+                             
                         </lightning:select>
                     </td>
                     <td> 
@@ -75,7 +78,7 @@
                                          variant="label-hidden" value="{!e.Serial_Number__c}"
                                          messageWhenValueMissing="Serial Number is required."
                                          placeholder="Enter Serial Number"
-                                         onchange="{!c.handleEquipmentChange}" onblur="{!c.handleEquipmentBlur}"/>
+                                         onchange="{!c.handleEquipmentChange}" onblur="{!c.handleEquipmentBlur}"  />
 						<ui:inputDate aura:id="installDate" required="true" format="M/d/yyyy" displayDatePicker="true"
 									  value="{!e.Installation_Date__c}"
 									  change="{!c.handleEquipmentChange}" blur="{!c.handleEquipmentBlur}"/>

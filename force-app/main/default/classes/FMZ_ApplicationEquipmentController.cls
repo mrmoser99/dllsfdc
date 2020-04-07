@@ -60,11 +60,11 @@ public without sharing class FMZ_ApplicationEquipmentController {
     }
 
     @AuraEnabled
-    public static void calcUpfrontTax(String applicationId) {
+    public static string calcUpfrontTax(String applicationId) {
     
         genesis__Applications__c a = [select name FROM genesis__Applications__c where id = :applicationId];
 
-        VertexUpfrontTaxCalculation.VertexGetUpfrontTax(a.name);
+        return VertexUpfrontTaxCalculation.VertexGetUpfrontTax(a.name);
         
     }
 
