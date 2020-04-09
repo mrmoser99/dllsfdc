@@ -51,6 +51,9 @@ public without sharing class FMZ_ApplicationDocumentsController {
 
 	@AuraEnabled
 	public static void uploadAttachment(String applicationId, String fileName, String contentType, String base64Body){
+
+		system.debug('***************** in upload attachment');
+		system.debug('base body size: ' + base64Body.length()) ;
 		Attachment att = new Attachment(
 				ParentId = applicationId,
 				Name = fileName,
@@ -58,6 +61,7 @@ public without sharing class FMZ_ApplicationDocumentsController {
 				ContentType = contentType
 		);
 		insert att;
+		system.debug('after insert');
 
 		clcommon__Document_Category__c category = [
 				SELECT Id

@@ -10,11 +10,11 @@
       component.get("v.equipmentSerialNumber") || "";
     const sortedBy = component.get("v.sortedBy") || "";
 
-    if (contractNumber.length !== 0 && contractNumber.length !== 8) {
-      return new Promise((resolve, reject) => {
-        resolve();
-      });
-    }
+    //if (contractNumber.length !== 0 && contractNumber.length !== 8) {
+    //  return new Promise((resolve, reject) => {
+    //    resolve();
+    //  });
+    //}
     action.setParams({
       customerName: customerName,
       contractNumber: contractNumber,

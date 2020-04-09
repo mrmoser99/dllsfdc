@@ -74,7 +74,7 @@
 
                 
             <lightning:select aura:id="serviceEscalate" label="Does Service Escalate?"
-                                 required="false" value="{!v.fee.Service_Escalate__c}">
+                                 required="false" value="{!v.fee.Service_Escalate__c}" onchange="{!c.defaultOthers}">
                     <option value="">&#45;&#45;Select&#45;&#45;</option>
                     <aura:iteration items="{!v.serviceEscalateOpts}" var="a">
                         <option value="{!a.value}"

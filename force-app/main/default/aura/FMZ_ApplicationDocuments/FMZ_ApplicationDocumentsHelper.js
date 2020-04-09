@@ -247,8 +247,19 @@
 			let p = new Promise($A.getCallback(function(resolve, reject) {
 				let reader = new FileReader(),
 					that = this;
-				reader.onloadend = $A.getCallback(function() {
-					console.log('finished reading');
+				reader.onloadend = $A.getCallback(function(event) {
+					if (file.size > 5000000){
+						let toast = $A.get('e.force:showToast');
+							toast.setParams({
+								type: 'error',
+								mode: 'sticky',
+								message: 'File cannot be larger than 5MB.  Please use a tool to shrink the size and upload again!' 
+						});
+						component.set('v.processing', false);
+						toast.fire();
+						return;
+					}
+
 					var action = component.get('c.uploadAttachment');
 					action.setParams({
 						applicationId: component.get('v.applicationId'),
@@ -270,6 +281,7 @@
 							}
 							reject(error);
 						}
+						
 					});
 					console.log('uploading');
 					$A.enqueueAction(action);

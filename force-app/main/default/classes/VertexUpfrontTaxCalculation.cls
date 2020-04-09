@@ -83,11 +83,10 @@ global class VertexUpfrontTaxCalculation {
 
             if (responseCode == 500){
                 throw new CLSCustomException('Upfront Tax Calculations failed, please verify logs for more details');
-                return 'Tax calculation error.  Please contact support!';
             
             }
 
-            return null;
+            
 
         } catch(Exception e) {
             // A. Insert batch process log for exceptions
@@ -144,6 +143,10 @@ global class VertexUpfrontTaxCalculation {
                 for(genesis__Application_Equipment__c appEqp : eqpListToUpdate) {
                     Decimal eqpTaxAmount = eqpToTaxMap.get(appEqp.Id);
                     appEqp.genesis__Tax_Amount__c = eqpTaxAmount;
+                    if (appEqp.genesis__Tax_Amount__c > 0){
+                        appEqp.Upfront_Tax_Flag__c = true;
+                        appEqp.tax_financed__c = true;
+                    } 
 
                     // updating the tax amount in Application
                     genesis__Applications__c appToUpdate = appToUpdateMap.get(appEqp.genesis__Application__c);

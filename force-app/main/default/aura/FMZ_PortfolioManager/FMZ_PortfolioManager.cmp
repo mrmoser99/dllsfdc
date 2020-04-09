@@ -70,8 +70,8 @@
         value="{!v.contractNumber}"
         name="Lease Number"
         label="Lease Number"
-        messageWhenPatternMismatch="Lease number has to be 8 characters"
-        pattern=".{8,8}"
+        messageWhenPatternMismatch="Lease number has to be at least 8 characters"
+        pattern=".{8,}"
       />
       <lightning:input
         style="width: 300px; margin-right: 20px"

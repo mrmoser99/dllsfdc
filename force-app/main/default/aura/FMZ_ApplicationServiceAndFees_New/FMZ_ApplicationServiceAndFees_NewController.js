@@ -68,5 +68,22 @@
      handleChange: function (component, event) {
          var selectedOptionValue = event.getParam("value");
          component.set('v.selectedEquipment', selectedOptionValue);
+     },
+
+     defaultOthers: function (component,event) {
+         var selected = component.get('v.fee.Service_Escalate__c');
+         console.log('selected is: ' + selected);
+         if (selected == 'YES') {
+            component.set('v.fee.Escalation_Frequency__c','ANNUAL');
+            component.set('v.fee.Escalation_Type__c','Percent %');
+            component.set('v.fee.Escalation_Value__c','10');
+            component.set('v.fee.Escalate_Service_On__c','Service Only');
+         }
+         else{
+            component.set('v.fee.Escalation_Frequency__c',null);
+            component.set('v.fee.Escalation_Type__c',null);
+            component.set('v.fee.Escalation_Value__c',null);
+            component.set('v.fee.Escalate_Service_On__c',null);
+         }
      }
 })
