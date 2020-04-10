@@ -1,8 +1,9 @@
 <aura:component controller="FMZ_ApplicationServiceAndFeesController">
  
     <aura:attribute name="applicationId" type="Id"/>
+   
     <aura:attribute name="onchange" type="Aura.Action" description="Handle any data changes"/>
-
+    <aura:attribute name="term" type="String"/>
     <aura:attribute name="customerInsurance" type="Boolean" access="private" />
     <aura:attribute name="blankFee" type="Application_Fee__c" access="private" default="{'sobjectType' : 'Application__Fee__c'}"/>
     <aura:attribute name="fees" type="Application_Fee__c[]" access="private"/>
