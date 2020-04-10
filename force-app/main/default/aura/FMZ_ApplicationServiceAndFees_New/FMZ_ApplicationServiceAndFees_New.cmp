@@ -1,8 +1,9 @@
 <aura:component controller="FMZ_ApplicationServiceAndFeesController">
-2.0
+ 
     <aura:attribute name="applicationId" type="Id"/>
     <aura:attribute name="feeDefId" type="Id"/>
     <aura:attribute name="feeId" type="Id"/>
+    <aura:attribute name="nbrofpayments" type="String"/>
     <aura:attribute name="onchange" type="Aura.Action" description="Handle any data changes"/>
 
     <aura:attribute name="feeName" type="String" access="private"/>

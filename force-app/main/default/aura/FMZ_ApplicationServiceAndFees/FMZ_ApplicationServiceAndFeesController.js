@@ -10,6 +10,8 @@
             var state = response.getState();
             if (state === 'SUCCESS') {
                 component.set('v.customerInsurance', response.getReturnValue().Customer_Provided_Insurance__c);
+                console.log('getting term:' + response.getReturnValue().genesis__Term__c);
+                component.set('v.term', response.getReturnValue().genesis__Term__c);
             } else if (state === 'ERROR') {
                 let error = response.getError();
                 if (error && error[0]) {
@@ -57,9 +59,11 @@
         component.set('v.error', null)
         //helper.addFees(component, selection[0].id);
         let modalBody;
+        console.log('calling add:' + component.get('v.term'));
         $A.createComponent('c:FMZ_ApplicationServiceAndFees_New',{
             applicationId : applicationId,
-            feeDefId : selection[0].id
+            feeDefId : selection[0].id,
+            nbrofpayments: component.get('v.term')
         },
             function(content, status, errorMessage) {
                 if (status === 'SUCCESS') {

@@ -1,4 +1,9 @@
 /**************** compare to repository */
+/*
+    Change Log:
+
+    4/9/2020 - MRM added term to get app query
+*/
 public without sharing class FMZ_ApplicationServiceAndFeesController {
     private static final String OBJECT_NAME = 'Application_Fee__c';
 
@@ -56,7 +61,7 @@ public without sharing class FMZ_ApplicationServiceAndFeesController {
     public static genesis__Applications__c getApp(Id applicationId) {
 
         genesis__Applications__c result =
-        [SELECT Id, Customer_Provided_Insurance__c
+        [SELECT Id, Customer_Provided_Insurance__c, genesis__Term__c
         FROM genesis__Applications__c
         WHERE Id = :applicationId
         LIMIT 1];

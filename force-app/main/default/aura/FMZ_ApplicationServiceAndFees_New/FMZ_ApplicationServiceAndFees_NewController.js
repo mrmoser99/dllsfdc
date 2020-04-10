@@ -22,6 +22,9 @@
         fee.Application__c = component.get('v.applicationId');
         fee.Fee__c = component.get('v.feeDefId');
         component.set('v.fee', fee);
+        component.set('v.fee.Frequency__c','MONTHLY');
+        console.log('nbr of payments : ' + component.get('v.nbrofpayments'));
+        component.set('v.fee.Number_of_Payments__c', component.get('v.nbrofpayments'));
     },
     handleAdd: function(component, event, helper){
         var valid = helper.validate(component);
@@ -78,12 +81,14 @@
             component.set('v.fee.Escalation_Type__c','Percent %');
             component.set('v.fee.Escalation_Value__c','10');
             component.set('v.fee.Escalate_Service_On__c','Service Only');
+            
          }
          else{
             component.set('v.fee.Escalation_Frequency__c',null);
             component.set('v.fee.Escalation_Type__c',null);
             component.set('v.fee.Escalation_Value__c',null);
             component.set('v.fee.Escalate_Service_On__c',null);
+            component.set('v.fee.Frequency__c',null);
          }
      }
 })
