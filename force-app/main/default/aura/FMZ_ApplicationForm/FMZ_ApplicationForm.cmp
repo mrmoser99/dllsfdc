@@ -4,6 +4,8 @@
     <aura:attribute name="application" type="genesis__Applications__c" />
     <aura:attribute name="applicationComplete" type="Boolean" access="private" description="true if progress is 100%" />
     <aura:attribute name="processing" type="Boolean" default="false"/>
+    <aura:attribute name="nbrofpayments" type="String" access="public"/>
+   
 
     <aura:handler name="init" value="{!this}" action="{!c.onInit}"/>
     <aura:handler event="c:FMZ_Application_Refresh" action="{!c.handleRefresh}"/>
@@ -60,7 +62,7 @@
                     <c:FMZ_SetupAssistantStep aura:id="services" stepTitle="Add Services and Fees" stepNumber="5"
                                               onnext="{!c.handleServicesNext}">
 
-                        <c:FMZ_ApplicationServiceAndFees aura:id="servicesForm" applicationId="{!v.applicationId}"
+                        <c:FMZ_ApplicationServiceAndFees aura:id="servicesForm" applicationId="{!v.applicationId}" nbrofpayments="{!v.nbrofpayments}"
                                                          onchange="{!c.handleChange}"/>
 
                     </c:FMZ_SetupAssistantStep>

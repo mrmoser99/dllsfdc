@@ -134,7 +134,7 @@ public class VertexUtil {
             startDate = dueDetailLine.cllease__Bill__r.cllease__Lease_Account__r.cllease__First_Payment_Date__c;
             endDate   = dueDetailLine.cllease__Bill__r.cllease__Lease_Account__r.cllease__Maturity_Date__c;
             lengthOfContract = startDate.daysBetween(endDate);
-            String bookDate = formatDate(leaseMap.get(dueDetailLine.cllease__Contract__c));
+            String bookDate = string.valueOf(leaseMap.get(dueDetailLine.cllease__Contract__c));
             lineItemId = (dueDetailLine.Name != null ? dueDetailLine.Name : 'VALUE IS BLANK');
             Dom.XmlNode lineItem = invoiceRequest.addChildElement('urn:LineItem', null, null);
             lineItem.setattribute('lineItemId', lineItemId);
@@ -343,7 +343,7 @@ public class VertexUtil {
             // Calculating Length of contract
             startDate = charge.cllease__Lease_Account__r.cllease__First_Payment_Date__c;
             endDate   = charge.cllease__Lease_Account__r.cllease__Maturity_Date__c;
-            String bookDate = formatDate(leaseMap.get(charge.cllease__lease_account__c));
+            String bookDate = string.valueOf(leaseMap.get(charge.cllease__lease_account__c));
 
             lengthOfContract = startDate.daysBetween(endDate);
 
@@ -638,7 +638,7 @@ public class VertexUtil {
             ffield2.addTextNode('FMV');
             Dom.XmlNode ffield3 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield3.setattribute('fieldId','3');
-            ffield3.addTextNode('UC');
+            //ffield3.addTextNode('UC');
             Dom.XmlNode ffield4 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield4.setattribute('fieldId','4');
             ffield4.addTextNode('A');
@@ -897,7 +897,7 @@ public class VertexUtil {
             ffield2.addTextNode('FMV');
             Dom.XmlNode ffield3 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield3.setattribute('fieldId','3');
-            ffield3.addTextNode('UC');
+            //ffield3.addTextNode('UC');
             Dom.XmlNode ffield4 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield4.setattribute('fieldId','4');
             ffield4.addTextNode('A');

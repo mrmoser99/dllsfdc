@@ -3,7 +3,7 @@
     <aura:attribute name="applicationId" type="Id"/>
     <aura:attribute name="termOpts" type="List"/>
     <aura:attribute name="onchange" type="Aura.Action" description="Handle any data changes"/>
-
+    <aura:attribute name="nbrofpayments" type="String"/>
     <aura:attribute name="application" type="Object" access="private"/>
 
     <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>

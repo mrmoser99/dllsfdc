@@ -1,6 +1,7 @@
 <aura:component controller="FMZ_ApplicationServiceAndFeesController">
  
     <aura:attribute name="applicationId" type="Id"/>
+    <aura:attribute name="nbrofpayments" type="String" access="public"/>
    
     <aura:attribute name="onchange" type="Aura.Action" description="Handle any data changes"/>
     <aura:attribute name="term" type="String"/>

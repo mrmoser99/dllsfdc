@@ -88,7 +88,7 @@
             component.set('v.fee.Escalation_Type__c',null);
             component.set('v.fee.Escalation_Value__c',null);
             component.set('v.fee.Escalate_Service_On__c',null);
-            component.set('v.fee.Frequency__c',null);
+           
          }
      }
 })

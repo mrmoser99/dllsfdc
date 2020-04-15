@@ -20,8 +20,13 @@
         }
     },
     handleTermsNext: function(component, event, helper) {
+        
+        
         let terms = component.find('terms'),
             termsForm = component.find('termsForm');
+        
+        console.log('terms' + termsForm.get('v.nbrofpayments'));
+        component.set('v.nbrofpayments', termsForm.get('v.nbrofpayments'));
         try {
             if (termsForm.saveAndValidate()) {
                 terms.set('v.complete', true);
@@ -86,7 +91,12 @@
 		}
 	},
     handleChange: function(component, event, helper) {
-    	try {
+        console.log('form change');
+        let termsForm = component.find('termsForm');
+        console.log('terms' + termsForm.get('v.nbrofpayments'));
+        component.set('v.nbrofpayments', termsForm.get('v.nbrofpayments'));
+        
+        try {
     	    console.log('Caught handleChange!!!');
 			let appSummary = component.find('appSummary');
 			appSummary.set('v.pricingMessage', null);

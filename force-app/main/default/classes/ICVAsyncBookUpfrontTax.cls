@@ -26,7 +26,8 @@ public class ICVAsyncBookUpfrontTax implements Queueable, Database.AllowsCallout
     								From genesis__Quick_Quotes__c
     								where id = :quoteId
                                     ];
-                                    
+        system.debug(' genesis app is: ' + q.genesis__application__c);
+        
         genesis__Applications__c app = [ 
     								Select
     								  Name

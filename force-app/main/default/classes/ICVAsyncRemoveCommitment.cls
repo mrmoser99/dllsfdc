@@ -41,11 +41,7 @@ public class ICVAsyncRemoveCommitment implements Queueable, Database.AllowsCallo
     				ICVAsyncRemoveParty job = new ICVAsyncRemoveParty(quoteId,reason);
         			System.enqueueJob(job);
 				}
-				else{
-					ICVAsyncBookUpfrontTax job = new ICVAsyncBookUpfrontTax(quoteId);
-					System.enqueueJob(job);
 				
-				}	
     		}
     		
 		}

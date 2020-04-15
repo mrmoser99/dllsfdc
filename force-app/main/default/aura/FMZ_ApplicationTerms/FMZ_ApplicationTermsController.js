@@ -6,8 +6,9 @@
 
     // mark components with equipment-changed css class
     handleChange: function(component, event, helper) {
-        console.log('handle change');
+        console.log('handle change ****');
         console.log(component.find('term').get('v.value'));
+        component.set('v.nbrofpayments',component.find('term').get('v.value'));
         try {
             let inputControl = event.getSource();
             $A.util.addClass(inputControl, 'terms-changed');

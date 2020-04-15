@@ -1,5 +1,6 @@
 ({
     doInit: function(component, event, helper) {
+        
         helper.loadApplicationFees(component);
         helper.loadPicklistOptions(component);
         var action = component.get('c.getApp');
@@ -9,6 +10,7 @@
         action.setCallback(this, function(response) {
             var state = response.getState();
             if (state === 'SUCCESS') {
+                console.log('hello');
                 component.set('v.customerInsurance', response.getReturnValue().Customer_Provided_Insurance__c);
                 console.log('getting term:' + response.getReturnValue().genesis__Term__c);
                 component.set('v.term', response.getReturnValue().genesis__Term__c);
@@ -59,11 +61,13 @@
         component.set('v.error', null)
         //helper.addFees(component, selection[0].id);
         let modalBody;
-        console.log('calling add:' + component.get('v.term'));
+     
+        
+        console.log('calling add:' + component.get('v.nbrofpayments'));
         $A.createComponent('c:FMZ_ApplicationServiceAndFees_New',{
             applicationId : applicationId,
             feeDefId : selection[0].id,
-            nbrofpayments: component.get('v.term')
+            nbrofpayments: component.get('v.nbrofpayments')
         },
             function(content, status, errorMessage) {
                 if (status === 'SUCCESS') {
