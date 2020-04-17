@@ -34,6 +34,8 @@ trigger ApplicationTrigger on genesis__Applications__c (before insert,before upd
     		}
 	    	i++;
 	    }
-    }
+	}
+	
+	
            
 }

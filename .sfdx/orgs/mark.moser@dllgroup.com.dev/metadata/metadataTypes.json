@@ -41,6 +41,13 @@
         "xmlName": "Certificate"
       },
       {
+        "directoryName": "messageChannels",
+        "inFolder": false,
+        "metaFile": false,
+        "suffix": "messageChannel",
+        "xmlName": "LightningMessageChannel"
+      },
+      {
         "directoryName": "aura",
         "inFolder": false,
         "metaFile": false,
@@ -439,6 +446,13 @@
         "xmlName": "ProfileSessionSetting"
       },
       {
+        "directoryName": "myDomainDiscoverableLogins",
+        "inFolder": false,
+        "metaFile": false,
+        "suffix": "myDomainDiscoverableLogin",
+        "xmlName": "MyDomainDiscoverableLogin"
+      },
+      {
         "directoryName": "oauthcustomscopes",
         "inFolder": false,
         "metaFile": false,
@@ -465,6 +479,13 @@
         "metaFile": false,
         "suffix": "cspTrustedSite",
         "xmlName": "CspTrustedSite"
+      },
+      {
+        "directoryName": "redirectWhitelistUrls",
+        "inFolder": false,
+        "metaFile": false,
+        "suffix": "redirectWhitelistUrl",
+        "xmlName": "RedirectWhitelistUrl"
       },
       {
         "childXmlNames": [
@@ -505,13 +526,6 @@
         "xmlName": "EclairGeoData"
       },
       {
-        "directoryName": "sites",
-        "inFolder": false,
-        "metaFile": false,
-        "suffix": "site",
-        "xmlName": "CustomSite"
-      },
-      {
         "directoryName": "channelLayouts",
         "inFolder": false,
         "metaFile": false,
@@ -526,9 +540,17 @@
         "xmlName": "ContentAsset"
       },
       {
+        "directoryName": "sites",
+        "inFolder": false,
+        "metaFile": false,
+        "suffix": "site",
+        "xmlName": "CustomSite"
+      },
+      {
         "childXmlNames": [
           "SharingOwnerRule",
-          "SharingCriteriaRule"
+          "SharingCriteriaRule",
+          "SharingGuestRule"
         ],
         "directoryName": "sharingRules",
         "inFolder": false,
@@ -612,6 +634,13 @@
         "metaFile": false,
         "suffix": "appMenu",
         "xmlName": "AppMenu"
+      },
+      {
+        "directoryName": "notificationTypeConfig",
+        "inFolder": false,
+        "metaFile": false,
+        "suffix": "config",
+        "xmlName": "NotificationTypeConfig"
       },
       {
         "directoryName": "delegateGroups",
@@ -867,6 +896,13 @@
         "metaFile": false,
         "suffix": "EmbeddedServiceFlowConfig",
         "xmlName": "EmbeddedServiceFlowConfig"
+      },
+      {
+        "directoryName": "EmbeddedServiceMenuSettings",
+        "inFolder": false,
+        "metaFile": false,
+        "suffix": "EmbeddedServiceMenuSettings",
+        "xmlName": "EmbeddedServiceMenuSettings"
       },
       {
         "directoryName": "settings",
