@@ -97,10 +97,17 @@ public with sharing class TerminationQuoteAction {
             return null;
         }
 
+        if(quoteHeader != null) {
+            System.debug('quoteHeader.cllease__Quote_Type__c: '+quoteHeader.cllease__Quote_Type__c);
+            System.debug('quoteHeader.cllease__Quote_Reason__c: '+quoteHeader.cllease__Quote_Reason__c);
+        }
+        
         cllease__Termination_Config__c matchTermConfig;
         //we got quoteheader, lets confirm if there is matching config for the leaseAccount's product.
-        if(quoteHeader != null) {
+        //if(quoteHeader != null) {
             for(cllease__Termination_Config__c termConfig :productTermConfigs) {
+                System.debug('termConfig.cllease__Quote_Type__c: '+termConfig.cllease__Quote_Type__c);
+                System.debug('termConfig.cllease__Quote_Reason__c: '+termConfig.cllease__Quote_Reason__c);
                 if(termConfig.cllease__Quote_Type__c == quoteHeader.cllease__Quote_Type__c
                     && termConfig.cllease__Quote_Reason__c == quoteHeader.cllease__Quote_Reason__c) {
                     matchTermConfig = termConfig;
@@ -108,17 +115,17 @@ public with sharing class TerminationQuoteAction {
                     break;
                 }
             }
-        }
+        //}
 
         //if matching config is not found, send default.
-        if(matchTermConfig == null) {
+        /*if(matchTermConfig == null) {
             matchTermConfig = productTermConfigs.get(0); //by construction, the 1st element is always default.
             System.debug(LoggingLevel.ERROR, 'using default termination config found = ' + matchTermConfig);
             if(matchTermConfig.cllease__Default__c == false) {
                 //looks like the product does not have any default. dont use this then.
                 matchTermConfig = null;
             }
-        }
+        }*/
 
         return matchTermConfig;
     }
@@ -350,17 +357,19 @@ public with sharing class TerminationQuoteAction {
                 isAPICall = false; // if quoteHeader map is passed then set isAPICall to false
             }*/
 
-            cllease__Termination_Quote_Header__c tempHeader;
+            cllease__Termination_Quote_Header__c tempHeader  = quoteHeader;
             if(tempHeader == null) {
                 tempHeader      = populateTermQuoteForLeaseAccount(leaseAccount, terminationConfig);
                 termQtUnit.qh   = tempHeader;
+            } else {
+                // Since we could already be having the matching terminationConfig which is being passed
+                if (terminationConfig == null) {
+                    terminationConfig = getMatchingTerminationConfig(leaseAccount, tempHeader);
+                }
+
             }
 
-            // Since we could already be having the matching terminationConfig which is being passed
-            if (terminationConfig == null) {
-                terminationConfig = getMatchingTerminationConfig(leaseAccount, termQtUnit.qh);
-            }
-
+            
             if(terminationConfig == null) {
                 throw new CLSCustomException('No termination configuration found in product, please check ... ');
             }

@@ -1,4 +1,4 @@
-@isTest
+@isTest 
 public class FMZ_ApplicationServiceAndFeesContrTest {
     @TestSetup
     static void setupApp() {
@@ -9,8 +9,13 @@ public class FMZ_ApplicationServiceAndFeesContrTest {
         );
         insert office;
 
+        clcommon__Billing_Group__c billGroup = new clcommon__Billing_Group__c(Name = 'Default Bill Group');
+        insert billGroup;
+
         clcommon__Legal_Entity__c lentity = new clcommon__Legal_Entity__c(Name = 'Corporation');
         insert lentity;
+
+        system.debug('*************** tring to insert account');
 
         Account acc = new Account(
                 Name = 'sample Account',
@@ -20,6 +25,8 @@ public class FMZ_ApplicationServiceAndFeesContrTest {
                 Oracle_Vendor_ID__c = 'Y795'
         );
         insert acc;
+
+        system.debug('*************** tring to insert account2');
 
         Address__c installAddress = new Address__c (
                 Account__c = acc.Id,
@@ -39,10 +46,44 @@ public class FMZ_ApplicationServiceAndFeesContrTest {
                 genesis__Product_Type__c = 'LEASE',
                 genesis__Product_Sub_Type__c = 'FINANCE LEASE',
                 genesis__Term__c = 12,
+
                 Customer_Provided_Insurance__c = true,
                 Dealer_Program__c = agreement.Id
         );
         insert app;
+
+        clcommon__Fee_Definition__c f = new clcommon__fee_definition__c ( Name = 'Service Fees');
+        f.clcommon__calculation_method__c = 'Fixed';
+        f.clcommon__class__c = 'Income';
+        f.clcommon__fee_type__c = 'Evergreen;Passthrough';
+        f.clcommon__include_in_dues__c = true;
+        f.clcommon__Passthrough_Event__c	= 'On Partial Payment';
+        f.clcommon__type__c = 'OTHER FEES';
+        f.clcommon__Withhold_Basis__c = 'Amount';
+        f.clcommon__Withhold_Value__c	 = 0;
+        f.clcommon__Minimum_Amount__c	 = 10;
+        f.clcommon__Maximum_Amount__c = 0;
+        f.clcommon__amount__c = 0;
+
+
+        //insert f;
+
+       /*  Service_Fee_Escalation_Config__c c = new Service_Fee_Escalation_Config__c();
+            
+            c.application__c = app.id;
+            c.number_of_payments__c = 12;
+            c.frequency__c = 'Monthly';
+            c.start_date__c = date.today();
+            c.is_service_escalate__c = 'NO';
+            c.amount__c = 0;
+
+            
+           
+             
+            
+            
+          
+            insert c; */
 
     }
 

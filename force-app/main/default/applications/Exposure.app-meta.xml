@@ -7,4 +7,5 @@
     <tabs>Lease_Exposure__c</tabs>
     <tabs>Lease_Exposure_Snapshot__c</tabs>
     <tabs>standard-report</tabs>
+    <tabs>collect__Contract_Status__c</tabs>
 </CustomApplication>

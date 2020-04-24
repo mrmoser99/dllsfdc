@@ -678,6 +678,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Docusign_Auth__c.Private_Key__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Equipment_Funding_Detail__c.Dealer_Charges__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -6934,6 +6939,51 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Supertrump_Log__c.XML__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.Amount__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.DestinationCity__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.DestinationCounty__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.DestinationState__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.DestinationZipCode__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.Tax_Amount__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.Tax_Exempt__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.Termination_Quote_Equipment__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.Termination_Quote_Line__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

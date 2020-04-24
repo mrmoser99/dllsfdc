@@ -186,7 +186,7 @@
 
             </apex:pageblockTable>
 
-            <apex:pageblockTable id="equipmentTbl2" value="{!equipments}"  var="equipment" headerClass="fixedHeader" styleClass="scrollableFixedHeader" rendered="{!NOT(termQuoteHeader.cllease__is_Equipment_Termination__c)}">
+            <!--<apex:pageblockTable id="equipmentTbl2" value="{!equipments}"  var="equipment" headerClass="fixedHeader" styleClass="scrollableFixedHeader" rendered="{!NOT(termQuoteHeader.cllease__is_Equipment_Termination__c)}">
 
                 <apex:repeat value="{!$ObjectType.clcommon__Equipment_Detail__c.FieldSets.cllease__TerminationFieldSet}" var="field">
                     <apex:column headerValue="{!field.Label}" >
@@ -194,7 +194,7 @@
                     </apex:column>
                 </apex:repeat>
 
-            </apex:pageblockTable>
+            </apex:pageblockTable> -->
         </apex:pageBlock>
 
 

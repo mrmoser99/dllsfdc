@@ -8,7 +8,7 @@ global with sharing class TerminationQuoteViewController extends BaseModalContro
     public Cllease__Termination_Quote_Header__c termQuoteHeader {get; set;}
     public List<TerminationQuoteAction.Equipment> equipmentDetails {get; set;}
     public List<Cllease__Contract_Equipment__c> equipments;
-    public Map<Id, Map<Id, clcommon__Equipment_Detail__c>> eqpDetailMap;
+    //public Map<Id, Map<Id, clcommon__Equipment_Detail__c>> eqpDetailMap;
     public Boolean showEquipments {get; set;}
     public Integer noOfSelectedEquipments {get; set;}
     public Integer noOfEquipments {get; set;}
@@ -376,7 +376,7 @@ global with sharing class TerminationQuoteViewController extends BaseModalContro
         contract.cllease__Enable_Calculation_Setup_Logs__c = true;
         update contract;
         List<Cllease__Contract_Equipment__c> equipmentsToBeUpdated = new List<Cllease__Contract_Equipment__c>();
-        List<clcommon__Equipment_Detail__c> eqpDetailsToBeUpdated = new List<clcommon__Equipment_Detail__c>();
+        //List<clcommon__Equipment_Detail__c> eqpDetailsToBeUpdated = new List<clcommon__Equipment_Detail__c>();
         if(equipmentLevelTermination) {
             for(TerminationQuoteAction.Equipment equipment : equipmentDetails) {
                 if(equipment.eqp.cllease__Status__c.equalsIgnoreCase(LendingConstants.CONTRACT_EQUIPMENT_STATUS_TO_BE_TERMINATED)) {

@@ -10,13 +10,6 @@ public  class TestBatchUtility {
     
     }  
 
-    static TestMethod void Test2() {
- 
-        //BatchUtility.runJob();
-
-        id batchinstanceid = database.executeBatch(new BatchSAIGeneration(),100); 
-    
-    }  
 
 
 

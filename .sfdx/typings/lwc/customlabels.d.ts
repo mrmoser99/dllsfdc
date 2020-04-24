@@ -30,9 +30,25 @@ declare module "@salesforce/label/c.Default_Rate" {
     var Default_Rate: string;
     export default Default_Rate;
 }
+declare module "@salesforce/label/c.Docusign_Account_GUI" {
+    var Docusign_Account_GUI: string;
+    export default Docusign_Account_GUI;
+}
+declare module "@salesforce/label/c.Docusign_Audience" {
+    var Docusign_Audience: string;
+    export default Docusign_Audience;
+}
 declare module "@salesforce/label/c.Docusign_Endpoint" {
     var Docusign_Endpoint: string;
     export default Docusign_Endpoint;
+}
+declare module "@salesforce/label/c.Docusign_Equipment_Hold_Contact_Id" {
+    var Docusign_Equipment_Hold_Contact_Id: string;
+    export default Docusign_Equipment_Hold_Contact_Id;
+}
+declare module "@salesforce/label/c.Docusign_Integrator_Key" {
+    var Docusign_Integrator_Key: string;
+    export default Docusign_Integrator_Key;
 }
 declare module "@salesforce/label/c.Docusign_Lease_Agreement" {
     var Docusign_Lease_Agreement: string;
@@ -41,6 +57,18 @@ declare module "@salesforce/label/c.Docusign_Lease_Agreement" {
 declare module "@salesforce/label/c.Docusign_Lease_Query" {
     var Docusign_Lease_Query: string;
     export default Docusign_Lease_Query;
+}
+declare module "@salesforce/label/c.Docusign_Oauth_Token_URL" {
+    var Docusign_Oauth_Token_URL: string;
+    export default Docusign_Oauth_Token_URL;
+}
+declare module "@salesforce/label/c.Docusign_Rest_API_URL" {
+    var Docusign_Rest_API_URL: string;
+    export default Docusign_Rest_API_URL;
+}
+declare module "@salesforce/label/c.Docusign_Run_As_User_GUI" {
+    var Docusign_Run_As_User_GUI: string;
+    export default Docusign_Run_As_User_GUI;
 }
 declare module "@salesforce/label/c.Docusign_Send_As_User_Id" {
     var Docusign_Send_As_User_Id: string;

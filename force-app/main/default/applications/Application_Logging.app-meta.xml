@@ -9,4 +9,5 @@
     <tabs>Bill_Monitor__c</tabs>
     <tabs>OFAC_Log__c</tabs>
     <tabs>Supertrump_Log__c</tabs>
+    <tabs>collect__Contract_Status__c</tabs>
 </CustomApplication>

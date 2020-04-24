@@ -1,3 +1,10 @@
+/*************************************************************************************************************
+ * 
+ * This code was originally created by salesforce.com.  It is used generate an access token from a JWT. It is not for the weak.
+ * 
+ * Change Log: 
+ *      4/17/2020 - MRM Created  
+ ***************************************************************************************************************/
 public class JWTBearerFlow {
 
     public static String getAccessToken(String tokenEndpoint, JWT jwt) {

@@ -16,7 +16,7 @@ trigger QuoteLineTaxTrigger on cllease__Termination_Quote_Line__c (after update)
 			String quoteHeaderId = quoteLines.get(0).cllease__Quote_Header__c;
 
 			// b. Checking Vertex Call is done or not by checking flag @Termination Quote Object
-			Boolean vertexCallDone = TerminationUtil.getQuoteVertexFlag(quoteHeaderId);
+			/*Boolean vertexCallDone = TerminationUtil.getQuoteVertexFlag(quoteHeaderId);
 
 			System.debug(LoggingLevel.ERROR, ' Vertex Flag update in QuoteLineTaxTrigger: '+vertexCallDone);
 
@@ -25,7 +25,7 @@ trigger QuoteLineTaxTrigger on cllease__Termination_Quote_Line__c (after update)
 				return; // if vertex call already done, just return 
 			} else {
 				TerminationUtil.updateQuoteVertexFlag(quoteHeaderId, true);
-			}
+			}*/
 
 			// d. Create Termination Equipment Quote Objects for new Quote Line Amounts
 			TerminationUtil.createTerminationEqpQuoteObjects(quoteHeaderId);

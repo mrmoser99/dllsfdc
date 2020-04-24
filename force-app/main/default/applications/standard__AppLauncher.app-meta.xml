@@ -5,4 +5,5 @@
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <tabs>standard-AppLauncher</tabs>
+    <tabs>collect__Contract_Status__c</tabs>
 </CustomApplication>

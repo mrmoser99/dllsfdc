@@ -34,4 +34,5 @@
     <tabs>Int_Collateral__c</tabs>
     <tabs>Int_Collateral_Party__c</tabs>
     <tabs>Int_Batch_Exception_Log__c</tabs>
+    <tabs>collect__Contract_Status__c</tabs>
 </CustomApplication>

@@ -70,7 +70,7 @@ global class VertexUpfrontTaxCalculation {
             if(!System.Test.isRunningTest()) {
                 res = http.send(req);
             } else {
-                //res = VertexHttpResponseGenerator.vertexBillHTTPResponse(dueDetailLines);
+                res = VertexHttpResponseGenerator.vertexUpfrontHTTPResponse(eqpListToUpdate);
             }
             System.debug(LoggingLevel.ERROR, ' Response Code: '+res.getStatusCode());
             responseCode = res.getStatusCode();

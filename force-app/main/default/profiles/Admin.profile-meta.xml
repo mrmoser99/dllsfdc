@@ -433,6 +433,18 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>DocuSign</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>DocusignAuth</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>DocusignUtil</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>Dummy_EmailHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -717,6 +729,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>ICVAsyncBookUpfrontTax</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ICVAsyncCreditApproval</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -778,6 +794,14 @@
     </classAccesses>
     <classAccesses>
         <apexClass>InvoiceSummaryUtil</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>JWT</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>JWTBearerFlow</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -981,6 +1005,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>TestBatchUtility2</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TestBillMonitor</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1034,6 +1062,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>TestDealerFundingDetailController</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>TestDocuSign</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1157,6 +1189,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>TestServiceEscalation</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TestSupertrump</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1226,6 +1262,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>VertexUtil</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>VertexUtil2</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1929,6 +1969,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Dealers_and_Users__c.Primary__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Docusign_Auth__c.Private_Key__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -8203,6 +8248,51 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Termination_Equipment_Quote__c.Amount__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.DestinationCity__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.DestinationCounty__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.DestinationState__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.DestinationZipCode__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Termination_Equipment_Quote__c.Tax_Amount__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Termination_Equipment_Quote__c.Tax_Exempt__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Termination_Equipment_Quote__c.Termination_Quote_Equipment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Termination_Equipment_Quote__c.Termination_Quote_Line__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Vertex_Log__c.Category__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -8309,6 +8399,15 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
         <object>Dealers_and_Users__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
+        <object>Docusign_Auth__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
@@ -9190,6 +9289,15 @@
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
+        <object>Termination_Equipment_Quote__c</object>
+        <viewAllRecords>true</viewAllRecords>
+    </objectPermissions>
+    <objectPermissions>
+        <allowCreate>true</allowCreate>
+        <allowDelete>true</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>true</modifyAllRecords>
         <object>Vertex_Log__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
@@ -9432,6 +9540,10 @@
     <tabVisibilities>
         <tab>Contract_Fee</tab>
         <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Docusign_Auth__c</tab>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>ICS_Application__c</tab>
@@ -9824,6 +9936,10 @@
     <tabVisibilities>
         <tab>cllease__Termination_Config__c</tab>
         <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>collect__Contract_Status__c</tab>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>collect__Loan_Account__c</tab>

@@ -58,12 +58,40 @@
         <value>.0183</value>
     </labels>
     <labels>
+        <fullName>Docusign_Account_GUI</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Docusign Account GUI</shortDescription>
+        <value>414758c3-3553-46e3-a483-ca8401ec31de</value>
+    </labels>
+    <labels>
+        <fullName>Docusign_Audience</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Docusign Audience</shortDescription>
+        <value>account-d.docusign.com</value>
+    </labels>
+    <labels>
         <fullName>Docusign_Endpoint</fullName>
         <categories>Docusign</categories>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Docusign Endpoint</shortDescription>
         <value>Demo</value>
+    </labels>
+    <labels>
+        <fullName>Docusign_Equipment_Hold_Contact_Id</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Docusign Equipment Hold Contact Id</shortDescription>
+        <value>0034F00000bUQww</value>
+    </labels>
+    <labels>
+        <fullName>Docusign_Integrator_Key</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Docusign Integrator Key</shortDescription>
+        <value>af51d798-2e2b-420d-8499-255dc4fc67fc</value>
     </labels>
     <labels>
         <fullName>Docusign_Lease_Agreement</fullName>
@@ -80,6 +108,27 @@
         <protected>false</protected>
         <shortDescription>Docusign Lease Query</shortDescription>
         <value>[LeaseAgreement]a2e1I000000Qam0,[EQ]a2e1I000000Qalk</value>
+    </labels>
+    <labels>
+        <fullName>Docusign_Oauth_Token_URL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Docusign Oauth Token URL</shortDescription>
+        <value>https://account-d.docusign.com/oauth/token</value>
+    </labels>
+    <labels>
+        <fullName>Docusign_Rest_API_URL</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Docusign Rest API URL</shortDescription>
+        <value>https://demo.docusign.net/restapi/v2</value>
+    </labels>
+    <labels>
+        <fullName>Docusign_Run_As_User_GUI</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Docusign Run As User GUI</shortDescription>
+        <value>a285e933-01f5-4393-a2d9-eef7cdb2848b</value>
     </labels>
     <labels>
         <fullName>Docusign_Send_As_User_Id</fullName>

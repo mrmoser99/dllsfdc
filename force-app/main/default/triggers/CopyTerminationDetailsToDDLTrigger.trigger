@@ -53,7 +53,7 @@ trigger CopyTerminationDetailsToDDLTrigger on cllease__Other_Transaction__c (aft
 				}
 			}
 
-			Map<String, String> terminationDueDetailLineFieldAPIMap = VertexUtil.terminationDueDetailLineFieldAPIMap;
+			Map<String, String> terminationDueDetailLineFieldAPIMap = VertexUtil2.terminationDueDetailLineFieldAPIMap;
 
 			// Retrieve the Bill & Due Detail lines only if Termination has Map created with above.
 			if(eqpTermEqpQuoteMap.size() > 0) {

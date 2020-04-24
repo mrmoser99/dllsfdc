@@ -18,4 +18,5 @@
     <tabs>Int_OFAC_FINCEN__c</tabs>
     <tabs>Int_ICV_Default__c</tabs>
     <tabs>standard-report</tabs>
+    <tabs>collect__Contract_Status__c</tabs>
 </CustomApplication>

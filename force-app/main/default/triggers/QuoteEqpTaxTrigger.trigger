@@ -16,7 +16,7 @@ trigger QuoteEqpTaxTrigger on cllease__Termination_Quote_Equipment__c (after ins
 			String quoteHeaderId = quoteEqps.get(0).cllease__Termination_Quote_Header__c;
 
 			// b. Update the Vertex Flag in quote header as true to avoid subsequent calls in same transaction
-			TerminationUtil.updateQuoteVertexFlag(quoteHeaderId, true);
+			//TerminationUtil.updateQuoteVertexFlag(quoteHeaderId, true);
 
 			// c. Create Termination Equipment Quote Objects for new Quote Line Amounts
 			TerminationUtil.createTerminationEqpQuoteObjects(quoteHeaderId);

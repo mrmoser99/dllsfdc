@@ -43,6 +43,7 @@
     </profileActionOverrides>
     <tabs>standard-home</tabs>
     <tabs>clcommon__Consolidated_Invoice__c</tabs>
+    <tabs>collect__Contract_Status__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Invoice_Adjustments_UtilityBar</utilityBar>
 </CustomApplication>

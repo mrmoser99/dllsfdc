@@ -11,4 +11,5 @@
     <tabs>standard-Contact</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
+    <tabs>collect__Contract_Status__c</tabs>
 </CustomApplication>

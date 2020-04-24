@@ -17,4 +17,5 @@
     <tabs>SAI_Application_Skip_Billing_Month__c</tabs>
     <tabs>SAI_Delivery_Control__c</tabs>
     <tabs>SAI_File_Control__c</tabs>
+    <tabs>collect__Contract_Status__c</tabs>
 </CustomApplication>
