@@ -166,4 +166,11 @@ public class TestVertexUpfrontTaxCalculation {
         System.Test.stopTest();
     }
 
+    @isTest
+    public static void test2(){
+
+        vertexupfronttaxcalculation.testCover();
+
+    }
+    
 }

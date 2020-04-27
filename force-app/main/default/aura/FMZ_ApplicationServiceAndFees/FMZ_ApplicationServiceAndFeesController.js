@@ -13,7 +13,7 @@
                 console.log('hello');
                 component.set('v.customerInsurance', response.getReturnValue().Customer_Provided_Insurance__c);
                 console.log('getting term:' + response.getReturnValue().genesis__Term__c);
-                component.set('v.term', response.getReturnValue().genesis__Term__c);
+                component.set('v.nbrofpayments', response.getReturnValue().genesis__Term__c);
             } else if (state === 'ERROR') {
                 let error = response.getError();
                 if (error && error[0]) {
