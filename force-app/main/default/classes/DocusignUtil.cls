@@ -4,6 +4,7 @@
 * 
 *	Change Log: 
 *	2/26/19 - MRM Created
+*	4/27/20 - MRM Added functionality to attach document after second signature
     
 ********************************************************************************************************************/
 public with sharing class DocusignUtil {
@@ -152,5 +153,87 @@ public with sharing class DocusignUtil {
   	"recipientCount": "1"	
 	}	
 	*/
+/********************************************************************************************
+   	* attach document after 2nd signature
+   	* 
+   	********************************************************************************************/
+	@future (callout=true) 
+	public static void attachDocument(String env, Integer order){  
 
+		String LEASE_AGREEMENT_CATEGORY = 'Lease Documents';
+
+		dsfs__DocuSign_Status__c d = [select application__c from dsfs__DocuSign_Status__c where dsfs__DocuSign_Envelope_ID__c	= :env];
+
+
+        String ep= System.Label.Docusign_Rest_API_URL + '/accounts/' + System.Label.Docusign_Account_GUI + '/envelopes/' + env + '/documents/1';
+
+		HttpRequest req = new HttpRequest();
+		HTTPResponse res;
+        req.setMethod('GET'); 
+		req.setEndpoint(ep);
+		req.setHeader('Authorization', 'Bearer '+ DocusignUtil.getDocusignAccessToken());
+		req.setHeader('Content-Type','application/pdf');
+		req.setTimeout(120000);    
+
+        try{
+			Http http = new Http();
+			res = http.send(req);
+			system.debug('response is:' + res);
+			system.debug('body:' + res.getBody());
+			Blob doc = res.getBodyAsBlob();
+
+		
+			Attachment att = new Attachment(
+				ParentId = d.application__c,
+				Name = 'Lease2of3.pdf',
+				Body = doc,
+				ContentType = 'application/pdf'
+			);
+			insert att;
+			system.debug('after insert');
+
+			clcommon__Document_Category__c category = [
+				SELECT Id
+				FROM clcommon__Document_Category__c
+				WHERE
+				clcommon__Category_Name__c =: LEASE_AGREEMENT_CATEGORY
+				AND genesis__Application__c =: d.application__c
+				LIMIT 1
+		]	;
+
+			String docName;
+			if (order == 3)
+				docName = 'Lease2of3.pdf';
+			else {
+				docName = 'LeaseFinal.pdf';
+			}
+
+			clcommon__Category_Attachment_Association__c association = new clcommon__Category_Attachment_Association__c(
+				clcommon__Attachment_Id__c = att.Id,
+				Name = docName,
+				clcommon__Document_Category__c = category.Id
+			);
+			insert association;
+
+		}
+		catch (exception e){
+			cllease__Batch_Process_Log__c log = new cllease__Batch_Process_Log__c(
+				 name = 'Docusign attachDocument'
+				,cllease__Message__c = 'Error is: ' + res
+			);
+			insert log;
+		}
+
+		if (res.getStatus() != 'OK'){
+			cllease__Batch_Process_Log__c log = new cllease__Batch_Process_Log__c(
+				name = 'Docusign attachDocument'
+			   ,cllease__Message__c = 'Error is: ' + res + ' status: ' + res.getStatusCode()
+		   );
+		   insert log;
+
+		}
+		
+
+			
+	}
 }

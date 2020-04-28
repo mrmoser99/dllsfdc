@@ -16,7 +16,8 @@ public class JWTBearerFlow {
         req.setEndpoint(tokenEndpoint);
         req.setHeader('Content-type', 'application/x-www-form-urlencoded');
         req.setBody(body);
-        Http http = new Http();               
+        Http http = new Http();   
+        system.debug('req is : ' + req) ;
         HTTPResponse res = http.send(req);
         
         if ( res.getStatusCode() == 200 ) {

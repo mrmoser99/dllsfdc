@@ -55,9 +55,9 @@
 				</lightning:layoutItem>
 			</lightning:layout>
 			<lightning:layout horizontalAlign="end" class="slds-m-top_medium">
-				<!-- <lightning:layoutItem class="slds-m-top_x-small slds-m-right_x-small"> -->
-					<!-- <lightning:button label="e-Sign" onclick="{!c.handleGenerateEsign}"/> -->
-				<!-- </lightning:layoutItem> -->
+				<lightning:layoutItem class="slds-m-top_x-small slds-m-right_x-small">
+					<lightning:button label="e-Sign" onclick="{!c.handleGenerateEsign}"/>
+				</lightning:layoutItem>
 				<lightning:layoutItem class="slds-m-top_x-small slds-m-right_x-small">
 					<lightning:button label="Generate Agreement" onclick="{!c.handleGenerate}"/>
 				</lightning:layoutItem>
