@@ -20,6 +20,7 @@ trigger dsfsRecipientStatus on dsfs__DocuSign_Recipient_Status__c (before update
      }  
      
      if (trigger.new[0].dsfs__Recipient_Status__c == 'Completed' && trigger.old[0].dsfs__Recipient_Status__c != 'Completed' && (trigger.new[0].dsfs__DocuSign_Routing_Order__c == 3 || trigger.new[0].dsfs__DocuSign_Routing_Order__c == 4)){
-         DocusignUtil.attachDocument(trigger.new[0].dsfs__Envelope_Id__c,trigger.new[0].dsfs__DocuSign_Routing_Order__c);
+        system.debug('******************** order is: ' + trigger.new[0].dsfs__DocuSign_Routing_Order__c);
+        DocusignUtil.attachDocument(trigger.new[0].dsfs__Envelope_Id__c,integer.valueOf(trigger.new[0].dsfs__DocuSign_Routing_Order__c)); 
      }
 }

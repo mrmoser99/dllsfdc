@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-04-28T15:50:32-04:00" hostname="https://newco--Dev.my.salesforce.com" tests="2" failures="1"  errors="0"  time="4.21">
+        <properties>
+            <property name="outcome" value="Failed"/>
+            <property name="testsRan" value="2"/>
+            <property name="passing" value="1"/>
+            <property name="failing" value="1"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="50%"/>
+            <property name="failRate" value="50%"/>
+            <property name="testStartTime" value="Apr 28, 2020 3:50 PM"/>
+            <property name="testExecutionTime" value="4.21 s"/>
+            <property name="testTotalTime" value="4.21 s"/>
+            <property name="commandTime" value="7.23 s"/>
+            <property name="hostname" value="https://newco--Dev.my.salesforce.com"/>
+            <property name="orgId" value="00D4F0000001BgcUAE"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7074F00001FUP0e"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="testMethod1" classname="TestdsfsRecipientStatus" time="4.2">
+            <failure message="System.DmlException: Insert failed. First exception on row 0; first error: REQUIRED_FIELD_MISSING, Required fields are missing: [dsfs__Parent_Status_Record__c, dsfs__DocuSign_Recipient_Id__c]: [dsfs__Parent_Status_Record__c, dsfs__DocuSign_Recipient_Id__c]"><![CDATA[Class.TestdsfsRecipientStatus.testMethod1: line 12, column 1]]></failure>
+        </testcase>
+        <testcase name="testMethod2" classname="TestdsfsRecipientStatus" time="0.01">
+        </testcase>
+    </testsuite>
+</testsuites>

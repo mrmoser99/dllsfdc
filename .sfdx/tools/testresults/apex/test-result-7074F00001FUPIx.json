@@ -1,0 +1,70 @@
+{
+    "summary": {
+        "outcome": "Failed",
+        "testsRan": 2,
+        "passing": 1,
+        "failing": 1,
+        "skipped": 0,
+        "passRate": "50%",
+        "failRate": "50%",
+        "testStartTime": "Apr 28, 2020 3:52 PM",
+        "testExecutionTime": "543 ms",
+        "testTotalTime": "543 ms",
+        "commandTime": "3253 ms",
+        "hostname": "https://newco--Dev.my.salesforce.com",
+        "orgId": "00D4F0000001BgcUAE",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7074F00001FUPIx",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v48.0/tooling/sobjects/ApexTestResult/07M4F000004yJsNUAU"
+            },
+            "Id": "07M4F000004yJsNUAU",
+            "QueueItemId": "7094F000000hry8QAA",
+            "StackTrace": "Class.TestdsfsRecipientStatus.testMethod1: line 12, column 1",
+            "Message": "System.DmlException: Insert failed. First exception on row 0; first error: CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY, dsfsDocuSignStatus: data changed by trigger for field Owner ID: owner cannot be blank: []",
+            "AsyncApexJobId": "7074F00001FUPIxQAP",
+            "MethodName": "testMethod1",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v48.0/tooling/sobjects/ApexClass/01p4F000001glbLQAQ"
+                },
+                "Id": "01p4F000001glbLQAQ",
+                "Name": "TestdsfsRecipientStatus",
+                "NamespacePrefix": null
+            },
+            "RunTime": 532,
+            "FullName": "TestdsfsRecipientStatus.testMethod1"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v48.0/tooling/sobjects/ApexTestResult/07M4F000004yJsOUAU"
+            },
+            "Id": "07M4F000004yJsOUAU",
+            "QueueItemId": "7094F000000hry8QAA",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7074F00001FUPIxQAP",
+            "MethodName": "testMethod2",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v48.0/tooling/sobjects/ApexClass/01p4F000001glbLQAQ"
+                },
+                "Id": "01p4F000001glbLQAQ",
+                "Name": "TestdsfsRecipientStatus",
+                "NamespacePrefix": null
+            },
+            "RunTime": 11,
+            "FullName": "TestdsfsRecipientStatus.testMethod2"
+        }
+    ]
+}

@@ -1,0 +1,142 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 5,
+        "passing": 5,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Apr 28, 2020 3:47 PM",
+        "testExecutionTime": "18755 ms",
+        "testTotalTime": "18755 ms",
+        "commandTime": "25579 ms",
+        "hostname": "https://newco--Dev.my.salesforce.com",
+        "orgId": "00D4F0000001BgcUAE",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7074F00001FUPDI",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v48.0/tooling/sobjects/ApexTestResult/07M4F000004yJs3UAE"
+            },
+            "Id": "07M4F000004yJs3UAE",
+            "QueueItemId": "7094F000000hrxtQAA",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7074F00001FUPDIQA5",
+            "MethodName": "testAddLocation",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v48.0/tooling/sobjects/ApexClass/01p1I00000HCSxPQAX"
+                },
+                "Id": "01p1I00000HCSxPQAX",
+                "Name": "FMZ_ApplicationLocationsControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 11562,
+            "FullName": "FMZ_ApplicationLocationsControllerTest.testAddLocation"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v48.0/tooling/sobjects/ApexTestResult/07M4F000004yJs4UAE"
+            },
+            "Id": "07M4F000004yJs4UAE",
+            "QueueItemId": "7094F000000hrxtQAA",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7074F00001FUPDIQA5",
+            "MethodName": "testDeleteLocation",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v48.0/tooling/sobjects/ApexClass/01p1I00000HCSxPQAX"
+                },
+                "Id": "01p1I00000HCSxPQAX",
+                "Name": "FMZ_ApplicationLocationsControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 3653,
+            "FullName": "FMZ_ApplicationLocationsControllerTest.testDeleteLocation"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v48.0/tooling/sobjects/ApexTestResult/07M4F000004yJs5UAE"
+            },
+            "Id": "07M4F000004yJs5UAE",
+            "QueueItemId": "7094F000000hrxtQAA",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7074F00001FUPDIQA5",
+            "MethodName": "testGetLocations",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v48.0/tooling/sobjects/ApexClass/01p1I00000HCSxPQAX"
+                },
+                "Id": "01p1I00000HCSxPQAX",
+                "Name": "FMZ_ApplicationLocationsControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 1266,
+            "FullName": "FMZ_ApplicationLocationsControllerTest.testGetLocations"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v48.0/tooling/sobjects/ApexTestResult/07M4F000004yJs6UAE"
+            },
+            "Id": "07M4F000004yJs6UAE",
+            "QueueItemId": "7094F000000hrxtQAA",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7074F00001FUPDIQA5",
+            "MethodName": "testSearch",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v48.0/tooling/sobjects/ApexClass/01p1I00000HCSxPQAX"
+                },
+                "Id": "01p1I00000HCSxPQAX",
+                "Name": "FMZ_ApplicationLocationsControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 988,
+            "FullName": "FMZ_ApplicationLocationsControllerTest.testSearch"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v48.0/tooling/sobjects/ApexTestResult/07M4F000004yJs7UAE"
+            },
+            "Id": "07M4F000004yJs7UAE",
+            "QueueItemId": "7094F000000hrxtQAA",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7074F00001FUPDIQA5",
+            "MethodName": "testUpdateLocation",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v48.0/tooling/sobjects/ApexClass/01p1I00000HCSxPQAX"
+                },
+                "Id": "01p1I00000HCSxPQAX",
+                "Name": "FMZ_ApplicationLocationsControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 1286,
+            "FullName": "FMZ_ApplicationLocationsControllerTest.testUpdateLocation"
+        }
+    ]
+}

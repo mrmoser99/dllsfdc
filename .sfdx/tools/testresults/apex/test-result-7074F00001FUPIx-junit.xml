@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-04-28T15:52:37-04:00" hostname="https://newco--Dev.my.salesforce.com" tests="2" failures="1"  errors="0"  time="0.54">
+        <properties>
+            <property name="outcome" value="Failed"/>
+            <property name="testsRan" value="2"/>
+            <property name="passing" value="1"/>
+            <property name="failing" value="1"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="50%"/>
+            <property name="failRate" value="50%"/>
+            <property name="testStartTime" value="Apr 28, 2020 3:52 PM"/>
+            <property name="testExecutionTime" value="0.54 s"/>
+            <property name="testTotalTime" value="0.54 s"/>
+            <property name="commandTime" value="3.25 s"/>
+            <property name="hostname" value="https://newco--Dev.my.salesforce.com"/>
+            <property name="orgId" value="00D4F0000001BgcUAE"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7074F00001FUPIx"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="testMethod1" classname="TestdsfsRecipientStatus" time="0.53">
+            <failure message="System.DmlException: Insert failed. First exception on row 0; first error: CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY, dsfsDocuSignStatus: data changed by trigger for field Owner ID: owner cannot be blank: []"><![CDATA[Class.TestdsfsRecipientStatus.testMethod1: line 12, column 1]]></failure>
+        </testcase>
+        <testcase name="testMethod2" classname="TestdsfsRecipientStatus" time="0.01">
+        </testcase>
+    </testsuite>
+</testsuites>
