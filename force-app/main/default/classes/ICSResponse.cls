@@ -23,7 +23,7 @@
 			v.	If none of the above, use the screen in B during credit decision to add the Legal name manually. 
 
 	2/26/2020 - MRM Added logic to combine accounts under parent ein account
-
+	5/4/2020 - MRM Added check for EIN being masked with X's instead of *'s
 
 *
 ********************************************************************************************************************/
@@ -678,7 +678,7 @@ global class ICSResponse {
 					ICS_External_Id__c ex = new ICS_External_Id__c();
 					ex.ICS_External_Legal_Entity__c = e.id;
 					ex.type__c = ei.ExternalIdType;
-					if (ex.type__c == 'FEIN' && !ei.ExternalIdValue.contains('*'))
+					if (ex.type__c == 'FEIN' && !ei.ExternalIdValue.contains('*') && !ei.ExternalIdValue.contains('X'))
 						acc.EIN__c = ei.ExternalIdValue.substring(0,2) + '-' + ei.ExternalIdValue.subString(2,9);
 					ex.value__c = ei.ExternalIdValue;
 					eList.add(ex);

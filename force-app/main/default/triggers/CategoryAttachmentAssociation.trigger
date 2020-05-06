@@ -1,3 +1,13 @@
+/*****************************************************************************************************************
+ * 
+ * 
+ * Create to trigger welcome package
+ * 
+ * Change Log:
+ * 
+ 
+ * 
+ *****************************************************************************************************************/
 trigger CategoryAttachmentAssociation on clcommon__Category_Attachment_Association__c (after insert) {
 
     Map<ID,clcommon__Category_Attachment_Association__c> attachMap = new Map<ID,clcommon__Category_Attachment_Association__c>(
@@ -61,6 +71,7 @@ trigger CategoryAttachmentAssociation on clcommon__Category_Attachment_Associati
 
     for (clcommon__Category_Attachment_Association__c a: trigger.new){
         if (!applicationMap.isEmpty())
+           
             if (applicationMap.get(attachmentParentIdMap.get(a.clcommon__Attachment_Id__c)).lease_number__c == null)
                 continue;
             else{

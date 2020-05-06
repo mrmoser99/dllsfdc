@@ -35,6 +35,34 @@ trigger ApplicationTrigger on genesis__Applications__c (before insert,before upd
 	    	i++;
 	    }
 	}
+
+
+	System.debug('********************************* trigger docusign **********************');
+	if (trigger.new.size() == 1 && trigger.isUpdate){
+		if (trigger.new[0].equipment_install_date__c != trigger.old[0].equipment_install_date__c){
+			List<dsfs__DocuSign_Status__c> sList = [select id from dsfs__DocuSign_Status__c where application__c = :trigger.new[0].id 
+										and dsfs__Envelope_Status__c != 'Completed'];
+			Set<ID> dSet = new Set<ID>();
+
+			for (dsfs__DocuSign_Status__c d:sList)
+				dSet.add(d.id);
+
+			 List<dsfs__DocuSign_Recipient_Status__c> rlist = [select id from dsfs__DocuSign_Recipient_Status__c 
+							 where dsfs__Parent_Status_Record__c in :dSet 
+							 and (dsfs__Recipient_Status__c = 'Sent'  or dsfs__Recipient_Status__c = 'Created')
+							 and name = 'Docusign Equipment Hold'];
+
+			for (dsfs__DocuSign_Recipient_Status__c r:rList)
+				r.release_equipment_signature_date__c = trigger.new[0].equipment_Install_date__c;
+			update rList;
+
+
+		}
+	
+
+	}	
+
+	 
 	
 	
            

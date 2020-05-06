@@ -19,6 +19,8 @@ public without sharing class FMZ_ApplicationCustomerController {
 				Email_Address__c = app.genesis__Account__r.Email_Address__c,
 				EIN__c = app.genesis__Account__r.EIN__c
 		);
+
+		
 		if(acct.EIN__c != app.EIN_Number__c){
 			app.EIN_Number__c = acct.EIN__c;
 			update app;
@@ -30,6 +32,10 @@ public without sharing class FMZ_ApplicationCustomerController {
 	public static void updateAccount(Account acct, String applicationId) {
 		genesis__Applications__c app = new genesis__Applications__c(Id = applicationId, EIN_Number__c = acct.EIN__c);
 		update acct;
+
+		Contact c = [select id from contact where accountId = :acct.id and firstname = 'System' and lastname = 'BillTo'];
+		c.email = acct.Email_Address__c;
+		update c;
 		update app;
 
 	}

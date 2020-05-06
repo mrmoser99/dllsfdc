@@ -220,7 +220,28 @@ public with sharing class DocusignUtil {
 				Name = docName,
 				clcommon__Document_Category__c = category.Id
 			);
+
 			insert association;
+
+			if (docName.contains('Final')){
+				clcommon__Document_Category__c category2 = [
+				SELECT Id
+				FROM clcommon__Document_Category__c
+				WHERE
+				clcommon__Category_Name__c =: '01 Lease Agreement'
+				AND genesis__Application__c =: d.application__c
+				LIMIT 1
+				]	;
+
+			
+
+				clcommon__Category_Attachment_Association__c association2 = new clcommon__Category_Attachment_Association__c(
+				clcommon__Attachment_Id__c = att.Id,
+				Name = docName,
+				clcommon__Document_Category__c = category2.Id
+				);
+				insert association2;
+			}
 
 		}
 		catch (exception e){
@@ -567,35 +588,7 @@ public with sharing class DocusignUtil {
 		i++;
 		i++;
 		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
-		i++;
+		
 	}
 
 
