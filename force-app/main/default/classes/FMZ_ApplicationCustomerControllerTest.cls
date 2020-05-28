@@ -34,7 +34,8 @@ public with sharing class FMZ_ApplicationCustomerControllerTest {
 			genesis__Product_Sub_Type__c = 'FINANCE LEASE',
 			genesis__Term__c = 12,
 			Dealer_Program__c = agreement.Id,
-			genesis__Account__c = acc.Id
+			genesis__Account__c = acc.Id,
+			genesis__Tax_Amount__c = 0
 		);
 		insert app;
 
@@ -68,6 +69,11 @@ public with sharing class FMZ_ApplicationCustomerControllerTest {
 		acct.Email_Address__c = 'def987@gmail.com';
 		acct.Phone = '8881112222';
 		acct.EIN__c = '22-1234567';
+
+		
+
+		Contact c = new Contact(accountId = acct.id, firstname = 'System', lastname = 'BillTo');
+		insert c;
 
 		FMZ_ApplicationCustomerController.updateAccount(acct, app.Id);
 

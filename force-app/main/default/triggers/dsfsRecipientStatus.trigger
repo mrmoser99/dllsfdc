@@ -16,6 +16,7 @@ trigger dsfsRecipientStatus on dsfs__DocuSign_Recipient_Status__c (before update
 
     if (trigger.isUpdate){
         if (trigger.new[0].release_equipment_signature__c == true && trigger.old[0].release_equipment_signature__c == false){
+            system.debug('calling remove');
             DocusignUtil.removeRecipient(trigger.new[0].dsfs__Envelope_Id__c,trigger.new[0].dsfs__DocuSign_Recipient_Id__c);
         
         } 

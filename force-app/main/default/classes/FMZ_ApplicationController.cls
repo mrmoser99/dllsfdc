@@ -92,8 +92,6 @@ public without sharing class FMZ_ApplicationController {
 				return result;
 			}
 
-			
-
 			// 2 - Generate Pricing
 			result = genesis.SkuidPricingCtrl.generatePricing(applicationId);
 			if (result != 'Pricing Generated...') {

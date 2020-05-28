@@ -40,6 +40,7 @@ public class TestVertexUpfrontTaxCalculation {
         application.Dealer_Invoice_Date__c= Date.today();
         application.genesis__Term__c=12;
         application.dealer_program__c = dealerProgram.id;
+        application.genesis__Tax_Amount__c = 0;
         //application.genesis__Payment_Frequency__c = 'ANNUAL';
         application.genesis__Expected_Start_Date__c = Date.ValueOf(System.now());
         insert application;

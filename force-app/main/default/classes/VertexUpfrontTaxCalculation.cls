@@ -6,6 +6,7 @@
  Change log:
 
     3/27/2020 - MRM fixed cloud lending upfront tax call
+    5/7/2020 - MRM added retry logic
 */
 
 global class VertexUpfrontTaxCalculation {
@@ -51,7 +52,8 @@ global class VertexUpfrontTaxCalculation {
                                     gard__c
                                    
                                 From genesis__Application_Equipment__c 
-                                Where genesis__Application__r.Name = :applicationName];
+                                Where genesis__Application__r.Name = :applicationName
+                               ];
 
             // do validate Application Equipments before taxation & Configuration
             validateEquipment(eqpListToUpdate);
@@ -70,7 +72,7 @@ global class VertexUpfrontTaxCalculation {
             if(!System.Test.isRunningTest()) {
                 res = http.send(req);
             } else {
-                res = VertexHttpResponseGenerator.vertexUpfrontHTTPResponse(eqpListToUpdate);
+                res = VertexHttpResponseGenerator.vertexUpfrontHTTPResponse(eqpListToUpdate); 
             }
             System.debug(LoggingLevel.ERROR, ' Response Code: '+res.getStatusCode());
             responseCode = res.getStatusCode();
@@ -89,6 +91,7 @@ global class VertexUpfrontTaxCalculation {
             
 
         } catch(Exception e) {
+            system.debug('****************** hello   ' + e);
             // A. Insert batch process log for exceptions
             insert new cllease__Batch_Process_Log__c(Name='VertexUpfrontTaxCalculation: ', cllease__Date__c=system.today(), 
             cllease__Message__c='Error is '+e.getmessage() +' in line number: '+ e.getlinenumber());
@@ -107,9 +110,9 @@ global class VertexUpfrontTaxCalculation {
         }
 
         // 2. Processing Vertex Response SOAP only incase No HTTP Failures from 1.
-        Savepoint sp = Database.setsavepoint();
+        //Savepoint sp = Database.setsavepoint();
         Map<String, Decimal> eqpToTaxMap = new Map<String, Decimal>();
-        try {
+        
             // Processing Response using DOM model 
             Dom.Document doc1 = new Dom.Document();
             doc1.load(res.getbody());
@@ -142,6 +145,8 @@ global class VertexUpfrontTaxCalculation {
                 // Update the Equipment Details with Equipment's Upfront Tax
                 for(genesis__Application_Equipment__c appEqp : eqpListToUpdate) {
                     Decimal eqpTaxAmount = eqpToTaxMap.get(appEqp.Id);
+                    if (eqpTaxAmount == null)
+                        eqpTaxAmount = 0;
                     appEqp.genesis__Tax_Amount__c = eqpTaxAmount;
                     if (appEqp.genesis__Tax_Amount__c > 0){
                         appEqp.Upfront_Tax_Flag__c = true;
@@ -161,7 +166,28 @@ global class VertexUpfrontTaxCalculation {
                 }
 
                 if(eqpListToUpdate.size() > 0) {
-                    update eqpListToUpdate;
+                    Integer n = 20;
+                    Integer sleepMs = 100;
+
+                    Exception lastException;
+                    for (Integer i = 0; i < n; i++) {
+                        try {
+                            insert new cllease__Batch_Process_Log__c(Name='vertex retry', cllease__Date__c=system.today()
+                            , cllease__Message__c='This is information only, Retry count is: ' + i);
+                            update eqpListToUpdate;
+                            return 'Upfront Taxation completed Successfully';
+                        } catch (DmlException e) {  
+                            if (!e.getMessage().contains('UNABLE_TO_LOCK_ROW')) {
+                                //insert batch process log for exceptions
+                                insert new cllease__Batch_Process_Log__c(Name='updateEquipmentDetails', cllease__Date__c=system.today(),
+                                cllease__Message__c=' Update Equipment Details Error is '+e.getmessage() +' in line number: '+ e.getlinenumber());
+                            }
+                            lastException = e;
+                            sleep(sleepMs);
+                        }
+                    }
+                    throw lastException;
+                   
                 }
 
                 if(appToUpdateMap.size() > 0) {
@@ -170,16 +196,18 @@ global class VertexUpfrontTaxCalculation {
                 }
             }
 
-        } catch(exception e){           
-            Database.rollback(sp);
-            //A. insert batch process log for exceptions
-            insert new cllease__Batch_Process_Log__c(Name='VertexUpfrontTaxCalculation: ', cllease__Date__c=system.today(), 
-            cllease__Message__c='Error is '+e.getmessage() +' in line number: '+ e.getlinenumber());
-       }
-
        return 'Upfront Taxation completed Successfully';
        
     }
+
+    private static void sleep(Integer ms) {
+
+        Long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() < start + ms) {
+            // Throw away CPU cycles
+        }
+    }
+
 
     /**
      * Validate the Application Equipment Details 

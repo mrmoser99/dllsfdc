@@ -4,8 +4,8 @@
  * Change Log:
  *  
  *  3/11/2020 - MRM - added upfront tax to display on this page
- * 
- * 
+ *  5/7/2020 added retry logic to prevent locking
+ *  
  * 
  */
 
@@ -119,10 +119,36 @@ public without sharing class FMZ_ApplicationEquipmentController {
         genesis__Application_Equipment__c equipment =
                 (genesis__Application_Equipment__c)JSON.deserialize(equipmentString, genesis__Application_Equipment__c.class);
 
-        update equipment;
+        // Only ever seen one retry needed this should be lots
+        Integer n = 20;
+        Integer sleepMs = 100;
 
-       
+        Exception lastException;
+        for (Integer i = 0; i < n; i++) {
+            try {
+                system.debug('***************************** update equpment retry: ' + i);
+                insert new cllease__Batch_Process_Log__c(Name='equipment controller retry', cllease__Date__c=system.today()
+                , cllease__Message__c='This is information only, Retry count is: ' + i);
+                update equipment;
+                return;
+            } catch (DmlException e) {
+                if (!e.getMessage().contains('UNABLE_TO_LOCK_ROW')) {
+                    throw e;
+                }
+                lastException = e;
+                sleep(sleepMs);
+            }
+        }
 
+        throw lastException;
+    }
+
+    private static void sleep(Integer ms) {
+
+        Long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() < start + ms) {
+            // Throw away CPU cycles
+        }
     }
 
     @AuraEnabled
