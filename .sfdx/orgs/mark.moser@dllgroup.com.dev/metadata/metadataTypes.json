@@ -566,6 +566,13 @@
         "xmlName": "SharingSet"
       },
       {
+        "directoryName": "iframeWhiteListUrlSettings",
+        "inFolder": false,
+        "metaFile": false,
+        "suffix": "iframeWhiteListUrlSettings",
+        "xmlName": "IframeWhiteListUrlSettings"
+      },
+      {
         "directoryName": "communities",
         "inFolder": false,
         "metaFile": false,
@@ -671,13 +678,6 @@
         "xmlName": "NetworkBranding"
       },
       {
-        "directoryName": "audience",
-        "inFolder": false,
-        "metaFile": false,
-        "suffix": "audience",
-        "xmlName": "Audience"
-      },
-      {
         "directoryName": "brandingSets",
         "inFolder": false,
         "metaFile": false,
@@ -704,6 +704,13 @@
         "metaFile": false,
         "suffix": "navigationMenu",
         "xmlName": "NavigationMenu"
+      },
+      {
+        "directoryName": "audience",
+        "inFolder": false,
+        "metaFile": false,
+        "suffix": "audience",
+        "xmlName": "Audience"
       },
       {
         "directoryName": "flowCategories",

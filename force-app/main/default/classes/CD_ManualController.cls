@@ -35,6 +35,7 @@ global with sharing class CD_ManualController {
     				,kyc__c
 					,error__c
 					,legal_name__c
+					,cre_status__c
 			
     		from ICS_Application__c		
     		where id = :applicationId
@@ -84,7 +85,21 @@ global with sharing class CD_ManualController {
 			
 		Boolean error=false;
     	Map<String,String> response = new Map<String,String>();
-    	
+		
+		if (a.status__c == 'CRE Rating Required'){
+			if (a.CRE_Status__c == 'EXPIRED'){
+				response.put(RESPONSE_KEYWORD_MESSAGE,'Manual decision is not allowed if CRE status is expired (do this in ICV)!');
+    			error=true;
+
+			}
+			else{
+				if  (a.CRE_Status__c == 'NOT AVAILABLE'){
+					response.put(RESPONSE_KEYWORD_MESSAGE,'Manual decision is not allowed if CRE status is not available (do this in ICV)!');
+    				error=true;
+				}
+			}
+		}
+
     	if (a.status__c != 'Manual Review' && a.status__c != 'CRE Rating Required'){
     		response.put(RESPONSE_KEYWORD_MESSAGE,'Status must be Manual Review to approve!');
  			error=true;
@@ -142,8 +157,10 @@ global with sharing class CD_ManualController {
 		q.genesis__Business_Name__c = a.legal_name__c;
 		
 		if (!acctList.isEmpty()){
-			acctList[0].name = a.legal_name__c;
-			update acctList;
+			if (a.legal_name__c != null){ 
+				acctList[0].name = a.legal_name__c;
+				update acctList;
+			}
 		}
 		
 		update a;
@@ -188,7 +205,8 @@ global with sharing class CD_ManualController {
     				,system_approval_limit__c
     				,manual_approval_limit__c
     				,kyc__c
-    				,error__c
+					,error__c
+					,CRE_Status__c
     		from ICS_Application__c		
     		where id = :applicationId
     		];
@@ -228,7 +246,21 @@ global with sharing class CD_ManualController {
 				
 		Boolean error=false;
 		
-    	if (a.status__c != 'Manual Review' && a.status__c != 'CRE Rating Required'){
+		if (a.status__c == 'CRE Rating Required'){
+			if (a.CRE_Status__c == 'EXPIRED'){
+				response.put(RESPONSE_KEYWORD_MESSAGE,'Manual decision is not allowed if CRE status is expired (do this in ICV)! ');
+    			error=true;
+
+			}
+			else{
+				if  (a.CRE_Status__c == 'NOT AVAILABLE'){
+					response.put(RESPONSE_KEYWORD_MESSAGE,'Manual decision is not allowed if CRE status is not available (do this in ICV)!');
+    				error=true;
+				}
+			}
+		}
+
+    	if (a.status__c != 'Manual Review' && a.status__c != 'CRE Rating Required' ){
     		response.put(RESPONSE_KEYWORD_MESSAGE,'Status must be Manual Review to decline!');
     		error=true;
     	}

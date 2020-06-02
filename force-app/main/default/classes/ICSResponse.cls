@@ -24,7 +24,7 @@
 
 	2/26/2020 - MRM Added logic to combine accounts under parent ein account
 	5/4/2020 - MRM Added check for EIN being masked with X's instead of *'s
-
+*	5/28/2020 - MRM Removed LC01 check and now check for PDRequiredTreatment = CRE
 *
 ********************************************************************************************************************/
 global class ICSResponse {
@@ -717,18 +717,18 @@ global class ICSResponse {
 		if (!pdList.isEmpty())
 			insert pdList;
 		
-		Boolean foundLC01 = false;
+		//Boolean foundLC01 = false;
 		
-		for (DecisionReason d: Input.ObtainDecisionResponse.application.systemdecision.DecisionReasons.DecisionReason){
-			if (d.ReasonCode == 'LC01'){
-				foundLC01 = true;
-				break;
-    		}
-    	}
+		//for (DecisionReason d: Input.ObtainDecisionResponse.application.systemdecision.DecisionReasons.DecisionReason){
+		//	if (d.ReasonCode == 'LC01'){
+		//		foundLC01 = true;
+		//		break;
+    	//	}
+    	//}
 		
 		a.recordtypeid = rMap.get('Decision');
 		
-		if (foundLC01){
+		if (Input.ObtainDecisionResponse.Customer.InternalLegalEntity.PDRequiredTreatment == 'CRE'){ 
 			a.status__c = 'CRE Rating Required';
 			q.genesis__status__c = 'CREDIT REFERRED';
 			a.ownerId = gMap.get('Credit');
