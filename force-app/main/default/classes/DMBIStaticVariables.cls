@@ -1,10 +1,15 @@
+/*
+    Change Log:
+
+    6/4/2020 MRM added npa fields to queries
+*/
 public class DMBIStaticVariables {
     
     //Public static string FINANCE_LEASE='FINANCE LEASE';
     Public static string Empty_str = '';//generic
     Public static string test_value = 'Test';
     public static string SourceSystem = 'Cloud Lending Lease';
-    public static string NetInvestmentJobBatch_query_str = ' SELECT id,name,cllease__Product_Type__c,cllease__Product_Sub_Type__c,cllease__Dealer__r.genesis__Vendor_Type__c,cllease__Dealer__r.Account_Number__c,Business_Unit_Name__c,cllease__Excess__c,cllease__Days_Convention__c,Bill_Not_Paid_Rent__c,cllease__Payment_Amount__c,Dealer_Program__r.name,cllease__Down_Payment__c,DLL_Reference_Number__c,cllease__Amort_Start_Date__c,cllease__Days_Past_Due__c,cllease__Lease_Account__c.cllease__Payment_Method__c,Account_Number__c,'+
+    public static string NetInvestmentJobBatch_query_str = ' SELECT id,name,npa_amount__c, npba_amount__c, cllease__Product_Type__c,cllease__Product_Sub_Type__c,cllease__Dealer__r.genesis__Vendor_Type__c,cllease__Dealer__r.Account_Number__c,Business_Unit_Name__c,cllease__Excess__c,cllease__Days_Convention__c,Bill_Not_Paid_Rent__c,cllease__Payment_Amount__c,Dealer_Program__r.name,cllease__Down_Payment__c,DLL_Reference_Number__c,cllease__Amort_Start_Date__c,cllease__Days_Past_Due__c,cllease__Lease_Account__c.cllease__Payment_Method__c,Account_Number__c,'+
         'cllease__Account__r.name,cllease__Dealer__r.name,cllease__Residual_Amount__c,Unbilled_Receivable__c,cllease__Number_of_Pieces_of_Equipment__c,Source_System__c, cllease__Currency_Code__c, cllease__Delinquent_Amount__c, cllease__Lease_Status__c,'+  
         'Application__r.genesis__ID_Type__c,cllease__Commencement_Date__c,cllease__Contract_Date__c,cllease__Financed_Amount__c,Purchase_Option__c,Allowable_Soft_Cost__c,cllease__Account__r.clcommon__Legal_Entity_Type__r.name,cllease__Account__r.genesis__Total_Risk_Score__c,cllease__Payment_Frequency__c,cllease__Security_Deposit_Amount__c,cllease__Maturity_Date__c,Booking_Date__c,cllease__Term__c,cllease__Current_Term_Total_Payment__c,Cost_of_Funds__c,cllease__Yield__c,Termination_Date__c ,'+        
         '(SELECT cllease__Contract__r.name,cllease__Debit_GL_Account__r.name,Movement_Code_DR_Segment__c,CL_Lease_Transaction_Type__c from cllease__GL_Transaction_Details__r where CL_Lease_Transaction_Type__c = \'BOOKING\' AND cllease__Debit_GL_Account__r.name = \'Gross Receivables - CLS\'), '+
@@ -120,7 +125,9 @@ public class DMBIStaticVariables {
                     Net_Trade_Up_Amount__c,
                     Dealer_Charges__c,
                     Contract_Status__c ,
-                    Total_Equipment_Cost__c
+                    Total_Equipment_Cost__c, 
+                    npa_amount__c,
+                    npba_amount__c
                 FROM cllease__Contract_Equipment__c 
                 WHERE cllease__Contract__c IN : ContractList Order by createddate DESC];
     }

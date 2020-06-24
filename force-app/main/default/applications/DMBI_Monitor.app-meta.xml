@@ -35,4 +35,5 @@
     <tabs>Int_Collateral_Party__c</tabs>
     <tabs>Int_Batch_Exception_Log__c</tabs>
     <tabs>collect__Contract_Status__c</tabs>
+    <tabs>cllease__Termination_Quote_Line__c</tabs>
 </CustomApplication>

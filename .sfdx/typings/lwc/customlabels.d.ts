@@ -218,6 +218,10 @@ declare module "@salesforce/label/c.SuperTrumpURL" {
     var SuperTrumpURL: string;
     export default SuperTrumpURL;
 }
+declare module "@salesforce/label/c.UBO_Form" {
+    var UBO_Form: string;
+    export default UBO_Form;
+}
 declare module "@salesforce/label/c.Welcome_Email" {
     var Welcome_Email: string;
     export default Welcome_Email;

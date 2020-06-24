@@ -180,11 +180,25 @@ public with sharing class InvoiceCreditHandler {
     
     public void afterInsertHandler() {
         initialize();
+        Date currentSystemDate = cllease.systemDateutil.getCurrentSystemDate();
+        String rollOverAccountingLine = 'Auto Rollover';
         for(Cllease__Invoice_Credit__c invoice : invoiceCreditList){
             System.debug(LoggingLevel.ERROR, '^^^^ invoice : ' + invoice);
             Id contractId = invoice.Cllease__Contract__c;
             Id productId = leaseAccountProductMap.get(contractId);
+            
             for(Cllease__Accounting_Template_Line__c line : productAccountTemplateListMap.get(productId)){
+
+                // Create RollOver GL Entry and Skip Other Accounting Lines Creation if Invoice Credit is from Auto Tradeup.
+                if(invoice.Is_Auto_Rollover__c && line.Name != rollOverAccountingLine) {
+                    continue; // skipping the processing of other than "Auto Rollover" incase of auto tradeup
+                }
+
+                // Skip the Auto Tradeup GL Entry in other type of Invoice Credit.
+                if(!invoice.Is_Auto_Rollover__c && line.Name == rollOverAccountingLine) {
+                    continue;
+                }
+
                 String columnKey = line.Cllease__Amount_Object__c + '|' + line.Cllease__Amount_Object_Column__c;
                 String fieldApi = objectColumnMap.get(columnKey).split('\\|')[1];
                 System.debug(LoggingLevel.ERROR, '^^^ fieldApi : ' + fieldApi);
@@ -193,7 +207,7 @@ public with sharing class InvoiceCreditHandler {
                 glEntry.Cllease__Contract__c = invoice.Cllease__Contract__c;
                 glEntry.Cllease__Credit_Amount__c = amount;
                 glEntry.Cllease__Debit_Amount__c =  amount;
-                glEntry.Cllease__GL_Date__c = cllease.systemDateutil.getCurrentSystemDate();
+                glEntry.Cllease__GL_Date__c = currentSystemDate;
                 glEntry.Cllease__Credit_GL_Account__c = line.Cllease__Credit_GL_Account__c;
                 glEntry.Cllease__Debit_GL_Account__c = line.Cllease__Debit_GL_Account__c;
                 glEntry.Cllease__Transaction_Type__c = line.Cllease__Transaction_Sub_Type__c;

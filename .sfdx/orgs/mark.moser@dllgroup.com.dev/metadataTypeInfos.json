@@ -4601,6 +4601,29 @@
             },
             "hasVirtualSubtypes": false
         },
+        "IframeWhiteListUrlSettings": {
+            "metadataName": "IframeWhiteListUrlSettings",
+            "isAddressable": true,
+            "isSourceTracked": true,
+            "ext": "iframeWhiteListUrlSettings",
+            "hasContent": false,
+            "defaultDirectory": "iframeWhiteListUrlSettings",
+            "nameForMsgs": "Iframe White List Url Settings",
+            "nameForMsgsPlural": "Iframe White List Url Settingses",
+            "contentIsBinary": false,
+            "hasStandardMembers": false,
+            "deleteSupported": true,
+            "decompositionConfig": {
+                "strategy": "nonDecomposed",
+                "workspaceStrategy": "nonDecomposed",
+                "commitStrategy": "fineGrainTracking",
+                "metadataName": "IframeWhiteListUrlSettings",
+                "useSparseComposition": false,
+                "decompositions": [],
+                "contentStrategy": "nonDecomposedContent"
+            },
+            "hasVirtualSubtypes": false
+        },
         "CustomField": {
             "parent": {
                 "metadataName": "CustomObject",

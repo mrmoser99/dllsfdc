@@ -5,14 +5,14 @@
 *   Change Log: 
 *   10/10/19 - MRM - Added logic to update the collateral records in file control; there was a but that was inserting 
 *                    mutliple file control records for collateral, collateral party and collateral agreement.
-* 
+*    6/4/2020 - MRM - changed npa logic to use npa fields instead of calculating.
 ********************************************************************************************************************/
 
 Public class DMBIInterfaceRecordGeneratorJob {
     Public static string query = DMBIStaticVariables.Empty_str;
     public static Map<string,string> CodeMap;
     public DMBIInterfaceRecordGeneratorJob(){
-        //.CodeMap = getIntMapping();
+        //.CodeMap = getIntMapping(); 
     }
     Public static Map<string,string> getIntMapping(){
         Map<string,string> MappingMap = new Map<string,string>();
@@ -205,7 +205,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
             //Net_Principal_Amount__c = ScaleToTwoDecimal(cla.cllease__Financed_Amount__c),
             //Net_Principal_Amount__c = ScaleToTwoDecimal(CalculateNetPrincipalAmount(cla.cllease__Residual_Amount__c,cla.cllease__Rental_Streams__r,cla.cllease__Residual_Streams__r)),
             //Net_Principal_Amount__c = ScaleToTwoDecimal(cla.cllease__Total_Dealer_Charges__c - (cla.cllease__Subsidy1__c!=Null?cla.cllease__Subsidy1__c:0) - (cla.Interim_Rent__c!=Null?cla.Interim_Rent__c:0)),
-            Net_Principal_Amount__c = ScaleToTwoDecimal((cla.Net_Dealer_Funding__c!=Null && cla.Net_Dealer_Funding__c!=0)?cla.Net_Dealer_Funding__c:((cla.Net_Trade_Up_Amount__c==Null || cla.Net_Trade_Up_Amount__c==0) && cla.cllease__Total_Dealer_Charges__c!=Null?cla.cllease__Total_Dealer_Charges__c:0)),
+            Net_Principal_Amount__c = cla.npa_amount__c,
             Maturity_Options_Code__c = 'ETNOFEE',
             Hyperion_Base_Entity__c = 'BEQUS',
             Amortization_Type_Code__c = AmortizationTypeCode,
@@ -230,7 +230,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
             System_Program_Description__c = cla.Dealer_Program__r.name,
             System_Selling_Party_Description__c = cla.cllease__Dealer__r.name,
             Brokered_Indicator__c = '0',
-            Billing_Collection_Indicator__c = '0',
+            Billing_Collection_Indicator__c = '0', 
             Encumbered_Indicator__c = '0',
             Fee_For_Service_Indicator__c = '0',
             On_Balance_Indicator__c = '1',
@@ -240,8 +240,8 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Syndication_Indicator__c = '0',
             Payment_Frequency_Principal_Code__c= codemap.containskey(cla.cllease__Payment_Frequency__c)?codemap.get(cla.cllease__Payment_Frequency__c):'',
             Payment_Frequency_Interest_Code__c = codemap.containskey(cla.cllease__Payment_Frequency__c)?codemap.get(cla.cllease__Payment_Frequency__c):'',
-            //Net_Principal_Balance_Amount__c = (cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c)!=Null?(ScaleToTwoDecimal(cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c)):0,
-            Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c - CalculateUnearnedRentalIncome(CRSList) - CalculateUnearnedResidualIncome(ResList)+ cla.Billed_Not_Paid__c),
+            Net_Principal_Balance_Amount__c = cla.npba_amount__c,
+            //Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c - CalculateUnearnedRentalIncome(CRSList) - CalculateUnearnedResidualIncome(ResList)+ cla.Billed_Not_Paid__c),
             Currency_Code__c = cla.cllease__Currency_Code__c!=Null?cla.cllease__Currency_Code__c:'USD',
             Accrued_Interest_Amount__c = ScaleToTwoDecimal(CalculateAccruedInterestAmountFromRentalStream(CRSList)),
             Residual_Value_Booked__c = ScaleToTwoDecimal(cla.cllease__Residual_Amount__c)
@@ -662,16 +662,23 @@ Public class DMBIInterfaceRecordGeneratorJob {
                     new Int_Agreement_Line__c(
                         Agreement_Name__c = AgrMap.get(eq.cllease__Contract__r.Name).Id
                         ,Agreement_Line_Start_Date__c = contract.cllease__Contract_Date__c
+                        //,Agreement_Line_Start_Date__c = eq.Invoice_Date__c                        
                         ,Agreement_Line_Maturity_Date__c = contract.cllease__Maturity_Date__c
+                        //,Agreement_Line_Status_Code__c = status
                         ,Agreement_Line_Status_Code__c =  intcode.containsKey(eq.Contract_Status__c)?intcode.get(eq.Contract_Status__c):''
+                        //,Net_Principal_Balance_Amount__c = ScaleToTwoDecimal((eq.Rent_Amount__c*CountRentalStream(contract.cllease__Rental_Streams__r))+ eq.Bill_Residual_Amount__c)
+                        
+                        
                         ,Net_Residual_Value__c = Contract.cllease__Lease_Status__c == 'EVERGREEN'?ScaleToTwoDecimal(CalculateNetResidualAmount(contract.cllease__Residual_Streams__r,contract.cllease__Residual_Amount__c,eq.cllease__Residual_Amount__c)):Null
+                        //,Hard_Costs_Amount__c = ScaleToTwoDecimal(eq.cllease__Estimated_Selling_Price__c!=Null?eq.cllease__Estimated_Selling_Price__c:0)
+                        //,Soft_Costs_Amount__c = ScaleToTwoDecimal((eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0)-(eq.Net_Trade_Up_Amount__c!=Null?eq.Net_Trade_Up_Amount__c:0))                        
                         ,Hard_Costs_Amount__c = ScaleToTwoDecimal(eq.Dealer_Charges__c!=Null?eq.Dealer_Charges__c:0)
                         ,Soft_Costs_Amount__c = ScaleToTwoDecimal((eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0) + (eq.Net_Trade_Up_Amount__c!=Null?eq.Net_Trade_Up_Amount__c:0)) 
                         ,Purchase_Type_Code__c = intcode.containskey(contract.Purchase_Option__c)?intcode.get(contract.Purchase_Option__c):''
                         ,Residual_Value_Booked__c = ScaleToTwoDecimal(eq.cllease__Residual_Amount__c)
-                        
-                        ,Net_Principal_Amount__c = eq.Total_Equipment_Cost__c
-                        ,Net_Principal_Balance_Amount__c = contract.cllease__Financed_Amount__c
+                        //,Net_Principal_Amount__c = ScaleToTwoDecimal((eq.Dealer_Charges__c!=Null?eq.Dealer_Charges__c:0) + (eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0))                        
+                        ,Net_Principal_Amount__c = eq.npa_amount__c
+                        ,Net_Principal_Balance_Amount__c = eq.npba_amount__c
                        
                         ,Agreement_Source_System__c = intcode.get(contract.Source_System__c)
                         ,Agreement_Number__c = contract.name
@@ -997,12 +1004,16 @@ Public class DMBIInterfaceRecordGeneratorJob {
         //list<Int_Party_Street_Address__c> PSADList = New list<Int_Party_Street_Address__c>();
         Map<string,Int_Party_Street_Address__c> PSADMap = new Map<string,Int_Party_Street_Address__c>();
         map<string,list<cllease__Contract_Parties__c>> ContractpartiesMap =  getContractparties(Contracts);
+        System.debug('Contract Parties Map: '+ContractpartiesMap); //added debug log here
         Map<string,Int_Party__c> PartyMap = new map<string,int_party__c>();
         for (Int_Party__c ip : IntParties){
             if(ip.id!=Null){
                 PartyMap.put(ip.Party_Number__c,new int_party__c(Id=ip.Id));//Party_Contract_Name__c
             }
+            System.debug('Int Party: '+ip);  //added debug log here
+            System.debug('Int Party List: '+IntParties);  //added debug log here
         }
+        System.debug('Party Map: '+partyMap);  //added debug log here
         for(cllease__Lease_Account__c Contract :Contracts){
             List<cllease__Contract_Parties__c> ccpList = new list<cllease__Contract_Parties__c>();
             if(ContractpartiesMap.containskey(contract.Id)){
@@ -1010,7 +1021,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
             }
             for (cllease__Contract_Parties__c cp : ccpList){
                 If(cp.cllease__Party_Account_Name__r.Account_Number__c!=Null && PartyMap.containskey(cp.cllease__Party_Account_Name__r.Account_Number__c)){ 
-                    PSADMap.put(cp.cllease__Party_Account_Name__r.Account_Number__c,New Int_Party_Street_Address__c(
+                    Int_Party_Street_Address__c obj = New Int_Party_Street_Address__c(
                         Party_Name__c = PartyMap.containskey(cp.cllease__Party_Account_Name__r.Account_Number__c)?PartyMap.get(cp.cllease__Party_Account_Name__r.Account_Number__c).Id:Null,
                         Party_Address_Type_Code__c = 'ESTA',
                         Party_Number__c = cp.cllease__Party_Account_Name__r.Account_Number__c,
@@ -1022,8 +1033,11 @@ Public class DMBIInterfaceRecordGeneratorJob {
                         Address_Line_4__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_4__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Address_Line_4__c: '',                    
                         Town_Name__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.City__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.City__c: '',
                         Region_Name__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.State__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.State__c: '',
-                        Post_Code__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Zip_Code__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Zip_Code__c: ''
-                    ));
+                        Post_Code__c = cp.cllease__Party_Account_Name__r.Primary_Address__r.Zip_Code__c!=Null?cp.cllease__Party_Account_Name__r.Primary_Address__r.Zip_Code__c: '');
+                        System.debug('Creating party street address: '+ obj); //added debug log here
+                    PSADMap.put(cp.cllease__Party_Account_Name__r.Account_Number__c, obj);
+                    System.debug('PSADMap: '+ PSADMap);
+                     //add debug log - PSADMap
                 }  
             } 
         }

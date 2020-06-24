@@ -253,8 +253,8 @@ global without sharing class ICVUtility {
 	  			gen.writeStringField('addressLine1', addressLine1);
 	  			gen.writeStringField('addressLine2', '');
 	  			gen.writeStringField('addressLine3', '');
-  				gen.writeStringField('city', city);
-  				gen.writeStringField('stateProvince', state);
+  				gen.writeStringField('city', city); 
+  				gen.writeStringField('stateProvince', state.toUpperCase());
   				gen.writeStringField('postalCode', postalCode);
 				gen.writeEndObject();
 				 

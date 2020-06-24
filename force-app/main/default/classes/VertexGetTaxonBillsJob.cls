@@ -24,9 +24,9 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
 
     public static String initialize(List<String> contractNames) {
 
-        query = ' SELECT Id, Name '+
+        query = ' SELECT Id, Name, cllease__Lease_Status__c '+
                 ' FROM cllease__Lease_Account__c '+
-                ' WHERE cllease__Lease_Status__c in (\'ACTIVE - GOOD STANDING\',\'ACTIVE - BAD STANDING\')';
+                ' WHERE cllease__Lease_Status__c in (\'ACTIVE - GOOD STANDING\',\'ACTIVE - BAD STANDING\',\'TERMINATED\')';
 
         if(contractNames!=null && contractNames.size() > 0) {
             String contractNamesStr = '';
@@ -41,7 +41,7 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
         return query;
     }
 
-    private static List<sObject> getRecords(List<String> contractNames) {
+    private static List<sObject> getRecords(List<String> contractNames, Boolean isTerminationTaxCall) {
         // Creating Query using ObjectCache
         mfiflexUtil.ExecutionContext ec = mfiflexUtil.ExecutionContext.getExecContext();
         mfiflexUtil.ObjectCache dueDetailOC = ec.getObject('DueDetailLines');
@@ -51,29 +51,13 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
         dueDetailOC = ec.createObject('DueDetailLines', 'cllease__Due_Detail_Lines__c');
 
         //Query all SetupAuditTrail records.
-        String fields = 'Tax_Component__c, '
-                        + 'cllease__Rental_Due_Amount__c, '
-                        + 'DestinationCity__c, '
-                        + 'DestinationZipCode__c, '
-                        + 'DestinationState__c, '
-                        + 'Transaction_Code__c, '
-                        + 'LeaseType__c, '
-                        + 'cllease__Remarks__c, '
-                        + 'Contract_Type__c, '
-                        + 'Tax_Payment_Type__c, '
-                        + 'Taxbasis__c, '
-                        + 'Vertex_Tax_Processed__c, '
-                        + 'cllease__Total_Due_Amount__c, '
-                        + 'cllease__Tax_Due_Amount__c, '
-                        + 'cllease__Tax_Processed__c, '
-                        + 'cllease__Contract_Equipment__c, '
+        String fields = CLSCustomUtil.fetchAllCustomFields('cllease__Due_Detail_Lines__c') +', '+
+                        + 'cllease__Contract__r.cllease__Lease_Product_Name__c, '
                         + 'cllease__Contract_Equipment__r.Name, '
                         + 'cllease__Contract_Equipment__r.GARD__c, '
                         + 'cllease__Contract_Equipment__r.Install_Address__c, '
                         + 'cllease__Contract_Equipment__r.cllease__Tax_exemption__c, '
-                        + 'cllease__Bill__c, '
                         + 'cllease__Bill__r.Name, '
-                        + 'cllease__contract__c, '
                         + 'cllease__Bill__r.cllease__Due_Type_Description__c, '
                         + 'cllease__Bill__r.cllease__Total_Due_Amount__c, '
                         + 'cllease__Bill__r.cllease__Balance_Amount__c, '
@@ -85,26 +69,20 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
                         + 'cllease__Bill__r.cllease__Lease_Account__r.cllease__First_Payment_Date__c, '
                         + 'cllease__Bill__r.cllease__Lease_Account__r.cllease__Maturity_Date__c, '
                         + 'cllease__Bill__r.cllease__Lease_Account__r.cllease__Account__r.Tax_Exempt__c ';
-
-        // Tax Rate and Tax Values fields : 32 fields: so adding  in different string for tracking.
-        String taxFields = 'Tax_APO__c, Tax_BOROUGH__c, Tax_CITY__c, Tax_COUNTRY__c, Tax_COUNTY__c, Tax_DISTRICT__c, Tax_FPO__c,'+
-                            'Tax_LOCAL_IMPROVEMENT_DISTRICT__c, Tax_PARISH__c, Tax_PROVINCE__c, Tax_SPECIAL_PURPOSE_DISTRICT__c,'+
-                            'Tax_STATE__c, Tax_TERRITORY__c, Tax_TOWNSHIP__c, Tax_TRADE_BLOCK__c, Tax_TRANSIT_DISTRICT__c,'+
-                            'Tax_Rate_APO__c, Tax_Rate_BOROUGH__c, Tax_Rate_CITY__c, Tax_Rate_COUNTRY__c, Tax_COUNTY__c,'+
-                            'Tax_Rate_DISTRICT__c, Tax_Rate_FPO__c, Tax_Rate_LOCAL_IMPROVEMENT_DISTRICT__c, Tax_Rate_PARISH__c,'+
-                            'Tax_Rate_PROVINCE__c, Tax_Rate_SPECIAL_PURPOSE_DISTRICT__c, Tax_Rate_STATE__c, Tax_Rate_TERRITORY__c,'+
-                            'Tax_Rate_TOWNSHIP__c, Tax_Rate_TRADE_BLOCK__c, Tax_Rate_TRANSIT_DISTRICT__c';
-
         
-        dueDetailOC.addFields(fields + ', ' + taxFields); 
+        dueDetailOC.addFields(fields); 
 
         dueDetailOC.addNamedParameter('vertexTaxStatus', 'NO'); //we looking for this
-        String whereClause = '(cllease__Bill__r.cllease__Tax_Processed__c = false) ';
+        String whereClause = '(cllease__Bill__r.cllease__Status__c != \'Tax Calculated\') ';
         whereClause += ' AND Vertex_Tax_Processed__c = :vertexTaxStatus';
 
         if(contractNames != null && contractNames.size() > 0) {
-          dueDetailOC.addNamedParameter('contractNames', contractNames);
-          whereClause += ' AND cllease__Bill__r.cllease__Lease_Account__r.Name IN :contractNames ';
+            dueDetailOC.addNamedParameter('contractNames', contractNames);
+            whereClause += ' AND cllease__Bill__r.cllease__Lease_Account__r.Name IN :contractNames ';
+            // make sure retrieve termination related due detail lines for Termination Taxation.
+            if(isTerminationTaxCall) {
+                whereClause += ' AND cllease__Bill__r.cllease__Due_Type_Description__c = \'TERMINATION\'';
+            }
         }
 
         dueDetailOC.setWhereClause(whereClause);
@@ -120,12 +98,18 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
 
         List<cllease__Lease_Account__c> contracts = (List<cllease__Lease_Account__c>)scope;
         List<String> contractNames = new List<String>();
+        Set<String> contractIds = new Set<String>();
+        Boolean isTerminationTaxCall = false;
         for(cllease__Lease_Account__c contract : contracts) {
             contractNames.add(contract.Name);
+            if(contract.cllease__Lease_Status__c == 'TERMINATED') {
+                isTerminationTaxCall = true;
+                contractIds.add(contract.Id);
+            }
         }
 
         System.debug(LoggingLevel.ERROR, ' Processing contract: '+contractNames); 
-        List<cllease__Due_Detail_Lines__c> dueDetailLines = (List<cllease__Due_Detail_Lines__c>) getRecords(contractNames);
+        List<cllease__Due_Detail_Lines__c> dueDetailLines = (List<cllease__Due_Detail_Lines__c>) getRecords(contractNames, isTerminationTaxCall);
         System.debug(LoggingLevel.ERROR, ' dueDetailLines: '+dueDetailLines);
         // Skip the process in case of due detail lines size = 0
         if(dueDetailLines == null || dueDetailLines.size() == 0) {
@@ -148,12 +132,18 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
 
             // B. Proceed with Vertex Call only for Valid DueDetailLines
             if(validDueDetailsToUpdate.size() > 0) {
-                Dom.document methoddoc = VertexUtil.getBillsXml(validDueDetailsToUpdate);
+                Dom.document methoddoc;
+                if(isTerminationTaxCall) {
+                    methoddoc = VertexUtil2.getTerminationBillXml(validDueDetailsToUpdate);
+                } else {
+                    methoddoc = VertexUtil.getBillsXml(validDueDetailsToUpdate);
+                }
+                 
                 VertexUtil.validateVertexConfig(vertexConfig);
                 
-                /*System.debug(LoggingLevel.ERROR, '=================================');
+                System.debug(LoggingLevel.ERROR, '=================================');
                 System.debug(LoggingLevel.ERROR,'methoddoccc'+methoddoc.toXmlString());
-                System.debug(LoggingLevel.ERROR, '=================================');*/
+                System.debug(LoggingLevel.ERROR, '=================================');
                 
                 // B.1 Creating Http Request
                 HttpRequest req = new HttpRequest();
@@ -212,6 +202,8 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
         // 2. Processing Vertex Response SOAP only incase No HTTP Failures from 1.
         Savepoint sp = Database.setsavepoint();
         try {
+            cllease__Termination_Config__c quoteConfig;
+            Boolean isRollOverTermination = false;
             // Processing Vertex Response SOAP
             if(responseCode == 200) {
                 // Process Successful Response
@@ -228,6 +220,7 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
                 Map<String, Decimal> taxValuesMap;
                 Map<String, Map<String, Decimal>> ddlTaxRatesMap = new Map<String, Map<String, Decimal>>();
                 Map<String, Map<String, Decimal>> ddlTaxValuesMap = new Map<String, Map<String, Decimal>>();
+                Map<String, Map<String, Decimal>> ddlToQuoteLineTaxAmountsMap = new Map<String, Map<String, Decimal>>();
                 //System.debug(LoggingLevel.ERROR, ' root: '+root.getName());
                 
                 // A. Extracting Required info from Response Dom 
@@ -241,14 +234,17 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
                                 for(DOM.XMLNode child1 : vertexEnvelope.getChildren()) {
                                     if(child1.getName() == 'InvoiceResponse') {
                                         //System.debug(LoggingLevel.ERROR, ' inside processing InvoiceResponse');
+                                        taxRatesMap  = new Map<String, Decimal>();
+                                        taxValuesMap = new Map<String, Decimal>();
+
                                         for(DOM.XMLNode child2 :child1.getChildren()) {
+                                            String quoteLineType = '';
+                                            Decimal quoteLineTotalTaxAmount = 0.00;
                                             if(child2.getName() == 'LineItem') {
                                                 //System.debug(LoggingLevel.ERROR, ' inside processing LineItem');
                                                 // Extracting Charge
                                                 dueDetailName = child2.getAttributeValue('lineItemId', null); 
                                                 taxComp = '';
-                                                taxRatesMap  = new Map<String, Decimal>();
-                                                taxValuesMap = new Map<String, Decimal>();
 
                                                 for(DOM.XMLNode child3 :child2.getChildren()) {
                                                     // Extracting Taxes Jurisdiction & TotalTax Details
@@ -279,8 +275,21 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
                                                                 Decimal totalTaxValue =  taxValuesMap.containsKey(attr) ? taxValuesMap.get(attr) : 0.0;
                                                                 totalTaxValue += Decimal.valueOf(calTax);
 
-                                                                taxRatesMap.put(attr, totalTaxRate);
-                                                                taxValuesMap.put(attr, totalTaxValue);
+                                                                // adding logic to add up old values
+                                                                Decimal tempTaxRate     = taxRatesMap.get(attr);
+                                                                if(tempTaxRate == null) {
+                                                                    tempTaxRate = 0.00;
+                                                                }
+                                                                tempTaxRate += totalTaxRate;
+
+                                                                Decimal tempTaxValue     = taxValuesMap.get(attr);
+                                                                if(tempTaxValue == null) {
+                                                                    tempTaxValue = 0.00;
+                                                                }
+                                                                tempTaxValue += totalTaxValue;
+
+                                                                taxRatesMap.put(attr, tempTaxRate);
+                                                                taxValuesMap.put(attr, tempTaxValue);
                                                                 calTax = null;
                                                                 taxRate = null;
                                                                 break;
@@ -288,9 +297,42 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
                                                         }
                                                         
                                                     } else if(child3.getName() == 'TotalTax') {
-                                                        valuesMap.put(dueDetailName, decimal.valueOf(child3.getText().trim()));
+                                                        Decimal currentTotalTaxValue = decimal.valueOf(child3.getText().trim());
+                                                        Decimal totalTaxValue = valuesMap.get(dueDetailName);
+                                                        if(totalTaxValue == null) {
+                                                            totalTaxValue = 0.00;
+                                                        }
+                                                        totalTaxValue += currentTotalTaxValue;
+                                                        valuesMap.put(dueDetailName, totalTaxValue);
+                                                        quoteLineTotalTaxAmount = currentTotalTaxValue;
+
+                                                    } else if(child3.getName() == 'FlexibleFields') { // Extracting Quote Line Details
+                                                        for(DOM.XMLNode child4 :child3.getChildren()) {
+                                                            if(child4.getName() == 'FlexibleCodeField') {
+                                                                String attr1 = child4.getAttributeValue('fieldId', null);
+                                                                if(attr1 == '15') {
+                                                                    quoteLineType = child4.getText();
+                                                                }
+                                                            }
+                                                        }
+
                                                     }
                                                 }
+
+                                                // Updating Tax AMount details per Due Detail Line
+                                                Map<String, Decimal> tempTaxMap = ddlToQuoteLineTaxAmountsMap.get(dueDetailName);
+                                                if(tempTaxMap == null) {
+                                                    tempTaxMap = new Map<String, Decimal>();
+                                                }
+                                                tempTaxMap.put(quoteLineType, quoteLineTotalTaxAmount);
+                                                ddlToQuoteLineTaxAmountsMap.put(dueDetailName, tempTaxMap);
+
+                                                System.debug('dueDetailName: '+dueDetailName);
+                                                System.debug('quoteLineType: '+quoteLineType);
+                                                System.debug('quoteLineTotalTaxAmount: '+quoteLineTotalTaxAmount);
+                                                System.debug('ddlToQuoteLineTaxAmountsMap: '+ddlToQuoteLineTaxAmountsMap);
+
+                                                // Other tax values updates
                                                 calculatedTax.put(dueDetailName, totalTaxComp);
                                                 ddlTaxRatesMap.put(dueDetailName, taxRatesMap);
                                                 ddlTaxValuesMap.put(dueDetailName, taxValuesMap);
@@ -308,6 +350,34 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
                 Map<String, String> taxRateFieldJurisdictionMap = VertexUtil.taxRateFieldJurisdictionMap;
                 Map<String, String> taxValueFieldJurisdictionMap = VertexUtil.taxValueFieldJurisdictionMap;
                 List<cllease__Due_Detail_Lines__c> dueDetailLineToUpdate = new List<cllease__Due_Detail_Lines__c>();
+                Map<String, String> quoteDLLTaxFieldAPINameMap = new Map<String, String>();
+
+                if(isTerminationTaxCall) {
+                    String quoteType, quoteReason, productId; 
+                    for(cllease__Due_Detail_Lines__c dueDetailLine : validDueDetailsToUpdate) {
+                        if(dueDetailLine.Termination_Quote_Reason__c == 'ROLL-OVER') {
+                            isRollOverTermination = true;
+                        }
+                        // extracting the details from due detail line.
+                        quoteType   = dueDetailLine.Termination_Quote_Type__c;
+                        quoteReason = dueDetailLine.Termination_Quote_Reason__c;
+                        productId   = dueDetailLine.cllease__Contract__r.cllease__Lease_Product_Name__c;
+                    }
+                    // Extracting the Quote Configuration
+                    quoteConfig = CLSTerminationUtil.getTerminationConfiguration(quoteType, quoteReason, productId);
+
+                    if(quoteConfig != null) {
+                        List<cllease__Termination_Config_Line__c> quoteConfigLines = quoteConfig.cllease__Termination_Config_Lines__r;
+                        // Creating Map for Vertex Taxable Line Map.
+                        for(cllease__Termination_Config_Line__c quoteConfigLine : quoteConfigLines) {
+                            if(quoteConfigLine.Consider_for_Vertex_Tax__c && quoteConfigLine.DDL_Quote_Line_Tax_Field_API_Name__c != null) {
+                                quoteDLLTaxFieldAPINameMap.put(quoteConfigLine.cllease__Quote_Line__c, quoteConfigLine.DDL_Quote_Line_Tax_Field_API_Name__c);
+                            }
+                        }
+                    }
+                    
+                }
+
                 // Updating the TaxValue and TaxComponent in Due Detail lines
                 for(cllease__Due_Detail_Lines__c dueDetailLine : validDueDetailsToUpdate) {
                     if(valuesMap.containsKey(dueDetailLine.Name) 
@@ -345,7 +415,16 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
                             }
                         }
                         dueDetailLineToUpdate.add(DueDetailLine);
-                    }               
+                    } 
+                    // Updating tax amounts per Quote line
+                    if(quoteDLLTaxFieldAPINameMap.size() > 0) {
+                        Map<String, Decimal> dueDetailLineQuoteTaxMap = ddlToQuoteLineTaxAmountsMap.get(dueDetailLine.Name);
+                        for(String quoteLineType : quoteDLLTaxFieldAPINameMap.keySet()) {
+                            String ddlTaxFieldAPIName = quoteDLLTaxFieldAPINameMap.get(quoteLineType);
+                            Decimal ddlTaxAmount      = dueDetailLineQuoteTaxMap.get(quoteLineType);
+                            dueDetailLine.put(ddlTaxFieldAPIName, ddlTaxAmount);
+                        }
+                    }              
                 }
 
                 if(dueDetailLineToUpdate.size() > 0) {
@@ -417,9 +496,18 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
 
             }
 
+            // Do post Termination updates to Create 1. Invoice Creation, 2. Disbursements Creation 3. Payment Creation & Apply
+            // do Actions only if Rollover (auto tradeup) terminated contracts
+            
+            if(isRollOverTermination) {
+                CLSTerminationUtil.doPostTerminationUpdates(contractIds, quoteConfig);
+            }
+            
+			
         } catch(exception e){           
             Database.rollback(sp);   
-            
+            System.debug('ERROR: '+e.getMessage());
+            System.debug('ERROR trace: '+e.getStackTraceString());
             //A. insert batch process log for exceptions
             insert new cllease__Batch_Process_Log__c(Name='VertexGetTaxonBillsJob: ',
             cllease__Date__c=system.today(), cllease__Message__c='Error is '+e.getmessage()

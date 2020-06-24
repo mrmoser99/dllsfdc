@@ -4,13 +4,14 @@
 *
 *	Change Log:
 *	7/24/18 - MRM Created
+*   6/23/2020 = MRM changed rent/equipment - rent will not include tradeup and equipment will be summed into one row 
 *
 *   execute anonomys script - 
 *
 * 	  
 /*	
 Map<ID,String> leaseMap = new Map<ID,String>();
-leasemap.put('a6J1I000000ozT7','hello');
+leasemap.put('a6J4F000000ELhlUAG','hello');
 supertrumputil.sendRequest(leaseMap);
 
 List<cllease__lease_account__c> cList = new List<cllease__lease_account__c>();
@@ -179,14 +180,18 @@ public with sharing class SupertrumpUtil {
 												, Dealer_Charges__c
 												, Install_Date__c 
 												, rent_amount__c
-												
+												,cllease__Contract__c
+												,cllease__Total_Dealer_Charges__c
 												From cllease__Contract_Equipment__c 
 												where cllease__Contract__c = :l.id
 												]; 
+
+		genesis__Applications__c app =[select rate_factor__c from genesis__applications__c where lease_number__c = :eList[0].cllease__Contract__c];
+
     	Integer i = 0;
 		for (cllease__Contract_Equipment__c e:eList){
 			
-			w.writeStartElement(null, 'Rent', null); //Rent
+				w.writeStartElement(null, 'Rent', null); //Rent
 				w.writeAttribute('', '','index', string.valueOf(i));
 				supertrumputil.writekeyPair('UseFundingsAndRate','true',w);
 				supertrumputil.writekeyPair('AssociationMethod','Asset',w);		
@@ -197,39 +202,41 @@ public with sharing class SupertrumpUtil {
 				supertrumputil.writekeyPair('ResidualAsFunding','Yes',w);		
 				//supertrumputil.writekeyPair('FirstStartAccrual','2018-05-18',w);		
 	
- 
+				Decimal rent = (e.cllease__Total_Dealer_Charges__c * app.rate_factor__c).setScale(2); 
+
+				system.debug('calling with rent = ' + rent);
 	 			w.writeStartElement(null, 'CashflowSteps', null); //CashFlowSteps
-	 				w.writeStartElement(null, 'Delete', null); //CashFlowStep
-	 				w.writeAttribute('', '','index', '*');
- 					w.writeEndElement();//Delete
+	 			w.writeStartElement(null, 'Delete', null); //CashFlowStep
+	 			w.writeAttribute('', '','index', '*');
+ 				w.writeEndElement();//Delete
  				
- 					w.writeStartElement(null, 'CashflowStep', null); //CashFlowStep
-					w.writeAttribute('', '','index', string.valueOf(0));
-					supertrumputil.writekeyPair('Type','Payment',w);		
-					supertrumputil.writekeyPair('Periodicity','Stub',w);		
-					supertrumputil.writekeyPair('NumberOfPayments',string.valueOf(1),w);		
-					supertrumputil.writekeyPair('Amount',string.valueOf(e.rent_amount__c),w);		
-					supertrumputil.writekeyPair('AmountLocked','true',w);		
-					supertrumputil.writekeyPair('RateLocked','false',w);	
-					supertrumputil.writekeyPair('EndAccrual',string.valueOf(l.cllease__First_Payment_Date__c),w);		
-					w.writeEndElement();  //CashFlowStep
+ 				w.writeStartElement(null, 'CashflowStep', null); //CashFlowStep
+				w.writeAttribute('', '','index', string.valueOf(0));
+				supertrumputil.writekeyPair('Type','Payment',w);		
+				supertrumputil.writekeyPair('Periodicity','Stub',w);		
+				supertrumputil.writekeyPair('NumberOfPayments',string.valueOf(1),w);		
+				supertrumputil.writekeyPair('Amount',string.valueOf(rent),w);		
+				supertrumputil.writekeyPair('AmountLocked','true',w);		
+				supertrumputil.writekeyPair('RateLocked','false',w);	
+				supertrumputil.writekeyPair('EndAccrual',string.valueOf(l.cllease__First_Payment_Date__c),w);		
+				w.writeEndElement();  //CashFlowStep
 					
-					w.writeStartElement(null, 'CashflowStep', null); //CashFlowStep
-					w.writeAttribute('', '','index', string.valueOf(1));
-					supertrumputil.writekeyPair('Type','Payment',w);		
-					supertrumputil.writekeyPair('Periodicity','Monthly',w);		
-					supertrumputil.writekeyPair('NumberOfPayments',string.valueOf(l.cllease__Term__c-1),w);		
-					supertrumputil.writekeyPair('Amount',string.valueOf(e.rent_amount__c),w);		
-					supertrumputil.writekeyPair('AmountLocked','true',w);		
-					supertrumputil.writekeyPair('RateLocked','false',w);		
-					w.writeEndElement();  //CashFlowStep
+				w.writeStartElement(null, 'CashflowStep', null); //CashFlowStep
+				w.writeAttribute('', '','index', string.valueOf(1));
+				supertrumputil.writekeyPair('Type','Payment',w);		
+				supertrumputil.writekeyPair('Periodicity','Monthly',w);		
+				supertrumputil.writekeyPair('NumberOfPayments',string.valueOf(l.cllease__Term__c-1),w);		
+				supertrumputil.writekeyPair('Amount',string.valueOf(rent),w);		
+				supertrumputil.writekeyPair('AmountLocked','true',w);		
+				supertrumputil.writekeyPair('RateLocked','false',w);		
+				w.writeEndElement();  //CashFlowStep
 			
 				w.writeEndElement();  //CashFlowSteps
 				supertrumputil.writekeyPair('BalanceRate','',w);		
 			
-			w.writeEndElement();  //Rent
+				w.writeEndElement();  //Rent
 			 
-			i++;
+				i++;
 		}
 		
 		w.writeEndElement();  //Rents

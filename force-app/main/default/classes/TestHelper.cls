@@ -11,15 +11,19 @@ public with sharing class TestHelper {
     public static cllease__Lease_Account__c createContract() {
         cllease.TestHelper.createSeedDataForTesting();
         // Setting Current System Date in Test Context
-        Date currentSystemDate = Date.newInstance(2018, 03, 31);
+        Date currentSystemDate = System.today(); 
         // 1. Pre-Setup
         clcommon__Fee_Definition__c  dummyFee   = cllease.Testhelper.createLeaseFee();
+        dummyFee.clcommon__Amount__c            = 100;
+        dummyFee.clcommon__Amortization_Method__c  = 'Income Basis';
+        update dummyFee;
         clcommon__Fee_Set__c  dummyFeeSet       = cllease.Testhelper.createLeaseFeeSet();
         insert new clcommon__Fee_Junction__c( clcommon__Fee__c = dummyFee.ID, clcommon__Fee_Set__c  = dummyFeeSet.ID);
 
         clcommon__Fee_Definition__c  dummyFee2   = cllease.Testhelper.createLeaseFee();
         dummyFee2.clcommon__Type__c              = 'NSF Fees';
-        dummyFee2.clcommon__Amount__c            = 25;
+        dummyFee2.clcommon__Amount__c            = 100;
+        dummyFee2.clcommon__Amortization_Method__c  = 'Income Basis';
         update dummyFee2;
 
         insert new clcommon__Fee_Junction__c(clcommon__Fee__c = dummyFee2.ID, clcommon__Fee_Set__c  = dummyFeeSet.ID);
@@ -33,8 +37,6 @@ public with sharing class TestHelper {
 
         insert new clcommon__Fee_Junction__c(clcommon__Fee__c = latefee.ID, clcommon__Fee_Set__c  = dummyFeeSet.ID);
         insert new cllease__Transaction_Sub_Type__c(Name = 'Late Fees');
-
-
 
         cllease__Office_Name__c dummyOffice     = cllease.TestHelper.createOffice('Test Office', true);
         dummyOffice.cllease__Current_System_Date__c = currentSystemDate;
@@ -88,11 +90,25 @@ public with sharing class TestHelper {
         clcommon__Agreement__c dealerProgram =new clcommon__Agreement__c(Name='NewCo');
         insert dealerProgram;
 
+        Address__c address = new Address__c (
+			Address_Line_1__c   = '123 Main Street',
+			City__c             = 'Morristown',
+			State__c            = 'NJ',
+			County__c           = 'Morris',
+			Country__c          = 'USA',
+			Account__c          = dummyAccount.Id,
+			Bill_To_Usage__c    = true,
+			Install_At__c       = true,
+            Validation_Status__c = DLLNewCoConstants.EXPERIAN_VALIDATION_STATUS,
+            Zip_Code__c         = '95307-7506'
+		);
+		insert address;
+
         // 3.Creating Contract
-        Date currentDate = Date.newInstance(2018, 01, 01);
+        Date currentDate = currentSystemDate;
         cllease__Lease_Account__c leaseAccount      = new cllease__Lease_Account__c();
-        leaseaccount.cllease__Account__c            = dummyAccount.ID;
-        leaseAccount.cllease__Lease_Product_Name__c = dummyLP.ID;
+        leaseaccount.cllease__Account__c            = dummyAccount.Id;
+        leaseAccount.cllease__Lease_Product_Name__c = dummyLP.Id;
         leaseAccount.cllease__Contract_Date__c      = currentDate;
         leaseaccount.cllease__Financed_Amount__c    = 10000;
         //leaseaccount.cllease__Residual_Amount__c    = 1000;
@@ -101,12 +117,14 @@ public with sharing class TestHelper {
 
         // 3.a Adding Equipments to Contract
         List<cllease__Contract_Equipment__c> contractEquipments = new List<cllease__Contract_Equipment__c>();
-        contractEquipments.add(new cllease__Contract_Equipment__c(cllease__Estimated_Selling_Price__c = 10000,
-                                        Evergreen_Depreciable_Cost__c = 950,
-                                        Remaining_Evergreen_Depreciable_Cost__c = 950,
-                                        Salvage_Value__c = 50,
-                                        cllease__life_in_months__c = 14,
-                                        cllease__Status__c = 'LEASED'));
+        contractEquipments.add(new cllease__Contract_Equipment__c(cllease__Estimated_Selling_Price__c   = 10000,
+                                                                    Evergreen_Depreciable_Cost__c       = 950,
+                                                                    Remaining_Evergreen_Depreciable_Cost__c = 950,
+                                                                    Salvage_Value__c                    = 50,
+                                                                    cllease__life_in_months__c          = 14,
+                                                                    cllease__Status__c                  = 'LEASED',
+                                                                    Install_Address__c                  = address.Id,
+                                                                    Install_Account__c                  = dummyAccount.Id));
       
         // 3.b Adding Payment Schedules to Contract
         List<cllease__Payment_Schedule__c> paymentDetails =  new List<cllease__Payment_Schedule__c>();
@@ -115,10 +133,25 @@ public with sharing class TestHelper {
                            cllease__Payment_Amount__c = 1200, cllease__Payment_Date__c = currentDate,
                            cllease__Total_Payment__c = 1200));
 
+        // 3.c Adding Fee Schedule to Contract
+        List<cllease__Contract_Fees__c> feeDetails = new List<cllease__Contract_Fees__c>();
+        feeDetails.add(new cllease__Contract_Fees__c(cllease__VAT__c = 0.00, cllease__Total_Payment_Amount__c = 100, 
+                    cllease__Contract__c = leaseAccount.Id, cllease__Fee_Definition__c = dummyFee.Id, 
+                    cllease__Fee_Type__c = 'OTHER FEES', cllease__Number_of_Periods__c = 3, 
+                    cllease__Frequency__c = 'MONTHLY', cllease__Amount__c = 100, 
+                    cllease__start_date__c = leaseAccount.cllease__Contract_Date__c));
+        
+        feeDetails.add(new cllease__Contract_Fees__c(cllease__VAT__c = 0.00, cllease__Total_Payment_Amount__c = 100, 
+                    cllease__Contract__c = leaseAccount.Id, cllease__Fee_Definition__c = dummyFee2.Id, 
+                    cllease__Fee_Type__c = 'OTHER FEES', cllease__Number_of_Periods__c = 3, 
+                    cllease__Frequency__c = 'MONTHLY', cllease__Amount__c = 100, 
+                    cllease__start_date__c = leaseAccount.cllease__Contract_Date__c));
+
         // 4. Calling ContractBuilder for Contract Creation
         cllease.ContractBuilder builder = new cllease.ContractBuilder(leaseAccount);
         builder.addChildObjects(contractEquipments);
         builder.addChildObjects(paymentDetails);
+        builder.addChildObjects(feeDetails);
         String response = builder.createContract(cllease.LendingConstants.ContractCreateOption.ACTIVATECONTRACT);
         System.debug(LoggingLevel.ERROR, ' Response from Contract Creation: '+response);
         // Validating Contract Activation

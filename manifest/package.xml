@@ -86,6 +86,7 @@
         <members>*</members>
         <name>CustomApplication</name>
     </types>
+     
     <types>
         <members>*</members>
         <name>ApexTestSuite</name>

@@ -1,6 +1,8 @@
 /**
  * Usage: Following util class will have all helper methods for DMBI Records creation
- *
+ * Change Log:
+ * 
+ * 6/4/2020 - MRM added nap amounts
  **/
 public with sharing class DMBIInterfaceRecordUtil {
 
@@ -212,7 +214,7 @@ public with sharing class DMBIInterfaceRecordUtil {
                         //,Agreement_Line_Status_Code__c = status
                         ,Agreement_Line_Status_Code__c =  intcode.containsKey(eq.Contract_Status__c)?intcode.get(eq.Contract_Status__c):''
                         //,Net_Principal_Balance_Amount__c = ScaleToTwoDecimal((eq.Rent_Amount__c*CountRentalStream(contract.cllease__Rental_Streams__r))+ eq.Bill_Residual_Amount__c)
-                        ,Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(AgrMap.get(eq.cllease__Contract__r.Name).Net_Principal_Balance_Amount__c*(contract.cllease__Financed_Amount__c!=0?eq.cllease__Estimated_Selling_Price__c/contract.cllease__Financed_Amount__c:1))
+                        ,Net_Principal_Balance_Amount__c = eq.npba_amount__c //ScaleToTwoDecimal(AgrMap.get(eq.cllease__Contract__r.Name).Net_Principal_Balance_Amount__c*(contract.cllease__Financed_Amount__c!=0?eq.cllease__Estimated_Selling_Price__c/contract.cllease__Financed_Amount__c:1))
                         ,Net_Residual_Value__c = Contract.cllease__Lease_Status__c == 'EVERGREEN'?ScaleToTwoDecimal(CalculateNetResidualAmount(contract.cllease__Residual_Streams__r,contract.cllease__Residual_Amount__c,eq.cllease__Residual_Amount__c)):Null
                         //,Hard_Costs_Amount__c = ScaleToTwoDecimal(eq.cllease__Estimated_Selling_Price__c!=Null?eq.cllease__Estimated_Selling_Price__c:0)
                         //,Soft_Costs_Amount__c = ScaleToTwoDecimal((eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0)-(eq.Net_Trade_Up_Amount__c!=Null?eq.Net_Trade_Up_Amount__c:0)) 
@@ -221,7 +223,7 @@ public with sharing class DMBIInterfaceRecordUtil {
                         ,Purchase_Type_Code__c = intcode.containskey(contract.Purchase_Option__c)?intcode.get(contract.Purchase_Option__c):''
                         ,Residual_Value_Booked__c = ScaleToTwoDecimal(eq.cllease__Residual_Amount__c)
                         //,Net_Principal_Amount__c = ScaleToTwoDecimal((eq.Dealer_Charges__c!=Null?eq.Dealer_Charges__c:0) + (eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0))
-                        ,Net_Principal_Amount__c = ScaleToTwoDecimal((eq.Dealer_Charges__c!=Null?eq.Dealer_Charges__c:0) + (eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0) + (eq.Net_Trade_Up_Amount__c!=Null?eq.Net_Trade_Up_Amount__c:0))
+                        ,Net_Principal_Amount__c = eq.npa_amount__c //ScaleToTwoDecimal((eq.Dealer_Charges__c!=Null?eq.Dealer_Charges__c:0) + (eq.Upfront_Tax_Amount__c!=Null?eq.Upfront_Tax_Amount__c:0) + (eq.Net_Trade_Up_Amount__c!=Null?eq.Net_Trade_Up_Amount__c:0))
                         ,Agreement_Source_System__c = intcode.get(contract.Source_System__c)
                         ,Agreement_Number__c = contract.name
                         ,Agreement_Line_Number__c = eq.name

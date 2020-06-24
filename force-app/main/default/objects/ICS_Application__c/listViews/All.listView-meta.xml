@@ -8,6 +8,7 @@
     <columns>CREATEDBY_USER</columns>
     <columns>OWNER.ALIAS</columns>
     <columns>Legal_Name__c</columns>
+    <columns>CRE_Status__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

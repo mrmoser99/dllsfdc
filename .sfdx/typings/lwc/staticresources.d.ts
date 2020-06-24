@@ -26,6 +26,10 @@ declare module "@salesforce/resourceUrl/AutoService_Escalation_Feature_Skuid_pag
     var AutoService_Escalation_Feature_Skuid_pages: string;
     export default AutoService_Escalation_Feature_Skuid_pages;
 }
+declare module "@salesforce/resourceUrl/AutoTradeup_SkuidChanges" {
+    var AutoTradeup_SkuidChanges: string;
+    export default AutoTradeup_SkuidChanges;
+}
 declare module "@salesforce/resourceUrl/BCC039_BCC040_Financecharge_Latecharge" {
     var BCC039_BCC040_Financecharge_Latecharge: string;
     export default BCC039_BCC040_Financecharge_Latecharge;

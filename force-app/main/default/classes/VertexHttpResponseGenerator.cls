@@ -92,12 +92,12 @@ public class VertexHttpResponseGenerator  {
      * Following  helper method generates the Successful response for 
      * positive test case generation
      **/
-    public static String generateQuoteResponse(List<String> names) {
+    public static HttpResponse generateQuoteResponse(List<Termination_Equipment_Quote__c> quoteEqpLines) {
         String lineItemStr = '';
 
         // a. Creating LineItems
-        for(String name : names) {
-            lineItemStr +=  ' <LineItem lineItemId="'+ name +'">                                                               '+
+        for(Termination_Equipment_Quote__c quoteEqpLine : quoteEqpLines) {
+            lineItemStr +=  ' <LineItem lineItemId="'+ quoteEqpLine.Name +'">                                                     '+
                             '   <Customer>                                                                                     '+
                             '       <Destination taxAreaId="444391090">                                                        '+
                             '           <City>Arlington</City>                                                                 '+
@@ -166,7 +166,7 @@ public class VertexHttpResponseGenerator  {
                             '       <FlexibleCodeField fieldId="12">0</FlexibleCodeField>                                      '+
                             '       <FlexibleCodeField fieldId="13">F</FlexibleCodeField>                                      '+
                             '       <FlexibleCodeField fieldId="14">F</FlexibleCodeField>                                      '+
-                            '       <FlexibleCodeField fieldId="15">Origination Fees</FlexibleCodeField>                       '+
+                            '       <FlexibleCodeField fieldId="15">'+ quoteEqpLine.Termination_Quote_Line__r.cllease__Line_Type__c +'</FlexibleCodeField>    '+
                             '       <FlexibleCodeField fieldId="16">NA</FlexibleCodeField>                                     '+
                             '       <FlexibleCodeField fieldId="17">LES-0000001054</FlexibleCodeField>                         '+
                             '       <FlexibleCodeField fieldId="18">0</FlexibleCodeField>                                      '+
@@ -218,7 +218,12 @@ public class VertexHttpResponseGenerator  {
                 '     </soapenv:Body>                                                           '+
                 ' </soapenv:Envelope>                                                           ';
             
-        return httpResBody;
+        HttpResponse res = new HttpResponse();
+        res.setHeader('Content-Type', 'text/xml');
+        // Hard coding response to single Equipment and throw exception for multiple Equipment
+        res.setBody(httpResBody);
+        res.setStatusCode(200);
+        return res;
     }
 
     /**

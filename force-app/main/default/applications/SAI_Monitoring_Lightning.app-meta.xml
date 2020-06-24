@@ -24,5 +24,6 @@
     <tabs>SAI_Application_Skip_Billing_Month__c</tabs>
     <tabs>SAI_Party_Street_Address__c</tabs>
     <tabs>collect__Contract_Status__c</tabs>
+    <tabs>cllease__Termination_Quote_Line__c</tabs>
     <uiType>Lightning</uiType>
 </CustomApplication>

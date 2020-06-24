@@ -19,4 +19,5 @@
     <tabs>Int_ICV_Default__c</tabs>
     <tabs>standard-report</tabs>
     <tabs>collect__Contract_Status__c</tabs>
+    <tabs>cllease__Termination_Quote_Line__c</tabs>
 </CustomApplication>

@@ -18,8 +18,7 @@ trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
     
     for(cllease__Lease_Account__c contract : trigger.new){
         if(contract.cllease__Lease_Status__c == 'CANCELED'
-          	|| contract.cllease__Lease_Status__c == 'CHARGED OFF'
-           	|| contract.cllease__Lease_Status__c == 'TERMINATED'){
+          	|| contract.cllease__Lease_Status__c == 'CHARGED OFF'){
                 canceledContractsIds.add(contract.Id);
            }
     }

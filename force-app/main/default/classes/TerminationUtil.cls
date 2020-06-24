@@ -975,6 +975,7 @@ public with sharing class TerminationUtil {
                                                                     Termination_Quote_Line__r.cllease__Add_To_Quote_Amount__c,
                                                                     Termination_Quote_Equipment__c,
                                                                     Termination_Quote_Equipment__r.cllease__Contract_Equipment__r.Name,
+                                                                    Termination_Quote_Equipment__r.cllease__Contract_Equipment__r.GARD__c,
                                                                     DestinationCity__c,
                                                                     DestinationCounty__c,
                                                                     DestinationState__c,
@@ -1011,7 +1012,7 @@ public with sharing class TerminationUtil {
             
             for(Termination_Equipment_Quote__c eqpQuoteLine : quoteHeader.Termination_Equipment_Quotes__r) {
                 if(eqpQuoteLine.Termination_Quote_Line__r.cllease__Line_Type__c == DLLNewCoConstants.QUOTE_ESTIMATED_SALES_TAX) {
-                    vertexTaxQuoteLine = new cllease__Termination_Quote_Line__c(Id = eqpQuoteLine.Termination_Quote_Line__c);
+                    vertexTaxQuoteLine = new cllease__Termination_Quote_Line__c(Id = eqpQuoteLine.Termination_Quote_Line__c, cllease__Quote_Header__c = quoteHeader.Id);
                 } else if(terminationQuoteLinesTypes.contains(eqpQuoteLine.Termination_Quote_Line__r.cllease__Line_Type__c)) {
                     quoteLinesToProcessForTaxMap.put(eqpQuoteLine.Name, eqpQuoteLine);
                     quoteLinesMap.put(eqpQuoteLine.Termination_Quote_Line__r.cllease__Line_Type__c, eqpQuoteLine);
@@ -1191,7 +1192,7 @@ public with sharing class TerminationUtil {
         System.debug(LoggingLevel.ERROR, 'Started Processing the Termination Equipment Quote Creation...');
         
         // 1. Query Existing TEmination Quote Equipment Quote Junction Objects
-        String query = ' SELECT Id, Name, cllease__Contract__c ' +
+        String query = ' SELECT Id, Name, cllease__Contract__c, ' +
                         '   (SELECT Id, cllease__Contract_Equipment__c, cllease__Contract_Equipment__r.cllease__Estimated_Selling_Price__c FROM cllease__Termination_Quote_Equipments__r ), ' +
                         '   (SELECT Id, cllease__Amount__c, cllease__Add_To_Quote_Amount__c, cllease__Line_Type__c FROM cllease__Termination_Quote_Lines__r ), ' +
                         '   (SELECT Id FROM Termination_Equipment_Quotes__r ) ' +
@@ -1289,10 +1290,12 @@ public with sharing class TerminationUtil {
             
         }
 
-        // Updating the Service & Estimate Quote amount.
-        serviceQuoteLine.cllease__Amount__c = totalQuoteServiceAmount;
-
-        update serviceQuoteLine;
+        if(serviceQuoteLine != null) {
+            // Updating the Service & Estimate Quote amount.
+            serviceQuoteLine.cllease__Amount__c = totalQuoteServiceAmount;
+             update serviceQuoteLine;
+        }
+        
 
         System.debug(LoggingLevel.ERROR, ' Equipment Quote lines created: '+eqpQuoteLines);
         // 2. If no records available, create new records for Equipments and Quotes and return.

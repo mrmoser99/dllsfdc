@@ -12,6 +12,10 @@ trigger DueDetails on cllease__Due_Detail_Lines__c (before insert, before update
         billIdSet.add(d.cllease__Bill__c);
         ceSet.add(d.cllease__Contract_Equipment__c);
         invSet.add(d.consolidated_invoice__c);
+        // update the Bill's status as Processed incase of new bill creation # LD-3376	
+        if(Trigger.isBefore && Trigger.isInsert) {
+            d.cllease__Tax_Processed__c = false;
+        }
     }
 
     List <cllease__Charge__c> chargeList = new List<cllease__Charge__c>

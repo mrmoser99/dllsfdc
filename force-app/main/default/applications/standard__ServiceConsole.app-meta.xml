@@ -180,7 +180,11 @@
     <tabs>standard-Opportunity</tabs>
     <tabs>standard-Lead</tabs>
     <tabs>collect__Contract_Status__c</tabs>
+    <tabs>cllease__Termination_Quote_Line__c</tabs>
     <workspaceConfig>
+        <mappings>
+            <tab>cllease__Termination_Quote_Line__c</tab>
+        </mappings>
         <mappings>
             <tab>collect__Contract_Status__c</tab>
         </mappings>

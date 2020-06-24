@@ -15,15 +15,21 @@ trigger OnAccountPaymentFieldUpdate on cllease__Lease_Payment_Detail__c (before 
             }
             
             //Query payment transaction to identify the payment mode
-            List<cllease__Lease_Payment_Transaction__c> paymentList = [SELECT ID
+            List<cllease__Lease_Payment_Transaction__c> paymentList = [SELECT ID, cllease__Payment_Mode__r.Name
                                                                        FROM cllease__Lease_Payment_Transaction__c
-                                                                       WHERE ID IN : lptToLpdMap.keySet()
-                                                                       AND cllease__Payment_Mode__r.Name = 'ON ACCOUNT'];
+                                                                       WHERE ID IN : lptToLpdMap.keySet()];
             for(cllease__Lease_Payment_Transaction__c pmt : paymentList){
                 if(lptToLpdMap.containsKey(pmt.Id)){
-                    for(cllease__Lease_Payment_Detail__c lpd : lptToLpdMap.get(pmt.Id)){
-                        lpd.On_Account_Payment__c = lpd.cllease__Amount__c;
-                        lpd.cllease__Amount__c = 0;
+                    if(pmt.cllease__Payment_Mode__r.Name == 'ON ACCOUNT') {
+                        for(cllease__Lease_Payment_Detail__c lpd : lptToLpdMap.get(pmt.Id)){
+                            lpd.On_Account_Payment__c = lpd.cllease__Amount__c;
+                            lpd.cllease__Amount__c = 0;
+                        }
+                    } else if(pmt.cllease__Payment_Mode__r.Name == 'Invoice Credit') {
+                        for(cllease__Lease_Payment_Detail__c lpd : lptToLpdMap.get(pmt.Id)){
+                            lpd.Roll_Over_Credit__c = lpd.cllease__Amount__c;
+                            lpd.cllease__Amount__c = 0;
+                        }
                     }
                 }
             }
