@@ -213,7 +213,7 @@ public class FMZ_ApplicationDocumentsControllerTest {
 		Test.startTest();
 
 		String content = 'ABC TEST 123';
-		Blob document = Blob.valueOf(content);
+		Blob document = Blob.valueOf(content);  
 
 		FMZ_ApplicationDocumentsController.uploadAttachment(app.Id, 'test.pdf', 'application/pdf',
 			EncodingUtil.base64Encode(document));

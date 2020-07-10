@@ -16,8 +16,8 @@ global class BatchNPBACalc implements Database.Batchable<SObject>,Database.State
   	************************************************************************************************/
     static final string QUERY = 'Select id, name  from cllease__Lease_Account__c';
 	/*********************************************************************************************
-  	*	CONSTRUCTOR
-  	*
+  	*	CONSTRUCTOR 
+  	*    
   	*
   	************************************************************************************************/
 	global BatchNPBACalc(){   
