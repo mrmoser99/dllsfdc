@@ -14,15 +14,27 @@
     </alerts>
     <alerts>
         <fullName>Tax_Exemption_Email</fullName>
-        <ccEmails>chandi.freeman@dllgroup.com</ccEmails>
+        <ccEmails>chandi.freeman@dllgroup.com;kjud@leasedirect.com</ccEmails>
         <description>Tax Exemption Email</description>
         <protected>false</protected>
+        <recipients>
+            <recipient>bstow@leasedirect.com.newco</recipient>
+            <type>user</type>
+        </recipients>
         <recipients>
             <recipient>mark.moser@dllgroup.com</recipient>
             <type>user</type>
         </recipients>
         <recipients>
+            <recipient>mfernandez@leasedirect.com.newco</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
             <recipient>smclachlan@leasedirect.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>sneh.patel@dllgroup.com.newco</recipient>
             <type>user</type>
         </recipients>
         <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>
@@ -54,6 +66,15 @@
         <name>Evergreen Term Setup</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>New_Welcome_Packet</fullName>
+        <field>New_Welcome_Packet__c</field>
+        <literalValue>0</literalValue>
+        <name>New Welcome Packet</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
@@ -138,6 +159,18 @@
         <protected>false</protected>
     </fieldUpdates>
     <outboundMessages>
+        <fullName>Welcome_Packet</fullName>
+        <apiVersion>47.0</apiVersion>
+        <endpointUrl>https://workflow.congamerge.com/OBMListener.ashx</endpointUrl>
+        <fields>Id</fields>
+        <fields>Welcome_Packet__c</fields>
+        <includeSessionId>true</includeSessionId>
+        <integrationUser>interface.user@dllgroup.com</integrationUser>
+        <name>Welcome Packet</name>
+        <protected>false</protected>
+        <useDeadLetterQueue>false</useDeadLetterQueue>
+    </outboundMessages>
+    <outboundMessages>
         <fullName>Welcome_Packet_Conga_Call</fullName>
         <apiVersion>47.0</apiVersion>
         <endpointUrl>https://workflow.congamerge.com/OBMListener.ashx</endpointUrl>
@@ -193,6 +226,24 @@
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
+        <fullName>New Welcome Packet Trigger</fullName>
+        <actions>
+            <name>New_Welcome_Packet</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Welcome_Packet</name>
+            <type>OutboundMessage</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>cllease__Lease_Account__c.New_Welcome_Packet__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
         <fullName>Oracle Trade up Email</fullName>
         <actions>
             <name>Oracle_Trade_up_Notification</name>
@@ -222,7 +273,7 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <formula>TEXT (cllease__Lease_Status__c) = &#39;TERMINATED&#39;</formula>
+        <formula>TEXT (cllease__Lease_Status__c) = &apos;TERMINATED&apos;</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
@@ -267,15 +318,4 @@
         </criteriaItems>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
-    <tasks>
-        <fullName>check</fullName>
-        <assignedTo>mark.moser@dllgroup.com</assignedTo>
-        <assignedToType>user</assignedToType>
-        <dueDateOffset>0</dueDateOffset>
-        <notifyAssignee>false</notifyAssignee>
-        <priority>Normal</priority>
-        <protected>false</protected>
-        <status>Not Started</status>
-        <subject>check</subject>
-    </tasks>
 </Workflow>

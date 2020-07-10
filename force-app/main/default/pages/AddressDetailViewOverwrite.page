@@ -7,6 +7,4 @@
           EnableEnforcedUsage="false" 
           IsCalledFromDetailPageOverride="true"/>
     
-    <apex:detail inlineEdit="true" relatedList="true" oncomplete="execute();" /> 
-    <apex:relatedList list="Histories" title="Address History" />
-</apex:page>
+    <apex:detail inlineEdit="true" relatedList="true" oncomplete="execute();" /> </apex:page>

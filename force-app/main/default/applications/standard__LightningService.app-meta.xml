@@ -13,16 +13,12 @@
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
     <tabs>standard-home</tabs>
-    <tabs>collect__Contract_Status__c</tabs>
-    <tabs>cllease__Termination_Quote_Line__c</tabs>
+    <tabs>clcommon__Batch_Process_Log__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LightningService_UtilityBar</utilityBar>
     <workspaceConfig>
         <mappings>
-            <tab>cllease__Termination_Quote_Line__c</tab>
-        </mappings>
-        <mappings>
-            <tab>collect__Contract_Status__c</tab>
+            <tab>clcommon__Batch_Process_Log__c</tab>
         </mappings>
         <mappings>
             <tab>standard-Account</tab>

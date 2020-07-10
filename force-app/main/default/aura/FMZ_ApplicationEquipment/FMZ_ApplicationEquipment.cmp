@@ -115,7 +115,7 @@
             						<div class="slds-p-top_x-small">
             							<lightning:input aura:id="exempt" type="checkbox" label="Tax Exempt"
             											 value="{!e.Tax_Exempt__c}" onchange="{!c.handleEquipmentBlur}"
-            											 checked="{!e.Tax_Exempt__c}" required="false" />
+            											 checked="{!e.Tax_Exempt__c}" required="false"/>
             						</div>
                     </td>
                     <td class="slds-text-align_center">

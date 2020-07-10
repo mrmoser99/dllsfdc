@@ -3,8 +3,8 @@ public with sharing class TestTerminationFunctionality {
     @isTest
     public static void testTerminationCase1(){
         cllease.TestHelper.createSeedDataForTesting();
-        cllease.TestHelper.systemDate = Date.newInstance(2018, 01, 01);
-        Date sysDate = Date.newInstance(2018, 01, 01);
+        cllease.TestHelper.systemDate = Date.newInstance(2020, 01, 01);
+        Date sysDate = Date.newInstance(2020, 01, 01);
             
         cllease.TestHelper.createSeedDataForTesting();
         clcommon__Fee_Definition__c  dummyFee = new clcommon__Fee_Definition__c (Name = 'XXXFeeForTest',
@@ -69,7 +69,7 @@ public with sharing class TestTerminationFunctionality {
     
         terminationConfigLineList.add(new cllease__Termination_Config_Line__c(Name              = 'Billed Not Paid Rent',
                                                                 cllease__Termination_Config__c     = terminationHeader.Id,
-                                                                cllease__Quote_Line__c             = 'BILLED NOT PAID - RENT',
+                                                                cllease__Quote_Line__c             = 'BILLED NOT PAID RENT',
                                                                 cllease__Is_Billable__c            = False,
                                                                 cllease__Add_To_Quote_Amount__c    = False,
                                                                 cllease__Is_Account_Balancable__c  = False));
@@ -144,7 +144,7 @@ public with sharing class TestTerminationFunctionality {
         
         cllease__Termination_Quote_Header__c quoteHeader = new cllease__Termination_Quote_Header__c();
         quoteHeader.cllease__Quote_Reason__c                = 'ROLL-OVER';
-        quoteHeader.cllease__Quote_Type__c                  = 'TERMINATION WITH PURCHASE';
+        quoteHeader.cllease__Quote_Type__c                  = 'TERMINATION WITHOUT PURCHASE';
         quoteHeader.cllease__Is_Equipment_Termination__c    = true;
         quoteHeader.cllease__Status__c                      = 'GENERATED';
         quoteHeader.cllease__Contract__c                    = leaseAccount.Id;
@@ -191,6 +191,9 @@ public with sharing class TestTerminationFunctionality {
         cllease__Termination_Quote_Header__c quoteHeader2 = [Select Id, Name, cllease__Status__c From cllease__Termination_Quote_Header__c Limit 1];
         quoteHeader2.cllease__Status__c = 'TERMINATION PROCESSED';
         update quoteHeader2;
+        
+        leaseAccount.cllease__Lease_Status__c = 'TERMINATED';
+        update leaseAccount;
     }
     
 }

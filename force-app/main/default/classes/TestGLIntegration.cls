@@ -15,7 +15,7 @@ public with sharing class TestGLIntegration {
         TestData.createAccountingTemplateSetup(product.Id, company.Id);
 
         // Changing the current System Date
-        Date currentSystemDate = Date.newInstance(2018, 03, 24);
+        Date currentSystemDate = Date.newInstance(2018, 04, 24);
         List<cllease__Office_Name__c> companies = [Select Id, Name, cllease__Current_System_Date__c
                                                     From cllease__Office_Name__c];
         for(cllease__Office_Name__c company1 : companies) {
@@ -131,7 +131,7 @@ public with sharing class TestGLIntegration {
         TestData.createAccountingTemplateSetup(product.Id, company.Id);
 
         // Changing the current System Date
-        Date currentSystemDate = Date.newInstance(2018, 03, 24);
+        Date currentSystemDate = Date.newInstance(2018, 06, 24);
         List<cllease__Office_Name__c> companies = [Select Id, Name, cllease__Current_System_Date__c
                                                     From cllease__Office_Name__c];
         for(cllease__Office_Name__c company1 : companies) {

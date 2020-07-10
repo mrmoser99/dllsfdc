@@ -5,6 +5,7 @@
     <columns>Committed__c</columns>
     <columns>Old_Invoice_Number__c</columns>
     <columns>Invoice_Number__c</columns>
+    <columns>CREATED_DATE</columns>
     <columns>Record_Number__c</columns>
     <columns>Transaction_Type__c</columns>
     <columns>Transaction_Amount__c</columns>
@@ -14,7 +15,6 @@
     <columns>Trans_Source__c</columns>
     <columns>Trans_UID__c</columns>
     <columns>CREATEDBY_USER</columns>
-    <columns>CREATED_DATE</columns>
     <columns>Remark__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>

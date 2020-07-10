@@ -158,7 +158,6 @@
                 default:
                     return;
             }
-            console.log('---------------equipmentUpdate:' + JSON.stringify(equipmentUpdate));
 
             helper.updateEquipment(component, equipmentUpdate, inputControl);
 

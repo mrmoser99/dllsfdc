@@ -7,6 +7,8 @@
     <columns>Application_Number__c</columns>
     <columns>Application_Source_System__c</columns>
     <columns>Asset_Type__c</columns>
+    <columns>Global_Master_Asset_Type__c</columns>
+    <columns>Global_Master_Asset_Type_Code__c</columns>
     <columns>Make__c</columns>
     <columns>Model__c</columns>
     <columns>Serial_Number__c</columns>

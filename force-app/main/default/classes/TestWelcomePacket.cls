@@ -68,6 +68,10 @@
         insert category;
         
         
+
+
+    
+        
         Attachment att = [SELECT Id, Name, ParentId FROM Attachment WHERE Id =: ppa.id];
 		clcommon__Document_Category__c dcategory = [
 				SELECT Id

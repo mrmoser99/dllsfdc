@@ -103,18 +103,7 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <displayNameOverride>Prmy Sale Rprstv Last Nm</displayNameOverride>
-            <field>Sales_Rep_Name__c</field>
-            <table>cllease__Lease_Account__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>Prom_Code__c</field>
-            <table>cllease__Lease_Account__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
-            <field>Salesperson__c</field>
             <table>cllease__Lease_Account__c</table>
         </columns>
         <columns>
@@ -142,6 +131,11 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
+            <field>Account_Salesperson__c</field>
+            <table>cllease__Lease_Account__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
             <field>Bokg_Yr_Mo__c</field>
             <table>cllease__Lease_Account__c</table>
         </columns>
@@ -149,6 +143,17 @@
             <checkedByDefault>false</checkedByDefault>
             <displayNameOverride>Intrm Rent Amt</displayNameOverride>
             <field>Interim_Rent__c</field>
+            <table>cllease__Lease_Account__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Prmy Sale Rprstv Last Nm</displayNameOverride>
+            <field>Sales_Rep_Name__c</field>
+            <table>cllease__Lease_Account__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Oracle_Trade_Up_Quote_Amount__c</field>
             <table>cllease__Lease_Account__c</table>
         </columns>
         <masterLabel>LS Contracts</masterLabel>

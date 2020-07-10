@@ -473,9 +473,6 @@ global without sharing class NewCoUtility {
 			update aUpdateList;
 
 		system.debug('parentsremovd list: ' + parentsRemovedSet);
-		if (test.isrunningTest())
-			return;
-			
 		if (!parentsRemovedSet.isEmpty()){
 			for (ID p:parentsRemovedset){
 				List<Account> kidsList = [select id from account where parentId = :p];

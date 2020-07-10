@@ -20,16 +20,16 @@
     <tabs>standard-Feed</tabs>
     <tabs>standard-CollaborationGroup</tabs>
     <tabs>standard-File</tabs>
-    <tabs>collect__Contract_Status__c</tabs>
-    <tabs>cllease__Termination_Quote_Line__c</tabs>
+    <tabs>clcommon__Address__c</tabs>
+    <tabs>clcommon__Batch_Process_Log__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LightningSalesConsole_UtilityBar</utilityBar>
     <workspaceConfig>
         <mappings>
-            <tab>cllease__Termination_Quote_Line__c</tab>
+            <tab>clcommon__Address__c</tab>
         </mappings>
         <mappings>
-            <tab>collect__Contract_Status__c</tab>
+            <tab>clcommon__Batch_Process_Log__c</tab>
         </mappings>
         <mappings>
             <tab>standard-Account</tab>

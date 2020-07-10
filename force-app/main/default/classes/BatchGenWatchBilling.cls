@@ -218,7 +218,7 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
         			}
         			else{
         				m.multiple_invoices__c = false;
-        				m.consolidated_invoice__c = iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c))[0].id;
+        				m.invoice__c = iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c))[0].id;
         				m.invoiced__c = true;
         			}
         			m.amount__c = m.amount__c + ps.cllease__rental_amount__c;
@@ -249,13 +249,13 @@ global class BatchGenWatchBilling implements Database.Batchable<SObject>,Databas
         		if (iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c)) != null){
         			if (iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c)).size() > 1){
         				m.multiple_invoices__c = true;
-        				m.consolidated_invoice__c = null;
+        				m.invoice__c = null;
         				m.invoiced__c = true;
         			}
         			else{
         				m.multiple_invoices__c = false;
         				m.invoiced__c = false;
-        				m.consolidated_invoice__c = iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c))[0].id;
+        				m.invoice__c = iMap.get(string.valueOf(ps.cllease__contract__c) + '-' + string.valueOf(ps.cllease__date__c))[0].id;
         			}
         		}
         		

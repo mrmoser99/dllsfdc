@@ -10,7 +10,15 @@
             <type>group</type>
         </recipients>
         <recipients>
+            <recipient>cpaley@leasedirect.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
             <recipient>john.mccann@dllgroup.com.prod</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>pnjenga@leasedirect.com</recipient>
             <type>user</type>
         </recipients>
         <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>

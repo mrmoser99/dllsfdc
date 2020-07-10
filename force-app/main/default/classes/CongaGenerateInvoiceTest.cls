@@ -24,13 +24,17 @@ public class CongaGenerateInvoiceTest {
           address.Bill_To_Usage__c = true;
           address.Install_At__c = true;
           address.Validation_Status__c = DLLNewCoConstants.EXPERIAN_VALIDATION_STATUS;
-        insert address;
+          insert address;
+
           Date currentDate = Date.newInstance(2018, 01, 01);
+         
           cllease__Lease_Account__c ls = [select id,name,cllease__Account__r.id from cllease__Lease_Account__c where id=:LSContract.id];
           system.debug('Accout ID::::'+ls.cllease__Account__r.id);
           cllease__Lease_Account__c leac = new cllease__Lease_Account__c();
+          leac.cllease__contract_date__c = currentDate;
+          leac.cllease__Dealer_Payment_Date__c =  leac.cllease__contract_date__c.addDays(30);
           leac.id = LSContract.id;
-          leac.cllease__Maturity_Date__c = Date.newInstance(2018, 03, 02);
+          leac.cllease__Maturity_Date__c = leac.cllease__contract_date__c.addDays(1460);
           leac.cllease__Lease_Status__c = 'Active - Good Standing';
           Update leac;
           cllease__Lease_Account__c retrievedContract = [Select Id,Billing_Address__c
@@ -53,12 +57,12 @@ public class CongaGenerateInvoiceTest {
 
           cllease__Lease_Account_Due_Details__c bill = new cllease__Lease_Account_Due_Details__c();
 		
-        	 bill.cllease__Due_Date__c 			                        = Date.parse('09/1/2016');
+        	bill.cllease__Due_Date__c 			                        = Date.parse('09/1/2016');
              //bill.cllease__Account__ccllease__Late_Charge_Applied__c 	= false;
-	         bill.cllease__Lease_Account__c			                    = LSContract.Id;
-			 bill.cllease__Total_Paid_Amount__c 	                    = 49.00;
-			 bill.cllease__Total_Due_Amount__c 		                    = 100.00;
-			 bill.cllease__Status__c 				                    = 'In Process';	
+	        bill.cllease__Lease_Account__c			                    = LSContract.Id;
+			     bill.cllease__Total_Paid_Amount__c 	                    = 49.00;
+			    bill.cllease__Total_Due_Amount__c 		                    = 100.00;
+			    bill.cllease__Status__c 				                    = 'In Process';	
         	 bill.cllease__Consolidated_Invoice__c                                        =  inv.Id;
 												  
 		     insert bill;

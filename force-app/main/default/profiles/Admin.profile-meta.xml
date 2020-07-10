@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Profile xmlns="http://soap.sforce.com/2006/04/metadata">
     <applicationVisibilities>
-        <application>Application_Logging</application>
-        <default>false</default>
-        <visible>true</visible>
-    </applicationVisibilities>
-    <applicationVisibilities>
-        <application>Credit_Decisioning</application>
+        <application>Application_Logging_Lightning</application>
         <default>false</default>
         <visible>true</visible>
     </applicationVisibilities>
@@ -41,7 +36,7 @@
         <visible>true</visible>
     </applicationVisibilities>
     <applicationVisibilities>
-        <application>Interface_Monitor</application>
+        <application>Interface_Monitor_Lightning</application>
         <default>false</default>
         <visible>true</visible>
     </applicationVisibilities>
@@ -56,11 +51,6 @@
         <visible>true</visible>
     </applicationVisibilities>
     <applicationVisibilities>
-        <application>SAI_Monitoring</application>
-        <default>false</default>
-        <visible>true</visible>
-    </applicationVisibilities>
-    <applicationVisibilities>
         <application>SAI_Monitoring_Lightning</application>
         <default>false</default>
         <visible>true</visible>
@@ -68,7 +58,7 @@
     <applicationVisibilities>
         <application>Utilites</application>
         <default>false</default>
-        <visible>true</visible>
+        <visible>false</visible>
     </applicationVisibilities>
     <applicationVisibilities>
         <application>standard__AllTabSet</application>
@@ -173,10 +163,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>ApplyPayment</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>ApplyPaymentProcessingJob</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -186,10 +172,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>AssetSaleProcessing</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>BaseModalController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -249,10 +231,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>CLLeaseTerminationQuoteServices</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>CLSCustomException</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -262,10 +240,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CLSTerminationUtil</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>CLS_LeaseAccountObjectHierarchy</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -349,10 +323,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>ContractEquipmentSelector</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>ContractProcessor</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -369,10 +339,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>CreateServiceCharge</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>CustomLateChargeCreator</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -382,10 +348,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>DLLNewCoConstants</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>DMBIConstants</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -437,18 +399,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>DeleteServiceCharge</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>DocuSign</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>DocusignAuth</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>DocusignUtil</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -462,10 +412,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>EXExposureController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>EquipmentDomainObject</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -645,10 +591,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>FMZ_QuickActionController_Temp</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>FMZ_WelcomeMessageController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -813,19 +755,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>JobSharing</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>LPTTriggerHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LeaseAccountObjectHierarchy</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>LendingConstants</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -957,27 +887,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>TerminationActionUnit</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>TerminationQuoteAction</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>TerminationQuoteGenController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>TerminationQuoteViewController</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>TerminationTriggerHandler</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>TerminationUtil</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1033,10 +943,6 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>TestCAMSUtility</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
         <apexClass>TestCDManualController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1062,10 +968,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>TestCreatePermissionsBatchJob</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>TestCreateServiceCharge</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1310,10 +1212,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>calculateEstPropertyTax</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>checkRecursive</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1660,11 +1558,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Application_Fee__c.Calculating_Frequency__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Application_Fee__c.Equipment_List__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1715,37 +1608,7 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
-        <field>Application_Fee__c.IsDelete__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Application_Fee__c.Number_Of_Terms__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
         <field>Application_Fee__c.Number_of_Payments__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Application_Fee__c.Parent_Application_Fee__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Application_Fee__c.Parent_Id__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Application_Fee__c.ProrateAmount__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Application_Fee__c.Prorate_Per_Asset__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1781,11 +1644,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Bill_Monitor__c.Base_Difference__c</field>
-        <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>true</editable>
-        <field>Bill_Monitor__c.Consolidated_Invoice__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -6094,6 +5952,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Lease_Exposure_Snapshot__c.Tax_on_Rent_Billed_Not_Paid__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Lease_Exposure_Snapshot__c.Termination_Quote_Fees__c</field>
         <readable>true</readable>
@@ -8684,15 +8547,6 @@
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
         <modifyAllRecords>true</modifyAllRecords>
-        <object>Insurance_Claim__c</object>
-        <viewAllRecords>true</viewAllRecords>
-    </objectPermissions>
-    <objectPermissions>
-        <allowCreate>true</allowCreate>
-        <allowDelete>true</allowDelete>
-        <allowEdit>true</allowEdit>
-        <allowRead>true</allowRead>
-        <modifyAllRecords>true</modifyAllRecords>
         <object>Int_Agreement_Classification__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
@@ -9595,14 +9449,6 @@
         <apexPage>UnderConstruction</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
-    <pageAccesses>
-        <apexPage>terminationGenQuote</apexPage>
-        <enabled>true</enabled>
-    </pageAccesses>
-    <pageAccesses>
-        <apexPage>terminationQuote</apexPage>
-        <enabled>true</enabled>
-    </pageAccesses>
     <recordTypeVisibilities>
         <default>true</default>
         <recordType>Address__c.Dealer</recordType>
@@ -9889,7 +9735,7 @@
     </tabVisibilities>
     <tabVisibilities>
         <tab>Run_Batch</tab>
-        <visibility>DefaultOn</visibility>
+        <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>SAI_Application_Agreement__c</tab>
@@ -9952,10 +9798,6 @@
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
-        <tab>Service_Fee_Escalation_Config__c</tab>
-        <visibility>DefaultOn</visibility>
-    </tabVisibilities>
-    <tabVisibilities>
         <tab>Supertrump_Log__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
@@ -9968,7 +9810,15 @@
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>clcommon__Address__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>clcommon__Agreement__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>clcommon__Batch_Process_Log__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
@@ -9989,10 +9839,6 @@
     </tabVisibilities>
     <tabVisibilities>
         <tab>clcommon__NavigationStructure__c</tab>
-        <visibility>DefaultOn</visibility>
-    </tabVisibilities>
-    <tabVisibilities>
-        <tab>clcommon__Payment_Mode__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
@@ -10048,11 +9894,7 @@
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
-        <tab>cllease__Termination_Quote_Line__c</tab>
-        <visibility>DefaultOn</visibility>
-    </tabVisibilities>
-    <tabVisibilities>
-        <tab>collect__Contract_Status__c</tab>
+        <tab>collect__Hardship__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
@@ -10530,19 +10372,11 @@
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
-        <name>ManageReleaseUpdates</name>
-    </userPermissions>
-    <userPermissions>
-        <enabled>true</enabled>
         <name>ManageRemoteAccess</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
         <name>ManageRoles</name>
-    </userPermissions>
-    <userPermissions>
-        <enabled>true</enabled>
-        <name>ManageSandboxes</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
@@ -10654,10 +10488,6 @@
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>
-        <name>SkipIdentityConfirmation</name>
-    </userPermissions>
-    <userPermissions>
-        <enabled>true</enabled>
         <name>SolutionImport</name>
     </userPermissions>
     <userPermissions>
@@ -10763,5 +10593,9 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>ViewSetup</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>ViewUserPII</name>
     </userPermissions>
 </Profile>

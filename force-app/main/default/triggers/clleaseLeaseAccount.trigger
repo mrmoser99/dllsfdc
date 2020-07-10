@@ -9,6 +9,7 @@
 * This trigger sends off a welcome packet when the contract is booked
 *   05/11/19 - CLS modified to support canceled contract as part new inovice changes
 *   2/4/2020 - modify welcome packet send
+*   7/9/2020 - MRM made our system work again after Q2 hacked and did not test
 *
 ******************************************************************************/
 trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
@@ -17,13 +18,16 @@ trigger clleaseLeaseAccount on cllease__Lease_Account__c (before update) {
     Set<Id> canceledContractsIds = new Set<Id>();
     
     for(cllease__Lease_Account__c contract : trigger.new){
+        System.debug('-----------------contract created in clleaseLeaseAccount : '+contract.cllease__Lease_Status__c);
         if(contract.cllease__Lease_Status__c == 'CANCELED'
           	|| contract.cllease__Lease_Status__c == 'CHARGED OFF'){
                 canceledContractsIds.add(contract.Id);
            }
     }
     
-    updateInvoiceDetails(canceledContractsIds);
+    //if(canceledContractsIds.size() > 1) {
+        updateInvoiceDetails(canceledContractsIds);
+    //}
     // Updating invoiced flag on bills and charges Codes end 
    
     //only send welcome packet if this is a single lease update

@@ -321,6 +321,7 @@ public with sharing class CLSTerminationUtil {
                     paymentTxnMap.put(billNumber, pmtTxn);
                 }
                 // Creating Disbursments transactions for passhrough as specified in termination config Lines
+                cllease__Transaction_Sub_Type__c txnSubType = [SELECT Id FROM cllease__Transaction_Sub_Type__c WHERE Name = 'Termination Service Passthrough' LIMIT 1];
                 if(disbTxnFieldAPINameList.size() > 0) {
                     for(String disbBillAPIName: disbTxnFieldAPINameList) {
                         if(billDueDetailLineMap.containsKey(bill.Id)) {
@@ -344,7 +345,7 @@ public with sharing class CLSTerminationUtil {
                                 disb.cllease__Expense_Date__c       = currentSysDate;
                                 disb.clcommon__Account__c           = serverFeesPayToId;
                                 disb.clcommon__Transaction_Date__c  = currentSysDate;
-                                //disb.Transaction_Sub_Type__c        = subTypeIdsByName.get(contractFee.Fee_Definition__r.Name);
+                                disb.cllease__Transaction_Sub_Type__c  = txnSubType.Id;
                                 disb.clcommon__Transaction_Type__c  = 'DISBURSEMENT';
                                 disb.clcommon__Net_Amount__c        = serviceAmount;
                                 disb.clcommon__Tax_Amount__c        = 0;

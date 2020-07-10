@@ -2,6 +2,7 @@
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <alerts>
         <fullName>Account_out_of_Default</fullName>
+        <ccEmails>jconrad@leasedirect.com</ccEmails>
         <description>Account out of Default</description>
         <protected>false</protected>
         <recipients>
@@ -26,8 +27,13 @@
     </alerts>
     <alerts>
         <fullName>Tax_Exemption_Email_Account</fullName>
+        <ccEmails>kjud@leasedirect.com</ccEmails>
         <description>Tax Exemption Email Account</description>
         <protected>false</protected>
+        <recipients>
+            <recipient>bstow@leasedirect.com.newco</recipient>
+            <type>user</type>
+        </recipients>
         <recipients>
             <recipient>chandi.freeman@dllgroup.com.newco</recipient>
             <type>user</type>
@@ -37,7 +43,15 @@
             <type>user</type>
         </recipients>
         <recipients>
+            <recipient>mfernandez@leasedirect.com.newco</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
             <recipient>smclachlan@leasedirect.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <recipient>sneh.patel@dllgroup.com.newco</recipient>
             <type>user</type>
         </recipients>
         <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>

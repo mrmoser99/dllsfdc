@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#0070D2</headerColor>
+        <logo>images_1</logo>
+        <logoVersion>1</logoVersion>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
     <formFactors>Large</formFactors>
     <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
-    <label>Credit Decisioning Lightning</label>
+    <label>Credit Decisioning</label>
     <navType>Standard</navType>
     <profileActionOverrides>
         <actionName>View</actionName>
@@ -63,7 +69,6 @@
     <tabs>ICS_Application__c</tabs>
     <tabs>CAMS_Check__c</tabs>
     <tabs>ICS_Log__c</tabs>
-    <tabs>collect__Contract_Status__c</tabs>
-    <tabs>cllease__Termination_Quote_Line__c</tabs>
+    <tabs>clcommon__Batch_Process_Log__c</tabs>
     <uiType>Lightning</uiType>
 </CustomApplication>

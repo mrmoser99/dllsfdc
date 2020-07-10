@@ -1,26 +1,22 @@
-<apex:page standardController="Address__c" tabStyle="Address__c" extensions="AddressDataQualityExt"
-    action="{!PageRenderer.RedirectToStandardPageInCaseOfAnError}" applybodytag="false">
-
+<apex:page standardController="Address__c" tabStyle="Address__c" extensions="AddressDataQualityExt" action="{!PageRenderer.RedirectToStandardPageInCaseOfAnError}" applybodytag="false">
     <body id="lightningStyle">
         <apex:stylesheet value="{!URLFOR($Resource.EDQ__DynamicPageCss)}" />
-        <apex:includeScript value="{! URLFOR($Resource.EDQ__EDQAssets,'/scripts/EDQScripts.js')}" />
-        <script type="text/javascript">
-            if (ForceUI.isSalesforce1()) {
-                document.write
-                    ('<link rel="stylesheet" type="text/css" href="{!urlfor($Resource.EDQ__EDQAssets,'styles/LightningCss.css')  } " />');
-            }
-        </script>
+        <apex:stylesheet value="{!IF(PageRenderer.IsSalesforce1 == true, urlfor($Resource.EDQ__EDQAssets, 'styles/LightningCss.css') , '' )}" />
+
         <apex:form styleClass="edq-{!PageRenderer.SObjectName}" id="experianForm">
             <apex:pageMessages id="messages" />
-            <apex:sectionheader title="{!$ObjectType.Address__c.label} Edit" subtitle="{!IF(ISNULL(Address__c.Name), 'New Address__c', Address__c.Name)}" />
+
+            <apex:sectionheader title="{!$ObjectType.Address__c.label} Edit" subtitle="{!IF(ISNULL(Address__c.Name), 'New Address', Address__c.Name)}"/>
+
             <EDQ:DuplicatesTable duplicates="{!PageRenderer.Duplicates}" pagerenderer="{!PageRenderer}" />
-            <div style="display:none">
-                <apex:inputField value="{!Address__c.Id}" /> 
-            </div>
+
+            <div style="display:none">  <apex:inputField value="{!Address__c.Id}" /> </div>
+
             <apex:dynamicComponent componentValue="{!PageRenderer.PageBody}" />
             <apex:outputPanel id="experianDataQuality">
                 <EDQ:DataQualityDynamic PageRenderer="{!PageRenderer}" />
             </apex:outputPanel>
+
             <EDQ:DataQualityDynamicScripts PageRenderer="{!PageRenderer}" />
         </apex:form>
     </body>

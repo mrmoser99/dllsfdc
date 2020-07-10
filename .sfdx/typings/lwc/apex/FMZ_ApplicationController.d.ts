@@ -4,9 +4,6 @@ declare module "@salesforce/apex/FMZ_ApplicationController.clearPricing" {
 declare module "@salesforce/apex/FMZ_ApplicationController.generatePricing" {
   export default function generatePricing(param: {applicationId: any}): Promise<any>;
 }
-declare module "@salesforce/apex/FMZ_ApplicationController.calcUpfrontTax" {
-  export default function calcUpfrontTax(param: {applicationId: any}): Promise<any>;
-}
 declare module "@salesforce/apex/FMZ_ApplicationController.checkCompletion" {
   export default function checkCompletion(param: {applicationId: any, sections: any}): Promise<any>;
 }

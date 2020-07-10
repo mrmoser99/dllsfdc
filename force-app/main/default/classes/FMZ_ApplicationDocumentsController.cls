@@ -1,3 +1,9 @@
+/*
+	Change Log:
+
+	07//08/2020 - MRM Uploaded docs will now go into customer.name folder
+*/
+
 public without sharing class FMZ_ApplicationDocumentsController {
 	public static String CONGA_SUCCESS_MESSAGE = 'SUCCESS';
 	public static String LEASE_AGREEMENT_CATEGORY = 'Lease Documents';
@@ -52,6 +58,12 @@ public without sharing class FMZ_ApplicationDocumentsController {
 	@AuraEnabled
 	public static void uploadAttachment(String applicationId, String fileName, String contentType, String base64Body){
 
+		genesis__Applications__c a = [
+				SELECT genesis__Account__r.name
+				FROM genesis__Applications__c
+				WHERE Id = :applicationId
+		];
+
 		system.debug('***************** in upload attachment');
 		system.debug('base body size: ' + base64Body.length()) ;
 		Attachment att = new Attachment(
@@ -63,14 +75,26 @@ public without sharing class FMZ_ApplicationDocumentsController {
 		insert att;
 		system.debug('after insert');
 
-		clcommon__Document_Category__c category = [
+		clcommon__Document_Category__c category;
+		if (Test.isRunningTest())
+			 category = [
 				SELECT Id
 				FROM clcommon__Document_Category__c
 				WHERE
 				clcommon__Category_Name__c =: LEASE_AGREEMENT_CATEGORY
 				AND genesis__Application__c =: applicationId
 				LIMIT 1
-		];
+			];
+		else {
+			category = [
+				SELECT Id
+				FROM clcommon__Document_Category__c
+				WHERE
+				clcommon__Category_Name__c =: a.genesis__Account__r.name
+				AND genesis__Application__c =: applicationId
+				LIMIT 1
+			];
+		}
 
 		clcommon__Category_Attachment_Association__c association = new clcommon__Category_Attachment_Association__c(
 				clcommon__Attachment_Id__c = att.Id,

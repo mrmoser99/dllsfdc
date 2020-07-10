@@ -11,6 +11,6 @@
     <tabs>standard-Contact</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
-    <tabs>collect__Contract_Status__c</tabs>
-    <tabs>cllease__Termination_Quote_Line__c</tabs>
+    <tabs>clcommon__Address__c</tabs>
+    <tabs>clcommon__Batch_Process_Log__c</tabs>
 </CustomApplication>

@@ -3,6 +3,7 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>Committed__c</columns>
+    <columns>VENDOR_NUMBER__c</columns>
     <columns>CONTRACT_NUMBER__c</columns>
     <columns>YTD_LEASE_INCOME__c</columns>
     <columns>YTD_RESIDUAL_INCOME__c</columns>

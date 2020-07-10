@@ -34,8 +34,7 @@ public with sharing class FMZ_ApplicationCustomerControllerTest {
 			genesis__Product_Sub_Type__c = 'FINANCE LEASE',
 			genesis__Term__c = 12,
 			Dealer_Program__c = agreement.Id,
-			genesis__Account__c = acc.Id,
-			genesis__Tax_Amount__c = 0
+			genesis__Account__c = acc.Id
 		);
 		insert app;
 

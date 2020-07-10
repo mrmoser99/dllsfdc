@@ -2,6 +2,8 @@
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
     <brand>
         <headerColor>#0070D2</headerColor>
+        <logo>images_33</logo>
+        <logoVersion>1</logoVersion>
         <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
     </brand>
     <formFactors>Large</formFactors>
@@ -43,8 +45,7 @@
     </profileActionOverrides>
     <tabs>standard-home</tabs>
     <tabs>clcommon__Consolidated_Invoice__c</tabs>
-    <tabs>collect__Contract_Status__c</tabs>
-    <tabs>cllease__Termination_Quote_Line__c</tabs>
+    <tabs>clcommon__Batch_Process_Log__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Invoice_Adjustments_UtilityBar</utilityBar>
 </CustomApplication>

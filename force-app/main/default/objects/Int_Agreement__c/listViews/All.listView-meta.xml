@@ -15,7 +15,6 @@
     <columns>Floating_Rate_Cap__c</columns>
     <columns>Syndication_Indicator__c</columns>
     <columns>Syndication_Percentage__c</columns>
-    <columns>Days_In_Arrears__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

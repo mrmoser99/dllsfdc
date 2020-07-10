@@ -12,14 +12,14 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>CAMS Endpoint</shortDescription>
-        <value>https://apiacc.dllgroup.com/exts/cams-risk-rating/acc</value>
+        <value>https://apiacc.dllgroup.com/exts/cams-risk-rating</value>
     </labels>
     <labels>
         <fullName>Conga_Quote_URL</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Conga Quote URL</shortDescription>
-        <value>https://c.cs93.visual.force.com</value>
+        <value>https://c.cs62.visual.force.com</value>
     </labels>
     <labels>
         <fullName>Conga_URL</fullName>
@@ -35,20 +35,6 @@
         <protected>false</protected>
         <shortDescription>Credit Engine</shortDescription>
         <value>ICS</value>
-    </labels>
-    <labels>
-        <fullName>DefaultEscalationFrequency</fullName>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>DefaultEscalationFrequency</shortDescription>
-        <value>MONTHLY</value>
-    </labels>
-    <labels>
-        <fullName>DefaultFrequencyValue</fullName>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>DefaultFrequencyValue</shortDescription>
-        <value>3</value>
     </labels>
     <labels>
         <fullName>Default_Rate</fullName>
@@ -84,14 +70,14 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Docusign Equipment Hold Contact Id</shortDescription>
-        <value>0034F00000bUQww</value>
+        <value>0033u00001EpnlK</value>
     </labels>
     <labels>
         <fullName>Docusign_Integrator_Key</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Docusign Integrator Key</shortDescription>
-        <value>31ebe460-aa47-45df-8bd9-b6f806dbdf34</value>
+        <value>af51d798-2e2b-420d-8499-255dc4fc67fc</value>
     </labels>
     <labels>
         <fullName>Docusign_Lease_Agreement</fullName>
@@ -99,7 +85,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Docusign Lease Agreement</shortDescription>
-        <value>a2m4F000000E4ku</value>
+        <value>a2m3u00000170vJ</value>
     </labels>
     <labels>
         <fullName>Docusign_Lease_Query</fullName>
@@ -121,7 +107,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Docusign Rest API URL</shortDescription>
-        <value>https://demo.docusign.net/restapi/v2</value>
+        <value>https:/demo.docusign.net/restapi/v2</value>
     </labels>
     <labels>
         <fullName>Docusign_Run_As_User_GUI</fullName>
@@ -135,7 +121,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>Docusign Send As User Id</shortDescription>
-        <value>0054F000002s1tX</value>
+        <value>0053u000002dUyR</value>
     </labels>
     <labels>
         <fullName>Docusign_Signing_Group</fullName>
@@ -158,7 +144,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>FMZ Dealer Community Base URL</shortDescription>
-        <value>https://acceptance-leasing.cs93.force.com/dealer/</value>
+        <value>https://dev-newcofinance.cs62.force.com/dealer</value>
     </labels>
     <labels>
         <fullName>FMZ_EDQ_Auth_Token</fullName>
@@ -174,7 +160,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>FMZ_Portal_Soap_Url</shortDescription>
-        <value>https://newco--dev.my.salesforce.com//dealer/services/Soap/u/39.0/00D4F0000000aGv</value>
+        <value>https://dev-newcofinance.cs62.force.com/dealer/services/Soap/u/39.0/00D4F0000000aGv</value>
     </labels>
     <labels>
         <fullName>FMZ_Price_Exceeds_MSRP_Warning_Percent</fullName>
@@ -259,7 +245,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>ICS Reply To</shortDescription>
-        <value>https://cs93.salesforce.com/services/Soap/class/ICSResponse</value>
+        <value>https://newco--dev.my.salesforce.com/services/Soap/class/ICSResponse</value>
     </labels>
     <labels>
         <fullName>ICS_Source_System</fullName>
@@ -388,13 +374,6 @@
         <value>https://newco--dev.my.salesforce.com/</value>
     </labels>
     <labels>
-        <fullName>Org_Wide_Email</fullName>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>Org Wide Email</shortDescription>
-        <value>0D21I000000CdKt</value>
-    </labels>
-    <labels>
         <fullName>PM_Endpoint</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -406,14 +385,14 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>SuperTrumpURL</shortDescription>
-        <value>https://pilots.x-trump.com/generic/stserver.aspx</value>
+        <value>https://st3.supertrump.com/550846/stserver.aspx</value>
     </labels>
     <labels>
         <fullName>UBO_Form</fullName>
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>UBO Form</shortDescription>
-        <value>a2m4F000000E56C</value>
+        <value>a2m3u000002z9k9</value>
     </labels>
     <labels>
         <fullName>Welcome_Email</fullName>
@@ -446,13 +425,6 @@ The NewCo Team&lt;br/&gt;
         <protected>false</protected>
         <shortDescription>Welcome Ins Doc</shortDescription>
         <value>0151I000000XidX</value>
-    </labels>
-    <labels>
-        <fullName>Welcome_Packet_Email_Template</fullName>
-        <language>en_US</language>
-        <protected>false</protected>
-        <shortDescription>Welcome Packet Email Template</shortDescription>
-        <value>00X4F000000iHKW</value>
     </labels>
     <labels>
         <fullName>Welcome_Query1</fullName>

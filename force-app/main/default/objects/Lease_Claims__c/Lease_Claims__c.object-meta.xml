@@ -66,8 +66,8 @@
     </nameField>
     <pluralLabel>Lease Claims</pluralLabel>
     <searchLayouts>
-        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
         <excludedStandardButtons>New</excludedStandardButtons>
+        <excludedStandardButtons>OpenListInQuip</excludedStandardButtons>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <visibility>Public</visibility>

@@ -5,17 +5,33 @@
 *
 *   5/4/18 - MRM Created
 *   9/19/19 - MRM Changed invoice__c to clcommon__Consolidated_Invoice__c
-*
+*   7/7/2020 - MRM Addedlogic to auto adjust in pnc if amount of invoice changes due to on account or other
 * This trigger places udpates the conga url to be used by Conductor
 *
 ******************************************************************************/
 
-trigger invoice2 on clcommon__Consolidated_Invoice__c (after update, after insert) {
+trigger invoice2 on clcommon__Consolidated_Invoice__c (before update, after update, after insert) {
     
     if (newCoUtility2.hasAlreadyUpdated()){
         system.debug('getting out....');
         return;
     } 
+
+    if (trigger.isBefore && trigger.isUpdate){
+
+        integer j = 0;
+        for (clcommon__Consolidated_Invoice__c i:trigger.new){
+            if (trigger.new[j].Balance_Invoice_Amount__c != trigger.old[j].Balance_Invoice_Amount__c && i.Balance_Invoice_Amount__c != 0 && i.Balance_Invoice_Amount__c != Null && 
+            i.sent_to_pnc__c == true) {
+                i.Adjustment_Status__c = 'Approved';
+                i.adjusted_in_pnc__c = false;
+                i.adjusted_in_pnc_date_time__c = null;
+            }
+            j++;
+        }
+        return;
+    }
+
             
     /* get settins from custom settings */
     String DueDetailsLines = CongaURL_Settings__c.getInstance().DueDetailsLines__c;
@@ -59,6 +75,7 @@ trigger invoice2 on clcommon__Consolidated_Invoice__c (after update, after inser
     List<clcommon__Consolidated_Invoice__c> uList = new List<clcommon__Consolidated_Invoice__c>();
     
     /* conga parms */
+    
     for (clcommon__Consolidated_Invoice__c i:trigger.new){
          
         
@@ -93,7 +110,9 @@ trigger invoice2 on clcommon__Consolidated_Invoice__c (after update, after inser
             String part7 = system.label.invoice_conga_parms;  
             String congaURL  = part1+part2+part3+part4+part5+part6+part7;
             updateInvoiceMap.put(i.id,congaURL);
-       }
+
+           
+       } 
     }
     
     if (!updateInvoiceMap.isEmpty()){

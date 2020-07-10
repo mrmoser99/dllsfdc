@@ -819,11 +819,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Application_Fee__c.Calculating_Frequency__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Application_Fee__c.Equipment_List__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -873,39 +868,9 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
-        <field>Application_Fee__c.IsDelete__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Application_Fee__c.Number_Of_Terms__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
         <editable>true</editable>
         <field>Application_Fee__c.Number_of_Payments__c</field>
         <readable>true</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Application_Fee__c.Parent_Application_Fee__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Application_Fee__c.Parent_Id__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Application_Fee__c.ProrateAmount__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Application_Fee__c.Prorate_Per_Asset__c</field>
-        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -940,11 +905,6 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Bill_Monitor__c.Base_Difference__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
-        <field>Bill_Monitor__c.Consolidated_Invoice__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -5640,6 +5600,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Lease_Exposure_Snapshot__c.Snapshot_Date__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Lease_Exposure_Snapshot__c.Tax_on_Rent_Billed_Not_Paid__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -16163,6 +16128,10 @@
     </recordTypeVisibilities>
     <tabSettings>
         <tab>Application_Fee__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
+    <tabSettings>
+        <tab>clcommon__Address__c</tab>
         <visibility>Visible</visibility>
     </tabSettings>
     <tabSettings>

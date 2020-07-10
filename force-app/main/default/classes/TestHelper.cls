@@ -11,7 +11,7 @@ public with sharing class TestHelper {
     public static cllease__Lease_Account__c createContract() {
         cllease.TestHelper.createSeedDataForTesting();
         // Setting Current System Date in Test Context
-        Date currentSystemDate = System.today(); 
+        Date currentSystemDate = Date.newInstance(2018, 03, 31);
         // 1. Pre-Setup
         clcommon__Fee_Definition__c  dummyFee   = cllease.Testhelper.createLeaseFee();
         dummyFee.clcommon__Amount__c            = 100;
@@ -91,18 +91,18 @@ public with sharing class TestHelper {
         insert dealerProgram;
 
         Address__c address = new Address__c (
-			Address_Line_1__c   = '123 Main Street',
-			City__c             = 'Morristown',
-			State__c            = 'NJ',
-			County__c           = 'Morris',
-			Country__c          = 'USA',
-			Account__c          = dummyAccount.Id,
-			Bill_To_Usage__c    = true,
-			Install_At__c       = true,
+      Address_Line_1__c   = '123 Main Street',
+      City__c             = 'Morristown',
+      State__c            = 'NJ',
+      County__c           = 'Morris',
+      Country__c          = 'USA',
+      Account__c          = dummyAccount.Id,
+      Bill_To_Usage__c    = true,
+      Install_At__c       = true,
             Validation_Status__c = DLLNewCoConstants.EXPERIAN_VALIDATION_STATUS,
             Zip_Code__c         = '95307-7506'
-		);
-		insert address;
+    );
+    insert address;
 
         // 3.Creating Contract
         Date currentDate = currentSystemDate;
@@ -271,7 +271,7 @@ public with sharing class TestHelper {
         customset.TrustedID__c='9nh6TynIaLCo';
         customset.XSI__c='urn:vertexinc:o-series:tps:8:0';
         customset.Company__c='DLLOS';
- 	    customset.Division__c='DLLFS';
+       customset.Division__c='DLLFS';
         customset.serviceNS__c='https://dllgroup.ondemand.vertexinc.com/vertex-ws/services/CalculateTaxString';
         insert customset; 
         return customset;

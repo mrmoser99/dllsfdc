@@ -2035,6 +2035,7 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Gross AR Rent</displayNameOverride>
             <field>Rent__c</field>
             <table>cllease__Lease_Account__c.Lease_Exposure__r</table>
         </columns>

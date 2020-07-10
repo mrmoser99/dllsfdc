@@ -6,13 +6,14 @@
     <columns>Base_Payment_Amount__c</columns>
     <columns>Agreement_Original_Duration__c</columns>
     <columns>Agreement_Rate_Percentage__c</columns>
+    <columns>Cost_of_funds_Percentage__c</columns>
     <columns>Application_Internal_Status_Code__c</columns>
     <columns>Net_Principal_Amount__c</columns>
     <columns>Application_Internal_Status_Date__c</columns>
     <columns>Application_Internal_Status_Detail_Code__c</columns>
     <columns>Application_Internal_Status_Detail_Date__c</columns>
+    <columns>Gross_Principal_Amount__c</columns>
     <columns>System_Selling_Party_Description__c</columns>
-    <columns>System_Selling_Party_Number__c</columns>
     <columns>System_Program_Description__c</columns>
     <columns>System_Program_Number__c</columns>
     <filterScope>Everything</filterScope>

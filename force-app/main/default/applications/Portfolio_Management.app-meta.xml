@@ -15,8 +15,7 @@
     <tabs>Lease_OLM_Quote__c</tabs>
     <tabs>PM_Log__c</tabs>
     <tabs>PM_Oauth_Token__c</tabs>
-    <tabs>collect__Contract_Status__c</tabs>
-    <tabs>cllease__Termination_Quote_Line__c</tabs>
+    <tabs>clcommon__Batch_Process_Log__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Portfolio_Management_UtilityBar</utilityBar>
 </CustomApplication>

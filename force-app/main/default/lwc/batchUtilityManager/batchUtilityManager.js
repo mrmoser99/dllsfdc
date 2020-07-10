@@ -1,7 +1,6 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement,  track } from 'lwc';
 import runJob from "@salesforce/apex/BatchUtility.runJob"; 
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import PICTURE from '@salesforce/resourceUrl/Huskies';
 
 
 
@@ -16,8 +15,7 @@ export default class batchUtilityManger extends LightningElement {
 	_title = 'Notice';
     message = 'The daily job has been submitted!';
 	variant = 'Success';
-	@api picture = PICTURE;
-
+	
 	handleNavItemSelected(event) {
 		
 		const selectedItemName = event.detail.itemName;
