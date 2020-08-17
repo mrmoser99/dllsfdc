@@ -4,13 +4,17 @@
 * Log:
 *
 * 	5/4/18 - MRM Created
+*   7/21/2020 - MRM create return for scramble class
 *
 * This trigger udpates the email to contact and billing contact on the account
 * Also, a system contact is maintained so that conga has a contact to send invoices to
 *
 ******************************************************************************/
 trigger Address on Address__c (before insert, before update) {
-    
+	
+	if (Scramble3.isRunning == true)
+		return; 
+
     Set<ID> accountIdSet = new Set<ID>();
     
     for (Address__c a:trigger.new){

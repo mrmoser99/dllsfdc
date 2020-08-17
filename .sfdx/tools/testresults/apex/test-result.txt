@@ -1,0 +1,33 @@
+=== Test Reports
+FORMAT  FILE
+──────  ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+txt     c:\Users\MoserM2\OneDrive - De Lage Landen International B.V\myDev\myDev\.sfdx\tools\testresults\apex\test-result.txt
+txt     c:\Users\MoserM2\OneDrive - De Lage Landen International B.V\myDev\myDev\.sfdx\tools\testresults\apex\test-run-id.txt
+junit   c:\Users\MoserM2\OneDrive - De Lage Landen International B.V\myDev\myDev\.sfdx\tools\testresults\apex\test-result-7075C00000fllmo-junit.xml
+json    c:\Users\MoserM2\OneDrive - De Lage Landen International B.V\myDev\myDev\.sfdx\tools\testresults\apex\test-result-7075C00000fllmo.json
+
+=== Test Results
+TEST NAME           OUTCOME  MESSAGE  RUNTIME (MS)
+──────────────────  ───────  ───────  ────────────
+TestScramble.test1  Pass              5343
+
+=== Test Summary
+NAME                 VALUE
+───────────────────  ─────────────────────────────────────
+Outcome              Passed
+Tests Ran            1
+Passing              1
+Failing              0
+Skipped              0
+Pass Rate            100%
+Fail Rate            0%
+Test Start Time      Jul 21, 2020 12:05 PM
+Test Execution Time  5343 ms
+Test Total Time      5343 ms
+Command Time         8180 ms
+Hostname             https://newco--dev.my.salesforce.com
+Org Id               00D5C0000008qu6UAA
+Username             mark.moser@dllgroup.com.dev
+Test Run Id          7075C00000fllmo
+User Id              0051I000000cQh5QAE
+

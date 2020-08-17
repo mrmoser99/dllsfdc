@@ -12,5 +12,7 @@
     "salesforcedx-vscode-core.show-cli-success-msg": false,
     "html.suggest.angular1": false,
     "html.suggest.ionic": false,
-    "svn.ignoreMissingSvnWarning": true
+    "svn.ignoreMissingSvnWarning": true,
+    "xml.java.home": "C:\\Program Files (x86)\\Java\\jdk1.8.0_251\\bin",
+    "java.home": "C:\\Program Files (x86)\\Java\\jdk1.8.0_251\\bin"
 }

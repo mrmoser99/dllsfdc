@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 1,
+        "passing": 1,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Jul 21, 2020 12:05 PM",
+        "testExecutionTime": "5343 ms",
+        "testTotalTime": "5343 ms",
+        "commandTime": "8180 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000fllmo",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v48.0/tooling/sobjects/ApexTestResult/07M5C000006QM2MUAW"
+            },
+            "Id": "07M5C000006QM2MUAW",
+            "QueueItemId": "7095C000000okY9QAI",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000fllmoQAA",
+            "MethodName": "test1",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v48.0/tooling/sobjects/ApexClass/01p5C000002OCt6QAG"
+                },
+                "Id": "01p5C000002OCt6QAG",
+                "Name": "TestScramble",
+                "NamespacePrefix": null
+            },
+            "RunTime": 5343,
+            "FullName": "TestScramble.test1"
+        }
+    ]
+}

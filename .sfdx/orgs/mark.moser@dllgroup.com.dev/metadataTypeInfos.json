@@ -1,29 +1,6 @@
 {
     "sourceApiVersion": "48.0",
     "typeDefs": {
-        "Audience": {
-            "metadataName": "Audience",
-            "isAddressable": true,
-            "isSourceTracked": true,
-            "ext": "audience",
-            "hasContent": false,
-            "defaultDirectory": "audience",
-            "nameForMsgs": "Audience",
-            "nameForMsgsPlural": "Audiences",
-            "contentIsBinary": false,
-            "hasStandardMembers": false,
-            "deleteSupported": true,
-            "decompositionConfig": {
-                "strategy": "nonDecomposed",
-                "workspaceStrategy": "nonDecomposed",
-                "commitStrategy": "fineGrainTracking",
-                "metadataName": "Audience",
-                "useSparseComposition": false,
-                "decompositions": [],
-                "contentStrategy": "nonDecomposedContent"
-            },
-            "hasVirtualSubtypes": false
-        },
         "AppointmentSchedulingPolicy": {
             "metadataName": "AppointmentSchedulingPolicy",
             "isAddressable": true,
@@ -4555,6 +4532,29 @@
             },
             "hasVirtualSubtypes": false
         },
+        "ParticipantRole": {
+            "metadataName": "ParticipantRole",
+            "isAddressable": true,
+            "isSourceTracked": true,
+            "ext": "participantRole",
+            "hasContent": false,
+            "defaultDirectory": "participantRoles",
+            "nameForMsgs": "Participant Role",
+            "nameForMsgsPlural": "Participant Roles",
+            "contentIsBinary": false,
+            "hasStandardMembers": false,
+            "deleteSupported": true,
+            "decompositionConfig": {
+                "strategy": "nonDecomposed",
+                "workspaceStrategy": "nonDecomposed",
+                "commitStrategy": "fineGrainTracking",
+                "metadataName": "ParticipantRole",
+                "useSparseComposition": false,
+                "decompositions": [],
+                "contentStrategy": "nonDecomposedContent"
+            },
+            "hasVirtualSubtypes": false
+        },
         "SurveySettings": {
             "metadataName": "SurveySettings",
             "isAddressable": true,
@@ -4618,6 +4618,29 @@
                 "workspaceStrategy": "nonDecomposed",
                 "commitStrategy": "fineGrainTracking",
                 "metadataName": "IframeWhiteListUrlSettings",
+                "useSparseComposition": false,
+                "decompositions": [],
+                "contentStrategy": "nonDecomposedContent"
+            },
+            "hasVirtualSubtypes": false
+        },
+        "BatchCalcJobDefinition": {
+            "metadataName": "BatchCalcJobDefinition",
+            "isAddressable": true,
+            "isSourceTracked": true,
+            "ext": "batchCalcJobDefinition",
+            "hasContent": false,
+            "defaultDirectory": "batchCalcJobDefinitions",
+            "nameForMsgs": "Batch Calc Job Definition",
+            "nameForMsgsPlural": "Batch Calc Job Definitions",
+            "contentIsBinary": false,
+            "hasStandardMembers": false,
+            "deleteSupported": true,
+            "decompositionConfig": {
+                "strategy": "nonDecomposed",
+                "workspaceStrategy": "nonDecomposed",
+                "commitStrategy": "fineGrainTracking",
+                "metadataName": "BatchCalcJobDefinition",
                 "useSparseComposition": false,
                 "decompositions": [],
                 "contentStrategy": "nonDecomposedContent"

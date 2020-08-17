@@ -11,26 +11,55 @@
 ******************************************************************************/
 
 trigger invoice2 on clcommon__Consolidated_Invoice__c (before update, after update, after insert) {
-    
-    if (newCoUtility2.hasAlreadyUpdated()){
-        system.debug('getting out....');
-        return;
-    } 
-
+   
     if (trigger.isBefore && trigger.isUpdate){
 
         integer j = 0;
         for (clcommon__Consolidated_Invoice__c i:trigger.new){
-            if (trigger.new[j].Balance_Invoice_Amount__c != trigger.old[j].Balance_Invoice_Amount__c && i.Balance_Invoice_Amount__c != 0 && i.Balance_Invoice_Amount__c != Null && 
-            i.sent_to_pnc__c == true) {
+            system.debug(trigger.new[j].Total_Bill_Paid_Amount__c);
+            system.debug(trigger.new[j].Total_Charge_Paid_Amount__c);
+            system.debug(trigger.new[j].Total_Fee_Paid__c);
+            system.debug(trigger.new[j].Total_Fee_Tax_Paid__c);
+            system.debug(trigger.new[j].Total_Rent_Paid__c);
+            system.debug(trigger.new[j].Total_Rent_Tax_Paid__c);
+
+            system.debug(trigger.old[j].Total_Bill_Paid_Amount__c);
+            system.debug(trigger.old[j].Total_Charge_Paid_Amount__c);
+            system.debug(trigger.old[j].Total_Fee_Paid__c);
+            system.debug(trigger.old[j].Total_Fee_Tax_Paid__c);
+            system.debug(trigger.old[j].Total_Rent_Paid__c);
+            system.debug(trigger.old[j].Total_Rent_Tax_Paid__c);
+             
+            system.debug(i.sent_to_pnc__c); 
+
+            if (
+            (trigger.new[j].Total_Bill_Paid_Amount__c != trigger.old[j].Total_Bill_Paid_Amount__c ||
+             trigger.new[j].Total_Charge_Paid_Amount__c != trigger.old[j].Total_Charge_Paid_Amount__c ||
+             trigger.new[j].Total_Fee_Paid__c != trigger.old[j].Total_Fee_Paid__c ||
+             trigger.new[j].Total_Fee_Tax_Paid__c != trigger.old[j].Total_Fee_Tax_Paid__c ||
+             trigger.new[j].Total_Rent_Paid__c != trigger.old[j].Total_Rent_Paid__c ||
+             trigger.new[j].Total_Rent_Tax_Paid__c != trigger.old[j].Total_Rent_Tax_Paid__c  
+            )
+            &&
+            (
+                i.sent_to_pnc_amount__c > 0 && i.void_in_pnc__c != true
+            )           
+            ) {
+                system.debug('************************   adjustment is being made!');
                 i.Adjustment_Status__c = 'Approved';
                 i.adjusted_in_pnc__c = false;
                 i.adjusted_in_pnc_date_time__c = null;
             }
-            j++;
+            j++; 
         }
         return;
     }
+
+     
+    if (newCoUtility2.hasAlreadyUpdated()){
+        system.debug('getting out....');
+        return;
+    } 
 
             
     /* get settins from custom settings */

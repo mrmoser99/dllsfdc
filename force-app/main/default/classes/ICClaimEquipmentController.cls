@@ -55,9 +55,9 @@ global with sharing class ICClaimEquipmentController {
                                             , name
                                             , id
                                             , Install_Address_Line_1__c
-                                            , City__c
+                                            , City_installaddress__c
                                             , State__c
-                                            , Zip_Code__c
+                                            , Zip_Code_installaddress__c
                                             , serial_number__c
                                             from cllease__Contract_Equipment__c
                                             where cllease__Contract__c = :recordId

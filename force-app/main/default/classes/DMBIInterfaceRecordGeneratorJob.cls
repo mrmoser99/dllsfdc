@@ -240,7 +240,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
             Syndication_Indicator__c = '0',
             Payment_Frequency_Principal_Code__c= codemap.containskey(cla.cllease__Payment_Frequency__c)?codemap.get(cla.cllease__Payment_Frequency__c):'',
             Payment_Frequency_Interest_Code__c = codemap.containskey(cla.cllease__Payment_Frequency__c)?codemap.get(cla.cllease__Payment_Frequency__c):'',
-            Net_Principal_Balance_Amount__c = cla.npba_amount__c,
+            Net_Principal_Balance_Amount__c = cla.npba_amount_calculated__c,
             //Net_Principal_Balance_Amount__c = ScaleToTwoDecimal(cla.Unbilled_Receivable__c + cla.cllease__Residual_Amount__c - CalculateUnearnedRentalIncome(CRSList) - CalculateUnearnedResidualIncome(ResList)+ cla.Billed_Not_Paid__c),
             Currency_Code__c = cla.cllease__Currency_Code__c!=Null?cla.cllease__Currency_Code__c:'USD',
             Accrued_Interest_Amount__c = ScaleToTwoDecimal(CalculateAccruedInterestAmountFromRentalStream(CRSList)),
@@ -299,7 +299,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
         String LGDLookUpTypeCode = '';
         String MasterAssetType = CEPList[0].Master_Asset_Type__c;
         Decimal TotalDealerCharges = CEPList[0].cllease__Total_Dealer_Charges__c;
-        for(cllease__Contract_Equipment__c CEP: CEPList){
+        for(cllease__Contract_Equipment__c CEP: CEPList){ 
             If(CEP.cllease__Total_Dealer_Charges__c > TotalDealerCharges){
                 TotalDealerCharges = CEP.cllease__Total_Dealer_Charges__c;
                 MasterAssetType = CEP.Master_Asset_Type__c;

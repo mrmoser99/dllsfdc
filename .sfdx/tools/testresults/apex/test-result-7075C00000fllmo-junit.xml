@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-07-21T12:05:30-04:00" hostname="https://newco--dev.my.salesforce.com" tests="1" failures="0"  errors="0"  time="5.34">
+        <properties>
+            <property name="outcome" value="Passed"/>
+            <property name="testsRan" value="1"/>
+            <property name="passing" value="1"/>
+            <property name="failing" value="0"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="100%"/>
+            <property name="failRate" value="0%"/>
+            <property name="testStartTime" value="Jul 21, 2020 12:05 PM"/>
+            <property name="testExecutionTime" value="5.34 s"/>
+            <property name="testTotalTime" value="5.34 s"/>
+            <property name="commandTime" value="8.18 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000fllmo"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="test1" classname="TestScramble" time="5.34">
+        </testcase>
+    </testsuite>
+</testsuites>
