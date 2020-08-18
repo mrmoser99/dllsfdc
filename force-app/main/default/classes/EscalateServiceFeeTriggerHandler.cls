@@ -1,3 +1,12 @@
+/*
+
+    Change Log:
+
+    08/19/2020 - MRM -  fixed q2's rounding issues.
+
+*/
+
+
 /**
  * Following class acts as handler class for Trigger: EscalateServiceFeeTrigger
  * Here are the list of actions performed in handler class
@@ -234,7 +243,7 @@ public with sharing class EscalateServiceFeeTriggerHandler {
                     System.debug('eqp: '+eqp);
                     if (totalEqpSellingPrice == null || totalEqpSellingPrice == 0)
                         totalEqpSellingPrice = 1;
-                    Decimal eqpProratedAmount = ((eqp.genesis__Estimated_Selling_Price__c / totalEqpSellingPrice) * serviceFeeAmountForPeriod).setScale(2);
+                    Decimal eqpProratedAmount = ((eqp.genesis__Estimated_Selling_Price__c / totalEqpSellingPrice) * serviceFeeAmountForPeriod).setScale(2,RoundingMode.HALF_UP);
         
                     // Create Application Fee
                     Application_Fee__c appfee     = new Application_Fee__c();
@@ -248,9 +257,9 @@ public with sharing class EscalateServiceFeeTriggerHandler {
                     
                     // subtract the last equipment's prorated escalation cost from calculated amount to avoid CENT Issues 
                     if(eqpList.size() == 1) {
-                        appfee.Amount__c  = remainingProratedAmount;
+                        appfee.Amount__c  = remainingProratedAmount.setScale(2,RoundingMode.HALF_UP);
                     } else {
-                        appfee.Amount__c  = eqpProratedAmount; // prorated amount for equipment
+                        appfee.Amount__c  = eqpProratedAmount.setScale(2,RoundingMode.HALF_UP); // prorated amount for equipment
                     }
 
                     equipmentSize--;

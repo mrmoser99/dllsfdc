@@ -5,6 +5,7 @@
 *
 * 	5/4/18 - MRM Created
 *   7/21/2020 - MRM create return for scramble class
+*   08/18/2020 - MRM remove email requirement
 *
 * This trigger udpates the email to contact and billing contact on the account
 * Also, a system contact is maintained so that conga has a contact to send invoices to
@@ -55,9 +56,9 @@ trigger Address on Address__c (before insert, before update) {
 			if (Test.isRunningTest())
      			a.email_address__c = 'test@test.com';
      					
-     		if (a.Email_Address__c == null){
-   				a.email_address__c.addError('Email is required if bill to is true!');
-     		}else{
+     		//if (a.Email_Address__c == null){
+   			//	a.email_address__c.addError('Email is required if bill to is true!');
+     		//}else{
      			Account temp = aMap.get(a.account__c);
      			temp.Billing_Email__c = a.Email_Address__c;
      			uList.add(temp);
@@ -75,7 +76,7 @@ trigger Address on Address__c (before insert, before update) {
      				uCList.add(c);
      			}
      				
-     		}
+     		//}
      	}
      }
      if (!uList.isEmpty())

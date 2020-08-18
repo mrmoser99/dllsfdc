@@ -1,3 +1,7 @@
+//Change Log
+// 08/19/2020 - MRM - Removed requirement for email requirement.
+
+
 global without sharing class FMZ_QQ_ConvertToApplicationController {
 
     @AuraEnabled
@@ -8,11 +12,11 @@ global without sharing class FMZ_QQ_ConvertToApplicationController {
                 WHERE Id =: quoteId
         ];
         Map<String, String> response = new Map<String, String>();
-        if(String.isBlank(qq.Email_Address__c) && String.isBlank(qq.genesis__Account__r.Email_Address__c)){
-            response.put(RESPONSE_KEYWORD_STATUS, STATUS_ERROR);
-            response.put(RESPONSE_KEYWORD_MESSAGE, 'Email is required to Convert to Application');
-            return makeJSONString(response);
-        }else{
+        //if(String.isBlank(qq.Email_Address__c) && String.isBlank(qq.genesis__Account__r.Email_Address__c)){
+        //    response.put(RESPONSE_KEYWORD_STATUS, STATUS_ERROR);
+        //    response.put(RESPONSE_KEYWORD_MESSAGE, 'Email is required to Convert to Application');
+        //    return makeJSONString(response);
+        //}else{
             Account acc = new Account(Id = qq.genesis__Account__c);
             if(String.isBlank(qq.Email_Address__c)){
                 qq.Email_Address__c = qq.genesis__Account__r.Email_Address__c;
@@ -52,7 +56,7 @@ global without sharing class FMZ_QQ_ConvertToApplicationController {
                 return makeJSONString(response);
             }
             update acc;
-        }
+        // }
         if(qq.genesis__Status__c == 'CONVERTED TO APPLICATION'){
             response.put(RESPONSE_KEYWORD_STATUS, STATUS_ERROR);
             response.put(RESPONSE_KEYWORD_MESSAGE, 'This Credit Approval has already been Converted');
