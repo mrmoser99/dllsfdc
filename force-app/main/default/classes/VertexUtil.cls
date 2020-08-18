@@ -4,6 +4,7 @@
  * 
  * Change Log: 
  *    MRM 3/31/2020 correct up front tax
+ *    8/18/2020 - MRM changed flex date to book date again after q2 wiped out the code
  **/
 public class VertexUtil {
 
@@ -134,7 +135,7 @@ public class VertexUtil {
             startDate = dueDetailLine.cllease__Bill__r.cllease__Lease_Account__r.cllease__First_Payment_Date__c;
             endDate   = dueDetailLine.cllease__Bill__r.cllease__Lease_Account__r.cllease__Maturity_Date__c;
             lengthOfContract = startDate.daysBetween(endDate);
-            String bookDate = string.valueOf(leaseMap.get(dueDetailLine.cllease__Contract__c));
+            String bookDate = formateDate(leaseMap.get(dueDetailLine.cllease__Contract__c));
             lineItemId = (dueDetailLine.Name != null ? dueDetailLine.Name : 'VALUE IS BLANK');
             Dom.XmlNode lineItem = invoiceRequest.addChildElement('urn:LineItem', null, null);
             lineItem.setattribute('lineItemId', lineItemId);
@@ -343,7 +344,7 @@ public class VertexUtil {
             // Calculating Length of contract
             startDate = charge.cllease__Lease_Account__r.cllease__First_Payment_Date__c;
             endDate   = charge.cllease__Lease_Account__r.cllease__Maturity_Date__c;
-            String bookDate = string.valueOf(leaseMap.get(charge.cllease__lease_account__c));
+            String bookDate = formatedate(leaseMap.get(charge.cllease__lease_account__c));
 
             lengthOfContract = startDate.daysBetween(endDate);
 
