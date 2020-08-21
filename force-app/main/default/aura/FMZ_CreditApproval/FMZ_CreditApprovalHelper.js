@@ -246,7 +246,18 @@
         result = false;
       }
     } else {
+      console.log('right before 1');
+      console.log(component.get("v.accountId"));
       var inputAccountName = component.find("inputFieldAccountName");
+      for(var i=0;i<inputAccountName.length;i++){
+        var ob=inputAccountName[i];
+        console.log('ob is: ' + ob);
+      }
+      
+      const aName = (inputAccountName.length == null) ? [inputAccountName] : inputAccountName;
+      console.log(aName);
+
+      console.log(inputAccountName.length);
       if (
         !inputAccountName.get("v.value") ||
         inputAccountName.get("v.value") == ""
