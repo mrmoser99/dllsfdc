@@ -1,6 +1,7 @@
 /**
  * Created by samuelmeyers on 11/8/18.
  * 2/6/20 - MRM fixed app approve status
+ * 8/21/2020 - MRM - fixed links 
  */
 
 public with sharing class FMZ_QuickActionController {
@@ -74,9 +75,9 @@ public with sharing class FMZ_QuickActionController {
         if(apps.size() > 0){
             for(genesis__Applications__c app : apps){
                 if(appApprovedStrings.contains(app.genesis__Status__c) && app.Lease_Number__c == null){
-                    approvedApps.add(new SectionItem(app.Id, app.Name, BASE_URL+app.Id, app.genesis__Account__r.Name, null, 'Fund'));
+                    approvedApps.add(new SectionItem(app.Id, app.Name, BASE_URL + '/s/applications/' +app.Id, app.genesis__Account__r.Name, null, 'Fund'));
                 }else if(appInProgressStrings.contains(app.genesis__Status__c) && app.Lease_Number__c == null){
-                    inProgressApps.add(new SectionItem(app.Id, app.Name, BASE_URL+app.Id, app.genesis__Account__r.Name, null, 'View'));
+                    inProgressApps.add(new SectionItem(app.Id, app.Name, BASE_URL + '/s/applications/'+app.Id, app.genesis__Account__r.Name, null, 'View'));
                 }
             }
         }
@@ -84,7 +85,7 @@ public with sharing class FMZ_QuickActionController {
         List<SectionItem> approvedQQs = new List<SectionItem>();
         if(qqs.size() > 0){
             for(genesis__Quick_Quotes__c qq : qqs){
-                approvedQQs.add(new SectionItem(qq.Id, qq.Name, BASE_URL+qq.Id, qq.genesis__Account__r.Name, null, 'Convert'));
+                approvedQQs.add(new SectionItem(qq.Id, qq.Name, BASE_URL + '/s/quick-quotes/' +qq.Id, qq.genesis__Account__r.Name, null, 'Convert'));
             }
         }
         
