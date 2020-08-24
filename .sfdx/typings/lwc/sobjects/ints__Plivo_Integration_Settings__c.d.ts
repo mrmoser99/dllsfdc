@@ -1,0 +1,68 @@
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.Id" {
+  const Id:any;
+  export default Id;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.IsDeleted" {
+  const IsDeleted:boolean;
+  export default IsDeleted;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.Name" {
+  const Name:string;
+  export default Name;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.SetupOwner" {
+  const SetupOwner:any;
+  export default SetupOwner;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.SetupOwnerId" {
+  const SetupOwnerId:any;
+  export default SetupOwnerId;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.CreatedDate" {
+  const CreatedDate:any;
+  export default CreatedDate;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.CreatedBy" {
+  const CreatedBy:any;
+  export default CreatedBy;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.CreatedById" {
+  const CreatedById:any;
+  export default CreatedById;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.LastModifiedDate" {
+  const LastModifiedDate:any;
+  export default LastModifiedDate;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.LastModifiedBy" {
+  const LastModifiedBy:any;
+  export default LastModifiedBy;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.LastModifiedById" {
+  const LastModifiedById:any;
+  export default LastModifiedById;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.SystemModstamp" {
+  const SystemModstamp:any;
+  export default SystemModstamp;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.ints__Authorization_Id__c" {
+  const ints__Authorization_Id__c:string;
+  export default ints__Authorization_Id__c;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.ints__Authorization_Token__c" {
+  const ints__Authorization_Token__c:string;
+  export default ints__Authorization_Token__c;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.ints__Country_code__c" {
+  const ints__Country_code__c:string;
+  export default ints__Country_code__c;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.ints__Endpoint__c" {
+  const ints__Endpoint__c:string;
+  export default ints__Endpoint__c;
+}
+declare module "@salesforce/schema/ints__Plivo_Integration_Settings__c.ints__Sender_Number__c" {
+  const ints__Sender_Number__c:string;
+  export default ints__Sender_Number__c;
+}

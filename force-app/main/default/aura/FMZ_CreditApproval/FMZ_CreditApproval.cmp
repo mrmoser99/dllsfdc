@@ -119,12 +119,14 @@
               </div>
             </div>
             <aura:iteration items="{!v.fields}" var="f">
+              <lightning:formattedText value="in iteration" />
               <aura:if
                 isTrue="{!((v.recordId==null&amp;&amp;f.fieldPath=='genesis__Business_Name__c'))}"
               >
                 <aura:if
                   isTrue="{!and(not(v.newAccount), empty(v.tradeUpDetails))}"
                 >
+                <lightning:formattedText value="accountName" />
                   <lightning:inputField
                     fieldName="genesis__Account__c"
                     aura:id="inputFieldAccountName"
@@ -134,6 +136,7 @@
                     autocomplete="nope"
                   />
                   <aura:set attribute="else">
+                    <lightning:formattedText value="business Name" />
                     <lightning:inputField
                       fieldName="genesis__Business_Name__c"
                       aura:id="inputFieldAccountId"
@@ -141,8 +144,10 @@
                       autocomplete="nope2"
                     />
                   </aura:set>
+
                 </aura:if>
               </aura:if>
+
               <aura:if
                 isTrue="{!v.recordId!=null||(v.recordId==null&amp;&amp;f.fieldPath!='genesis__Business_Name__c')}"
               >

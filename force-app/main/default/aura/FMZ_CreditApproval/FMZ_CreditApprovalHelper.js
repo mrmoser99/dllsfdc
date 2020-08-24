@@ -230,12 +230,14 @@
 
   // check for required fields
   isValid: function(component) {
-    var result = true,
+      console.log('checking is valid');
+      var result = true,
       fields = component.get("v.fields"),
       inputField = component.find("inputField"),
       inputFieldPhone = component.find("inputFieldPhone"),
       inputFieldFinance = component.find("inputFieldFinance");
 
+    /*
     if (component.get("v.newAccount")) {
       var inputAccountId = component.find("inputFieldAccountId");
       if (
@@ -246,18 +248,7 @@
         result = false;
       }
     } else {
-      console.log('right before 1');
-      console.log(component.get("v.accountId"));
       var inputAccountName = component.find("inputFieldAccountName");
-      for(var i=0;i<inputAccountName.length;i++){
-        var ob=inputAccountName[i];
-        console.log('ob is: ' + ob);
-      }
-      
-      const aName = (inputAccountName.length == null) ? [inputAccountName] : inputAccountName;
-      console.log(aName);
-
-      console.log(inputAccountName.length);
       if (
         !inputAccountName.get("v.value") ||
         inputAccountName.get("v.value") == ""
@@ -266,6 +257,7 @@
         result = false;
       }
     }
+    */
 
     if (inputField) {
       if (!Array.isArray(inputField)) {
@@ -322,6 +314,7 @@
       result = false;
     }
     component.set("v.isInvalid", !result);
+    console.log('is valid result is: ' + result);
     return result;
   },
 

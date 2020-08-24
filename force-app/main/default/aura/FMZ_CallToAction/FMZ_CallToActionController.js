@@ -3,6 +3,7 @@
  */
 ({
     doInit : function(component, event, helper){
+        console.log('do init');
         var action = component.get('c.getSections');
         action.setCallback(this, function(response) {
             var state = response.getState();
@@ -32,6 +33,7 @@
     handleRowAction : function(component, event, helper){
         var action = event.getParam('action');
         var row = event.getParam('row');
+        console.log('action name' + action.name);
         switch (action.name) {
             case 'Fund_Applications':
                 helper.fundApp(component, row);
@@ -48,6 +50,7 @@
         }
     },
     selectSection : function(component, event, helper){
+        console.log('set selection');
         var selected = component.get('v.selectedSection');
         var ctarget = event.currentTarget;
         var data = ctarget.dataset.value;

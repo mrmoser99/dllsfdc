@@ -32,6 +32,7 @@
         });
     },
     openEditApp: function(component, row){
+        console.log('open edit app');
         var urlEvent = $A.get("e.force:navigateToURL");
         urlEvent.setParams({
             "url": '/application-edit?id='+row.id

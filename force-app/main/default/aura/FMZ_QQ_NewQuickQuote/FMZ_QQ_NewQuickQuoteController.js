@@ -14,6 +14,7 @@
         $A.util.addClass(component, 'is-loaded');
     },
     handleSubmit: function(component, event, helper) {
+        console.log('clicked create');
         var fields = event.getParam('fields'),
             accountId = component.get('v.accountId'),
             dealerId = component.get('v.dealerId'),
