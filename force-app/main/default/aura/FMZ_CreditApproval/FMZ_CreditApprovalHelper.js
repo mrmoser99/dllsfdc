@@ -1,5 +1,10 @@
 ({
   // load fields from the field set
+  /*
+ Change Log:
+
+ 08/24/2020 - MRM - Made it work from account
+*/
   loadFields: function(component, helper) {
     var action = component.get("c.getQQFields");
     action.setParams({

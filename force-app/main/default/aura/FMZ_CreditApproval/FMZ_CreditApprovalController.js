@@ -1,3 +1,8 @@
+/*
+ Change Log:
+
+ 08/24/2020 - MRM - Made it work from account
+*/
 ({
   doInit: function(component, event, helper) {
     

@@ -3,6 +3,7 @@
 * Change Log:
 
   1/30/2020 - MRM added autofill="nope" to keep address from filling from browser autofill
+  8/24/2020 - MRM made it work from the account as well
 
   -->
 
