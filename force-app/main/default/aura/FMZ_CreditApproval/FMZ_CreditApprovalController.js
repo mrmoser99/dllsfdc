@@ -6,7 +6,7 @@
 ({
   doInit: function(component, event, helper) {
     
-
+    console.log( 'in do init');
     var recordId = component.get("v.recordId");
     var tradeUpDetails = component.get("v.tradeUpDetails");
     if (recordId) {
@@ -91,6 +91,8 @@
     console.log('clicked create');
     var fields = event.getParam("fields");
     var accountId = component.get("v.accountId");
+    console.log('found this account id' + component.get("v.accountId"));
+    
     var dealerId = component.get("v.dealerId");
     console.log('here31a');
     var isValid = helper.isValid(component);
@@ -130,8 +132,14 @@
     fields["Dealer__c"] = dealerId;
     console.log('here4');
     if (account && account.Name) {
+      console.log('account');
       fields["genesis__Business_Name__c"] = account.Name;
     }
+    else{
+      console.log('new account' + component.get("v.searchString"));
+      fields["genesis__Business_Name__c"] = component.get("v.searchString");
+    }
+    
     console.log('here13today');
     component.set("v.isInvalid", !isValid);
     console.log(component.get("v.isInvalid"));
@@ -251,6 +259,7 @@
     event.preventDefault();
   },
   lookupChange: function(component, event, helper) {
+    console.log('look up change');
     var accountId = component.get("v.accountId");
     if (accountId) {
       if (Array.isArray(accountId)) {
@@ -328,5 +337,73 @@
 
     helper.emailSupport(component, subject, body);
     return;
-  }
+  },
+  searchHandler : function (component, event, helper) {
+    component.set("v.processing", true);
+    const searchString = event.target.value;
+    console.log('in search handler' + 'search string is: ' + searchString);
+    if (searchString.length >= 3) {
+        //Ensure that not many function execution happens if user keeps typing
+        if (component.get("v.inputSearchFunction")) {
+            clearTimeout(component.get("v.inputSearchFunction"));
+        }
+
+        var inputTimer = setTimeout($A.getCallback(function () {
+            helper.searchRecords(component, searchString);
+        }), 1000);
+        component.set("v.inputSearchFunction", inputTimer);
+        console.log('not found');
+        console.log('search string is' + searchString);
+        component.set("v.searchString",searchString);
+        console.log('search string is' + component.get("v.searchString"));
+        
+
+    } else{
+        component.set("v.results", []);
+        component.set("v.openDropDown", false);
+        console.log('r: ' + component.get("v.results"));
+    }
+    component.set("v.processing", false);
+},
+optionClickHandler : function (component, event, helper) {
+  component.set("v.processing", true);
+  const selectedId = event.target.closest('li').dataset.id;
+  const selectedValue = event.target.closest('li').dataset.value;
+  component.set("v.inputValue", selectedValue);
+  component.set("v.openDropDown", false);
+  component.set("v.selectedOption", selectedId);
+  console.log(component.get("v.selectedOption"));
+  component.set("v.accountId",selectedId);
+  component.set("v.recordId",selectedId);
+  console.log('do init2');
+ 
+  var action = component.get("c.getAccountId");
+    action.setParams({
+      recordId: selectedId
+    });
+    action.setCallback(this, function(response) {
+      var state = response.getState();
+      console.log(state);
+      if (state === "SUCCESS") {
+        console.log('success');
+        var accId = response.getReturnValue();
+        component.set("v.accountId", accId);
+        component.set("v.newAccount", false);
+        helper.loadFields(component, helper);
+        helper.loadDealerId(component);
+        component.set("v.processing", false);
+      }
+    });
+    $A.enqueueAction(action);
+  
+   
+},
+
+clearOption : function (component, event, helper) {
+  console.log('clear option');
+  component.set("v.results", []);
+  component.set("v.openDropDown", false);
+  component.set("v.inputValue", "");
+  component.set("v.selectedOption", "");
+}
 });

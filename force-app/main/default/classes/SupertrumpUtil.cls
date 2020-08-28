@@ -202,6 +202,9 @@ public with sharing class SupertrumpUtil {
 				supertrumputil.writekeyPair('ResidualAsFunding','Yes',w);		
 				//supertrumputil.writekeyPair('FirstStartAccrual','2018-05-18',w);		
 	
+				system.debug('here1');
+				system.debug(e.cllease__Total_Dealer_Charges__c);
+				system.debug(app.rate_factor__c);
 				Decimal rent = (e.cllease__Total_Dealer_Charges__c * app.rate_factor__c).setScale(2); 
 
 				system.debug('calling with rent = ' + rent);
@@ -209,18 +212,23 @@ public with sharing class SupertrumpUtil {
 	 			w.writeStartElement(null, 'Delete', null); //CashFlowStep
 	 			w.writeAttribute('', '','index', '*');
  				w.writeEndElement();//Delete
- 				
- 				w.writeStartElement(null, 'CashflowStep', null); //CashFlowStep
+				 system.debug('here1');
+				 w.writeStartElement(null, 'CashflowStep', null); //CashFlowStep
+				 
 				w.writeAttribute('', '','index', string.valueOf(0));
+				system.debug('here1');
 				supertrumputil.writekeyPair('Type','Payment',w);		
+				system.debug('here1');
 				supertrumputil.writekeyPair('Periodicity','Stub',w);		
+				system.debug('here1');
 				supertrumputil.writekeyPair('NumberOfPayments',string.valueOf(1),w);		
+				system.debug('here1');
 				supertrumputil.writekeyPair('Amount',string.valueOf(rent),w);		
 				supertrumputil.writekeyPair('AmountLocked','true',w);		
 				supertrumputil.writekeyPair('RateLocked','false',w);	
 				supertrumputil.writekeyPair('EndAccrual',string.valueOf(l.cllease__First_Payment_Date__c),w);		
 				w.writeEndElement();  //CashFlowStep
-					
+				system.debug('here1');
 				w.writeStartElement(null, 'CashflowStep', null); //CashFlowStep
 				w.writeAttribute('', '','index', string.valueOf(1));
 				supertrumputil.writekeyPair('Type','Payment',w);		
@@ -230,7 +238,7 @@ public with sharing class SupertrumpUtil {
 				supertrumputil.writekeyPair('AmountLocked','true',w);		
 				supertrumputil.writekeyPair('RateLocked','false',w);		
 				w.writeEndElement();  //CashFlowStep
-			
+				system.debug('here1');
 				w.writeEndElement();  //CashFlowSteps
 				supertrumputil.writekeyPair('BalanceRate','',w);		
 			

@@ -1,11 +1,8 @@
 ({
   // load fields from the field set
-  /*
- Change Log:
-
- 08/24/2020 - MRM - Made it work from account
-*/
+  
   loadFields: function(component, helper) {
+    console.log('in loadFields');
     var action = component.get("c.getQQFields");
     action.setParams({
       fieldsetName: "FMZ_NewQuickQuote"
@@ -17,6 +14,7 @@
         component.set("v.fields", response.getReturnValue());
         var tradeUpDetails = component.get("v.tradeUpDetails");
         if (component.get("v.accountId")) {
+         
           this.prepopulateAccountInfo(component, helper);
           if (tradeUpDetails) {
             this.prepopulateField(
@@ -142,6 +140,7 @@
 
   // get account info to prepopulate the quick quote
   prepopulateAccountInfo: function(component, helper) {
+    console.log('in account info');
     var action = component.get("c.getAccountInfo");
     console.log(component.get("v.accountId"));
     action.setParams({
@@ -150,30 +149,37 @@
     action.setCallback(this, function(response) {
       console.log("Callback!");
       var state = response.getState(),
-        recordId = component.get("v.recordId");
+      recordId = component.get("v.recordId");
       component.set("v.processing", false);
       if (state === "SUCCESS") {
         console.log("Success!!!");
         var account = response.getReturnValue();
+        console.log(account);
         component.set("v.account", account);
+        console.log('record id:' + recordId);
         if (recordId) {
+          console.log(' in record id');
           this.prepopulateField(
             component,
             "genesis__Business_Name__c",
             account.Name
           );
         }
+       
+        console.log('here' + account.Phone);
         this.prepopulateField(
           component,
           "Primary_Phone_number__c",
           account.Phone
         );
+        console.log('after here');
         console.log(account.Phone);
         this.prepopulateField(
           component,
           "Email_Address__c",
           account.Email_Address__c
         );
+        console.log('primary?:' + account.Primary_Address__r);
         if (account.Primary_Address__r) {
           console.log("Populatng Address Fields");
           component
@@ -206,6 +212,7 @@
         }
         component.set("v.accountId", account.Id);
         this.prepopulateField(component, "genesis__Account__c", account.Id);
+        
       }
     });
     $A.enqueueAction(action);
@@ -213,29 +220,45 @@
 
   // set the value of inputField based on field set position
   prepopulateField: function(component, fieldName, value) {
+    console.log('enter pre prop' + value + ' fieldName' + fieldName);
     var inputField = component.find("inputField"),
       inputFieldPhone = component.find("inputFieldPhone"),
       inputAccountName = component.find("inputFieldAccountId");
+
+     
     if (inputField) {
+      
       if (!Array.isArray(inputField)) {
+     
         inputField = [inputField, inputFieldPhone, inputAccountName];
+     
       } else {
-        inputField.push(inputFieldPhone);
+         
+        if (Array.isArray(inputFieldPhone)){
+          inputField.push(inputFieldPhone[0]);
+        }
+        else {
+          inputField.push(inputFieldPhone);
+        }
+        
         inputField.push(inputAccountName);
+     
       }
     }
+   
     for (var i = 0; i < inputField.length; i++) {
-      console.log(inputField[i].get("v.fieldName"));
+     
       if (fieldName == inputField[i].get("v.fieldName")) {
         inputField[i].set("v.value", value);
         break;
       }
     }
+    
   },
 
   // check for required fields
   isValid: function(component) {
-      console.log('checking is valid');
+      
       var result = true,
       fields = component.get("v.fields"),
       inputField = component.find("inputField"),
@@ -263,16 +286,30 @@
       }
     }
     */
-
+    console.log('here');
     if (inputField) {
       if (!Array.isArray(inputField)) {
         inputField = [inputField, inputFieldPhone, inputFieldFinance];
       } else {
-        inputField.push(inputFieldPhone);
+        if (Array.isArray(inputFieldPhone)){
+          inputField.push(inputFieldPhone[0]);
+        }
+        else{
+          inputField.push(inputFieldPhone);
+        }
+        
         inputField.push(inputFieldFinance);
       }
     }
-    var phoneValue = inputFieldPhone.get("v.value").replace(/(\(|\)| |-)/g, "");
+    console.log('here2');
+    var phoneValue;
+    if (Array.isArray(inputFieldPhone)){
+      phoneValue = inputFieldPhone[0].get("v.value").replace(/(\(|\)| |-)/g, "");
+    }
+    else{
+      phoneValue = inputFieldPhone.get("v.value").replace(/(\(|\)| |-)/g, "");
+    }
+    console.log('here3');
     var regularExpression;
     var re = new RegExp("[1-9]{1}[0-9]{9}");
     console.log("REGEXP PHONE: " + !re.test(phoneValue));
@@ -281,11 +318,23 @@
       $A.util.addClass(inputFieldPhone, "slds-has-error");
       result = false;
     }
+    
+    var finance;
+    console.log('hello');
+    if (Array.isArray(inputFieldFinance)){
+      console.log('fin is array')
+      console.log('finance is: ' + inputFieldFinance[0].get("v.value)"));
+      finance = inputFieldFinance[0];
+    }
+    else{
+      finance = inputFieldFinance;
+    }
+     
     if (
-      !inputFieldFinance.get("v.value") ||
-      inputFieldFinance.get("v.value") == ""
+      !finance.get("v.value") ||
+      finance.get("v.value") == ""
     ) {
-      $A.util.addClass(inputFieldFinance, "slds-has-error");
+      $A.util.addClass(finance, "slds-has-error");
       result = false;
     }
     var requiredByFieldPath = [];
@@ -319,7 +368,7 @@
       result = false;
     }
     component.set("v.isInvalid", !result);
-    console.log('is valid result is: ' + result);
+    
     return result;
   },
 
@@ -372,7 +421,7 @@
     });
     emailSupportAction.setCallback(this, function(response) {
       let state = response.getState();
-      console.log(state);
+     
       if (state === "SUCCESS") {
         component.find("notifLib").showToast({
           title: "Email Sent!",
@@ -403,5 +452,44 @@
         $A.enqueueAction(settingsAction);
       })
     );
-  }
+  },
+  
+  searchRecords : function(component, searchString) {
+        var action = component.get("c.getRecords");
+        action.setParams({
+            "searchString" : searchString,
+            "objectApiName" : component.get("v.objectApiName"),
+            "idFieldApiName" : component.get("v.idFieldApiName"),
+            "valueFieldApiName" : component.get("v.valueFieldApiName"),
+            "extendedWhereClause" : component.get("v.extendedWhereClause"),
+            "maxRecords" : component.get("v.maxRecords")
+        });
+        action.setCallback(this,function(response) {
+            var state = response.getState();
+            if (state === "SUCCESS") {
+                const serverResult = response.getReturnValue();
+                const results = [];
+                serverResult.forEach(element => {
+                    const result = {id : element[component.get("v.idFieldApiName")], value : element[component.get("v.valueFieldApiName")]};
+                    results.push(result);
+                });
+                component.set("v.results", results);
+                if(serverResult.length>0){
+                    component.set("v.openDropDown", true);
+                }
+            } else{
+                var toastEvent = $A.get("e.force:showToast");
+                if(toastEvent){
+                    toastEvent.setParams({
+                        "title": "ERROR",
+                        "type": "error",
+                        "message": "Something went wrong!! Check server logs!!"
+                    });
+                    toastEvent.fire();
+                }
+            }
+        });
+        $A.enqueueAction(action);
+    }
+ 
 });

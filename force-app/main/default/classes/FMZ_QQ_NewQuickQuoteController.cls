@@ -8,9 +8,24 @@
 
 
  ********************************************************************************************************/ 
-public without sharing class FMZ_QQ_NewQuickQuoteController {
+public with sharing class FMZ_QQ_NewQuickQuoteController {
 
     public static final String QUICK_QUOTE_OBJECT = 'genesis__Quick_Quotes__c';
+
+    @AuraEnabled(cacheable=true)
+    public static List<SObject> getRecords(String searchString, String objectApiName, String idFieldApiName, String valueFieldApiName, String extendedWhereClause, Integer maxRecords){
+        searchString = String.escapeSingleQuotes(searchString);
+        objectApiName = String.escapeSingleQuotes(objectApiName);
+        idFieldApiName = String.escapeSingleQuotes(idFieldApiName);
+        valueFieldApiName = String.escapeSingleQuotes(valueFieldApiName);
+        
+        if(extendedWhereClause == null){
+            extendedWhereClause = '';
+        }
+        
+        String query = 'SELECT '+idFieldApiName+', '+valueFieldApiName+' FROM '+objectApiName+' WHERE '+valueFieldApiName+' LIKE \'%'+searchString+'%\' '+extendedWhereClause+' LIMIT '+maxRecords;
+        return Database.query(query);
+    }
 
     @AuraEnabled
     public static String checkCustomerName(String customerName){
@@ -63,7 +78,7 @@ public without sharing class FMZ_QQ_NewQuickQuoteController {
             /* ursa change */
             qq.genesis__CL_Product__c = [SELECT Id FROM clcommon__CL_Product__c WHERE clcommon__Product_Name__c = 'Finance Lease' LIMIT 1].Id;
             qq.genesis__Company__c = [SELECT Id FROM genesis__Company__c WHERE genesis__Default__c = true LIMIT 1].Id;
-
+            system.debug('made it here');
             qq.genesis__No_Of_Payments_Required_Upfront__c = 0;
             qq.genesis__Additional_cash_required__c = 0;
             qq.genesis__Cap_Reduction__c = 0;

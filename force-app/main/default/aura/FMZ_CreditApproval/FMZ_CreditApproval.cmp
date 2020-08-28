@@ -3,7 +3,6 @@
 * Change Log:
 
   1/30/2020 - MRM added autofill="nope" to keep address from filling from browser autofill
-  8/24/2020 - MRM made it work from the account as well
 
   -->
 
@@ -34,6 +33,28 @@
 
   <lightning:overlayLibrary aura:id="overlayLib" />
   <lightning:notificationsLibrary aura:id="notifLib" />
+
+  <!-- Autocomplete -->
+  <!-- attributes to be received from parent component-->
+  <aura:attribute name="label" type="String" default="Business Name"/>
+  <aura:attribute name="objectApiName" type="String" default="Account"/>
+  <aura:attribute name="idFieldApiName" type="String" default="Id" />
+  <aura:attribute name="valueFieldApiName" type="String" default="Name"/>
+  <aura:attribute name="extendedWhereClause" type="String" />
+  <aura:attribute name="maxRecords" type="Integer" default="10"/>
+
+
+  <!-- Attributes specific to component-->
+  <aura:attribute name="results" type="List" />
+  <aura:attribute name="openDropDown" type="Boolean" default="false" />
+  <aura:attribute name="selectedOption" type="String" />
+  <aura:attribute name="inputValue" type="String" />
+  <aura:attribute name="inputSearchFunction" type="Object" />
+  <aura:attribute name="searchString" type="String" />
+  
+  
+   
+
 
   <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
   <!--aura:registerEvent name="addressEvent" type="c:FMZ_NewCustomerAddress"/-->
@@ -120,14 +141,14 @@
               </div>
             </div>
             <aura:iteration items="{!v.fields}" var="f">
-              <lightning:formattedText value="in iteration" />
+               
               <aura:if
                 isTrue="{!((v.recordId==null&amp;&amp;f.fieldPath=='genesis__Business_Name__c'))}"
               >
                 <aura:if
                   isTrue="{!and(not(v.newAccount), empty(v.tradeUpDetails))}"
                 >
-                <lightning:formattedText value="accountName" />
+              
                   <lightning:inputField
                     fieldName="genesis__Account__c"
                     aura:id="inputFieldAccountName"
@@ -137,14 +158,71 @@
                     autocomplete="nope"
                   />
                   <aura:set attribute="else">
-                    <lightning:formattedText value="business Name" />
-                    <lightning:inputField
+                    <!--                    <lightning:inputField
                       fieldName="genesis__Business_Name__c"
                       aura:id="inputFieldAccountId"
                       class="input-is-required"
                       autocomplete="nope2"
                     />
+                    -->
+                    <div class="slds-form-element slds-p-bottom_x-small">
+                      <label class="slds-form-element__label" for="combobox-id-21"
+                          style="{! empty(v.label) ? 'display:hidden;' : 'display:block;'}">{!v.label}</label>
+                      <div class="slds-form-element__control">
+                          <div class="slds-combobox_container">
+                              <div class="{! v.openDropDown ? 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open' : 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click'}"
+                                  aria-expanded="true" aria-haspopup="listbox" role="combobox">
+                                  
+                        
+                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                          <input type="text"
+                                          class="input-is-required slds-input slds-combobox__input slds-has-focus slds-combobox__input-value"
+                                          id="combobox-id-21" aria-autocomplete="list" aria-controls="listbox-id-11"
+                                          autoComplete="nope" onkeyup="{!c.searchHandler}" role="textbox" placeholder="Search Account..."
+                                          value="{!v.inputValue}" />
+                                      
+                           
+                          <aura:if isTrue="{!empty(v.selectedOption)}">
+                            <span
+                              class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
+                              <lightning:icon iconName="utility:search"  size="small"/>
+                            </span>
+                            <aura:set attribute="else">
+                                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                                                  title="Clear the text input" onclick="{!c.clearOption}">
+                                    <lightning:icon iconName="utility:clear" size="small" />
+                                </button>
+                            </aura:set>
+                          </aura:if>
+                        </div>
+                                  
+                        
+                        <div id="listbox-id-11" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
+                                      role="listbox">
+                                      <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                          <aura:iteration items="{!v.results}" var="result">
+                                              <li role="presentation" class="slds-listbox__item" data-id="{!result.id}"
+                                                  data-value="{!result.value}" onclick="{!c.optionClickHandler}">
+                                                  <div id="{!result.id}"
+                                                      class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                      role="option">
+                                                      <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                                      <span class="slds-media__body">
+                                                          <span class="slds-truncate" title="All Opportunities">
+                                                              <span>{!result.value}</span>
+                                                          </span>
+                                                      </span>
+                                                  </div>
+                                              </li>
+                                          </aura:iteration>
+                                      </ul>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
                   </aura:set>
+
 
                 </aura:if>
               </aura:if>
@@ -158,6 +236,7 @@
                     aura:id="inputFieldPhone"
                     class="{!f.required?'input-is-required':''}"
                     autocomplete="nope"
+                    
                   />
                   <aura:if isTrue="{!v.invalidFormatPhone}">
                     <div class="slds-text-color_error"
@@ -174,6 +253,7 @@
                         aura:id="inputFieldFinance"
                         class="{!f.required?'input-is-required':''}"
                         autocomplete="nope"
+                        
                       />
                       <aura:set attribute="else">
                         <lightning:inputField
@@ -188,7 +268,10 @@
                 </aura:if>
               </aura:if>
             </aura:iteration>
-
+            
+            
+             
+             
             <lightning:input
               aura:id="addressLine1"
               type="text"

@@ -1,3 +1,6 @@
+declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.getRecords" {
+  export default function getRecords(param: {searchString: any, objectApiName: any, idFieldApiName: any, valueFieldApiName: any, extendedWhereClause: any, maxRecords: any}): Promise<any>;
+}
 declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.checkCustomerName" {
   export default function checkCustomerName(param: {customerName: any}): Promise<any>;
 }
