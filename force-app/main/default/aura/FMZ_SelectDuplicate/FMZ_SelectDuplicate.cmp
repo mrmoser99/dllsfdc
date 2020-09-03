@@ -13,7 +13,15 @@
                 <aura:iteration items="{!v.duplicates}" var="dup">
                     <lightning:layoutItem padding="around-small">
                         <div class="{!'slds-p-around_small container' + (v.selectedId == dup.id ? '-selected' : '')}" data-value="{!dup.id}" onclick="{!c.handleSelect}">
-                            {!dup.info}
+                            {!dup.info} 
+                            <br/>
+                            {!dup.addr1}
+                            <br/>
+                            {!dup.city}
+                            <br/>
+                            {!dup.state}
+                            <br/>
+                            {!dup.zip} 
                         </div>
                     </lightning:layoutItem>
                 </aura:iteration>

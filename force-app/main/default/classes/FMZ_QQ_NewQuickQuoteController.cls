@@ -182,13 +182,20 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
                                 dupIds.add(dup.Id);
                             }
                             List<Account> dupAccounts = [SELECT Id, Name, EIN__c FROM Account WHERE Id IN: dupIds];
+
+                           
                             List<DuplicateRecord> records = new List<DuplicateRecord>();
                             for(Account dup : dupAccounts){
                                 records.add(new DuplicateRecord(
                                         dup.Id,
-                                        dup.Name+ (String.isNotBlank(dup.EIN__c) ? ': '+dup.EIN__c : ''))
+                                        dup.Name+ (String.isNotBlank(dup.EIN__c) ? ': '+dup.EIN__c : ''),
+                                        null,
+                                        null,
+                                        null,
+                                        null)
+                                       
                                 );
-                            }
+                            } 
 
                             return new CreateResponse(
                                     'DUPLICATES',
@@ -223,14 +230,57 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
                         Primary_Address__c = true
                 );
 
-                if(customer.Email_Address__c != null && customer.Email_Address__c != ''){
+                Database.SaveResult saveResult2 = Database.insert(address, false);
+                if (!saveResult2.isSuccess()) {
+                    for (Database.Error error : saveResult2.getErrors()) {
+                        if (error instanceof Database.DuplicateError) {
+                            List<sObject> duplicates = getDuplicateRecords((Database.DuplicateError)error);
+                            Set<Id> dupIds = new Set<Id>();
+                            for(sObject dup : duplicates){
+                                dupIds.add(dup.id);
+                            }
+                            List<Address__c> addressDups = [select id, account__c from Address__c where id in :dupIds];
+                            Set<ID> acctIds = new Set<ID>();
+                            for (Address__c a: addressDups)
+                                acctIds.add(a.account__c);
+
+                            List<Account> dupAccounts = [SELECT Id, Name, EIN__c FROM Account WHERE Id IN: acctIds];
+
+                           
+                            List<DuplicateRecord> records = new List<DuplicateRecord>();
+                           
+                            for(Account dup : dupAccounts){
+                                records.add(new DuplicateRecord(dup.Id
+                                            ,dup.Name+ (String.isNotBlank(dup.EIN__c) ? ': '+dup.EIN__c : '')
+                                            ,qq.genesis__Address_Line_1__c
+                                            ,qq.genesis__City__c
+                                            ,qq.genesis__State__c
+                                            ,qq.genesis__Postal_Code__c
+                                            )
+
+                                );
+                            }
+                           
+
+                            return new CreateResponse(
+                                    'DUPLICATES - Matching Address',
+                                    'Would you like to use one of these Accounts instead?',
+                                    records
+                            );
+                        } else {
+                            throw new QQCreationException(error.getMessage());
+                        }
+                    }
+                }
+
+            if(customer.Email_Address__c != null && customer.Email_Address__c != ''){
                     address.Email_Address__c = customer.Email_Address__c;
                     address.Bill_To_Usage__c = true;
 
                     customer.Billing_Address_Validation_Status__c = address.Validation_Status__c;
                     customer.Billing_Address_Validation_Timestamp__c = address.Validation_Time_Stamp__c;
                 }
-                insert address;
+                
                 customer.Primary_Address__c = address.Id;
                 update customer;
                 qq.genesis__Account__c = customer.Id;
@@ -359,15 +409,21 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
     }
 
     public class DuplicateRecord {
-        @AuraEnabled
-        public String id;
+        @AuraEnabled public String id;
+        @AuraEnabled public String info;
+        @AuraEnabled public String addr1;
+        @AuraEnabled public String city;
+        @AuraEnabled public String state;
+        @AuraEnabled public String zip;
 
-        @AuraEnabled
-        public String info;
-
-        public duplicateRecord(String id, String info){
+        public duplicateRecord(String id, String info, String addr1, String city, String state, String zip){
             this.id = id;
             this.info = info;
+            this.addr1 = addr1;
+            this.city = city;
+            this.state = state;
+            this.zip = zip;
+
         }
     }
 

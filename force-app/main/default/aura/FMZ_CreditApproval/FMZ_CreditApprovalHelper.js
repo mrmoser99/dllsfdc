@@ -286,7 +286,7 @@
       }
     }
     */
-    console.log('here');
+     
     if (inputField) {
       if (!Array.isArray(inputField)) {
         inputField = [inputField, inputFieldPhone, inputFieldFinance];
@@ -297,11 +297,16 @@
         else{
           inputField.push(inputFieldPhone);
         }
-        
-        inputField.push(inputFieldFinance);
+        if (Array.isArray(inputFieldFinance)){
+          inputField.push(inputFieldFinance[0]);
+        }
+        else{
+          inputField.push(inputFieldFinance);
+        }
+          
       }
     }
-    console.log('here2');
+     
     var phoneValue;
     if (Array.isArray(inputFieldPhone)){
       phoneValue = inputFieldPhone[0].get("v.value").replace(/(\(|\)| |-)/g, "");
@@ -309,7 +314,7 @@
     else{
       phoneValue = inputFieldPhone.get("v.value").replace(/(\(|\)| |-)/g, "");
     }
-    console.log('here3');
+     
     var regularExpression;
     var re = new RegExp("[1-9]{1}[0-9]{9}");
     console.log("REGEXP PHONE: " + !re.test(phoneValue));
@@ -320,7 +325,7 @@
     }
     
     var finance;
-    console.log('hello');
+     
     if (Array.isArray(inputFieldFinance)){
       console.log('fin is array')
       console.log('finance is: ' + inputFieldFinance[0].get("v.value)"));

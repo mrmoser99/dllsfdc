@@ -3,7 +3,7 @@ public class TestcalculateEstPropertyTax {
   
     public static testMethod void test_calculateEstPropertyTax(){
         
-    cllease__Office_Name__c office = new cllease__Office_Name__c(cllease__Office_Short_Name__c='HQ',Name='sample Company');
+    cllease__Office_Name__c office = new cllease__Office_Name__c(cllease__Office_Short_Name__c='HQ',Name='sample Company',cllease__tax_method__c = 'Exclusive');
     insert office;    
     clcommon__Legal_Entity__c lentity = new clcommon__Legal_Entity__c(name='Corporation');
     insert lentity;    

@@ -6,6 +6,7 @@ public with sharing class FMZ_ApplicationCustomerControllerTest {
 
 		cllease__Office_Name__c office = new cllease__Office_Name__c (
 			cllease__Office_Short_Name__c = 'HQ',
+			cllease__tax_method__c = 'Exclusive',
 			Name = 'sample Company'
 		);
 		insert office;

@@ -94,9 +94,9 @@
     console.log('found this account id' + component.get("v.accountId"));
     
     var dealerId = component.get("v.dealerId");
-    console.log('here31a');
+    
     var isValid = helper.isValid(component);
-    console.log('here3b');
+    
     var recordId = component.get("v.recordId");
     var account = component.get("v.account");
 
@@ -108,7 +108,7 @@
       fields["Oracle_Trade_up_Quote_Expiration_Date__c"] =
         tradeUpDetails.expirationDate;
     }
-    console.log('here31');
+    
     fields["Primary_Phone_number__c"] = fields[
       "Primary_Phone_number__c"
     ].replace(/(\(|\)| |-)/g, "");
@@ -130,7 +130,7 @@
       .get("v.value");
     fields["genesis__Account__c"] = accountId;
     fields["Dealer__c"] = dealerId;
-    console.log('here4');
+    
     if (account && account.Name) {
       console.log('account');
       fields["genesis__Business_Name__c"] = account.Name;
@@ -140,7 +140,7 @@
       fields["genesis__Business_Name__c"] = component.get("v.searchString");
     }
     
-    console.log('here13today');
+   
     component.set("v.isInvalid", !isValid);
     console.log(component.get("v.isInvalid"));
     //if (!isValid(component)) {
