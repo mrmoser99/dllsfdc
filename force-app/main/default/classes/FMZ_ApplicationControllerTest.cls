@@ -11,6 +11,11 @@ public class FMZ_ApplicationControllerTest {
 		);
 		insert company;
 
+        clcommon__VAT_Rate_Setup__c vat = new clcommon__VAT_Rate_Setup__c();
+        vat.name = 'test';
+        vat.clcommon__Tax_Rate__c = 10.0;
+        insert vat;
+
 		Date currentSystemDate = Date.newInstance(2018, 03, 31);
 		cllease__Office_Name__c dummyOffice     = cllease.TestHelper.createOffice('Test Office', true);
 		dummyOffice.cllease__Current_System_Date__c = currentSystemDate;
@@ -18,7 +23,8 @@ public class FMZ_ApplicationControllerTest {
 		dummyOffice.Dll_Seg2_Business_Unit__c   = '02';
 		dummyOffice.Dll_Seg3_Department__c      = '3030';
 		dummyOffice.Dll_Seg6__c                 = '00000';
-		dummyOffice.Dll_Seg7__c                 = '0000';
+        dummyOffice.Dll_Seg7__c                 = '0000';
+        dummyOffice.cllease__tax_method__c = 'Exclusive';
 		update dummyOffice;
 
 		genesis__Quick_Quote_Option__c qqOption = new genesis__Quick_Quote_Option__c(

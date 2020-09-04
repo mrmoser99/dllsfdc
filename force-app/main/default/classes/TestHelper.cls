@@ -26,6 +26,11 @@ public with sharing class TestHelper {
         dummyFee2.clcommon__Amortization_Method__c  = 'Income Basis';
         update dummyFee2;
 
+        clcommon__VAT_Rate_Setup__c vat = new clcommon__VAT_Rate_Setup__c();
+        vat.name = 'test';
+        vat.clcommon__Tax_Rate__c = 10.0;
+        insert vat;
+
         insert new clcommon__Fee_Junction__c(clcommon__Fee__c = dummyFee2.ID, clcommon__Fee_Set__c  = dummyFeeSet.ID);
         insert new cllease__Transaction_Sub_Type__c(Name = 'NSF Fees');
 
@@ -145,6 +150,7 @@ public with sharing class TestHelper {
                     cllease__Fee_Type__c = 'OTHER FEES', cllease__Number_of_Periods__c = 3, 
                     cllease__Frequency__c = 'MONTHLY', cllease__Amount__c = 100, 
                     cllease__start_date__c = leaseAccount.cllease__Contract_Date__c,
+                    cllease__Amort_Term__c = leaseAccount.cllease__Term__c,
                     cllease__Amort_Start_Date__c = leaseAccount.cllease__Contract_Date__c));
         
         feeDetails.add(new cllease__Contract_Fees__c(cllease__VAT__c = 0.00, cllease__Total_Payment_Amount__c = 100, 
@@ -152,6 +158,7 @@ public with sharing class TestHelper {
                     cllease__Fee_Type__c = 'OTHER FEES', cllease__Number_of_Periods__c = 3, 
                     cllease__Frequency__c = 'MONTHLY', cllease__Amount__c = 100, 
                     cllease__start_date__c = leaseAccount.cllease__Contract_Date__c,
+                    cllease__Amort_Term__c = leaseAccount.cllease__Term__c,
                     cllease__Amort_Start_Date__c = leaseAccount.cllease__Contract_Date__c));
 
         system.debug('******************** leaseAccount: ' + leaseAccount) ;
