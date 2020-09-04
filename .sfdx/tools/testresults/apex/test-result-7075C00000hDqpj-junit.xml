@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-03T13:49:11-04:00" hostname="https://newco--dev.my.salesforce.com" tests="2" failures="2"  errors="0"  time="17.01">
+        <properties>
+            <property name="outcome" value="Failed"/>
+            <property name="testsRan" value="2"/>
+            <property name="passing" value="0"/>
+            <property name="failing" value="2"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="0%"/>
+            <property name="failRate" value="100%"/>
+            <property name="testStartTime" value="Sep 3, 2020 1:49 PM"/>
+            <property name="testExecutionTime" value="17.01 s"/>
+            <property name="testTotalTime" value="17.01 s"/>
+            <property name="commandTime" value="23.23 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hDqpj"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="CongaGenerateInvoice" classname="CongaGenerateInvoiceTest" time="11.85">
+            <failure message="System.QueryException: List has no rows for assignment to SObject"><![CDATA[Class.CongaGenerateInvoiceTest.CongaGenerateInvoice: line 31, column 1]]></failure>
+        </testcase>
+        <testcase name="CongaGenerateInvoice1" classname="CongaGenerateInvoiceTest" time="5.16">
+            <failure message="System.QueryException: List has no rows for assignment to SObject"><![CDATA[Class.CongaGenerateInvoiceTest.CongaGenerateInvoice1: line 102, column 1]]></failure>
+        </testcase>
+    </testsuite>
+</testsuites>

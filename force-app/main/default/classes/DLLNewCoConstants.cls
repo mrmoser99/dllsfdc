@@ -72,6 +72,6 @@ public with sharing class DLLNewCoConstants {
     public static String BATCH_STATUS_COMPLETED     = 'Completed';
 
     public static String QUOTE_ESTIMATED_PROPERTY_TAX = 'QUOTE ESTIMATED PROPERTY TAX';
-    public static String QUOTE_ESTIMATED_SALES_TAX = 'QUOTE ESTIMATED SALES TAX';
+    public static String QUOTE_ESTIMATED_SALES_TAX = 'SALES TAX';
     
 }

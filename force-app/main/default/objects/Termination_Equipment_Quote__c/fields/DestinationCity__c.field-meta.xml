@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>DestinationCity__c</fullName>
     <externalId>false</externalId>
-    <formula>Termination_Quote_Equipment__r.cllease__Contract_Equipment__r.City__c</formula>
+    <formula>Termination_Quote_Equipment__r.cllease__Contract_Equipment__r.City_InstallAddress__c</formula>
     <label>DestinationCity</label>
     <required>false</required>
     <trackTrending>false</trackTrending>

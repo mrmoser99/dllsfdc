@@ -2,6 +2,5 @@
 <CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
     <customObject>true</customObject>
     <description>Int Facility Party</description>
-    <mobileReady>false</mobileReady>
     <motif>Custom51: Apple</motif>
 </CustomTab>

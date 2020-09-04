@@ -4,9 +4,9 @@ public class TestAssetSaleProcessing {
          
          cllease__Lease_Account__c leaseContract= TestHelper.createContract();
          system.debug('a idddd'+leaseContract.id);
-         cllease__Contract_Equipment__c contractEquipment= [ Select Id,name,City__c,State_Code__c,Zip_Code__c 
-      										From cllease__Contract_Equipment__c
-      										Where cllease__Contract__c = :leaseContract.Id];
+         cllease__Contract_Equipment__c contractEquipment= [ Select Id,name,City_InstallAddress__c,State_Code__c,Zip_Code_InstallAddress__c 
+                                            From cllease__Contract_Equipment__c
+                                            Where cllease__Contract__c = :leaseContract.Id];
          cllease__Asset_workbench__c asset = new cllease__Asset_workbench__c(cllease__Contract__c=leaseContract.Id,
                                                                              cllease__Return_Status__c='SOLD',
                                                                              Date_Sold__c=date.today(),Sale_Price__c=10,

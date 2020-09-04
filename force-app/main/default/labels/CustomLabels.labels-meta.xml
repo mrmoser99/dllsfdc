@@ -88,6 +88,13 @@
         <value>a2m3u00000170vJ</value>
     </labels>
     <labels>
+        <fullName>Docusign_Lease_Agreement_3</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Docusign Lease Agreement 3</shortDescription>
+        <value>a2m5C0000005wdd</value>
+    </labels>
+    <labels>
         <fullName>Docusign_Lease_Query</fullName>
         <categories>Docusign</categories>
         <language>en_US</language>
@@ -144,7 +151,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>FMZ Dealer Community Base URL</shortDescription>
-        <value>https://dev-newcofinance.cs62.force.com/dealer</value>
+        <value>https://dev-newcofinance.cs62.force.com/dealer/</value>
     </labels>
     <labels>
         <fullName>FMZ_EDQ_Auth_Token</fullName>

@@ -2,6 +2,5 @@
 <CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
     <customObject>true</customObject>
     <description>Int Junction Object for Collateral and Party.</description>
-    <mobileReady>false</mobileReady>
     <motif>Custom86: Red Cross</motif>
 </CustomTab>

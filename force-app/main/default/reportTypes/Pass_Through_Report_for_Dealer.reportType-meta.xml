@@ -71,11 +71,6 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>City__c</field>
-            <table>cllease__Contract_Equipment__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>cllease__City_Surcharge__c</field>
             <table>cllease__Contract_Equipment__c</table>
         </columns>
@@ -106,17 +101,7 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Country__c</field>
-            <table>cllease__Contract_Equipment__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>cllease__County__c</field>
-            <table>cllease__Contract_Equipment__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
-            <field>County__c</field>
             <table>cllease__Contract_Equipment__c</table>
         </columns>
         <columns>
@@ -512,6 +497,11 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
+            <field>City_InstallAddress__c</field>
+            <table>cllease__Contract_Equipment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
             <field>cllease__Warranty_Amount__c</field>
             <table>cllease__Contract_Equipment__c</table>
         </columns>
@@ -527,7 +517,17 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Zip_Code__c</field>
+            <field>County_InstallAddress__c</field>
+            <table>cllease__Contract_Equipment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Country_InstallAddress__c</field>
+            <table>cllease__Contract_Equipment__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Zip_Code_InstallAddress__c</field>
             <table>cllease__Contract_Equipment__c</table>
         </columns>
         <masterLabel>Equipment</masterLabel>

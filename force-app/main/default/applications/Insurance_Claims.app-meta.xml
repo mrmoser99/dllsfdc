@@ -54,6 +54,7 @@
     <tabs>standard-home</tabs>
     <tabs>Lease_Claims__c</tabs>
     <tabs>clcommon__Batch_Process_Log__c</tabs>
+    <tabs>Uploader</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Insurance_Claims_UtilityBar</utilityBar>
 </CustomApplication>

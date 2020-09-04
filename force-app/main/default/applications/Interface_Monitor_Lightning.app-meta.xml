@@ -26,5 +26,6 @@
     <tabs>Int_ICV_Default__c</tabs>
     <tabs>standard-report</tabs>
     <tabs>clcommon__Batch_Process_Log__c</tabs>
+    <tabs>Uploader</tabs>
     <uiType>Lightning</uiType>
 </CustomApplication>

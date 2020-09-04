@@ -22,9 +22,13 @@
     <tabs>standard-File</tabs>
     <tabs>clcommon__Address__c</tabs>
     <tabs>clcommon__Batch_Process_Log__c</tabs>
+    <tabs>Uploader</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LightningSalesConsole_UtilityBar</utilityBar>
     <workspaceConfig>
+        <mappings>
+            <tab>Uploader</tab>
+        </mappings>
         <mappings>
             <tab>clcommon__Address__c</tab>
         </mappings>

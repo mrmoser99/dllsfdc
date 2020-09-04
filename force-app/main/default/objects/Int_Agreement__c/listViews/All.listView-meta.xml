@@ -12,9 +12,9 @@
     <columns>GL_Code_Block__c</columns>
     <columns>System_Program_Number__c</columns>
     <columns>System_Program_Description__c</columns>
-    <columns>Floating_Rate_Cap__c</columns>
-    <columns>Syndication_Indicator__c</columns>
     <columns>Syndication_Percentage__c</columns>
+    <columns>Net_Principal_Amount__c</columns>
+    <columns>Net_Principal_Balance_Amount__c</columns>
     <filterScope>Everything</filterScope>
     <label>All</label>
 </ListView>

@@ -10,8 +10,12 @@
     <tabs>standard-CmsWorkspaces</tabs>
     <tabs>standard-CmsExperiences</tabs>
     <tabs>clcommon__Batch_Process_Log__c</tabs>
+    <tabs>Uploader</tabs>
     <uiType>Lightning</uiType>
     <workspaceConfig>
+        <mappings>
+            <tab>Uploader</tab>
+        </mappings>
         <mappings>
             <tab>clcommon__Batch_Process_Log__c</tab>
         </mappings>

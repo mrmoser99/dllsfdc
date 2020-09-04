@@ -1,0 +1,5 @@
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" controller="clcommon.PortalActions">
+    <apex:include pageName="clcommon__ResolveNamespace"/>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAK6npp4m0Xoa5na1QSAr4X2Y5fGlzxirI&libraries=places"></script>
+    <clcommon:IncludePortal2 navName="loan_application_journey_demo" theme="mui" showDefaultLoadingPage="true"></clcommon:IncludePortal2>
+</apex:page>

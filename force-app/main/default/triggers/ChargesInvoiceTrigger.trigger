@@ -20,6 +20,13 @@ trigger ChargesInvoiceTrigger on cllease__Charge__c (before insert, before updat
         txnSubTypeMap.put(txnSubType.Id, txnSubType.Name);
     }
     
+    if(trigger.isBefore && trigger.isInsert){
+        for(cllease__Charge__c charge : trigger.new) {
+            if(charge.cllease__Tax_Processed__c == 'Tax Calculated') {
+                charge.cllease__Tax_Processed__c = 'Tax Not Calculated'; //this may not be needed if product changes this. 
+            }
+        }
+    }
 
     if(trigger.isBefore && (trigger.isInsert || trigger.isUpdate)) {
         
@@ -27,10 +34,6 @@ trigger ChargesInvoiceTrigger on cllease__Charge__c (before insert, before updat
 
             if(charge.cllease__Transaction_Sub_Type__c != null) {
                 charge.Transaction_SubType_Name__c = txnSubTypeMap.get(charge.cllease__Transaction_Sub_Type__c);
-            }
-            System.debug('cllease__Tax_Processed = ' + charge.cllease__Tax_Processed__c);
-            if(String.isBlank(charge.cllease__Tax_Processed__c) == true) {
-                charge.cllease__Tax_Processed__c = 'Tax Not Calculated'; //this may not be needed if product changes this. 
             }
             // Incase of Late Fee, field cllease__Fee_Due__c not updating from product. So updating it here same as original amount.
             if(trigger.isInsert) {
@@ -42,6 +45,7 @@ trigger ChargesInvoiceTrigger on cllease__Charge__c (before insert, before updat
 
             // Fix: For Late Fees and charges Creating from UI , cllease__Transaction_Date__c is coming as null
             if(charge.cllease__Transaction_Date__c == null) {
+                charge.cllease__Transaction_Date__c = currentCLLeaseSystemDate;
                 charge.cllease__Transaction_Date__c = currentCLLeaseSystemDate;
             }
         }
@@ -82,5 +86,4 @@ trigger ChargesInvoiceTrigger on cllease__Charge__c (before insert, before updat
             InvoiceSummaryUtil.InvoiceSummary(invIds);
         }
     }
-    
 }

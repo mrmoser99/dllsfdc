@@ -2060,11 +2060,6 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>City__c</field>
-            <table>cllease__Lease_Account__c.cllease__Contract_Equipments__r</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>cllease__City_Surcharge__c</field>
             <table>cllease__Lease_Account__c.cllease__Contract_Equipments__r</table>
         </columns>
@@ -2100,17 +2095,7 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Country__c</field>
-            <table>cllease__Lease_Account__c.cllease__Contract_Equipments__r</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>cllease__County__c</field>
-            <table>cllease__Lease_Account__c.cllease__Contract_Equipments__r</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
-            <field>County__c</field>
             <table>cllease__Lease_Account__c.cllease__Contract_Equipments__r</table>
         </columns>
         <columns>
@@ -2660,7 +2645,22 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Zip_Code__c</field>
+            <field>City_InstallAddress__c</field>
+            <table>cllease__Lease_Account__c.cllease__Contract_Equipments__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>County_InstallAddress__c</field>
+            <table>cllease__Lease_Account__c.cllease__Contract_Equipments__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Country_InstallAddress__c</field>
+            <table>cllease__Lease_Account__c.cllease__Contract_Equipments__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Zip_Code_InstallAddress__c</field>
             <table>cllease__Lease_Account__c.cllease__Contract_Equipments__r</table>
         </columns>
         <masterLabel>Contract Equipment</masterLabel>

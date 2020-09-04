@@ -46,6 +46,10 @@ public with sharing class TestHelper {
         dummyOffice.Dll_Seg6__c                 = '00000';
         dummyOffice.Dll_Seg7__c                 = '0000';
         dummyOffice.cllease__tax_method__c = 'Exclusive';
+        dummyOffice.cllease__Vat_Rate__c = 0;
+        dummyOffice.cllease__Currency_Precision__c = 2;
+        dummyOffice.cllease__Mark_Suspended_After_Days__c  = 180;
+        dummyOffice.cllease__Prior_Period_Income_Reversal_Days__c = 0;
         update dummyOffice;
 
         TestData.createPeriodsFor2018(dummyOffice.cllease__Calendar__c);
@@ -150,11 +154,15 @@ public with sharing class TestHelper {
                     cllease__start_date__c = leaseAccount.cllease__Contract_Date__c,
                     cllease__Amort_Start_Date__c = leaseAccount.cllease__Contract_Date__c));
 
+        system.debug('******************** leaseAccount: ' + leaseAccount) ;
         // 4. Calling ContractBuilder for Contract Creation
         cllease.ContractBuilder builder = new cllease.ContractBuilder(leaseAccount);
         builder.addChildObjects(contractEquipments);
+        system.debug('equipment: ' + contractEquipments);
         builder.addChildObjects(paymentDetails);
+        system.debug('payment:' + paymentDetails);
         builder.addChildObjects(feeDetails);
+        system.debug('fees: ' + feeDetails);
         String response = builder.createContract(cllease.LendingConstants.ContractCreateOption.ACTIVATECONTRACT);
         System.debug(LoggingLevel.ERROR, ' Response from Contract Creation: '+response);
         // Validating Contract Activation

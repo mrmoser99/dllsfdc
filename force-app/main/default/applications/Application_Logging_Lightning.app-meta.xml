@@ -18,5 +18,6 @@
     <tabs>OFAC_Log__c</tabs>
     <tabs>Supertrump_Log__c</tabs>
     <tabs>clcommon__Batch_Process_Log__c</tabs>
+    <tabs>Uploader</tabs>
     <uiType>Lightning</uiType>
 </CustomApplication>

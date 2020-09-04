@@ -11,7 +11,7 @@ trigger QuoteLineTaxTrigger on cllease__Termination_Quote_Line__c (after update)
 	try {
 		List<cllease__Termination_Quote_Line__c> quoteLines = Trigger.new;
 		Boolean skipVertexTaxCall = false;
-		if(quoteLines.size() == 1 && quoteLines.get(0).cllease__Line_Type__c == 'QUOTE ESTIMATED SALES TAX') {
+		if(quoteLines.size() == 1 && quoteLines.get(0).cllease__Line_Type__c == DLLNewCoConstants.QUOTE_ESTIMATED_SALES_TAX) {
 			skipVertexTaxCall = true;
 		}
 		

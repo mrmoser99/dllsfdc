@@ -15,5 +15,10 @@
     <columns>PERIOD_DATE__c</columns>
     <columns>REMAINING_PAYMENTS__c</columns>
     <filterScope>Everything</filterScope>
+    <filters>
+        <field>Committed__c</field>
+        <operation>equals</operation>
+        <value>0</value>
+    </filters>
     <label>All</label>
 </ListView>

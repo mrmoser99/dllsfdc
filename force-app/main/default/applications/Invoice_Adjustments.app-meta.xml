@@ -46,6 +46,7 @@
     <tabs>standard-home</tabs>
     <tabs>clcommon__Consolidated_Invoice__c</tabs>
     <tabs>clcommon__Batch_Process_Log__c</tabs>
+    <tabs>Uploader</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Invoice_Adjustments_UtilityBar</utilityBar>
 </CustomApplication>

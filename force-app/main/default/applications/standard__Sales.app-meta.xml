@@ -17,4 +17,5 @@
     <tabs>standard-Forecasting3</tabs>
     <tabs>clcommon__Address__c</tabs>
     <tabs>clcommon__Batch_Process_Log__c</tabs>
+    <tabs>Uploader</tabs>
 </CustomApplication>

@@ -2,6 +2,5 @@
 <CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
     <customObject>true</customObject>
     <description>Int Agreement Provision</description>
-    <mobileReady>false</mobileReady>
     <motif>Custom5: Leaf</motif>
 </CustomTab>
