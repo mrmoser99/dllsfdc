@@ -1,0 +1,70 @@
+{
+    "summary": {
+        "outcome": "Failed",
+        "testsRan": 2,
+        "passing": 0,
+        "failing": 2,
+        "skipped": 0,
+        "passRate": "0%",
+        "failRate": "100%",
+        "testStartTime": "Sep 3, 2020 2:07 PM",
+        "testExecutionTime": "16907 ms",
+        "testTotalTime": "16907 ms",
+        "commandTime": "22923 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hDr32",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073OkMUAU"
+            },
+            "Id": "07M5C0000073OkMUAU",
+            "QueueItemId": "7095C000000p0M0QAI",
+            "StackTrace": "Class.CongaGenerateInvoiceTest.CongaGenerateInvoice: line 31, column 1",
+            "Message": "System.QueryException: List has no rows for assignment to SObject",
+            "AsyncApexJobId": "7075C00000hDr32QAC",
+            "MethodName": "CongaGenerateInvoice",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU7mmQAD"
+                },
+                "Id": "01p1I00000FU7mmQAD",
+                "Name": "CongaGenerateInvoiceTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 11834,
+            "FullName": "CongaGenerateInvoiceTest.CongaGenerateInvoice"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073OkNUAU"
+            },
+            "Id": "07M5C0000073OkNUAU",
+            "QueueItemId": "7095C000000p0M0QAI",
+            "StackTrace": "Class.CongaGenerateInvoiceTest.CongaGenerateInvoice1: line 102, column 1",
+            "Message": "System.QueryException: List has no rows for assignment to SObject",
+            "AsyncApexJobId": "7075C00000hDr32QAC",
+            "MethodName": "CongaGenerateInvoice1",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU7mmQAD"
+                },
+                "Id": "01p1I00000FU7mmQAD",
+                "Name": "CongaGenerateInvoiceTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 5073,
+            "FullName": "CongaGenerateInvoiceTest.CongaGenerateInvoice1"
+        }
+    ]
+}
