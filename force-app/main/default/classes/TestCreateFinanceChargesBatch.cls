@@ -35,8 +35,11 @@ public class TestCreateFinanceChargesBatch {
         charge.cllease__Date__c             = dueDate;
         charge.cllease__Paid__c             = false;   
         charge.Finance_Fee_created__c       = false; 
-        charge.cllease__Dues_Details__c     = bill.Id;        
-        update charge;
+        charge.cllease__Dues_Details__c     = bill.Id;
+        // Added by CLS on 9/9/2020 to address test failure
+        charge.cllease__Lease_Account__c = contract.Id;
+        charge.cllease__Fee_Definition__c = lateFeeDef.Id;
+        upsert charge;
 
         // Creating and runnning the Batch jobs for Invoice Consolidation and PNC File Generation
         System.Test.startTest();
@@ -68,8 +71,10 @@ public class TestCreateFinanceChargesBatch {
         charge.cllease__Tax_Processed__c    = 'Tax Calculated';
         charge.cllease__Date__c             = dueDate;
         charge.cllease__Paid__c             = false;
-        charge.Finance_Fee_created__c       = false;       
-        update charge;
+        charge.Finance_Fee_created__c       = false; 
+        // Added by CLS on 9/9/2020 to address test failure
+        charge.cllease__Lease_Account__c = contract.Id;
+        upsert charge;
 
         // Creating and runnning the Batch jobs for Invoice Consolidation and PNC File Generation
         System.Test.startTest();

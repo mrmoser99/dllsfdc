@@ -53,7 +53,7 @@ global class CreateFinanceChargesBatch extends clcommon.DynamicJob {
     }
       
     public override void doExecute(Database.BatchableContext bc, List<sObject> scope) {
-    
+    	System.debug(LoggingLevel.ERROR, '^^^^ scope : ' + scope);
         List<cllease__Charge__c> chargesList        = (List<cllease__Charge__c>)scope;
         List<cllease__Charge__c> chargesToCreate    = new List<cllease__Charge__c>();
         List<cllease__Charge__c> chargesToUpdate     = new List<cllease__Charge__c>();

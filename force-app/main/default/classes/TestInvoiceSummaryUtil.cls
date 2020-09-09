@@ -36,7 +36,9 @@ public class TestInvoiceSummaryUtil {
              charge1.Tax_Processed__c              = false;
              charge1.Tax_Component__c              = '';
              charge1.cllease__Consolidated_Invoice__c  = inv.id;
-    
+    		// Added by CLS on 9/9/2020 to address test failure
+            charge1.cllease__Lease_Account__c = LSContract.Id;
+            charge1.cllease__Date__c = Date.parse('09/1/2016');
      		 upsert charge1;
         	
         

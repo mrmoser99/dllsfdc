@@ -167,6 +167,11 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
+            <field>GL_SubLedger_Credit_Record_Id__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
             <field>Applied_Amount_Conga__c</field>
             <table>cllease__Lease_Account__c</table>
         </columns>
@@ -1575,6 +1580,11 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
+            <field>GL_Consolidation_Credit_Record_Id__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
             <field>cllease__Credit_GL_Account_Code__c</field>
             <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
         </columns>
@@ -1606,6 +1616,11 @@
         <columns>
             <checkedByDefault>false</checkedByDefault>
             <field>cllease__Exported_Date__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>GL_Consolidation_Debit_Record_Id__c</field>
             <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
         </columns>
         <columns>
@@ -1660,7 +1675,127 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
+            <field>Global_SBU__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Movement_Code_Dr__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Depreciation_Stream__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
             <field>cllease__Lease_Payment_Detail__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Tax_Override__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__VAT_Code__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Cash_Receipt__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Remark__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Debt_Schedule__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Journal_Entry_Number__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Tax_Exempt__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Reversal_Processed__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Reporting_Entity__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Movement_Code_Cr__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Invoice_Credit__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Valid_GL_Entries__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>GL_SubLedger_Debit_Record_Id__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Charge_Waived__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Debit_Account_ID__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Generation_Scheme__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Expense_Fee_Transaction__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Equipment_Transaction__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Cash_Receipt_Transaction__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Credit_Account_ID__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Disbursement_Txn__c</field>
             <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
         </columns>
         <columns>
@@ -1681,6 +1816,11 @@
         <columns>
             <checkedByDefault>false</checkedByDefault>
             <field>cllease__Transaction_Description__c</field>
+            <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>cllease__Equipment__c</field>
             <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
         </columns>
         <columns>

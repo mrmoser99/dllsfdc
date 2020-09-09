@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 1,
+        "passing": 1,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Sep 9, 2020 8:13 AM",
+        "testExecutionTime": "27475 ms",
+        "testTotalTime": "27475 ms",
+        "commandTime": "33663 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hF3tG",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073TpvUAE"
+            },
+            "Id": "07M5C0000073TpvUAE",
+            "QueueItemId": "7095C000000p1qWQAQ",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hF3tGQAS",
+            "MethodName": "testVertexOnCharge",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU7ndQAD"
+                },
+                "Id": "01p1I00000FU7ndQAD",
+                "Name": "TestGetTaxonChargesJob",
+                "NamespacePrefix": null
+            },
+            "RunTime": 27475,
+            "FullName": "TestGetTaxonChargesJob.testVertexOnCharge"
+        }
+    ]
+}

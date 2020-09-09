@@ -867,6 +867,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>RateUtility</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ReadAPinterface</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -956,6 +960,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>TestAssetSaleProcessing</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>TestAsyncXgServicesAccount</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
