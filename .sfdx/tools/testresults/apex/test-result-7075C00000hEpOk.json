@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Failed",
+        "testsRan": 1,
+        "passing": 0,
+        "failing": 1,
+        "skipped": 0,
+        "passRate": "0%",
+        "failRate": "100%",
+        "testStartTime": "Sep 8, 2020 2:30 PM",
+        "testExecutionTime": "18048 ms",
+        "testTotalTime": "18048 ms",
+        "commandTime": "27393 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEpOk",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SfBUAU"
+            },
+            "Id": "07M5C0000073SfBUAU",
+            "QueueItemId": "7095C000000p1cqQAA",
+            "StackTrace": "Class.TestGetTaxonChargesJob.testVertexOnCharge: line 46, column 1",
+            "Message": "System.DmlException: Upsert failed. First exception on row 0; first error: CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY, cllease.ChargeTrigger: execution of BeforeInsert\n\ncaused by: System.NullPointerException: Attempt to de-reference a null object\n\nClass.cllease.ChargeHandler.insertCharge: line 276, column 1\nClass.cllease.ChargeTriggerHandler.beforeInsertHandler: line 68, column 1\nTrigger.cllease.ChargeTrigger: line 12, column 1: []",
+            "AsyncApexJobId": "7075C00000hEpOkQAK",
+            "MethodName": "testVertexOnCharge",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU7ndQAD"
+                },
+                "Id": "01p1I00000FU7ndQAD",
+                "Name": "TestGetTaxonChargesJob",
+                "NamespacePrefix": null
+            },
+            "RunTime": 18048,
+            "FullName": "TestGetTaxonChargesJob.testVertexOnCharge"
+        }
+    ]
+}

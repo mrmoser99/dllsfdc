@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Failed",
+        "testsRan": 1,
+        "passing": 0,
+        "failing": 1,
+        "skipped": 0,
+        "passRate": "0%",
+        "failRate": "100%",
+        "testStartTime": "Sep 8, 2020 9:36 AM",
+        "testExecutionTime": "2986 ms",
+        "testTotalTime": "2986 ms",
+        "commandTime": "13674 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEmjT",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SIqUAM"
+            },
+            "Id": "07M5C0000073SIqUAM",
+            "QueueItemId": "7095C000000p1WJQAY",
+            "StackTrace": "Class.cllease.TestHelper.getVATRateSetup: line 1217, column 1\nClass.cllease.TestHelper.createOffice: line 674, column 1\nClass.FMZ_ApplicationControllerTest.app_clearPricing_cleared: line 23, column 1",
+            "Message": "System.QueryException: List has no rows for assignment to SObject",
+            "AsyncApexJobId": "7075C00000hEmjTQAS",
+            "MethodName": "app_clearPricing_cleared",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxFQAX"
+                },
+                "Id": "01p1I00000HCSxFQAX",
+                "Name": "FMZ_ApplicationControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 2986,
+            "FullName": "FMZ_ApplicationControllerTest.app_clearPricing_cleared"
+        }
+    ]
+}

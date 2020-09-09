@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Failed",
+        "testsRan": 1,
+        "passing": 0,
+        "failing": 1,
+        "skipped": 0,
+        "passRate": "0%",
+        "failRate": "100%",
+        "testStartTime": "Sep 8, 2020 12:16 PM",
+        "testExecutionTime": "31190 ms",
+        "testTotalTime": "31190 ms",
+        "commandTime": "39745 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEoEm",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SZcUAM"
+            },
+            "Id": "07M5C0000073SZcUAM",
+            "QueueItemId": "7095C000000p1ZSQAY",
+            "StackTrace": "Class.TestGLIntegration.testGLConsolidation: line 70, column 1",
+            "Message": "System.AssertException: Assertion Failed: Mismatch in No Of Generated GL Consolidation Interface Records...: Expected: 8, Actual: 6",
+            "AsyncApexJobId": "7075C00000hEoEmQAK",
+            "MethodName": "testGLConsolidation",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU7nbQAD"
+                },
+                "Id": "01p1I00000FU7nbQAD",
+                "Name": "TestGLIntegration",
+                "NamespacePrefix": null
+            },
+            "RunTime": 31190,
+            "FullName": "TestGLIntegration.testGLConsolidation"
+        }
+    ]
+}

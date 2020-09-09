@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Failed",
+        "testsRan": 1,
+        "passing": 0,
+        "failing": 1,
+        "skipped": 0,
+        "passRate": "0%",
+        "failRate": "100%",
+        "testStartTime": "Sep 8, 2020 2:54 PM",
+        "testExecutionTime": "18312 ms",
+        "testTotalTime": "18312 ms",
+        "commandTime": "26169 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEpdT",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SfkUAE"
+            },
+            "Id": "07M5C0000073SfkUAE",
+            "QueueItemId": "7095C000000p1dPQAQ",
+            "StackTrace": "Class.cllease.ChargeFragmentController.feeChanged: line 37, column 1\nClass.cllease.ChargesAction.createCharge: line 41, column 1\nClass.cllease.TestHelper.createUnpaidCharge: line 202, column 1\nClass.cllease.TestHelper.createUnpaidCharge: line 198, column 1\nClass.TestGetTaxonChargesJob.testVertexOnCharge: line 55, column 1",
+            "Message": "System.LimitException: cllease:Too many SOQL queries: 101",
+            "AsyncApexJobId": "7075C00000hEpdTQAS",
+            "MethodName": "testVertexOnCharge",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU7ndQAD"
+                },
+                "Id": "01p1I00000FU7ndQAD",
+                "Name": "TestGetTaxonChargesJob",
+                "NamespacePrefix": null
+            },
+            "RunTime": 18312,
+            "FullName": "TestGetTaxonChargesJob.testVertexOnCharge"
+        }
+    ]
+}

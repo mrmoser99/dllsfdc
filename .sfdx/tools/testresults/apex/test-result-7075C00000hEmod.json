@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 1,
+        "passing": 1,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Sep 8, 2020 9:45 AM",
+        "testExecutionTime": "11497 ms",
+        "testTotalTime": "11497 ms",
+        "commandTime": "21040 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEmod",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SJAUA2"
+            },
+            "Id": "07M5C0000073SJAUA2",
+            "QueueItemId": "7095C000000p1WdQAI",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEmodQAC",
+            "MethodName": "app_clearPricing_cleared",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxFQAX"
+                },
+                "Id": "01p1I00000HCSxFQAX",
+                "Name": "FMZ_ApplicationControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 11497,
+            "FullName": "FMZ_ApplicationControllerTest.app_clearPricing_cleared"
+        }
+    ]
+}

@@ -1,0 +1,70 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 2,
+        "passing": 2,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Sep 8, 2020 12:07 PM",
+        "testExecutionTime": "12879 ms",
+        "testTotalTime": "12879 ms",
+        "commandTime": "21408 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEnuy",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SYeUAM"
+            },
+            "Id": "07M5C0000073SYeUAM",
+            "QueueItemId": "7095C000000p1ZDQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEnuyQAC",
+            "MethodName": "testMethod1",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HoMtbQAF"
+                },
+                "Id": "01p1I00000HoMtbQAF",
+                "Name": "UpdateEquipmentDetailsTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 9591,
+            "FullName": "UpdateEquipmentDetailsTest.testMethod1"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SYfUAM"
+            },
+            "Id": "07M5C0000073SYfUAM",
+            "QueueItemId": "7095C000000p1ZDQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEnuyQAC",
+            "MethodName": "testMethod2",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HoMtbQAF"
+                },
+                "Id": "01p1I00000HoMtbQAF",
+                "Name": "UpdateEquipmentDetailsTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 3288,
+            "FullName": "UpdateEquipmentDetailsTest.testMethod2"
+        }
+    ]
+}

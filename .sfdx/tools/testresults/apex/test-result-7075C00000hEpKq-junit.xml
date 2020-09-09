@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-08T14:16:41-04:00" hostname="https://newco--dev.my.salesforce.com" tests="1" failures="1"  errors="0"  time="0.16">
+        <properties>
+            <property name="outcome" value="Failed"/>
+            <property name="testsRan" value="1"/>
+            <property name="passing" value="0"/>
+            <property name="failing" value="1"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="0%"/>
+            <property name="failRate" value="100%"/>
+            <property name="testStartTime" value="Sep 8, 2020 2:16 PM"/>
+            <property name="testExecutionTime" value="0.16 s"/>
+            <property name="testTotalTime" value="0.16 s"/>
+            <property name="commandTime" value="8.25 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hEpKq"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="Test1" classname="TestAPInvoiceSimulator" time="0.16">
+            <failure message="System.QueryException: List has no rows for assignment to SObject"><![CDATA[Class.TestAPInvoiceSimulator.Test1: line 8, column 1]]></failure>
+        </testcase>
+    </testsuite>
+</testsuites>

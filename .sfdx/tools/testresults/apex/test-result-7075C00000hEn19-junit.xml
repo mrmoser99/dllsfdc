@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-08T10:15:48-04:00" hostname="https://newco--dev.my.salesforce.com" tests="3" failures="0"  errors="0"  time="9.06">
+        <properties>
+            <property name="outcome" value="Passed"/>
+            <property name="testsRan" value="3"/>
+            <property name="passing" value="3"/>
+            <property name="failing" value="0"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="100%"/>
+            <property name="failRate" value="0%"/>
+            <property name="testStartTime" value="Sep 8, 2020 10:15 AM"/>
+            <property name="testExecutionTime" value="9.06 s"/>
+            <property name="testTotalTime" value="9.06 s"/>
+            <property name="commandTime" value="13.75 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hEn19"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="app_getTerms_returned" classname="FMZ_ApplicationTermsControllerTest" time="0.03">
+        </testcase>
+        <testcase name="app_updateTerm_updated" classname="FMZ_ApplicationTermsControllerTest" time="0.28">
+        </testcase>
+        <testcase name="getTermOptionsTest" classname="FMZ_ApplicationTermsControllerTest" time="8.75">
+        </testcase>
+    </testsuite>
+</testsuites>

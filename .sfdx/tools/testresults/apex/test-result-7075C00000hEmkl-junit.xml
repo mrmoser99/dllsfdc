@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-08T09:38:52-04:00" hostname="https://newco--dev.my.salesforce.com" tests="4" failures="3"  errors="0"  time="8.96">
+        <properties>
+            <property name="outcome" value="Failed"/>
+            <property name="testsRan" value="4"/>
+            <property name="passing" value="1"/>
+            <property name="failing" value="3"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="25%"/>
+            <property name="failRate" value="75%"/>
+            <property name="testStartTime" value="Sep 8, 2020 9:38 AM"/>
+            <property name="testExecutionTime" value="8.96 s"/>
+            <property name="testTotalTime" value="8.96 s"/>
+            <property name="commandTime" value="18.64 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hEmkl"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="app_convert_converted" classname="FMZ_ApplicationConvertToLeaseCtrlTest" time="6.29">
+            <failure message="System.QueryException: List has no rows for assignment to SObject"><![CDATA[Class.cllease.TestHelper.getVATRateSetup: line 1217, column 1
+Class.cllease.TestHelper.createOffice: line 674, column 1
+Class.FMZ_ApplicationConvertToLeaseCtrlTest.app_convert_converted: line 39, column 1]]></failure>
+        </testcase>
+        <testcase name="app_convert_not_converted" classname="FMZ_ApplicationConvertToLeaseCtrlTest" time="1.34">
+            <failure message="System.QueryException: List has no rows for assignment to SObject"><![CDATA[Class.cllease.TestHelper.getVATRateSetup: line 1217, column 1
+Class.cllease.TestHelper.createOffice: line 674, column 1
+Class.FMZ_ApplicationConvertToLeaseCtrlTest.app_convert_not_converted: line 243, column 1]]></failure>
+        </testcase>
+        <testcase name="getResultExceptionTest" classname="FMZ_ApplicationConvertToLeaseCtrlTest" time="0.03">
+        </testcase>
+        <testcase name="handleSuccessfulConvert" classname="FMZ_ApplicationConvertToLeaseCtrlTest" time="1.3">
+            <failure message="System.QueryException: List has no rows for assignment to SObject"><![CDATA[Class.cllease.TestHelper.getVATRateSetup: line 1217, column 1
+Class.cllease.TestHelper.createOffice: line 674, column 1
+Class.FMZ_ApplicationConvertToLeaseCtrlTest.handleSuccessfulConvert: line 445, column 1]]></failure>
+        </testcase>
+    </testsuite>
+</testsuites>

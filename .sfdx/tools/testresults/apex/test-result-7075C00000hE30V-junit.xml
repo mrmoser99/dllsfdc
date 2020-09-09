@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-04T12:28:36-04:00" hostname="https://newco--dev.my.salesforce.com" tests="3" failures="2"  errors="0"  time="8.07">
+        <properties>
+            <property name="outcome" value="Failed"/>
+            <property name="testsRan" value="3"/>
+            <property name="passing" value="1"/>
+            <property name="failing" value="2"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="33%"/>
+            <property name="failRate" value="67%"/>
+            <property name="testStartTime" value="Sep 4, 2020 12:28 PM"/>
+            <property name="testExecutionTime" value="8.07 s"/>
+            <property name="testTotalTime" value="8.07 s"/>
+            <property name="commandTime" value="17.59 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hE30V"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="app_clearPricing_cleared" classname="FMZ_ApplicationControllerTest" time="2.77">
+            <failure message="System.QueryException: List has no rows for assignment to SObject"><![CDATA[Class.cllease.TestHelper.getVATRateSetup: line 1217, column 1
+Class.cllease.TestHelper.createOffice: line 674, column 1
+Class.FMZ_ApplicationControllerTest.app_clearPricing_cleared: line 15, column 1]]></failure>
+        </testcase>
+        <testcase name="app_generatePricing_updated" classname="FMZ_ApplicationControllerTest" time="0.13">
+            <failure message="System.QueryException: List has no rows for assignment to SObject"><![CDATA[Class.cllease.TestHelper.getVATRateSetup: line 1217, column 1
+Class.cllease.TestHelper.createOffice: line 674, column 1
+Class.FMZ_ApplicationControllerTest.app_generatePricing_updated: line 211, column 1]]></failure>
+        </testcase>
+        <testcase name="checkCompletion" classname="FMZ_ApplicationControllerTest" time="5.17">
+        </testcase>
+    </testsuite>
+</testsuites>

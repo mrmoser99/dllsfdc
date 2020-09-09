@@ -13,7 +13,7 @@ public class FMZ_ApplicationConvertToLeaseCtrlTest {
 				Email='TestDealerDLL@TestNewCo123.com',
 				AccountId=dealer.Id
 		);
-		insert dealerUser;
+		insert dealerUser; 
 
 		List<User> users;
 		System.runAs(new User(Id = UserInfo.getUserId())){
@@ -34,6 +34,9 @@ public class FMZ_ApplicationConvertToLeaseCtrlTest {
 		);
 		insert company;
 
+		cllease.TestHelper.createVATRateSetup();
+	
+
 		Date currentSystemDate = Date.newInstance(2018, 03, 31);
 		cllease__Office_Name__c dummyOffice     = cllease.TestHelper.createOffice('Test Office', true);
 		dummyOffice.cllease__Current_System_Date__c = currentSystemDate;
@@ -42,7 +45,7 @@ public class FMZ_ApplicationConvertToLeaseCtrlTest {
 		dummyOffice.Dll_Seg3_Department__c      = '3030';
 		dummyOffice.Dll_Seg6__c                 = '00000';
 		dummyOffice.Dll_Seg7__c                 = '0000';
-		insert dummyOffice;
+		update dummyOffice;
 
 		genesis__Quick_Quote_Option__c qqOption = new genesis__Quick_Quote_Option__c(
 			genesis__Documentation_Fees_Originated_Dealer__c = 0,
@@ -238,6 +241,8 @@ public class FMZ_ApplicationConvertToLeaseCtrlTest {
 			);
 			insert company;
 
+			cllease.TestHelper.createVATRateSetup();
+
 			Date currentSystemDate = Date.newInstance(2018, 03, 31);
 			cllease__Office_Name__c dummyOffice     = cllease.TestHelper.createOffice('Test Office', true);
 			dummyOffice.cllease__Current_System_Date__c = currentSystemDate;
@@ -246,7 +251,7 @@ public class FMZ_ApplicationConvertToLeaseCtrlTest {
 			dummyOffice.Dll_Seg3_Department__c      = '3030';
 			dummyOffice.Dll_Seg6__c                 = '00000';
 			dummyOffice.Dll_Seg7__c                 = '0000';
-			insert dummyOffice;
+			update dummyOffice;
 
 			genesis__Quick_Quote_Option__c qqOption = new genesis__Quick_Quote_Option__c(
 					genesis__Documentation_Fees_Originated_Dealer__c = 0,
@@ -440,6 +445,8 @@ public class FMZ_ApplicationConvertToLeaseCtrlTest {
 			);
 			insert company;
 
+			cllease.TestHelper.createVATRateSetup();
+
 			Date currentSystemDate = Date.newInstance(2018, 03, 31);
 			cllease__Office_Name__c dummyOffice     = cllease.TestHelper.createOffice('Test Office', true);
 			dummyOffice.cllease__Current_System_Date__c = currentSystemDate;
@@ -448,7 +455,7 @@ public class FMZ_ApplicationConvertToLeaseCtrlTest {
 			dummyOffice.Dll_Seg3_Department__c      = '3030';
 			dummyOffice.Dll_Seg6__c                 = '00000';
 			dummyOffice.Dll_Seg7__c                 = '0000';
-			insert dummyOffice;
+			update  dummyOffice;
 
 			genesis__Quick_Quote_Option__c qqOption = new genesis__Quick_Quote_Option__c(
 					genesis__Documentation_Fees_Originated_Dealer__c = 0,

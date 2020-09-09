@@ -5,7 +5,7 @@
 public with sharing class TestHelper {
 
 
-    /**
+    /** 
      * Following method creates the Sample Data needed  for contract creation and also creates contract.
      **/
     public static cllease__Lease_Account__c createContract() {
@@ -26,10 +26,12 @@ public with sharing class TestHelper {
         dummyFee2.clcommon__Amortization_Method__c  = 'Income Basis';
         update dummyFee2;
 
-        clcommon__VAT_Rate_Setup__c vat = new clcommon__VAT_Rate_Setup__c();
+        // Modified by CLS to address test case failure 09/04/2020
+        /*clcommon__VAT_Rate_Setup__c vat = new clcommon__VAT_Rate_Setup__c();
         vat.name = 'test';
-        vat.clcommon__Tax_Rate__c = 10.0;
-        insert vat;
+        vat.clcommon__Tax_Rate__c = 10.0; 
+        insert vat;*/
+        cllease.TestHelper.createVATRateSetup();
 
         insert new clcommon__Fee_Junction__c(clcommon__Fee__c = dummyFee2.ID, clcommon__Fee_Set__c  = dummyFeeSet.ID);
         insert new cllease__Transaction_Sub_Type__c(Name = 'NSF Fees');

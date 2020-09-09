@@ -13,6 +13,8 @@ public with sharing class FMZ_QuickActionControllerTest {
         );
         insert company;
 
+        cllease.TestHelper.createVATRateSetup();
+
         Date currentSystemDate = Date.newInstance(2018, 03, 31);
         cllease__Office_Name__c dummyOffice     = cllease.TestHelper.createOffice('Test Office', true);
         dummyOffice.cllease__Current_System_Date__c = currentSystemDate;

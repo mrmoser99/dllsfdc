@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-08T10:22:50-04:00" hostname="https://newco--dev.my.salesforce.com" tests="1" failures="1"  errors="0"  time="5.67">
+        <properties>
+            <property name="outcome" value="Failed"/>
+            <property name="testsRan" value="1"/>
+            <property name="passing" value="0"/>
+            <property name="failing" value="1"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="0%"/>
+            <property name="failRate" value="100%"/>
+            <property name="testStartTime" value="Sep 8, 2020 10:22 AM"/>
+            <property name="testExecutionTime" value="5.67 s"/>
+            <property name="testTotalTime" value="5.67 s"/>
+            <property name="commandTime" value="13.45 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hEn9S"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="testgetStages" classname="FMZ_CA_PipelineControllerTest" time="5.67">
+            <failure message="System.QueryException: List has no rows for assignment to SObject"><![CDATA[Class.cllease.TestHelper.getVATRateSetup: line 1217, column 1
+Class.cllease.TestHelper.createOffice: line 674, column 1
+Class.FMZ_CA_PipelineControllerTest.testgetStages: line 42, column 1]]></failure>
+        </testcase>
+    </testsuite>
+</testsuites>

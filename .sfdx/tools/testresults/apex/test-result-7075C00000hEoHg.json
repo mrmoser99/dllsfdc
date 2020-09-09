@@ -1,0 +1,118 @@
+{
+    "summary": {
+        "outcome": "Failed",
+        "testsRan": 4,
+        "passing": 3,
+        "failing": 1,
+        "skipped": 0,
+        "passRate": "75%",
+        "failRate": "25%",
+        "testStartTime": "Sep 8, 2020 12:23 PM",
+        "testExecutionTime": "61681 ms",
+        "testTotalTime": "61681 ms",
+        "commandTime": "70649 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEoHg",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SZmUAM"
+            },
+            "Id": "07M5C0000073SZmUAM",
+            "QueueItemId": "7095C000000p1ZcQAI",
+            "StackTrace": "Class.TestGLIntegration.testGLAccountingEntries: line 196, column 1",
+            "Message": "System.AssertException: Assertion Failed: Mismatch in No Of Generated GL Accounting Entries Interface Records...: Expected: 16, Actual: 10",
+            "AsyncApexJobId": "7075C00000hEoHgQAK",
+            "MethodName": "testGLAccountingEntries",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU7nbQAD"
+                },
+                "Id": "01p1I00000FU7nbQAD",
+                "Name": "TestGLIntegration",
+                "NamespacePrefix": null
+            },
+            "RunTime": 28691,
+            "FullName": "TestGLIntegration.testGLAccountingEntries"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SZnUAM"
+            },
+            "Id": "07M5C0000073SZnUAM",
+            "QueueItemId": "7095C000000p1ZcQAI",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEoHgQAK",
+            "MethodName": "testGLAccountingEntriesNegative",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU7nbQAD"
+                },
+                "Id": "01p1I00000FU7nbQAD",
+                "Name": "TestGLIntegration",
+                "NamespacePrefix": null
+            },
+            "RunTime": 8501,
+            "FullName": "TestGLIntegration.testGLAccountingEntriesNegative"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SZoUAM"
+            },
+            "Id": "07M5C0000073SZoUAM",
+            "QueueItemId": "7095C000000p1ZcQAI",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEoHgQAK",
+            "MethodName": "testGLConsolidation",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU7nbQAD"
+                },
+                "Id": "01p1I00000FU7nbQAD",
+                "Name": "TestGLIntegration",
+                "NamespacePrefix": null
+            },
+            "RunTime": 16784,
+            "FullName": "TestGLIntegration.testGLConsolidation"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SZpUAM"
+            },
+            "Id": "07M5C0000073SZpUAM",
+            "QueueItemId": "7095C000000p1ZcQAI",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEoHgQAK",
+            "MethodName": "testGLConsolidationNegative",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU7nbQAD"
+                },
+                "Id": "01p1I00000FU7nbQAD",
+                "Name": "TestGLIntegration",
+                "NamespacePrefix": null
+            },
+            "RunTime": 7705,
+            "FullName": "TestGLIntegration.testGLConsolidationNegative"
+        }
+    ]
+}

@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 1,
+        "passing": 1,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Sep 8, 2020 10:15 AM",
+        "testExecutionTime": "6105 ms",
+        "testTotalTime": "6105 ms",
+        "commandTime": "20414 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEn5a",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SK8UAM"
+            },
+            "Id": "07M5C0000073SK8UAM",
+            "QueueItemId": "7095C000000p1XbQAI",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEn5aQAC",
+            "MethodName": "getTermOptionsTest",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxVQAX"
+                },
+                "Id": "01p1I00000HCSxVQAX",
+                "Name": "FMZ_ApplicationTermsControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 6105,
+            "FullName": "FMZ_ApplicationTermsControllerTest.getTermOptionsTest"
+        }
+    ]
+}

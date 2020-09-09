@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-08T12:25:28-04:00" hostname="https://newco--dev.my.salesforce.com" tests="4" failures="0"  errors="0"  time="61.47">
+        <properties>
+            <property name="outcome" value="Passed"/>
+            <property name="testsRan" value="4"/>
+            <property name="passing" value="4"/>
+            <property name="failing" value="0"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="100%"/>
+            <property name="failRate" value="0%"/>
+            <property name="testStartTime" value="Sep 8, 2020 12:25 PM"/>
+            <property name="testExecutionTime" value="61.47 s"/>
+            <property name="testTotalTime" value="61.47 s"/>
+            <property name="commandTime" value="70.33 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hEo7O"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="testGLAccountingEntries" classname="TestGLIntegration" time="27.61">
+        </testcase>
+        <testcase name="testGLAccountingEntriesNegative" classname="TestGLIntegration" time="8.88">
+        </testcase>
+        <testcase name="testGLConsolidation" classname="TestGLIntegration" time="16.02">
+        </testcase>
+        <testcase name="testGLConsolidationNegative" classname="TestGLIntegration" time="8.95">
+        </testcase>
+    </testsuite>
+</testsuites>

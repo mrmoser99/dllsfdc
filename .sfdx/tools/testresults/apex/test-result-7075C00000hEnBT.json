@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 1,
+        "passing": 1,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Sep 8, 2020 10:28 AM",
+        "testExecutionTime": "8141 ms",
+        "testTotalTime": "8141 ms",
+        "commandTime": "16087 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEnBT",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SKiUAM"
+            },
+            "Id": "07M5C0000073SKiUAM",
+            "QueueItemId": "7095C000000p1YAQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEnBTQA0",
+            "MethodName": "getSectionsTest",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxjQAH"
+                },
+                "Id": "01p1I00000HCSxjQAH",
+                "Name": "FMZ_QuickActionControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 8141,
+            "FullName": "FMZ_QuickActionControllerTest.getSectionsTest"
+        }
+    ]
+}

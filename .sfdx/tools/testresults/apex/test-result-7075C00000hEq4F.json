@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Failed",
+        "testsRan": 1,
+        "passing": 0,
+        "failing": 1,
+        "skipped": 0,
+        "passRate": "0%",
+        "failRate": "100%",
+        "testStartTime": "Sep 8, 2020 3:37 PM",
+        "testExecutionTime": "16754 ms",
+        "testTotalTime": "16754 ms",
+        "commandTime": "25788 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEq4F",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SmCUAU"
+            },
+            "Id": "07M5C0000073SmCUAU",
+            "QueueItemId": "7095C000000p1eDQAQ",
+            "StackTrace": "Class.TestGetTaxonChargesJob.testVertexOnCharge: line 46, column 1",
+            "Message": "System.DmlException: Update failed. First exception on row 0; first error: MISSING_ARGUMENT, Id not specified in an update call: []",
+            "AsyncApexJobId": "7075C00000hEq4FQAS",
+            "MethodName": "testVertexOnCharge",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU7ndQAD"
+                },
+                "Id": "01p1I00000FU7ndQAD",
+                "Name": "TestGetTaxonChargesJob",
+                "NamespacePrefix": null
+            },
+            "RunTime": 16754,
+            "FullName": "TestGetTaxonChargesJob.testVertexOnCharge"
+        }
+    ]
+}

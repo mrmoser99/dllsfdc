@@ -1,0 +1,94 @@
+{
+    "summary": {
+        "outcome": "Failed",
+        "testsRan": 3,
+        "passing": 2,
+        "failing": 1,
+        "skipped": 0,
+        "passRate": "67%",
+        "failRate": "33%",
+        "testStartTime": "Sep 8, 2020 10:08 AM",
+        "testExecutionTime": "2127 ms",
+        "testTotalTime": "2127 ms",
+        "commandTime": "20287 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEn0Q",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SJtUAM"
+            },
+            "Id": "07M5C0000073SJtUAM",
+            "QueueItemId": "7095C000000p1XHQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEn0QQAS",
+            "MethodName": "app_getTerms_returned",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxVQAX"
+                },
+                "Id": "01p1I00000HCSxVQAX",
+                "Name": "FMZ_ApplicationTermsControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 39,
+            "FullName": "FMZ_ApplicationTermsControllerTest.app_getTerms_returned"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SJuUAM"
+            },
+            "Id": "07M5C0000073SJuUAM",
+            "QueueItemId": "7095C000000p1XHQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEn0QQAS",
+            "MethodName": "app_updateTerm_updated",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxVQAX"
+                },
+                "Id": "01p1I00000HCSxVQAX",
+                "Name": "FMZ_ApplicationTermsControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 176,
+            "FullName": "FMZ_ApplicationTermsControllerTest.app_updateTerm_updated"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SJvUAM"
+            },
+            "Id": "07M5C0000073SJvUAM",
+            "QueueItemId": "7095C000000p1XHQAY",
+            "StackTrace": "Class.cllease.TestHelper.getVATRateSetup: line 1217, column 1\nClass.cllease.TestHelper.createOffice: line 674, column 1\nClass.FMZ_ApplicationTermsControllerTest.getTermOptionsTest: line 111, column 1",
+            "Message": "System.QueryException: List has no rows for assignment to SObject",
+            "AsyncApexJobId": "7075C00000hEn0QQAS",
+            "MethodName": "getTermOptionsTest",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxVQAX"
+                },
+                "Id": "01p1I00000HCSxVQAX",
+                "Name": "FMZ_ApplicationTermsControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 1912,
+            "FullName": "FMZ_ApplicationTermsControllerTest.getTermOptionsTest"
+        }
+    ]
+}

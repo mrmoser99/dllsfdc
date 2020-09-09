@@ -11,6 +11,7 @@ public class FMZ_ApplicationTermsControllerTest {
         );
         insert office;
 
+    
         clcommon__Legal_Entity__c lentity = new clcommon__Legal_Entity__c( Name = 'Corporation' );
         insert lentity;
 
@@ -104,6 +105,8 @@ public class FMZ_ApplicationTermsControllerTest {
                     genesis__Enabled_Flag__c = true
             );
             insert company;
+        
+            cllease.TestHelper.createVATRateSetup();    
 
             Date currentSystemDate = Date.newInstance(2018, 03, 31);
             cllease__Office_Name__c dummyOffice     = cllease.TestHelper.createOffice('Test Office', true);
@@ -113,7 +116,7 @@ public class FMZ_ApplicationTermsControllerTest {
             dummyOffice.Dll_Seg3_Department__c      = '3030';
             dummyOffice.Dll_Seg6__c                 = '00000';
             dummyOffice.Dll_Seg7__c                 = '0000';
-            insert dummyOffice;
+            update dummyOffice;
 
             genesis__Quick_Quote_Option__c qqOption = new genesis__Quick_Quote_Option__c(
                     genesis__Documentation_Fees_Originated_Dealer__c = 0,

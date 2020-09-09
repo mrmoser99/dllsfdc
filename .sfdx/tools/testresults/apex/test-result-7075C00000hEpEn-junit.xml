@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-08T14:02:13-04:00" hostname="https://newco--dev.my.salesforce.com" tests="1" failures="1"  errors="0"  time="16.98">
+        <properties>
+            <property name="outcome" value="Failed"/>
+            <property name="testsRan" value="1"/>
+            <property name="passing" value="0"/>
+            <property name="failing" value="1"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="0%"/>
+            <property name="failRate" value="100%"/>
+            <property name="testStartTime" value="Sep 8, 2020 2:02 PM"/>
+            <property name="testExecutionTime" value="16.98 s"/>
+            <property name="testTotalTime" value="16.98 s"/>
+            <property name="commandTime" value="25.43 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hEpEn"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="Test1" classname="TestAPInvoiceSimulator" time="16.98">
+            <failure message="System.DmlException: Upsert failed. First exception on row 0; first error: CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY, cllease.ChargeTrigger: execution of BeforeInsert
+
+caused by: System.NullPointerException: Attempt to de-reference a null object
+
+Class.cllease.ChargeHandler.insertCharge: line 276, column 1
+Class.cllease.ChargeTriggerHandler.beforeInsertHandler: line 68, column 1
+Trigger.cllease.ChargeTrigger: line 12, column 1: []"><![CDATA[Class.TestAPInvoiceSimulator.Test1: line 39, column 1]]></failure>
+        </testcase>
+    </testsuite>
+</testsuites>

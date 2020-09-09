@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-08T10:31:27-04:00" hostname="https://newco--dev.my.salesforce.com" tests="6" failures="0"  errors="0"  time="29.51">
+        <properties>
+            <property name="outcome" value="Passed"/>
+            <property name="testsRan" value="6"/>
+            <property name="passing" value="6"/>
+            <property name="failing" value="0"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="100%"/>
+            <property name="failRate" value="0%"/>
+            <property name="testStartTime" value="Sep 8, 2020 10:31 AM"/>
+            <property name="testExecutionTime" value="29.51 s"/>
+            <property name="testTotalTime" value="29.51 s"/>
+            <property name="commandTime" value="41.99 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hEnEY"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="convertToApp" classname="FMZ_QQ_ConvertToAppControllerTest" time="8.43">
+        </testcase>
+        <testcase name="convertToApp_AlreadyConverted" classname="FMZ_QQ_ConvertToAppControllerTest" time="3.49">
+        </testcase>
+        <testcase name="convertToApp_NoEmail" classname="FMZ_QQ_ConvertToAppControllerTest" time="3.6">
+        </testcase>
+        <testcase name="convertToApp_NoEmail_AtFirst" classname="FMZ_QQ_ConvertToAppControllerTest" time="3.42">
+        </testcase>
+        <testcase name="convertToApp_NotApproved" classname="FMZ_QQ_ConvertToAppControllerTest" time="3.6">
+        </testcase>
+        <testcase name="defaultAppValues" classname="FMZ_QQ_ConvertToAppControllerTest" time="6.97">
+        </testcase>
+    </testsuite>
+</testsuites>

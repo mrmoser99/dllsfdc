@@ -6,8 +6,6 @@ public  class TestAPInvoiceSimulator {
 
         cllease__Lease_Account__c LSContract = TestHelper.createContract();
         
-        
-        
         clcommon__Consolidated_Invoice__c inv = new clcommon__Consolidated_Invoice__c();
         inv.LS_Contract__c = LSContract.id;
         inv.Billed_Amount__c 	 = 100.00;
@@ -34,6 +32,7 @@ public  class TestAPInvoiceSimulator {
         charge1.cllease__Original_Amount__c   = 100.00;
         charge1.Tax_Processed__c              = false;
         charge1.Tax_Component__c              = '';
+       
         charge1.cllease__Consolidated_Invoice__c = inv.id;
     
      	upsert charge1;

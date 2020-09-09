@@ -1,0 +1,94 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 3,
+        "passing": 3,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Sep 4, 2020 1:49 PM",
+        "testExecutionTime": "11885 ms",
+        "testTotalTime": "11885 ms",
+        "commandTime": "13888 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hE3o1",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073PpIUAU"
+            },
+            "Id": "07M5C0000073PpIUAU",
+            "QueueItemId": "7095C000000p0fPQAQ",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hE3o1QAC",
+            "MethodName": "app_clearPricing_cleared",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxFQAX"
+                },
+                "Id": "01p1I00000HCSxFQAX",
+                "Name": "FMZ_ApplicationControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 7044,
+            "FullName": "FMZ_ApplicationControllerTest.app_clearPricing_cleared"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073PpJUAU"
+            },
+            "Id": "07M5C0000073PpJUAU",
+            "QueueItemId": "7095C000000p0fPQAQ",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hE3o1QAC",
+            "MethodName": "app_generatePricing_updated",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxFQAX"
+                },
+                "Id": "01p1I00000HCSxFQAX",
+                "Name": "FMZ_ApplicationControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 3443,
+            "FullName": "FMZ_ApplicationControllerTest.app_generatePricing_updated"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073PpKUAU"
+            },
+            "Id": "07M5C0000073PpKUAU",
+            "QueueItemId": "7095C000000p0fPQAQ",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hE3o1QAC",
+            "MethodName": "checkCompletion",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxFQAX"
+                },
+                "Id": "01p1I00000HCSxFQAX",
+                "Name": "FMZ_ApplicationControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 1398,
+            "FullName": "FMZ_ApplicationControllerTest.checkCompletion"
+        }
+    ]
+}

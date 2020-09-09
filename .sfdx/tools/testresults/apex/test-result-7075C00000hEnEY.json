@@ -1,0 +1,166 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 6,
+        "passing": 6,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Sep 8, 2020 10:31 AM",
+        "testExecutionTime": "29507 ms",
+        "testTotalTime": "29507 ms",
+        "commandTime": "41990 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEnEY",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SKqUAM"
+            },
+            "Id": "07M5C0000073SKqUAM",
+            "QueueItemId": "7095C000000p1YFQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEnEYQA0",
+            "MethodName": "convertToApp",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxeQAH"
+                },
+                "Id": "01p1I00000HCSxeQAH",
+                "Name": "FMZ_QQ_ConvertToAppControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 8428,
+            "FullName": "FMZ_QQ_ConvertToAppControllerTest.convertToApp"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SKrUAM"
+            },
+            "Id": "07M5C0000073SKrUAM",
+            "QueueItemId": "7095C000000p1YFQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEnEYQA0",
+            "MethodName": "convertToApp_AlreadyConverted",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxeQAH"
+                },
+                "Id": "01p1I00000HCSxeQAH",
+                "Name": "FMZ_QQ_ConvertToAppControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 3494,
+            "FullName": "FMZ_QQ_ConvertToAppControllerTest.convertToApp_AlreadyConverted"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SKsUAM"
+            },
+            "Id": "07M5C0000073SKsUAM",
+            "QueueItemId": "7095C000000p1YFQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEnEYQA0",
+            "MethodName": "convertToApp_NoEmail",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxeQAH"
+                },
+                "Id": "01p1I00000HCSxeQAH",
+                "Name": "FMZ_QQ_ConvertToAppControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 3601,
+            "FullName": "FMZ_QQ_ConvertToAppControllerTest.convertToApp_NoEmail"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SKtUAM"
+            },
+            "Id": "07M5C0000073SKtUAM",
+            "QueueItemId": "7095C000000p1YFQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEnEYQA0",
+            "MethodName": "convertToApp_NoEmail_AtFirst",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxeQAH"
+                },
+                "Id": "01p1I00000HCSxeQAH",
+                "Name": "FMZ_QQ_ConvertToAppControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 3415,
+            "FullName": "FMZ_QQ_ConvertToAppControllerTest.convertToApp_NoEmail_AtFirst"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SKuUAM"
+            },
+            "Id": "07M5C0000073SKuUAM",
+            "QueueItemId": "7095C000000p1YFQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEnEYQA0",
+            "MethodName": "convertToApp_NotApproved",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxeQAH"
+                },
+                "Id": "01p1I00000HCSxeQAH",
+                "Name": "FMZ_QQ_ConvertToAppControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 3603,
+            "FullName": "FMZ_QQ_ConvertToAppControllerTest.convertToApp_NotApproved"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SKvUAM"
+            },
+            "Id": "07M5C0000073SKvUAM",
+            "QueueItemId": "7095C000000p1YFQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEnEYQA0",
+            "MethodName": "defaultAppValues",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxeQAH"
+                },
+                "Id": "01p1I00000HCSxeQAH",
+                "Name": "FMZ_QQ_ConvertToAppControllerTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 6966,
+            "FullName": "FMZ_QQ_ConvertToAppControllerTest.defaultAppValues"
+        }
+    ]
+}

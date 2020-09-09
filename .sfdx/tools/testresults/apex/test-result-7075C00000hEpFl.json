@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Failed",
+        "testsRan": 1,
+        "passing": 0,
+        "failing": 1,
+        "skipped": 0,
+        "passRate": "0%",
+        "failRate": "100%",
+        "testStartTime": "Sep 8, 2020 2:05 PM",
+        "testExecutionTime": "4840 ms",
+        "testTotalTime": "4840 ms",
+        "commandTime": "13781 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEpFl",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SdfUAE"
+            },
+            "Id": "07M5C0000073SdfUAE",
+            "QueueItemId": "7095C000000p1biQAA",
+            "StackTrace": "Class.cllease.SecureDML.insertRecords: line 26, column 1\nClass.cllease.TestHelper.createOffice: line 660, column 1\nClass.TestHelper.createContract: line 48, column 1\nClass.TestAPInvoiceSimulator.Test1: line 25, column 1",
+            "Message": "System.DmlException: Insert failed. First exception on row 0; first error: DUPLICATE_VALUE, duplicate value found: <unknown> duplicates value on record with id: <unknown>: []",
+            "AsyncApexJobId": "7075C00000hEpFlQAK",
+            "MethodName": "Test1",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HMO2xQAH"
+                },
+                "Id": "01p1I00000HMO2xQAH",
+                "Name": "TestAPInvoiceSimulator",
+                "NamespacePrefix": null
+            },
+            "RunTime": 4840,
+            "FullName": "TestAPInvoiceSimulator.Test1"
+        }
+    ]
+}

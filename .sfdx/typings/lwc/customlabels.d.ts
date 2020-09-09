@@ -46,6 +46,10 @@ declare module "@salesforce/label/c.Docusign_Lease_Agreement" {
     var Docusign_Lease_Agreement: string;
     export default Docusign_Lease_Agreement;
 }
+declare module "@salesforce/label/c.Docusign_Lease_Agreement_3" {
+    var Docusign_Lease_Agreement_3: string;
+    export default Docusign_Lease_Agreement_3;
+}
 declare module "@salesforce/label/c.Docusign_Lease_Query" {
     var Docusign_Lease_Query: string;
     export default Docusign_Lease_Query;

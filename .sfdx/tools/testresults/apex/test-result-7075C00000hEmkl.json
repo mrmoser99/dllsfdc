@@ -1,0 +1,118 @@
+{
+    "summary": {
+        "outcome": "Failed",
+        "testsRan": 4,
+        "passing": 1,
+        "failing": 3,
+        "skipped": 0,
+        "passRate": "25%",
+        "failRate": "75%",
+        "testStartTime": "Sep 8, 2020 9:38 AM",
+        "testExecutionTime": "8964 ms",
+        "testTotalTime": "8964 ms",
+        "commandTime": "18637 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hEmkl",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SIvUAM"
+            },
+            "Id": "07M5C0000073SIvUAM",
+            "QueueItemId": "7095C000000p1WOQAY",
+            "StackTrace": "Class.cllease.TestHelper.getVATRateSetup: line 1217, column 1\nClass.cllease.TestHelper.createOffice: line 674, column 1\nClass.FMZ_ApplicationConvertToLeaseCtrlTest.app_convert_converted: line 39, column 1",
+            "Message": "System.QueryException: List has no rows for assignment to SObject",
+            "AsyncApexJobId": "7075C00000hEmklQAC",
+            "MethodName": "app_convert_converted",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxHQAX"
+                },
+                "Id": "01p1I00000HCSxHQAX",
+                "Name": "FMZ_ApplicationConvertToLeaseCtrlTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 6293,
+            "FullName": "FMZ_ApplicationConvertToLeaseCtrlTest.app_convert_converted"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SIwUAM"
+            },
+            "Id": "07M5C0000073SIwUAM",
+            "QueueItemId": "7095C000000p1WOQAY",
+            "StackTrace": "Class.cllease.TestHelper.getVATRateSetup: line 1217, column 1\nClass.cllease.TestHelper.createOffice: line 674, column 1\nClass.FMZ_ApplicationConvertToLeaseCtrlTest.app_convert_not_converted: line 243, column 1",
+            "Message": "System.QueryException: List has no rows for assignment to SObject",
+            "AsyncApexJobId": "7075C00000hEmklQAC",
+            "MethodName": "app_convert_not_converted",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxHQAX"
+                },
+                "Id": "01p1I00000HCSxHQAX",
+                "Name": "FMZ_ApplicationConvertToLeaseCtrlTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 1341,
+            "FullName": "FMZ_ApplicationConvertToLeaseCtrlTest.app_convert_not_converted"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SIxUAM"
+            },
+            "Id": "07M5C0000073SIxUAM",
+            "QueueItemId": "7095C000000p1WOQAY",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hEmklQAC",
+            "MethodName": "getResultExceptionTest",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxHQAX"
+                },
+                "Id": "01p1I00000HCSxHQAX",
+                "Name": "FMZ_ApplicationConvertToLeaseCtrlTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 33,
+            "FullName": "FMZ_ApplicationConvertToLeaseCtrlTest.getResultExceptionTest"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073SIyUAM"
+            },
+            "Id": "07M5C0000073SIyUAM",
+            "QueueItemId": "7095C000000p1WOQAY",
+            "StackTrace": "Class.cllease.TestHelper.getVATRateSetup: line 1217, column 1\nClass.cllease.TestHelper.createOffice: line 674, column 1\nClass.FMZ_ApplicationConvertToLeaseCtrlTest.handleSuccessfulConvert: line 445, column 1",
+            "Message": "System.QueryException: List has no rows for assignment to SObject",
+            "AsyncApexJobId": "7075C00000hEmklQAC",
+            "MethodName": "handleSuccessfulConvert",
+            "Outcome": "Fail",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HCSxHQAX"
+                },
+                "Id": "01p1I00000HCSxHQAX",
+                "Name": "FMZ_ApplicationConvertToLeaseCtrlTest",
+                "NamespacePrefix": null
+            },
+            "RunTime": 1297,
+            "FullName": "FMZ_ApplicationConvertToLeaseCtrlTest.handleSuccessfulConvert"
+        }
+    ]
+}

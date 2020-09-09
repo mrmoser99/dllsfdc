@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-08T10:18:51-04:00" hostname="https://newco--dev.my.salesforce.com" tests="4" failures="1"  errors="0"  time="20.37">
+        <properties>
+            <property name="outcome" value="Failed"/>
+            <property name="testsRan" value="4"/>
+            <property name="passing" value="3"/>
+            <property name="failing" value="1"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="75%"/>
+            <property name="failRate" value="25%"/>
+            <property name="testStartTime" value="Sep 8, 2020 10:18 AM"/>
+            <property name="testExecutionTime" value="20.37 s"/>
+            <property name="testTotalTime" value="20.37 s"/>
+            <property name="commandTime" value="28.36 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hEn7v"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="app_convert_converted" classname="FMZ_ApplicationConvertToLeaseCtrlTest" time="7.85">
+            <failure message="System.DmlException: Insert failed. First exception on row 0 with id a6Y5C000000AXAZUA4; first error: INVALID_FIELD_FOR_INSERT_UPDATE, cannot specify Id in an insert call: [Id]"><![CDATA[Class.FMZ_ApplicationConvertToLeaseCtrlTest.app_convert_converted: line 48, column 1]]></failure>
+        </testcase>
+        <testcase name="app_convert_not_converted" classname="FMZ_ApplicationConvertToLeaseCtrlTest" time="8.15">
+        </testcase>
+        <testcase name="getResultExceptionTest" classname="FMZ_ApplicationConvertToLeaseCtrlTest" time="0.01">
+        </testcase>
+        <testcase name="handleSuccessfulConvert" classname="FMZ_ApplicationConvertToLeaseCtrlTest" time="4.37">
+        </testcase>
+    </testsuite>
+</testsuites>

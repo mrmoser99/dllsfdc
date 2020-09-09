@@ -6,9 +6,9 @@
         <minorNumber>6008</minorNumber>
         <namespace>clcommon</namespace>
     </packageVersions>
-    <packageVersions>
-        <majorNumber>2</majorNumber>
-        <minorNumber>6011</minorNumber>
+      <packageVersions>
+        <majorNumber>3</majorNumber> 
+        <minorNumber>3011</minorNumber>
         <namespace>cllease</namespace>
     </packageVersions>
     <packageVersions>
