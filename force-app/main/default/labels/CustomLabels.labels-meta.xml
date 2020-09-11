@@ -388,6 +388,20 @@
         <value>https://apiacc.dllgroup.com</value>
     </labels>
     <labels>
+        <fullName>Ratecard_Client</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Ratecard Client</shortDescription>
+        <value>0c9b112a-c10c-4ac9-8233-2509d2a41572&quot;,</value>
+    </labels>
+    <labels>
+        <fullName>Ratecard_Client_Secret</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Ratecard Client Secret</shortDescription>
+        <value>ada7fccb-1be1-4464-a2a3-dd5d89ccc567</value>
+    </labels>
+    <labels>
         <fullName>SuperTrumpURL</fullName>
         <language>en_US</language>
         <protected>false</protected>

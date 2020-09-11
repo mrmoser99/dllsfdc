@@ -17,7 +17,7 @@ global without sharing class RateUtility {
     public static void getProgram( String oracleVendorId){    	
 	  								
 		try{ 
-			string accessToken = ICVUtility.getAccessToken();
+			string accessToken = getAccessToken();
 			
 			system.debug('at:' + accessToken);
 			
@@ -47,6 +47,48 @@ global without sharing class RateUtility {
  		catch (exception e){
  			system.debug(e);
  		}
+    }
+
+    /*************************************************************************************************
+    * 
+    * Ratecard Get Access Token
+	*	
+    *************************************************************************************************/
+    public static string getAccessToken(){     
+    	
+    	system.debug('******** getting access token');
+    	if (Test.isRunningTest())
+    		return string.valueOf(system.now());
+    		
+    	String client = System.Label.Ratecard_Client;  
+    	String secret = System.Label.Ratecard_Client_Secret;  
+		HttpRequest req_token = new HttpRequest();        
+		
+		String tokenEndpoint = System.Label.ICV_tokenendpoint;  
+		req_token.setEndpoint(tokenEndpoint);
+        req_token.setMethod('POST');        
+        req_token.setHeader('content-type', 'application/x-www-form-urlencoded');
+        req_token.setHeader('cache-control', 'no-cache');        
+        req_token.setBody('client_id='+client+'&client_secret='+secret+'&grant_type=client_credentials');
+      
+        Http http = new Http(); 
+        HTTPResponse res = http.send(req_token);
+        //System.debug(res.getBody());
+		
+		String access_token;
+
+		JSONParser parser = JSON.createParser(res.getBody());
+            
+        while (parser.nextToken() != null) {
+        	if (parser.getCurrentName() == 'access_token') {
+            	access_token = parser.getText();
+            	//system.debug(parser.getText());
+            }
+        }
+        
+       	system.debug('******** returning access token');
+        return access_token;
+         
     }
     
     

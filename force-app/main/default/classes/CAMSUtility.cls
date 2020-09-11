@@ -198,7 +198,6 @@ global without sharing class CAMSUtility {
 
         if (test.isRunningTest())
             return;
-            
         HTTPResponse res1 = http1.send(reqAPI); 
         
         
