@@ -4,19 +4,20 @@
 * Log:
 *
 * 	5/4/18 - MRM Created
+*   9/4/2020 - MRM Removed Code this is the old invoice table
 *
 * This trigger places udpates the conga url to be used by Conductor
 *
 ******************************************************************************/
 
 trigger invoice on Invoice__c (after update, after insert) {
-    
+    /*
     if (newCoUtility2.hasAlreadyUpdated()){
     	system.debug('getting out....');
     	return;
     }
     		
-    /* get settins from custom settings */
+    
     String DueDetailsLines = CongaURL_Settings__c.getInstance().DueDetailsLines__c;
     String FinanceFee      = CongaURL_Settings__c.getInstance().FinanceFee__c;
     String INSFEE          = CongaURL_Settings__c.getInstance().INSFEE__c;
@@ -57,7 +58,7 @@ trigger invoice on Invoice__c (after update, after insert) {
  	
  	List<Invoice__c> uList = new List<Invoice__c>();
  	
- 	/* conga parms */
+ 
  	for (invoice__c i:trigger.new){
  		 
  		
@@ -97,5 +98,6 @@ trigger invoice on Invoice__c (after update, after insert) {
  	
  	if (!updateInvoiceMap.isEmpty()){
  		newCoUtility.updateInvoice(updateInvoiceMap);
- 	}
+	 }
+	 */
 }

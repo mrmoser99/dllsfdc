@@ -35,45 +35,48 @@ public with sharing class TestPNCIntegration {
         contractEquipment.Install_Address__c = address.Id;
         contractEquipment.Install_Account__c = dummyAccount.Id;
         update contractEquipment;
-
-        // Creating charges for january , february periods
-        Date chargeDate = Date.newInstance(2018, 01, 15);
-        // Creating  Charge with Equipment Linked
-        clcommon__Fee_Definition__c  dummyFee   = cllease.Testhelper.createLeaseFee();
-        dummyFee.Name = 'Service Fees';
-        update dummyFee;
-
-        cllease__Charge__c charge1 = cllease.TestHelper.createUnpaidCharge(contract, dummyFee, 100);
-        charge1.cllease__Tax_Processed__c = 'Tax Not Calculated';
-        charge1.cllease__Date__c          = chargeDate;
-        charge1.cllease__Contract_Equipment__c = contractEquipment.id;
-        charge1.Tax_Processed__c          = false;
-        charge1.Tax_Component__c          = '';
-        update charge1;
-
-        // Creating  Charge without Equipment Attached
-        clcommon__Fee_Definition__c  dummyFee2   = cllease.Testhelper.createLeaseFee();
-        dummyFee2.Name = 'Origination Fees';
-        update dummyFee2;
-
-        cllease__Charge__c charge2 = cllease.TestHelper.createUnpaidCharge(contract, dummyFee2, 100);
-        charge2.cllease__Tax_Processed__c = 'Tax Not Calculated';
-        charge1.cllease__Date__c          = chargeDate.addMonths(1);
-        charge2.Tax_Processed__c          = false;
-        charge2.Tax_Component__c          = '';
-        update charge2;
-
-        // Changing the current System Date
-        Date currentSystemDate = Date.newInstance(2018, 02, 28);
-        List<cllease__Office_Name__c> companies = [Select Id, Name, cllease__Current_System_Date__c
-                                                    From cllease__Office_Name__c];
-        for(cllease__Office_Name__c company : companies) {
-            company.cllease__Current_System_Date__c = currentSystemDate;
-        }
-        update companies;
-
-        // Creating and runnning the Batch jobs for Invoice Consolidation and PNC File Generation
-        System.Test.startTest();
+        // Added by CLS on 9/9/2020 to address test failure
+		System.Test.startTest();
+            // Creating charges for january , february periods
+            Date chargeDate = Date.newInstance(2018, 01, 15);
+            // Creating  Charge with Equipment Linked
+            clcommon__Fee_Definition__c  dummyFee   = cllease.Testhelper.createLeaseFee();
+            dummyFee.Name = 'Service Fees';
+            update dummyFee;
+    
+            cllease__Charge__c charge1 = cllease.TestHelper.createUnpaidCharge(contract, dummyFee, 100);
+            charge1.cllease__Tax_Processed__c = 'Tax Not Calculated';
+            charge1.cllease__Date__c          = chargeDate;
+            charge1.cllease__Contract_Equipment__c = contractEquipment.id;
+            charge1.Tax_Processed__c          = false;
+            charge1.Tax_Component__c          = '';
+            // Added by CLS on 9/9/2020 to address test failure
+            charge1.cllease__Lease_Account__c = contract.Id;
+            upsert charge1;
+    
+            // Creating  Charge without Equipment Attached
+            clcommon__Fee_Definition__c  dummyFee2   = cllease.Testhelper.createLeaseFee();
+            dummyFee2.Name = 'Origination Fees';
+            update dummyFee2;
+    
+            cllease__Charge__c charge2 = cllease.TestHelper.createUnpaidCharge(contract, dummyFee2, 100);
+            charge2.cllease__Tax_Processed__c = 'Tax Not Calculated';
+            charge2.cllease__Date__c          = chargeDate.addMonths(1);
+            charge2.Tax_Processed__c          = false;
+            charge2.Tax_Component__c          = '';
+        	charge2.cllease__Lease_Account__c = contract.Id;
+            upsert charge2;
+    
+            // Changing the current System Date
+            Date currentSystemDate = Date.newInstance(2018, 02, 28);
+            List<cllease__Office_Name__c> companies = [Select Id, Name, cllease__Current_System_Date__c
+                                                        From cllease__Office_Name__c];
+            for(cllease__Office_Name__c company : companies) {
+                company.cllease__Current_System_Date__c = currentSystemDate;
+            }
+            update companies;
+    
+            // Creating and runnning the Batch jobs for Invoice Consolidation and PNC File Generation
             // Creating DAG
             String dagName = 'CLLease-BatchTestDAG';
             List<String> listOfJobs = new List<String>{ 
@@ -308,7 +311,9 @@ public with sharing class TestPNCIntegration {
         charge.cllease__Calculated_Interest3__c = 0;
         charge.cllease__Tax_Processed__c    = 'Tax Calculated';
         charge.cllease__Consolidated_Invoice__c               = invoice.Id;
-        update charge;
+        // Added by CLS on 9/9/2020 to address test failure
+        charge.cllease__Lease_Account__c = contract.Id;
+        upsert charge;
 
         // Apply payments to Bill and charge
         List<cllease__Lease_Payment_Transaction__c> pmtsPerRemit = new List<cllease__Lease_Payment_Transaction__c>();
@@ -334,77 +339,77 @@ public with sharing class TestPNCIntegration {
         pmtsPerRemit.add(pmtTxn2);
 
         insert pmtsPerRemit;
-
-        // Apply payments and clear 
-        // 2. Querying all payments with required details
-        List<cllease__Lease_Payment_Transaction__c> paymentTransactionList = 
-                        [SELECT id, name,
-                                cllease__Contract__c,
-                                cllease__Contract__r.Id,
-                                cllease__Contract__r.Name,
-                                cllease__Contract__r.cllease__Lease_Status__c,
-                                cllease__Contract__r.cllease__Lease_Product_Name__c,
-                                cllease__Contract__r.cllease__Lease_Product_Name__r.cllease__Lease_Product_Type__c,
-                                cllease__Contract__r.cllease__Payment_Frequency__c,
-                                cllease__Contract__r.cllease__current_payment_amount__c,
-                                cllease__Contract__r.cllease__Next_Due_Date__c ,
-                                cllease__Contract__r.cllease__Term__c,
-                                cllease__Contract__r.cllease__Payment_Spread__c,
-                                cllease__Contract__r.cllease__Termination_Quote_accepted_flag__c,
-                                cllease__Lease_Snapshot__c,
-                                cllease__Fee_Snapshot__c,
-                                cllease__Dues_Snapshot__c,
-                                cllease__Cash_Balances_Snapshot__c,
-                                cllease__Balance_s_Snapshot__c,
-                                cllease__Custom_Logic__c,
-                                cllease__Receipt_Id__c,
-                                cllease__Transaction_Date__c,
-                                cllease__Transaction_Time__c,
-                                cllease__Early_Total_Repayment_of_the_Lease__c,
-                                cllease__Write_Off_Recovery_Payment__c,
-                                cllease__Payment_Mode__c,
-                                cllease__Payment_Mode__r.Name,
-                                cllease__Transaction_Amount__c,
-                                cllease__Cleared__c,
-                                cllease__Manual_Payment__c,
-                                cllease__Fees__c,
-                                cllease__Receivable_Billed__c,
-                                cllease__Evergreen_Receivable_Billed__c,
-                                cllease__Tax_Billed__c,
-                                cllease__Excess__c,
-                                cllease__Total_Charges_Principal__c,
-                                cllease__Other_Charges_Principal__c,
-                                cllease__Late_Charge_Principal__c,
-                                cllease__Charge__c,
-                                cllease__Bill__c
-                            FROM cllease__Lease_Payment_Transaction__c
-                            ORDER by cllease__Transaction_Date__c]; 
-        
-        // 3. Calling CL Lease Global API to Apply Payments
-        cllease.BulkLeasePaymentAction dAction = new cllease.BulkLeasePaymentAction(paymentTransactionList);
-        dAction.postPayments();
-
-        // Create Mockup remit file with negative amounts
-        clcommon__Consolidated_Invoice__c invoiceRetrieve = [Select Id, Name From clcommon__Consolidated_Invoice__c Limit 1];
-
-        List<Int_PX_Remit__c> mockRemitToInsert = new List<Int_PX_Remit__c>();
-        mockRemitToInsert.add(new Int_PX_Remit__c(  Record_Number__c = 1, 
-                                Invoice_Number__c       = invoiceRetrieve.Name, 
-                                Transaction_Amount__c   = -200,
-                                Date__c                 = paymentDate,
-                                Payment_Batch_Date__c   = paymentDate.addDays(-2), 
-                                Committed__c            = false,
-                                Payment_Batch_Total_Amount__c = 1000.00,
-                                Line_Data__c            = 'x1|x2|x3|x4'));
-
-        insert mockRemitToInsert;
-
-        // run PNC inbound file job
-        System.Test.startTest();
+        // Added by CLS on 9/9/2020 to address test failure
+		System.Test.startTest();
+            // Apply payments and clear 
+            // 2. Querying all payments with required details
+            List<cllease__Lease_Payment_Transaction__c> paymentTransactionList = 
+                            [SELECT id, name,
+                                    cllease__Contract__c,
+                                    cllease__Contract__r.Id,
+                                    cllease__Contract__r.Name,
+                                    cllease__Contract__r.cllease__Lease_Status__c,
+                                    cllease__Contract__r.cllease__Lease_Product_Name__c,
+                                    cllease__Contract__r.cllease__Lease_Product_Name__r.cllease__Lease_Product_Type__c,
+                                    cllease__Contract__r.cllease__Payment_Frequency__c,
+                                    cllease__Contract__r.cllease__current_payment_amount__c,
+                                    cllease__Contract__r.cllease__Next_Due_Date__c ,
+                                    cllease__Contract__r.cllease__Term__c,
+                                    cllease__Contract__r.cllease__Payment_Spread__c,
+                                    cllease__Contract__r.cllease__Termination_Quote_accepted_flag__c,
+                                    cllease__Lease_Snapshot__c,
+                                    cllease__Fee_Snapshot__c,
+                                    cllease__Dues_Snapshot__c,
+                                    cllease__Cash_Balances_Snapshot__c,
+                                    cllease__Balance_s_Snapshot__c,
+                                    cllease__Custom_Logic__c,
+                                    cllease__Receipt_Id__c,
+                                    cllease__Transaction_Date__c,
+                                    cllease__Transaction_Time__c,
+                                    cllease__Early_Total_Repayment_of_the_Lease__c,
+                                    cllease__Write_Off_Recovery_Payment__c,
+                                    cllease__Payment_Mode__c,
+                                    cllease__Payment_Mode__r.Name,
+                                    cllease__Transaction_Amount__c,
+                                    cllease__Cleared__c,
+                                    cllease__Manual_Payment__c,
+                                    cllease__Fees__c,
+                                    cllease__Receivable_Billed__c,
+                                    cllease__Evergreen_Receivable_Billed__c,
+                                    cllease__Tax_Billed__c,
+                                    cllease__Excess__c,
+                                    cllease__Total_Charges_Principal__c,
+                                    cllease__Other_Charges_Principal__c,
+                                    cllease__Late_Charge_Principal__c,
+                                    cllease__Charge__c,
+                                    cllease__Bill__c
+                                FROM cllease__Lease_Payment_Transaction__c
+                                ORDER by cllease__Transaction_Date__c]; 
+            
+            // 3. Calling CL Lease Global API to Apply Payments
+            cllease.BulkLeasePaymentAction dAction = new cllease.BulkLeasePaymentAction(paymentTransactionList);
+            dAction.postPayments();
+    
+            // Create Mockup remit file with negative amounts
+            clcommon__Consolidated_Invoice__c invoiceRetrieve = [Select Id, Name From clcommon__Consolidated_Invoice__c Limit 1];
+    
+            List<Int_PX_Remit__c> mockRemitToInsert = new List<Int_PX_Remit__c>();
+            mockRemitToInsert.add(new Int_PX_Remit__c(  Record_Number__c = 1, 
+                                    Invoice_Number__c       = invoiceRetrieve.Name, 
+                                    Transaction_Amount__c   = -200,
+                                    Date__c                 = paymentDate,
+                                    Payment_Batch_Date__c   = paymentDate.addDays(-2), 
+                                    Committed__c            = false,
+                                    Payment_Batch_Total_Amount__c = 1000.00,
+                                    Line_Data__c            = 'x1|x2|x3|x4'));
+    
+            insert mockRemitToInsert;
+    
+            // run PNC inbound file job
             // Creating DAG
             String dagName = 'CLLease-BatchTestDAG';
             List<String> listOfJobs = new List<String>{'PNCInvoicePaymentProcessing', 'ApplyPaymentProcessingJob'};
-            TestHelper.createDAGSpecificJobs(listOfJobs, dagName);
+                TestHelper.createDAGSpecificJobs(listOfJobs, dagName);
             // Running DAG
             TestHelper.runDAG(dagName);
         System.Test.stopTest();

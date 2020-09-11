@@ -3,13 +3,13 @@ FORMAT  FILE
 ──────  ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 txt     c:\Users\MoserM2\OneDrive - De Lage Landen International B.V\myDev\myDev\.sfdx\tools\testresults\apex\test-result.txt
 txt     c:\Users\MoserM2\OneDrive - De Lage Landen International B.V\myDev\myDev\.sfdx\tools\testresults\apex\test-run-id.txt
-junit   c:\Users\MoserM2\OneDrive - De Lage Landen International B.V\myDev\myDev\.sfdx\tools\testresults\apex\test-result-7075C00000hF3tG-junit.xml
-json    c:\Users\MoserM2\OneDrive - De Lage Landen International B.V\myDev\myDev\.sfdx\tools\testresults\apex\test-result-7075C00000hF3tG.json
+junit   c:\Users\MoserM2\OneDrive - De Lage Landen International B.V\myDev\myDev\.sfdx\tools\testresults\apex\test-result-7075C00000himuL-junit.xml
+json    c:\Users\MoserM2\OneDrive - De Lage Landen International B.V\myDev\myDev\.sfdx\tools\testresults\apex\test-result-7075C00000himuL.json
 
 === Test Results
-TEST NAME                                  OUTCOME  MESSAGE  RUNTIME (MS)
-─────────────────────────────────────────  ───────  ───────  ────────────
-TestGetTaxonChargesJob.testVertexOnCharge  Pass              27475
+TEST NAME                    OUTCOME  MESSAGE  RUNTIME (MS)
+───────────────────────────  ───────  ───────  ────────────
+TestCAMSUtility.testMethod1  Pass              10907
 
 === Test Summary
 NAME                 VALUE
@@ -21,13 +21,13 @@ Failing              0
 Skipped              0
 Pass Rate            100%
 Fail Rate            0%
-Test Start Time      Sep 9, 2020 8:13 AM
-Test Execution Time  27475 ms
-Test Total Time      27475 ms
-Command Time         33663 ms
+Test Start Time      Sep 10, 2020 2:36 PM
+Test Execution Time  10907 ms
+Test Total Time      10907 ms
+Command Time         13272 ms
 Hostname             https://newco--dev.my.salesforce.com
 Org Id               00D5C0000008qu6UAA
 Username             mark.moser@dllgroup.com.dev
-Test Run Id          7075C00000hF3tG
+Test Run Id          7075C00000himuL
 User Id              0051I000000cQh5QAE
 

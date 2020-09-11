@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-09T08:25:13-04:00" hostname="https://newco--dev.my.salesforce.com" tests="3" failures="0"  errors="0"  time="31.71">
+        <properties>
+            <property name="outcome" value="Passed"/>
+            <property name="testsRan" value="3"/>
+            <property name="passing" value="3"/>
+            <property name="failing" value="0"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="100%"/>
+            <property name="failRate" value="0%"/>
+            <property name="testStartTime" value="Sep 9, 2020 8:25 AM"/>
+            <property name="testExecutionTime" value="31.71 s"/>
+            <property name="testTotalTime" value="31.71 s"/>
+            <property name="commandTime" value="34.42 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hF3z9"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="testVertexOnCharge" classname="TestGetTaxonChargesJob" time="12.4">
+        </testcase>
+        <testcase name="testVertexOnChargeAddressValidation" classname="TestGetTaxonChargesJob" time="8.64">
+        </testcase>
+        <testcase name="testVertexOnChargeForNegative" classname="TestGetTaxonChargesJob" time="10.68">
+        </testcase>
+    </testsuite>
+</testsuites>

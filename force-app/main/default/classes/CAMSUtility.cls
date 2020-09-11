@@ -152,12 +152,16 @@ global without sharing class CAMSUtility {
         gen.writeStringField('applicationNumber', cc.Application__r.name);
         gen.writeStringField('sourceSystem', cc.Source_System__c);
         gen.writeStringField('transactionAmount', string.valueOf(cc.Transaction_Amount__c));
-        gen.writeStringField('customerName', cc.Customer_Name__c);
+
+        if (cc.Customer_Name__c != null)
+            gen.writeStringField('customerName', cc.Customer_Name__c);
     
-         
-        gen.writeStringField('leaseSignerTitle', cc.Lease_Signer_Title__c);
-        gen.writeStringField('leaseSignerFirstName', cc.Lease_Signer_First_Name__c);
-        gen.writeStringField('leaseSignerLastName', cc.Lease_Signer_Last_Name__c);
+        if (cc.lease_signer_title__c != null)
+            gen.writeStringField('leaseSignerTitle', cc.Lease_Signer_Title__c);
+        if (cc.Lease_Signer_First_Name__c != null)
+            gen.writeStringField('leaseSignerFirstName', cc.Lease_Signer_First_Name__c);
+        if (cc.Lease_Signer_Last_Name__c != null)
+            gen.writeStringField('leaseSignerLastName', cc.Lease_Signer_Last_Name__c);
 
         if (cc.Customer_Type__c == null)
             gen.writeNullField('customerType');
@@ -191,6 +195,10 @@ global without sharing class CAMSUtility {
         system.debug('json:' + jsonS);
         reqAPI.setBody(jsonS);  
         Http http1 = new Http();
+
+        if (test.isRunningTest())
+            return;
+            
         HTTPResponse res1 = http1.send(reqAPI); 
         
         
@@ -331,6 +339,8 @@ global without sharing class CAMSUtility {
         }
 
         cc.status__c = status.trim();
+
+    
 
         upsert cc;
 

@@ -1,6 +1,7 @@
 @isTest
 public class TestBillofSaleGenerate {
-    static TestMethod void CongaBillofSaleGenerate() {
+    
+   static TestMethod void CongaBillofSaleGenerate() {
         CongaURL_Settings__c cong = new CongaURL_Settings__c();
         cong.BillofSale__c='a2e0v0000001ih5';
         cong.BillofSaleTemplate__c='a2m0v0000001usk';

@@ -164,4 +164,48 @@ public with sharing class TestIntTriggers {
 		 insert n;
 
 	 }
+
+	 static testmethod void test11(){
+
+		Account a = new Account(name = 'dog1');
+		insert a;
+
+		a = [select account_number__c from account where id = :a.id];
+
+		Int_ICV_Default__c n1 = new INT_ICV_Default__c();
+		insert n1;
+
+		Int_ICV_Default__c n = new INT_ICV_Default__c(party_source_System_key_value__c = a.account_number__c,probability_of_default__c =1, le_accrual_flag__c = 'N');
+		insert n;
+
+		Int_ICV_Default__c n2 = new INT_ICV_Default__c(party_source_System_key_value__c = a.account_number__c,probability_of_default__c =0, le_accrual_flag__c = 'Y');
+		insert n2;
+
+
+	}
+	static testmethod void test12(){
+
+			int_ofac__c ofA = new int_ofac__c();
+			insert ofa;
+
+			update ofa;
+
+
+	}
+	static testmethod void test13(){
+
+		int_delivery_control__c ofA = new int_delivery_control__c(reporting_date__c = date.today(), source_system__c = 'wtf');
+
+		insert ofa; 
+
+	 
+
+
+	}
+
+	static testmethod void test14(){
+
+		FixQ2Errors.addNumbers();
+		
+	}
 }

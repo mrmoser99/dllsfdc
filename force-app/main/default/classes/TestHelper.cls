@@ -9,6 +9,7 @@ public with sharing class TestHelper {
      * Following method creates the Sample Data needed  for contract creation and also creates contract.
      **/
     public static cllease__Lease_Account__c createContract() {
+        system.debug('creating seed data');
         cllease.TestHelper.createSeedDataForTesting();
         // Setting Current System Date in Test Context
         Date currentSystemDate = Date.newInstance(2018, 03, 31);

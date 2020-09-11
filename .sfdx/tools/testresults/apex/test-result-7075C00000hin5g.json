@@ -1,0 +1,46 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 1,
+        "passing": 1,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Sep 10, 2020 2:36 PM",
+        "testExecutionTime": "83 ms",
+        "testTotalTime": "83 ms",
+        "commandTime": "8520 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hin5g",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073ZWQUA2"
+            },
+            "Id": "07M5C0000073ZWQUA2",
+            "QueueItemId": "7095C000000p2b0QAA",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hin5gQAA",
+            "MethodName": "test13",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000FU8ErQAL"
+                },
+                "Id": "01p1I00000FU8ErQAL",
+                "Name": "TestIntTriggers",
+                "NamespacePrefix": null
+            },
+            "RunTime": 83,
+            "FullName": "TestIntTriggers.test13"
+        }
+    ]
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-09T11:45:57-04:00" hostname="https://newco--dev.my.salesforce.com" tests="1" failures="0"  errors="0"  time="9.3">
+        <properties>
+            <property name="outcome" value="Passed"/>
+            <property name="testsRan" value="1"/>
+            <property name="passing" value="1"/>
+            <property name="failing" value="0"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="100%"/>
+            <property name="failRate" value="0%"/>
+            <property name="testStartTime" value="Sep 9, 2020 11:45 AM"/>
+            <property name="testExecutionTime" value="9.3 s"/>
+            <property name="testTotalTime" value="9.3 s"/>
+            <property name="commandTime" value="20.04 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hF60u"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="testMethod1" classname="TestdsfsRecipientStatus" time="9.3">
+        </testcase>
+    </testsuite>
+</testsuites>

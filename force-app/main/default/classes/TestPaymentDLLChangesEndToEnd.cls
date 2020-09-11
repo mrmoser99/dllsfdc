@@ -8,7 +8,7 @@ public class TestPaymentDLLChangesEndToEnd {
 
         TestData.doPreSetup();
         TestData.createAccountingTemplateSetup(product.Id, company.Id);
-        
+         
         // Accounting setup for onAccount
         // 1. Creating Gl Accounts
         List<cllease__GL_Account__c> glAccounts = new List<cllease__GL_Account__c>();
@@ -104,54 +104,56 @@ public class TestPaymentDLLChangesEndToEnd {
     
     @isTest
     public static void testOnAccountCreationOnExcessPaymentReversal(){
-        test.startTest();
-            List<cllease__GL_Account__c> glAccounts = [SELECT Id FROM cllease__GL_Account__c WHERE NAME IN ('On Account', 'Cash') ORDER BY NAME];
-            cllease__Lease_Account__c contract = [SELECT Id, Name, cllease__Branch__c, cllease__Contract_Date__c, cllease__Account__c from Cllease__Lease_Account__c limit 1];
-            // Create Cash Receipt
-            List<clcommon__Payment_Mode__c > paymentMode = [SELECT ID, NAME FROM clcommon__Payment_Mode__c Limit 1];
-            clcommon__Cash_Receipt__c cashReceipt = new clcommon__Cash_Receipt__c();
-            cashReceipt.clcommon__Account__c = contract.cllease__Account__c;
-            cashReceipt.clcommon__Payment_Mode__c = paymentMode[0].Id;
-            cashReceipt.clcommon__Receipt_Date__c = contract.cllease__Contract_Date__c;
-            cashReceipt.clcommon__Receipt_Amount__c = 100;
-            cashReceipt.clcommon__Creation_Date__c  = contract.cllease__Contract_Date__c;
-            cashReceipt.clcommon__Unused_Amount__c =  100;
-            cashReceipt.clcommon__Receipt_Status__c = 'CREATED';
-            insert cashReceipt;
-            
-            // Create Cash receipt application
-            clcommon__Cash_Receipt_Application__c cashApplication = new clcommon__Cash_Receipt_Application__c();
-            cashApplication.clcommon__Cash_Receipt__c = cashReceipt.Id;
-            cashApplication.clcommon__Creation_Date__c = contract.cllease__Contract_Date__c;
-            cashApplication.clcommon__Allocated_Amount__c = 100;
-            cashApplication.clcommon__Receipt_Application_Status__c   = 'CREATED';
-            cashApplication.clcommon__Unused_Amount__c  = 100;
-            insert cashApplication;
-            
-            List<cllease__Lease_Payment_Transaction__c> lpt = new List<cllease__Lease_Payment_Transaction__c>();
-            lpt.add(new cllease__Lease_Payment_Transaction__c(cllease__Contract__c = contract.Id,
-                                                              cllease__Transaction_Date__c = contract.cllease__Contract_Date__c ,
-                                                              cllease__Transaction_Amount__c = 100,
-                                                              cllease__Cash_Application__c = cashApplication.Id,
-                                                              cllease__Payment_Mode__c = cllease.GlobalContext.INSTANCE.getPaymentModeByName('Cash').Id));
-            Insert lpt;
-            List<String> contractName = new List<String>();
-            contractName.add(contract.Name);
-            ApplyPaymentProcessingJob job = new ApplyPaymentProcessingJob(contractName);
-            Database.executeBatch(job);
-        test.stopTest();
+        List<cllease__GL_Account__c> glAccounts = [SELECT Id FROM cllease__GL_Account__c WHERE NAME IN ('On Account', 'Cash') ORDER BY NAME];
+        cllease__Lease_Account__c contract = [SELECT Id, Name, cllease__Branch__c, cllease__Contract_Date__c, cllease__Account__c from Cllease__Lease_Account__c limit 1];
+        // Create Cash Receipt
+        List<clcommon__Payment_Mode__c > paymentMode = [SELECT ID, NAME FROM clcommon__Payment_Mode__c Limit 1];
+        clcommon__Cash_Receipt__c cashReceipt = new clcommon__Cash_Receipt__c();
+        cashReceipt.clcommon__Account__c = contract.cllease__Account__c;
+        cashReceipt.clcommon__Payment_Mode__c = paymentMode[0].Id;
+        cashReceipt.clcommon__Receipt_Date__c = contract.cllease__Contract_Date__c;
+        cashReceipt.clcommon__Receipt_Amount__c = 100;
+        cashReceipt.clcommon__Creation_Date__c  = contract.cllease__Contract_Date__c;
+        cashReceipt.clcommon__Unused_Amount__c =  100;
+        cashReceipt.clcommon__Receipt_Status__c = 'CREATED';
+        insert cashReceipt;
         
-        List<cllease__Repayment_Transaction_Adjustment__c> reversalList = new List<cllease__Repayment_Transaction_Adjustment__c>();
-        cllease__Repayment_Transaction_Adjustment__c reversalTransaction = new cllease__Repayment_Transaction_Adjustment__c(
-                                                                                cllease__Lease_Payment_Transaction__c = lpt[0].Id,
-                                                                                cllease__LS_Contract__c = contract.Id,
-                                                                                cllease__Adjusted_Amount__c = lpt[0].cllease__Transaction_Amount__c,
-                                                                                cllease__Adjustment_Txn_Date__c  = lpt[0].cllease__Transaction_Date__c,
-                                                                                cllease__Reason_Code__c = 'NSF');
-        Insert reversalTransaction;
-        reversalList.add(reversalTransaction);
-        cllease.IBulkPaymentReversalAction dAction = new cllease.BulkRepaymentAdjustmentAction(reversalList);
-        dAction.postRepaymentsAdjusment();
+        // Create Cash receipt application
+        clcommon__Cash_Receipt_Application__c cashApplication = new clcommon__Cash_Receipt_Application__c();
+        cashApplication.clcommon__Cash_Receipt__c = cashReceipt.Id;
+        cashApplication.clcommon__Creation_Date__c = contract.cllease__Contract_Date__c;
+        cashApplication.clcommon__Allocated_Amount__c = 100;
+        cashApplication.clcommon__Receipt_Application_Status__c   = 'CREATED';
+        cashApplication.clcommon__Unused_Amount__c  = 100;
+        insert cashApplication;
+        
+        List<cllease__Lease_Payment_Transaction__c> lpt = new List<cllease__Lease_Payment_Transaction__c>();
+        lpt.add(new cllease__Lease_Payment_Transaction__c(cllease__Contract__c = contract.Id,
+                                                          cllease__Transaction_Date__c = contract.cllease__Contract_Date__c ,
+                                                          cllease__Transaction_Amount__c = 100,
+                                                          cllease__Cash_Application__c = cashApplication.Id,
+                                                          cllease__Payment_Mode__c = cllease.GlobalContext.INSTANCE.getPaymentModeByName('Cash').Id));
+        Insert lpt;
+        List<String> contractName = new List<String>();
+        contractName.add(contract.Name);
+        ApplyPaymentProcessingJob job = new ApplyPaymentProcessingJob(contractName);
+        //Database.executeBatch(job);
+        job.applyPayments(lpt); // Added by CLS on 9/9/2020 to address test failure
+        
+        // Added by CLS on 9/9/2020 to address test failure moved the testStart here
+        test.startTest();
+            List<cllease__Repayment_Transaction_Adjustment__c> reversalList = new List<cllease__Repayment_Transaction_Adjustment__c>();
+            cllease__Repayment_Transaction_Adjustment__c reversalTransaction = new cllease__Repayment_Transaction_Adjustment__c(
+                                                                                    cllease__Lease_Payment_Transaction__c = lpt[0].Id,
+                                                                                    cllease__LS_Contract__c = contract.Id,
+                                                                                    cllease__Adjusted_Amount__c = lpt[0].cllease__Transaction_Amount__c,
+                                                                                    cllease__Adjustment_Txn_Date__c  = lpt[0].cllease__Transaction_Date__c,
+                                                                                    cllease__Reason_Code__c = 'NSF');
+            Insert reversalTransaction;
+            reversalList.add(reversalTransaction);
+            cllease.IBulkPaymentReversalAction dAction = new cllease.BulkRepaymentAdjustmentAction(reversalList);
+            dAction.postRepaymentsAdjusment();
+        test.stopTest();
         List<clcommon__Cash_Receipt__c> onAccountCR = [SELECT ID,
                                                         Name,
                                                         Payment_Transaction__c,
@@ -165,90 +167,91 @@ public class TestPaymentDLLChangesEndToEnd {
     
     @isTest
     public static void testOnAccountCreationOnExcessPaymentReversalReApply(){
+        //List<cllease__GL_Account__c> glAccounts = [SELECT Id FROM cllease__GL_Account__c WHERE NAME IN ('On Account', 'Cash') ORDER BY NAME];
+        cllease__Lease_Account__c contract = [SELECT Id, Name, cllease__Branch__c, cllease__Contract_Date__c, cllease__Account__c from Cllease__Lease_Account__c limit 1];
+        // Creating bill for contract
+        cllease__Lease_account_Due_Details__c bill = new cllease__Lease_account_Due_Details__c(cllease__Lease_Account__c = contract.Id,
+                                                                                               cllease__Due_Date__c = contract.cllease__Contract_Date__c,
+                                                                                               cllease__Due_Type_Description__c = 'BILL / DUE DATE',
+                                                                                               cllease__Rental_Due_Amount__c = 70,
+                                                                                               cllease__Tax_Due_Amount__c = 0,
+                                                                                               cllease__Total_Due_Amount__c = 70,
+                                                                                               cllease__Status__c = 'Tax Calculated',
+                                                                                               cllease__Transaction_Date__c = contract.cllease__Contract_Date__c);
+        insert bill;
+        // Create Cash Receipt
+        List<clcommon__Payment_Mode__c > paymentMode = [SELECT ID, NAME FROM clcommon__Payment_Mode__c Limit 1];
+        clcommon__Cash_Receipt__c cashReceipt = new clcommon__Cash_Receipt__c();
+        cashReceipt.clcommon__Account__c = contract.cllease__Account__c;
+        cashReceipt.clcommon__Payment_Mode__c = paymentMode[0].Id;
+        cashReceipt.clcommon__Receipt_Date__c = contract.cllease__Contract_Date__c;
+        cashReceipt.clcommon__Receipt_Amount__c = 100;
+        cashReceipt.clcommon__Creation_Date__c  = contract.cllease__Contract_Date__c;
+        cashReceipt.clcommon__Unused_Amount__c =  100;
+        cashReceipt.clcommon__Receipt_Status__c = 'CREATED';
+        insert cashReceipt;
+        
+        // Create Cash receipt application
+        clcommon__Cash_Receipt_Application__c cashApplication = new clcommon__Cash_Receipt_Application__c();
+        cashApplication.clcommon__Cash_Receipt__c = cashReceipt.Id;
+        cashApplication.clcommon__Creation_Date__c = contract.cllease__Contract_Date__c;
+        cashApplication.clcommon__Allocated_Amount__c = 100;
+        cashApplication.clcommon__Receipt_Application_Status__c   = 'CREATED';
+        cashApplication.clcommon__Unused_Amount__c  = 100;
+        insert cashApplication;
+        
+        List<cllease__Lease_Payment_Transaction__c> lpt = new List<cllease__Lease_Payment_Transaction__c>();
+        lpt.add(new cllease__Lease_Payment_Transaction__c(cllease__Contract__c = contract.Id,
+                                                          cllease__Transaction_Date__c = contract.cllease__Contract_Date__c ,
+                                                          cllease__Transaction_Amount__c = 100,
+                                                          cllease__Cash_Application__c = cashApplication.Id,
+                                                          cllease__Payment_Mode__c = cllease.GlobalContext.INSTANCE.getPaymentModeByName('Cash').Id));
+        Insert lpt;
+        List<String> contractName = new List<String>();
+        contractName.add(contract.Name);
+        ApplyPaymentProcessingJob job = new ApplyPaymentProcessingJob(contractName);
+        //Database.executeBatch(job);
+        job.applyPayments(lpt);
+        
         test.startTest();
-            List<cllease__GL_Account__c> glAccounts = [SELECT Id FROM cllease__GL_Account__c WHERE NAME IN ('On Account', 'Cash') ORDER BY NAME];
-            cllease__Lease_Account__c contract = [SELECT Id, Name, cllease__Branch__c, cllease__Contract_Date__c, cllease__Account__c from Cllease__Lease_Account__c limit 1];
-            // Creating bill for contract
-            cllease__Lease_account_Due_Details__c bill = new cllease__Lease_account_Due_Details__c(cllease__Lease_Account__c = contract.Id,
-                                                                                                  cllease__Due_Date__c = contract.cllease__Contract_Date__c,
-                                                                                                  cllease__Due_Type_Description__c = 'BILL / DUE DATE',
-                                                                                                  cllease__Rental_Due_Amount__c = 70,
-                                                                                                  cllease__Tax_Due_Amount__c = 0,
-                                                                                                  cllease__Total_Due_Amount__c = 70,
-                                                                                                  cllease__Status__c = 'Tax Calculated',
-                                                                                                  cllease__Transaction_Date__c = contract.cllease__Contract_Date__c);
-            insert bill;
-            // Create Cash Receipt
-            List<clcommon__Payment_Mode__c > paymentMode = [SELECT ID, NAME FROM clcommon__Payment_Mode__c Limit 1];
-            clcommon__Cash_Receipt__c cashReceipt = new clcommon__Cash_Receipt__c();
-            cashReceipt.clcommon__Account__c = contract.cllease__Account__c;
-            cashReceipt.clcommon__Payment_Mode__c = paymentMode[0].Id;
-            cashReceipt.clcommon__Receipt_Date__c = contract.cllease__Contract_Date__c;
-            cashReceipt.clcommon__Receipt_Amount__c = 100;
-            cashReceipt.clcommon__Creation_Date__c  = contract.cllease__Contract_Date__c;
-            cashReceipt.clcommon__Unused_Amount__c =  100;
-            cashReceipt.clcommon__Receipt_Status__c = 'CREATED';
-            insert cashReceipt;
+            // Generating GL for LPD
+            List<cllease__Lease_Payment_Detail__c> pmtDetails = [SELECT ID, 
+                                                                 cllease__Transaction_Sub_Type__r.Name 
+                                                                 FROM cllease__Lease_Payment_Detail__c 
+                                                                 WHERE cllease__Payment_Transaction__c =: lpt[0].Id
+                                                                 AND cllease__Transaction_Sub_Type__r.Name != 'ON ACCOUNT'];
+            System.debug(LoggingLevel.ERROR, '^^^^ pmtDetails : ' + pmtDetails);
+            System.debug(LoggingLevel.ERROR, '^^^^ pmtDetails : ' + pmtDetails[0].cllease__Transaction_Sub_Type__r.Name);
+            cllease__GL_Account__c account = [SELECT ID FROM cllease__GL_Account__c LIMIT 1];
+            cllease__GL_Transaction_Detail__c new_txn = new cllease__GL_Transaction_Detail__c();
+            new_txn.cllease__Credit_Amount__c = 70;
+            new_txn.cllease__Debit_Amount__c = 70;
+            new_txn.cllease__Credit_GL_Account__c = account.Id;
+            new_txn.cllease__Debit_GL_Account__c = account.Id;
+            new_txn.cllease__GL_Date__c = cllease.SystemDateUtil.getCurrentSystemDate();
+            new_txn.cllease__Generation_Scheme__c = 'SYSTEM';
+            new_txn.cllease__Lease_Payment_Detail__c = pmtDetails[0].Id;
+            new_txn.cllease__Contract__c = contract.Id;
+            new_txn.Movement_Code_Dr__c = '06';
+            new_txn.Movement_Code_Cr__c = '03';
+            new_txn.cllease__Company__c = contract.cllease__Branch__c;
+            insert new_txn;
             
-            // Create Cash receipt application
-            clcommon__Cash_Receipt_Application__c cashApplication = new clcommon__Cash_Receipt_Application__c();
-            cashApplication.clcommon__Cash_Receipt__c = cashReceipt.Id;
-            cashApplication.clcommon__Creation_Date__c = contract.cllease__Contract_Date__c;
-            cashApplication.clcommon__Allocated_Amount__c = 100;
-            cashApplication.clcommon__Receipt_Application_Status__c   = 'CREATED';
-            cashApplication.clcommon__Unused_Amount__c  = 100;
-            insert cashApplication;
-            
-            List<cllease__Lease_Payment_Transaction__c> lpt = new List<cllease__Lease_Payment_Transaction__c>();
-            lpt.add(new cllease__Lease_Payment_Transaction__c(cllease__Contract__c = contract.Id,
-                                                              cllease__Transaction_Date__c = contract.cllease__Contract_Date__c ,
-                                                              cllease__Transaction_Amount__c = 100,
-                                                              cllease__Cash_Application__c = cashApplication.Id,
-                                                              cllease__Payment_Mode__c = cllease.GlobalContext.INSTANCE.getPaymentModeByName('Cash').Id));
-            Insert lpt;
-            List<String> contractName = new List<String>();
-            contractName.add(contract.Name);
-            ApplyPaymentProcessingJob job = new ApplyPaymentProcessingJob(contractName);
-            Database.executeBatch(job);
-        test.stopTest();
-        
-        // Generating GL for LPD
-        List<cllease__Lease_Payment_Detail__c> pmtDetails = [SELECT ID, 
-                                                                cllease__Transaction_Sub_Type__r.Name 
-                                                             FROM cllease__Lease_Payment_Detail__c 
-                                                             WHERE cllease__Payment_Transaction__c =: lpt[0].Id
-                                                            AND cllease__Transaction_Sub_Type__r.Name != 'ON ACCOUNT'];
-        System.debug(LoggingLevel.ERROR, '^^^^ pmtDetails : ' + pmtDetails);
-        System.debug(LoggingLevel.ERROR, '^^^^ pmtDetails : ' + pmtDetails[0].cllease__Transaction_Sub_Type__r.Name);
-        cllease__GL_Account__c account = [SELECT ID FROM cllease__GL_Account__c LIMIT 1];
-        cllease__GL_Transaction_Detail__c new_txn = new cllease__GL_Transaction_Detail__c();
-        new_txn.cllease__Credit_Amount__c = 70;
-        new_txn.cllease__Debit_Amount__c = 70;
-        new_txn.cllease__Credit_GL_Account__c = account.Id;
-        new_txn.cllease__Debit_GL_Account__c = account.Id;
-        new_txn.cllease__GL_Date__c = cllease.SystemDateUtil.getCurrentSystemDate();
-        new_txn.cllease__Generation_Scheme__c = 'SYSTEM';
-        new_txn.cllease__Lease_Payment_Detail__c = pmtDetails[0].Id;
-        new_txn.cllease__Contract__c = contract.Id;
-        new_txn.Movement_Code_Dr__c = '06';
-        new_txn.Movement_Code_Cr__c = '03';
-        new_txn.cllease__Company__c = contract.cllease__Branch__c;
-        insert new_txn;
-        
-        List<cllease__Repayment_Transaction_Adjustment__c> reversalList = new List<cllease__Repayment_Transaction_Adjustment__c>();
-        cllease__Repayment_Transaction_Adjustment__c reversalTransaction = new cllease__Repayment_Transaction_Adjustment__c(
-                                                                                cllease__Lease_Payment_Transaction__c = lpt[0].Id,
-                                                                                cllease__LS_Contract__c = contract.Id,
-                                                                                cllease__Adjusted_Amount__c = lpt[0].cllease__Transaction_Amount__c,
-                                                                                cllease__Adjustment_Txn_Date__c  = lpt[0].cllease__Transaction_Date__c,
-                                                                                cllease__Reason_Code__c = 'ReApply');
-        Insert reversalTransaction;
-        reversalList.add(reversalTransaction);
-        cllease.IBulkPaymentReversalAction dAction = new cllease.BulkRepaymentAdjustmentAction(reversalList);
-        dAction.postRepaymentsAdjusment();
-        reversalList[0].cllease__Cleared__c = false;
-        update reversalList;
-        
+            List<cllease__Repayment_Transaction_Adjustment__c> reversalList = new List<cllease__Repayment_Transaction_Adjustment__c>();
+            cllease__Repayment_Transaction_Adjustment__c reversalTransaction = new cllease__Repayment_Transaction_Adjustment__c(
+                cllease__Lease_Payment_Transaction__c = lpt[0].Id,
+                cllease__LS_Contract__c = contract.Id,
+                cllease__Adjusted_Amount__c = lpt[0].cllease__Transaction_Amount__c,
+                cllease__Adjustment_Txn_Date__c  = lpt[0].cllease__Transaction_Date__c,
+                cllease__Reason_Code__c = 'ReApply');
+            Insert reversalTransaction;
+            reversalList.add(reversalTransaction);
+            cllease.IBulkPaymentReversalAction dAction = new cllease.BulkRepaymentAdjustmentAction(reversalList);
+            dAction.postRepaymentsAdjusment();
+            reversalList[0].cllease__Cleared__c = false;
+            update reversalList;
+       	test.stopTest();
+
         List<clcommon__Cash_Receipt__c> onAccountCR = [SELECT ID,
                                                         Name,
                                                         Payment_Transaction__c,

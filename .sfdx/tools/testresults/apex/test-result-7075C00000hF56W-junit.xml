@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+    <testsuite name="force.apex" timestamp="2020-09-09T10:09:37-04:00" hostname="https://newco--dev.my.salesforce.com" tests="9" failures="0"  errors="0"  time="24.76">
+        <properties>
+            <property name="outcome" value="Passed"/>
+            <property name="testsRan" value="9"/>
+            <property name="passing" value="9"/>
+            <property name="failing" value="0"/>
+            <property name="skipped" value="0"/>
+            <property name="passRate" value="100%"/>
+            <property name="failRate" value="0%"/>
+            <property name="testStartTime" value="Sep 9, 2020 10:09 AM"/>
+            <property name="testExecutionTime" value="24.76 s"/>
+            <property name="testTotalTime" value="24.76 s"/>
+            <property name="commandTime" value="41.21 s"/>
+            <property name="hostname" value="https://newco--dev.my.salesforce.com"/>
+            <property name="orgId" value="00D5C0000008qu6UAA"/>
+            <property name="username" value="mark.moser@dllgroup.com.dev"/>
+            <property name="testRunId" value="7075C00000hF56W"/>
+            <property name="userId" value="0051I000000cQh5QAE"/>
+        </properties>
+        <testcase name="invoiceCreditPage" classname="TestPaymentDLLChangesEndToEnd" time="0.66">
+        </testcase>
+        <testcase name="testInvoiceConsolidation" classname="TestPaymentDLLChangesEndToEnd" time="0.02">
+        </testcase>
+        <testcase name="testInvoiceMigration" classname="TestPaymentDLLChangesEndToEnd" time="3.43">
+        </testcase>
+        <testcase name="testOnAccountCreationOnExcessPayment" classname="TestPaymentDLLChangesEndToEnd" time="4.39">
+        </testcase>
+        <testcase name="testOnAccountCreationOnExcessPaymentReversal" classname="TestPaymentDLLChangesEndToEnd" time="3.27">
+        </testcase>
+        <testcase name="testOnAccountCreationOnExcessPaymentReversalReApply" classname="TestPaymentDLLChangesEndToEnd" time="5.08">
+        </testcase>
+        <testcase name="testPNCFileCreationJob" classname="TestPaymentDLLChangesEndToEnd" time="3.65">
+        </testcase>
+        <testcase name="testPNCPaymentCreationJob" classname="TestPaymentDLLChangesEndToEnd" time="2.99">
+        </testcase>
+        <testcase name="testUpdateInvoiceOnOLT" classname="TestPaymentDLLChangesEndToEnd" time="1.27">
+        </testcase>
+    </testsuite>
+</testsuites>

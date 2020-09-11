@@ -1,17 +1,18 @@
 @isTest 
 public  class TestAPInvoiceSimulator {
 
-   
+    
     static TestMethod void Test1() {
-
-        cllease__Lease_Account__c LSContract = TestHelper.createContract();
         
+        system.debug('before');
+        cllease__Lease_Account__c LSContract = TestHelper.createContract();
+        system.debug('after');
         clcommon__Consolidated_Invoice__c inv = new clcommon__Consolidated_Invoice__c();
         inv.LS_Contract__c = LSContract.id;
         inv.Billed_Amount__c 	 = 100.00;
         //inv.paid_invoice_amount__c = 0.00;
         insert inv;
-        
+         
         cllease__Lease_Account_Due_Details__c bill = new cllease__Lease_Account_Due_Details__c();
 		
         bill.cllease__Due_Date__c 			                        = Date.parse('09/1/2016');
@@ -37,7 +38,6 @@ public  class TestAPInvoiceSimulator {
        	charge1.cllease__Date__c = Date.parse('09/1/2016');
             
         charge1.cllease__Consolidated_Invoice__c = inv.id;
-        System.debug(LoggingLevel.ERROR, '^^^^ charge1 : ' + charge1);
     
      	upsert charge1;
 
@@ -64,11 +64,19 @@ public  class TestAPInvoiceSimulator {
         due.cllease__Rental_Due_Amount__c = 20.00;
         due.cllease__total_due_amount__c = 30.00;
         insert due;
+
+        system.debug('Starting test');
+
+        Test.startTest();
         	
         AP_InvoiceSimulator.getCharges(inv.id);
         AP_InvoiceSimulator.getNewBillsAndCharges(inv.id);
         AP_InvoiceSimulator.getAdjustments(inv.id);
-    
+
+        System.debug('end test');
+
+        Test.stopTest();
+        
     }  
 
     static TestMethod void Test2() {
@@ -265,7 +273,7 @@ public  class TestAPInvoiceSimulator {
 
         insert r;
 
-        AP_VoidInvoice.void(inv.id);
+        //AP_VoidInvoice.void(inv.id);
         AP_VoidInvoice.getCharges(inv.id,0);
         List<adjustment__c> aList = AP_VoidInvoice.getAdjustments(inv.id,0);
         AP_VoidInvoice.approve(inv.id);

@@ -1,0 +1,94 @@
+{
+    "summary": {
+        "outcome": "Passed",
+        "testsRan": 3,
+        "passing": 3,
+        "failing": 0,
+        "skipped": 0,
+        "passRate": "100%",
+        "failRate": "0%",
+        "testStartTime": "Sep 10, 2020 8:31 AM",
+        "testExecutionTime": "38502 ms",
+        "testTotalTime": "38502 ms",
+        "commandTime": "47045 ms",
+        "hostname": "https://newco--dev.my.salesforce.com",
+        "orgId": "00D5C0000008qu6UAA",
+        "username": "mark.moser@dllgroup.com.dev",
+        "testRunId": "7075C00000hiiwJ",
+        "userId": "0051I000000cQh5QAE"
+    },
+    "tests": [
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073YjiUAE"
+            },
+            "Id": "07M5C0000073YjiUAE",
+            "QueueItemId": "7095C000000p2V3QAI",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hiiwJQAQ",
+            "MethodName": "Test1",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HMO2xQAH"
+                },
+                "Id": "01p1I00000HMO2xQAH",
+                "Name": "TestAPInvoiceSimulator",
+                "NamespacePrefix": null
+            },
+            "RunTime": 18554,
+            "FullName": "TestAPInvoiceSimulator.Test1"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073YjjUAE"
+            },
+            "Id": "07M5C0000073YjjUAE",
+            "QueueItemId": "7095C000000p2V3QAI",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hiiwJQAQ",
+            "MethodName": "Test2",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HMO2xQAH"
+                },
+                "Id": "01p1I00000HMO2xQAH",
+                "Name": "TestAPInvoiceSimulator",
+                "NamespacePrefix": null
+            },
+            "RunTime": 8867,
+            "FullName": "TestAPInvoiceSimulator.Test2"
+        },
+        {
+            "attributes": {
+                "type": "ApexTestResult",
+                "url": "/services/data/v49.0/tooling/sobjects/ApexTestResult/07M5C0000073YjkUAE"
+            },
+            "Id": "07M5C0000073YjkUAE",
+            "QueueItemId": "7095C000000p2V3QAI",
+            "StackTrace": null,
+            "Message": null,
+            "AsyncApexJobId": "7075C00000hiiwJQAQ",
+            "MethodName": "Test3",
+            "Outcome": "Pass",
+            "ApexClass": {
+                "attributes": {
+                    "type": "ApexClass",
+                    "url": "/services/data/v49.0/tooling/sobjects/ApexClass/01p1I00000HMO2xQAH"
+                },
+                "Id": "01p1I00000HMO2xQAH",
+                "Name": "TestAPInvoiceSimulator",
+                "NamespacePrefix": null
+            },
+            "RunTime": 11081,
+            "FullName": "TestAPInvoiceSimulator.Test3"
+        }
+    ]
+}
