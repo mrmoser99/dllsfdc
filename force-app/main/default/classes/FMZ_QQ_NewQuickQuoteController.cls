@@ -4,6 +4,7 @@
 * Change Log:
 *
 * 9/25/19 - Changed to use the new genesis__cl_product__c from ursa
+* 9/14/2020 - Added custom rate card feature
 
 
 
@@ -72,11 +73,18 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
         Savepoint sp = Database.setSavepoint();
         try{
             Account dealer = getDealerInfo();
+
+            List<clcommon__CL_Product__c> customPList = new List<clcommon__CL_Product__c>();
+            customPList = [SELECT Id FROM clcommon__CL_Product__c WHERE dealer__c = :dealer.id];
             qq.Dealer__c = dealer.Id;
             qq.Dealer_Name__c = dealer.Name;
             //qq.Legal_Entity__c = dealer.clcommon__Legal_Entity_Type__c;
             /* ursa change */
-            qq.genesis__CL_Product__c = [SELECT Id FROM clcommon__CL_Product__c WHERE clcommon__Product_Name__c = 'Finance Lease' LIMIT 1].Id;
+            if (!customPlist.isEmpty())
+                qq.genesis__CL_Product__c = customPlist[0].id;
+            else
+                qq.genesis__CL_Product__c = [SELECT Id FROM clcommon__CL_Product__c WHERE clcommon__Product_Name__c = 'Finance Lease' LIMIT 1].Id;
+
             qq.genesis__Company__c = [SELECT Id FROM genesis__Company__c WHERE genesis__Default__c = true LIMIT 1].Id;
             system.debug('made it here');
             qq.genesis__No_Of_Payments_Required_Upfront__c = 0;

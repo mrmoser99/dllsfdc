@@ -206,6 +206,14 @@ declare module "@salesforce/label/c.PM_Endpoint" {
     var PM_Endpoint: string;
     export default PM_Endpoint;
 }
+declare module "@salesforce/label/c.Ratecard_Client" {
+    var Ratecard_Client: string;
+    export default Ratecard_Client;
+}
+declare module "@salesforce/label/c.Ratecard_Client_Secret" {
+    var Ratecard_Client_Secret: string;
+    export default Ratecard_Client_Secret;
+}
 declare module "@salesforce/label/c.SuperTrumpURL" {
     var SuperTrumpURL: string;
     export default SuperTrumpURL;
