@@ -79,10 +79,12 @@ global without sharing class RateUtility {
             system.debug(res1.getStatus()  + '  ' + res1.getStatusCode());
 
             if (res1.getStatusCode() == 404){
+                /*  don't get a transaction going here...
                 cllease__Batch_Process_Log__c b = new cllease__Batch_Process_Log__c();
                 b.name = 'RateUtility';
                 b.cllease__Message__c = 'No rate cards found for Oracle Vendor Id: ' + oracleVendorId;
                 insert b;
+                */
                 return 'Not Found';
             }
             if (res1.getStatus() != 'OK' || res1.getStatusCode() != 200){
@@ -90,24 +92,29 @@ global without sharing class RateUtility {
                 return retCode;
             }
 
+            List<String> listOfRateCards = new List<String>();
 
             if (test.isRunningTest()){
                 Integer skip = 0;
             }
             else{
-                //List<String> listOfRateCards = getListOfRateCards(res1);
+                if (oracleVendorId == 'Test'){
+                    listOfRateCards.add('1080');
+                }
+                else{
+                    listOfRateCards = getListOfRateCards(res1);
+                }
                 
-                //use this hard code to test for now
-                List<String> listOfRateCards = new List<String>();
-                listOfRateCards.add('1080');
-
-                //system.debug('List of rate card ids is: ' + listOfRateCards );
+                system.debug('List of rate card ids is: ' + listOfRateCards );
                 
                 List<dataForSave> saveList = new List<dataForSave>();
 
                 //System.debug('Save list is: ' + saveList + ' size is: ' +  saveList.size()) ; 
-                for (String s: listOfRateCards)
-                    saveList = getRateCardDetail(s,oracleVendorId,includeType);
+                for (String s: listOfRateCards){
+                    //saveList = getRateCardDetail(s,oracleVendorId,includeType);
+                    saveList = getRateCardDetail(s,oracleVendorId,'REGULAR');
+                    saveList.addAll(getRateCardDetail(s,oracleVendorId,'PROMOTION'));
+                }
 
                 System.debug('Save list size is: ' +  saveList.size()) ; 
                 
@@ -312,11 +319,12 @@ global without sharing class RateUtility {
 
         // Result: 1080, [1340,1341,1342...]
         if (result.data.isEmpty()){
+            /*  don't start transaction here....
             cllease__Batch_Process_Log__c b = new cllease__Batch_Process_Log__c();
             b.name = 'RateUtility';
             b.cllease__Message__c= 'No Rate Cards Found for Account: ' + a.name;
             insert b;
-            
+            */
         }
 
         
