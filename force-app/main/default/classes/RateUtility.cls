@@ -7,16 +7,44 @@
 * 9/4/2020 - MRM Created
 **********************************************************************************************/
 global without sharing class RateUtility { 
-    
-     
+
+    /*************************************************************************************************
+    * 
+    * dataForSave - structure to hold the information so database updates can be held until callouts 
+    *               are done
+ 	*	
+    *************************************************************************************************/
+    public class dataForSave {
+                             
+        public genesis__Rate_Card_Setup_Header__c header;
+        public Boolean headerIsUpdate;
+        public clcommon__CL_Product__c product;
+        public genesis__Product_Rate_Card_Association__c rca;
+        public List<genesis__Rate_Card_Setup_Detail__c> detailList;
+        public String returnCode;
+
+        public dataForSave(genesis__Rate_Card_Setup_Header__c header, Boolean headerIsUpdate, clcommon__CL_Product__c product,genesis__Product_Rate_Card_Association__c rca, List<genesis__Rate_Card_Setup_Detail__c> detailList){
+
+            this.header = header;
+            this.headerIsUpdate = headerIsUpdate;
+            this.product = product;
+            this.rca = rca;
+            this.detailList = detailList;
+            this.returnCode = 'OK';
+            
+            /* save here */
+        }
+
+    } 
 
     /*************************************************************************************************
     * 
     * getProgram  - using an oracle vendor id you can get a program which contains rate cards
 	*	
 	*************************************************************************************************/
-    public static void getProgram( String oracleVendorId){    	
-	  								
+    public static String getProgram( String oracleVendorId, String includeType){    	
+          
+        String retCode = 'OK';
 		try{ 
 			string accessToken = getAccessToken();
 			
@@ -24,12 +52,17 @@ global without sharing class RateUtility {
 			
 			HttpRequest reqAPI = new HttpRequest();  
 			
-            //https://apiacc.dllgroup.com/vf/us/v1/partner-insight/Details/447843-0001
+            //https://apiacc.dllgroup.com/vf/us/v1/partner-insight/Details/0000102923-0004   //test with this one for now
+
+            List<String> vList = oracleVendorId.split('-');
+
+            Integer vId = integer.valueOf(vList[0]);
+
             
-            string endpoint = 'https://apiacc.dllgroup.com/vf/us/v1/partner-insight/Details/447843-0001';
+            string endpoint = 'https://apiacc.dllgroup.com/vf/us/v1/partner-insight/Details/' + string.valueOf(vId) + '-' + string.valueOf(vList[1]);
 
             system.debug('endpoint is: ' + endpoint);
-        	//reqAPI.setEndpoint('https://' + System.Label.ICVDomain + '.dllgroup.com/vf/us/v1/partner-insight/Details/447843-0001');
+        	 
         	reqAPI.setEndpoint(endpoint); 
             reqAPI.setMethod('GET');   
             reqAPI.setHeader('originatorId', 'MOSAIC');    
@@ -42,37 +75,127 @@ global without sharing class RateUtility {
         	
 			Http http1 = new Http();
 	    	HTTPResponse res1 = http1.send(reqAPI); 
-            
+            system.debug(res1.getStatus()  + '  ' + res1.getStatusCode());
+
+            if (res1.getStatusCode() == 404){
+                cllease__Batch_Process_Log__c b = new cllease__Batch_Process_Log__c();
+                b.name = 'RateUtility';
+                b.cllease__Message__c = 'No rate cards found for Oracle Vendor Id: ' + oracleVendorId;
+                insert b;
+                return 'Not Found';
+            }
+            if (res1.getStatus() != 'OK' || res1.getStatusCode() != 200){
+                retCode = res1.getStatus() + ' - ' + res1.getStatusCode();
+                return retCode;
+            }
+
+
             if (test.isRunningTest()){
-                String tempResults = '{"olmVendorSiteId":"447843-0001","salesRep": [{"firstName":"Joe","lastName":"Dickinson","IsSecondary":null,"atsUserCode":"10666","phone":"6103865000","olmFndID":"925964","isPrimary":true,"networkUserName":"DICKINSONJ","email":"fmdllqatestevent@dllgroup.com"},{"firstName":"Jay","lastName":"Decker","IsSecondary":true,"atsUserCode":"10607","phone":"6103865808","olmFndID":"905079","isPrimary":null,"networkUserName":"DECKERJ","email":"fmdllqatestevent@dllgroup.com"}],"isTelephoneVerificationRequired":false,"usage": [{"identifiers": [{"sourceSystem":"LOANPATH","identifierValue":"3797-1-BILL_TO","identifierType":"LP_PARTY_SITE_USE_ID"},{"sourceSystem":"ORACLE","identifierValue":"55550699","identifierType":"TCA_PARTY_SITE_USE_ID"},{"sourceSystem":"ORACLE","identifierValue":"8210058","identifierType":"TCA_CUST_ACCT_SITE_USE_ID"},{"sourceSystem":"ORACLE","identifierValue":"47306205","identifierType":"TCA_PARTY_SITE_ID"},{"sourceSystem":"LOANPATH","identifierValue":"3797-1-BILL_TO","identifierType":"LP_CUST_ACCT_SITE_USE_ID"}],"name":"BILL_TO","description":"Bill To"},{"identifiers": [{"sourceSystem":"LOANPATH","identifierValue":"3797-1-PAY_TO","identifierType":"LP_PARTY_SITE_USE_ID"},{"sourceSystem":"LOANPATH","identifierValue":"3797-1-PAY_TO","identifierType":"LP_CUST_ACCT_SITE_USE_ID"}],"name":"PAY_TO","description":"Pay To"}],"ouKey":"DLL","program": [{"overrideSoftCosts":false,"sbuKey":"2","privateLabel": [{"isDefaultInvoice":true,"isDefault":true,"documents":true,"name":"DE LAGE LANDEN FINANCIAL SERVICES, INC.","isDefaultDocument":true,"ID":"1004","invoice":true}],"softCostList": [],"name":"OE_VENDOR","overridePromotions":false,"rateCardId":"1000","ID":"1000","overridePrivateLabel":true}],"isActive":true,"PhoneCountryCode":"","salesSupportRep": [{"firstName":"Justin","lastName":"Conrad","atsUserCode":"C70","phone":"6103865000","olmFndID":"276345","isPrimary":null,"networkUserName":"CONRADJ","email":"fmdllqatestevent@dllgroup.com"}],"legacyId":"","ID":"3797-1","isPassThroughEligible":false,"email":"","isPrimarySite":true,"funding":{"paymentMethodCode":"2","preferredFundingSite":{"funding":{"paymentMethodCode":"","deliveryMethod":""},"address":{"country":"","salesTaxAreaId":"","city":"","postalCode":"","county":"","stateProvince":"","line2":"","line1":""},"partner":{"dba": [{"name":"Verizon Basking Ridge"}],"name":"Verizon Basking Ridge"},"phone":"","identifiers": [{"sourceSystem":"ORACLE","identifierValue":"","identifierType":"VENDOR_SITE_CODE"}],"name":"","ID":""},"maximumPoints":60.000,"deliveryMethod":"1","defaultPoints":0.000,"cpcUsageEligible":false},"address":{"country":"US","salesTaxAreaId":"310350266","city":"BASKING RIDGE","postalCode":"07920-1025","county":"SOMERSET","stateProvince":"NJ","line2":"","line1":"1 VERIZON WAY"},"identifiers": [{"sourceSystem":"ORACLE","identifierValue":"790909","identifierType":"AP_VENDOR_SITE_ID"},{"sourceSystem":"LOANPATH","identifierValue":"3797-1","identifierType":"LP_PARTY_SITE_ID"},{"sourceSystem":"LOANPATH","identifierValue":"3797-1","identifierType":"LP_VENDOR_SITE_ID"},{"sourceSystem":"ORACLE","identifierValue":"60094572","identifierType":"TCA_LOCATION_ID"},{"sourceSystem":"ORACLE","identifierValue":"47306205","identifierType":"TCA_PARTY_SITE_ID"},{"sourceSystem":"ORACLE","identifierValue":"3984608","identifierType":"TCA_CUST_ACCT_SITE_ID"},{"sourceSystem":"LOANPATH","identifierValue":"3797-1","identifierType":"LP_CUST_ACCT_SITE_ID"},{"sourceSystem":"ORACLE","identifierValue":"447843-0001","identifierType":"VENDOR_SITE_CODE"}],"timeStamp":"2020-09-11 01:28:21","isDisqualified":false,"partner":{"preferredCustomerInvoiceDueDate":null,"dba": [{"name":"Verizon Basking Ridge"}],"priorityRating":"","isTelephoneVerificationRequired":false,"isAPHold":false,"identifiers": [{"sourceSystem":"ORACLE","identifierValue":"17204120","identifierType":"AP_VENDOR_ID"},{"sourceSystem":"ICV","identifierValue":"1597355824409275","identifierType":"ICV_PARTY_ID"},{"sourceSystem":"LOANPATH","identifierValue":"3797","identifierType":"LP_PARTY_ID"},{"sourceSystem":"LOANPATH","identifierValue":"3797","identifierType":"LP_VENDOR_ID"},{"sourceSystem":"ORACLE","identifierValue":"44604243","identifierType":"TCA_PARTY_ID"},{"sourceSystem":"LOANPATH","identifierValue":"3797","identifierType":"LP_CUST_ACCT_ID"},{"sourceSystem":"ORACLE","identifierValue":"38622120","identifierType":"TCA_CUST_ACCT_ID"},{"sourceSystem":"ORACLE","identifierValue":"447843","identifierType":"VENDOR_CODE"}],"isSingleApp":false,"isActive":true,"classification": [{"name":"1","description":"Originating Partner"}],"name":"Verizon Basking Ridge","isBookingHold":false,"ID":"3797","isWatchList":false,"olmVendorId":"447843"},"phone":"9802517035","name":"Verizon Basking Ridge","correspondent": [{"firstName":"Joe","lastName":"Dickinson","isAutoSend":true,"correspondenceType": [{"description":"Approval Package","ID":"1"},{"description":"Decline Package","ID":"2"},{"description":"Additional Information Package","ID":"4"}],"email":"fmdllqatestevent@dllgroup.com"},{"firstName":"Jay","lastName":"Decker","isAutoSend":true,"correspondenceType": [{"description":"Approval Package","ID":"1"},{"description":"Decline Package","ID":"2"},{"description":"Additional Information Package","ID":"4"}],"email":"fmdllqatestevent@dllgroup.com"},{"firstName":"Justin","lastName":"Conrad","isAutoSend":true,"correspondenceType": [],"email":"fmdllqatestevent@dllgroup.com"}],"isWatchList":false,"IsUsageEligible":false}';
-                processResults(res1);
+                Integer skip = 0;
             }
             else{
-                Account a = [select id, name from Account where Oracle_Vendor_ID__c = :oracleVendorId];
-                List<String> sList = processResults(res1);
-                system.debug('List of rate card ids is: ' + sList );
-                getRateCard(sList,a);
+                //List<String> listOfRateCards = getListOfRateCards(res1);
+                
+                //use this hard code to test for now
+                List<String> listOfRateCards = new List<String>();
+                listOfRateCards.add('1080');
+
+                system.debug('List of rate card ids is: ' + listOfRateCards );
+                
+                List<dataForSave> saveList = new List<dataForSave>();
+
+                System.debug('Save list is: ' + saveList + ' size is: ' +  saveList.size()) ; 
+                for (String s: listOfRateCards)
+                    saveList = getRateCardDetail(s,oracleVendorId,includeType);
+
+                System.debug('Save list size is: ' +  saveList.size()) ; 
+                
+                system.debug('******************* Saving to Database *************************************');
+                
+                try { 
+                    
+                    system.debug('Save list 0:'  + saveList[0]);
+                    system.debug('break');
+                    system.debug('Sae list 1:'  + saveList[1]);
+
+                    for (dataForSave d:saveList){
+                        //System.debug('Trying to save this: ' + d);
+                        storeDataInDB(d);
+                    }
+                }
+                catch (exception e){
+                    cllease__Batch_Process_Log__c b = new cllease__Batch_Process_Log__c();
+                    b.name = 'RateUtility';
+                    b.cllease__Message__c = e.getMessage() + '  - ' + e.getStackTraceString();
+                    System.debug(LoggingLevel.ERROR, 'Exception: '+e.getMessage());    
+                    System.debug(LoggingLevel.ERROR, 'Exception Stack: '+e.getStackTraceString());
+                    insert b;
+                    return  b.cllease__Message__c;
+                 }
             }
+
+            return retCode;
+                 
         }
  		catch (exception e){
- 			system.debug(e);
+            cllease__Batch_Process_Log__c b = new cllease__Batch_Process_Log__c();
+            b.name = 'RateUtility';
+            b.cllease__Message__c = e.getMessage() + '  - ' + e.getStackTraceString();
+            System.debug(LoggingLevel.ERROR, 'Exception: '+e.getMessage());    
+            System.debug(LoggingLevel.ERROR, 'Exception Stack: '+e.getStackTraceString());
+            insert b;
+            return  b.cllease__Message__c;
  		}
     }
 
     /*************************************************************************************************
     * 
-    * getRateCards - get all rate cards for program
+    * getListOfRateCards - puts the list of rate card ids into a list for further calls
+ 	*	
+    *************************************************************************************************/
+    public static List<String> getListOfRateCards(HTTPResponse res1){     
+
+        system.debug('************ entering process results');
+        List<String> results = new List<String>();
+
+        RateCardAccountJSON2Apex result = RateCardAccountJSON2Apex.parse(string.valueOf(res1.getBody()));
+        
+        if (result == null)
+            return null;
+        else
+        if (result.program == null)
+            return null;
+
+        system.debug('Result Program is' + result.program);
+
+        for (RateCardAccountJSON2Apex.program p:result.program){
+            results.add(p.rateCardId); 
+        }
+        system.debug('returning...');
+        return results;
+
+    }
+    
+
+    /*************************************************************************************************
+    * 
+    * getRateCardDetail - get the details for a specficd rate card 
 	*************************************************************************************************/
-    public static void getRateCard(List<String> rateCards, Account a){    	
-	  								
+    
+    public static List<dataForSave> getRateCardDetail(String rateCard, String oracleVendorId, String includeType){    	
+         
+        List<dataForSave> saveList = New List<dataForSave>();
+        
 		try{ 
+            Account a = [select id, name from Account where Oracle_Vendor_ID__c = :oracleVendorId];
+
 			string accessToken = getAccessToken();
 			
 			system.debug('at:' + accessToken);
 			
 			HttpRequest reqAPI = new HttpRequest();  
 			
-            string endpoint = 'https://apiacc.dllgroup.com/vf/us/v1/ratecards/1080/ratefactors';
+            string endpoint = 'https://apiacc.dllgroup.com/vf/us/v1/ratecards/' + rateCard + '/ratefactors';
 
             system.debug('endpoint is: ' + endpoint);
         	 
@@ -84,19 +207,31 @@ global without sharing class RateUtility {
             reqAPI.setHeader('Charset', 'UTF-8');
             reqAPI.setHeader('Content-Type', 'application/json');
             reqAPI.setHeader('Authorization', 'Bearer '+ accessToken);
-            reqAPI.setBody('{"data": {"effDate": "2018-08-01","excludeExpired": false,"includeRateFactorDetails": true,"includeType": "REGULAR","paymentFrequency": "M","paymentTiming": "ADVANCE","rateType": "PRICING","softCostAllowancePct": 0}}');
+            reqAPI.setBody('{"data":' + 
+                    ' {"effDate": "2018-08-01","excludeExpired": false,"includeRateFactorDetails": true,"includeType":' + 
+                    '"' + includeType + '"' + 
+            //       ',"paymentTiming": "ARREAR","rateType": "PRICING","softCostAllowancePct": 0}}');  
+            //      ',"paymentFrequency": "M","paymentTiming": "ARREAR","rateType": "PRICING","softCostAllowancePct": 0}}');
+                    ',"paymentFrequency": "M","paymentTiming": "ARREARS" ,"purchaseOption": "FMV","rateType": "PRICING","softCostAllowancePct": 0}}');
         	reqAPI.setTimeout(120000);
         	
 			Http http1 = new Http();
-	    	HTTPResponse res1 = http1.send(reqAPI); 
-           
-            system.debug('Rate Card Detail: ' + res1.getBody());
+            HTTPResponse res1 = http1.send(reqAPI); 
+             
+            if (res1.getStatus() != 'OK' || res1.getStatusCode() != 200){
+                cllease__Batch_Process_Log__c b = new cllease__Batch_Process_Log__c();
+                b.name = 'RateUtility';
+                b.cllease__Message__c= res1.getStatus() + '  - ' + res1.getStatusCode();
+                insert b;
+            }
+            else{
+                system.debug('Rate Card Detail: ' + res1.getBody());
 
-            RateCardDetailsJSON2Apex result = RateCardDetailsJSON2Apex.parse(string.valueOf(res1.getBody()));
-            
-            populateRateCards(result,a);
+                RateCardDetailsJSON2Apex result = RateCardDetailsJSON2Apex.parse(string.valueOf(res1.getBody()));
+                saveList = saveRateCardData(result,a);
 
-            for (RateCardDetailsJSON2Apex.Data d:result.data){
+                /*
+                for (RateCardDetailsJSON2Apex.Data d:result.data){
                 system.debug('=================================>');
                 system.debug('Rate Card Id: ' + d.id + ' Rate Card Name: ' + d.name);
                 system.debug('Rate Card Details....' + d);
@@ -107,37 +242,332 @@ global without sharing class RateUtility {
                    
                 }
                 system.debug('*****************************************************************\n');
+                    }
+                */
             }
-    
-           
-           
+
+            return saveList;
+        
         }
  		catch (exception e){
- 			system.debug(e);
- 		}
+            cllease__Batch_Process_Log__c b = new cllease__Batch_Process_Log__c();
+            b.name = 'RateUtility';
+            b.cllease__Message__c= e.getMessage() + '  - ' + e.getStackTraceString() +  ' - ' + e.getLineNumber();   
+            System.debug(LoggingLevel.ERROR, 'Exception: '+e.getMessage());    
+            System.debug(LoggingLevel.ERROR, 'Exception Stack: '+e.getStackTraceString() + e.getLineNumber());
+            insert b;
+            return saveList;
+            
+        }
+
     }
 
+
+    
+    
+    /*************************************************************************************************
+    * 
+    * saveRateCardData - save the data in structures for later save event
+    *                  - only adding of data is performed, no rate cards get replaced, with the exception
+    *                    that the experation of the rate card header is updated
+ 	*	
+    *************************************************************************************************/
+    public static List<dataForSave> saveRateCardData( RateCardDetailsJSON2Apex result, Account a){  
+    
+        List<dataForSave> saveList = new List<dataForSave>();
+
+        genesis__Company__c c = [select id from genesis__Company__c where name = 'DeLage Landen'];
+
+        List<genesis__Rate_Card_Setup_Header__c> hList = new List<genesis__Rate_Card_Setup_Header__c>();
+       
+        List<genesis__Rate_Card_Setup_Header__c> existingHeaderList = new List<genesis__Rate_Card_Setup_Header__c>();
+
+       
+        Map<String,Set<String>> rateMap = new Map<String,Set<String>>();
+       
+        Set<String> rateSet = new Set<String>();
+
+        for (RateCardDetailsJSON2Apex.Data d:result.data){
+            rateSet.add(d.rateCardId);
+        }
+
+        system.debug('Looking for : ' + rateSet);
+        
+        existingHeaderList = [select rate_id__c, rate_card_id__c 
+                            from genesis__Rate_Card_Setup_Header__c
+                            where rate_card_id__c in :rateSet
+        ];
+
+       
+        for (genesis__Rate_Card_Setup_Header__c d:existingHeaderList){
+            Set<String> temp = new Set<String>();
+
+            if (rateMap.get(d.rate_card_id__c) == null){
+                temp.add(d.rate_id__c);
+                rateMap.put(d.rate_Card_Id__c,temp);
+            }
+            else{
+                temp = rateMap.get(d.rate_Card_Id__c);
+                temp.add(d.rate_id__c);
+                rateMap.put(d.rate_Card_Id__c,temp);
+            }
+        }
+
+        // Result: 1080, [1340,1341,1342...]
+        if (result.data.isEmpty()){
+            cllease__Batch_Process_Log__c b = new cllease__Batch_Process_Log__c();
+            b.name = 'RateUtility';
+            b.cllease__Message__c= 'No Rate Cards Found for Account: ' + a.name;
+            insert b;
+            
+        }
+
+        
+
+        for (RateCardDetailsJSON2Apex.Data d:result.data){
+
+            system.debug('=================================>');
+            system.debug('Rate Id: ' + d.id + ' Rate Card Name: ' + d.name + ' Program Rate card id: ' + d.rateCardId);
+            //system.debug('Rate Card Details....' + d);
+            system.debug('*****************************************************************\n');
+            
+            dataForSave s = new dataForSave(null,null, null,null,null);    // header,  update, product,  rca,  detail 
+            /*
+             softCostAllowancePct;
+            */
+            // no inserts if already there 
+
+            system.debug('******** Rate Map ' + rateMap);
+
+            clcommon__CL_Product__c pr = new clcommon__CL_Product__c();
+            if ((rateMap.keySet().contains(d.rateCardId) && rateMap.get(d.rateCardId).contains(d.id))){
+                system.debug('***************** Skipping product: ' + d.rateCardId);
+                pr = [select id from clcommon__CL_Product__c where rate_card_id__c = :d.rateCardId and rate_id__c = :d.id];
+                s.product = pr;
+            }    
+            else{
+                system.debug('***************** Adding product: ' + d.id);
+                
+                pr.rate_card_id__c = d.rateCardId;
+                pr.rate_id__c = d.id;
+                pr.dealer__c = a.id;
+                pr.clcommon__Product_Name__c = a.name + ' (' + d.rateCardId + ')';
+                pr.clcommon__Asset_Class__c = [select id from clcommon__asset_class__c where name = 'Office Equipment'].id;
+                pr.clcommon__Class__c = 'Commercial';
+        
+                //insert pr;
+                s.product = pr;
+                
+            }
+            
+            genesis__Rate_Card_Setup_Header__c h = new genesis__Rate_Card_Setup_Header__c();
+            
+            system.debug('rateMap: ' + rateMap + ' looking for ' + d.rateCardId) ;
+            Boolean addHeader = false;
+            if (rateMap.isEmpty())
+                addHeader = true;
+            else
+            if (!rateMap.get(d.rateCardId).contains(d.id))
+                addHeader = true;    
+            system.debug('add header is : ' + addHeader);
+            if (addHeader){
+                system.debug('************* Inserting Rate Card Header');
+                h.name = d.name;
+                h.genesis__Product_Type__c = 'LEASE';
+                 
+                h.genesis__Company__c = c.id;
+                h.genesis__Description__c = d.description;
+                h.genesis__Enabled_Flag__c = true;
+                h.Rate_Card_Id__c = d.rateCardId;
+                h.Rate_Id__c = d.id;
+                h.Rate_Card_Name__c = d.rateCardName;
+                h.Subsidy_Id__c = d.subsidyId;
+                h.Promotion_Id__c = d.promotionId;
+                h.Payment_Frequency__c = d.paymentFrequency;
+                h.Payment_Timing__c = d.paymentTiming;
+                h.purchase_option__c = d.purchaseOption;
+                h.No_Advance_Payments__c = d.noAdvancePayments;
+                h.No_Deferred_Payments__c = d.noDeferredPayments;
+                h.Rate_type__c = d.rateType;
+                h.Soft_Cost_Allowance_Pct__c = d.softCostAllowancePct;
+                h.no_security_deposits__c = d.noSecurityDeposits;
+                h.fee_included__c = d.feeIncluded;
+                if (d.grandFatherDate != null)
+                    h.grandfather_date__c = date.valueOf(d.grandFatherDate);
+                h.genesis__Start_Date__c = date.valueOf(d.effDate);
+                h.genesis__End_Date__c = date.valueOf(d.expDate);
+                h.genesis__Transaction_Date__c = date.today();
+
+                //insert h;
+                s.header = h;
+                s.headerIsUpdate = false;
+
+                //s.product.Rate_Card_Setup__c = h.id;
+
+                //update pr;
+            }
+            else{
+                system.debug('************* Not inserting header but updating dates.....' + ' d.id: ' + d.id); 
+                h = [select id from genesis__Rate_Card_Setup_Header__c where Rate_Id__c = :d.id];
+                if (d.grandFatherDate != null)
+                    h.grandfather_date__c = date.valueOf(d.grandFatherDate);
+                h.genesis__Start_Date__c = date.valueOf(d.effDate);
+                h.genesis__End_Date__c = date.valueOf(d.expDate);
+                s.header = h;
+                s.headerIsUpdate = true;
+                //update h; 
+            }
+
+            List<genesis__Product_Rate_Card_Association__c> rcaList = [ select  id 
+                                                                        from genesis__Product_Rate_Card_Association__c
+                                                                        where 
+                                                                        genesis__CL_Product__c = :pr.id 
+                                                                        and genesis__Rate_Card_Setup__c = :h.id
+                                                                      ];
+            
+            genesis__Product_Rate_Card_Association__c rca = new genesis__Product_Rate_Card_Association__c(); 
+            if (rcaList.isEmpty()){
+                system.debug('*************** Rca insert');
+                rca.genesis__CL_Product__c = pr.id;
+                rca.genesis__Rate_Card_Setup__c = h.id;
+                s.rca = rca;
+                //insert rca;
+            }
+            else{
+                system.debug('*************** Skipping rca insert' );
+                rca = rcaLIst[0];
+                s.rca = rca;
+            }
+           
+            List<RateCardDetailsJSON2Apex.RateFactors> rateFactorList = d.rateFactors;
+
+          
+            List<genesis__Rate_Card_Setup_Detail__c> existingDetailList = new List<genesis__Rate_Card_Setup_Detail__c>();
+            existingDetailList = [select id
+                                ,rate_id__c
+                                from genesis__Rate_Card_Setup_Detail__c 
+                                where
+                                genesis__Rate_Card_Setup_Header__c = :h.id
+                                ];
+
+            Set<String> existingDetailSet = new Set<String>();
+            for (genesis__Rate_Card_Setup_Detail__c det: existingDetailList){
+                    existingDetailSet.add(det.rate_id__c);
+            }
+
+            List<genesis__Rate_Card_Setup_Detail__c> insertRdList = new List<genesis__Rate_Card_Setup_Detail__c>();
+
+            for (RateCardDetailsJSON2Apex.RateFactors f: rateFactorList){
+                // system.debug('rate detail set: ' + existingDetailSet);
+                if (existingDetailSet.contains(f.id)){
+                    system.debug('************* Skipping rate id detail: ' +  f.id);
+                }
+                else{
+                    system.debug('************* Inserting rate id detail: ' +  f.id);
+                    //system.debug('id: ' + f.id + ' term: ' + f.term + ' min: ' + f.minAmount + ' max: ' + f.maxAmount + ' actual factor: ' + f.rateFactorAmount);
+                    genesis__Rate_Card_Setup_Detail__c rd = new genesis__Rate_Card_Setup_Detail__c();
+                    rd.rate_id__c = f.id;
+                    rd.genesis__Days_Convention__c = '30/360';  
+                    rd.genesis__Maximum_Financed_Amount__c = decimal.valueOf(f.maxAmount);
+                    rd.genesis__Minimum_Financed_Amount__c = decimal.valueOf(f.minAmount);
+                    rd.genesis__Enabled_Flag__c = true;
+                    rd.genesis__Rate_Factor__c = decimal.valueOf(f.rateFactorAmount);
+                    rd.genesis__Term__c = decimal.valueOf(f.term);
+                    rd.genesis__Rate_Factor_Based_On_Amount__c = 1000.00;
+                    rd.group_id__c = f.groupId;
+                    rd.genesis__Arrears__c = true;
+                    rd.genesis__Use_Additional_Determining_Factors__c = true;
+                    rd.genesis__Residual_Type__c = 'FAIR MARKET VALUE';
+                    if (d.paymentFrequency == 'M')
+                        rd.genesis__Payment_Frequency__c = 'MONTHLY';
+                    else
+                    if (d.paymentFrequency == 'Q')
+                        rd.genesis__Payment_Frequency__c = 'QUARTERLY';
+                    else
+                    if (d.paymentFrequency == 'A')
+                        rd.genesis__Payment_Frequency__c = 'ANNUALLY';
+                    
+                    insertRdList.add(rd);
+                }
+            }
+
+            if (!insertRdList.isEmpty())
+                s.detailList = insertRdList;
+
+            system.debug('=============END OF RATE CARD SAVING RESULTS IN SAVE LIST ====================>');
+            system.debug('Rate Id: ' + d.id + ' Rate Card Name: ' + d.name + ' Program Rate card id: ' + d.rateCardId);
+            system.debug('*****************************************************************\n');
+           
+
+            saveList.add(s);
+
+            system.debug('save list size is: ' + saveList.size());
+        }
+        return saveList;
+    }   
 
     /*************************************************************************************************
     * 
-    * Process GetProgram Results
- 	*	
+    * storeDataInDB - save the data in database
+    *                   
     *************************************************************************************************/
-    public static List<String> processResults(HTTPResponse res1){     
+    public static String storeDataInDB( dataForSave s){  
+        try { 
 
-        List<String> results = new List<String>();
+            system.debug( ' Data for Save is: ' + s);
+            if (s.headerIsUpdate)
+                update s.header;
+            else
+                insert s.header;
 
-        RateCardAccountJSON2Apex result = RateCardAccountJSON2Apex.parse(string.valueOf(res1.getBody()));
-        
-        system.debug(result.program);
-        for (RateCardAccountJSON2Apex.program p:result.program){
-            results.add(p.rateCardId); 
+            s.product.Rate_Card_Setup__c = s.header.id;
+
+            insert s.product;
+
+            s.header.genesis__CL_Product__c = s.product.id;
+            s.header.CL_Product__c = s.product.id;
+            update s.header;
+            
+            if (s.rca.id == null){
+                s.rca.genesis__CL_Product__c = s.product.id;
+                s.rca.genesis__Rate_Card_Setup__c = s.header.id;
+                insert s.rca;   
+            }
+            
+            
+            system.debug('*');
+            system.debug('*');
+            system.debug('*');
+            system.debug('*');
+            system.debug('*');
+            
+            
+            for (genesis__Rate_Card_Setup_Detail__c l:s.detailList){
+                system.debug('Detail header id is: ' + l.genesis__Rate_Card_Setup_Header__c);
+                if (l.genesis__Rate_Card_Setup_Header__c == null)
+                    l.genesis__Rate_Card_Setup_Header__c = s.header.id;
+            }
+
+            if (!s.detailList.isEmpty())
+                insert s.detailList;
         }
+        catch (exception e){
+            
+            cllease__Batch_Process_Log__c b = new cllease__Batch_Process_Log__c();
+            b.cllease__Message__c= e.getMessage() + '  - ' + e.getStackTraceString();
+            b.name = 'RateUtility';
+            b.cllease__Message__c= e.getMessage() + '  - ' + e.getStackTraceString() + e.getLineNumber();
+            insert b;
+            System.debug(LoggingLevel.ERROR, 'Exception: '+e.getMessage());    
+            System.debug(LoggingLevel.ERROR, 'Exception Stack: '+e.getStackTraceString());
+            
+        }
+        
+        return 'OK';
 
-        return results;
 
     }
-    
+
     /*************************************************************************************************
     * 
     * Ratecard Get Access Token - these are different than icv.
@@ -162,8 +592,8 @@ global without sharing class RateUtility {
       
         Http http = new Http(); 
         HTTPResponse res = http.send(req_token);
-        //System.debug(res.getBody());
-		
+        System.debug(string.valueOf(res));
+
 		String access_token;
 
 		JSONParser parser = JSON.createParser(res.getBody());
@@ -180,133 +610,7 @@ global without sharing class RateUtility {
          
     }
 
-    /*************************************************************************************************
-    * 
-    * Populate Rate Cards
- 	*	
-    *************************************************************************************************/
-    public static void populateRateCards( RateCardDetailsJSON2Apex result, Account a){  
     
-        genesis__Company__c c = [select id from genesis__Company__c where name = 'DeLage Landen'];
-
-        List<genesis__Rate_Card_Setup_Header__c> hList = new List<genesis__Rate_Card_Setup_Header__c>();
-        List<genesis__Rate_Card_Setup_Detail__c> insertRdList = new List<genesis__Rate_Card_Setup_Detail__c>();
-
-        for (RateCardDetailsJSON2Apex.Data d:result.data){
-
-            system.debug('=================================>');
-            system.debug('Rate Card Id: ' + d.id + ' Rate Card Name: ' + d.name);
-            system.debug('Rate Card Details....' + d);
-            system.debug('*****************************************************************\n');
-            /*
-             softCostAllowancePct;
-	        */
-            genesis__Rate_Card_Setup_Header__c h = new genesis__Rate_Card_Setup_Header__c();
-            h.name = d.name;
-            h.genesis__Product_Type__c = 'LEASE';
-            h.genesis__Company__c = c.id;
-            h.genesis__Description__c = d.description;
-            h.genesis__Enabled_Flag__c = true;
-            h.Rate_Card_Id__c = d.rateCardId;
-            h.Rate_Id__c = d.id;
-            h.Rate_Card_Name__c = d.rateCardName;
-            h.Subsidy_Id__c = d.subsidyId;
-            h.Promotion_Id__c = d.promotionId;
-            h.Payment_Frequency__c = d.paymentFrequency;
-            h.Payment_Timing__c = d.paymentTiming;
-            h.purchase_option__c = d.purchaseOption;
-            h.No_Advance_Payments__c = d.noAdvancePayments;
-            h.No_Deferred_Payments__c = d.noDeferredPayments;
-            h.Rate_type__c = d.rateType;
-            h.Soft_Cost_Allowance_Pct__c = d.softCostAllowancePct;
-            h.no_security_deposits__c = d.noSecurityDeposits;
-            h.fee_included__c = d.feeIncluded;
-            h.grandfather_date__c = d.grandFatherDate;
-            h.genesis__Start_Date__c = date.valueOf(d.effDate);
-            h.genesis__End_Date__c = date.valueOf('2021-10-31');//date.valueOf(d.expDate);
-            h.genesis__Transaction_Date__c = date.today();
-
-            insert h;
-            /*
-	    
-		    public String id; xxx
-		    public String name; xxx
-		    public String description; xxx
-		    public String rateCardId;    yyyy
-		    public String rateCardName;  yyy
-		    public String subsidyId;    yyy 
-		    public String promotionId;
-		    public String paymentFrequency;  yyy
-		    public String paymentTiming;   yyyy
-		    public String purchaseOption;   yyyy
-		    public String noAdvancePayments;   yyyy
-		    public String noDeferredPayments;    yyy
-		    public String rateType; yyy
-		    public String softCostAllowancePct;  yyy
-		    public String noSecurityDeposits;   yyy
-		    public String feeIncluded;  yyy 
-		    public String effDate;   xxx
-		    public String expDate;    xxx
-		    public String grandFatherDate; yyy
-		    public List<RateFactors> rateFactors;  xxx
-            */
-
-
-            clcommon__CL_Product__c pr = new clcommon__CL_Product__c();
-            pr.rate_card_id__c = d.rateCardId;
-            pr.dealer__c = a.id;
-            pr.clcommon__Product_Name__c = a.name + ' (' + d.rateCardId + ')';
-            pr.clcommon__Asset_Class__c = [select id from clcommon__asset_class__c where name = 'Office Equipment'].id;
-            pr.clcommon__Class__c = 'Commercial';
-        
-            insert pr;
-
-            genesis__Product_Rate_Card_Association__c rca = new genesis__Product_Rate_Card_Association__c();
-            rca.genesis__CL_Product__c = pr.id;
-            rca.genesis__Rate_Card_Setup__c = h.id;
-
-            insert rca;
-
-            List<RateCardDetailsJSON2Apex.RateFactors> rateFactorList = d.rateFactors;
-            for (RateCardDetailsJSON2Apex.RateFactors f: rateFactorList){
-                system.debug('id: ' + f.id + ' term: ' + f.term + ' min: ' + f.minAmount + ' max: ' + f.maxAmount + ' actual factor: ' + f.rateFactorAmount);
-                /*
-                    public class RateFactors {
-		            public String id; xxx
-		            public String groupId;      
-		            public String term; xxx
-		            public String minAmount; xxx
-		            public String maxAmount; xxx
-		            public String rateFactorAmount; xxx
-		        */
-                genesis__Rate_Card_Setup_Detail__c rd = new genesis__Rate_Card_Setup_Detail__c();
-                rd.rate_id__c = f.id;
-                rd.genesis__Rate_Card_Setup_Header__c = h.id;
-                rd.genesis__Days_Convention__c = '30/360'; //????
-                rd.genesis__Maximum_Financed_Amount__c = decimal.valueOf(f.maxAmount);
-                rd.genesis__Minimum_Financed_Amount__c = decimal.valueOf(f.minAmount);
-                rd.genesis__Enabled_Flag__c = true;
-                rd.genesis__Rate_Factor__c = decimal.valueOf(f.rateFactorAmount);
-                rd.genesis__Term__c = decimal.valueOf(f.term);
-                rd.group_id__c = f.groupId;
-                rd.genesis__Residual_Type__c = 'FAIR MARKET VALUE';
-                if (d.paymentFrequency == 'M')
-                    rd.genesis__Payment_Frequency__c = 'MONTHLY';
-                else
-                if (d.paymentFrequency == 'Q')
-                    rd.genesis__Payment_Frequency__c = 'QUARTERLY';
-                else
-                if (d.paymentFrequency == 'A')
-                    rd.genesis__Payment_Frequency__c = 'ANNUALLY';
-                
-                insertRdList.add(rd);
-  
-            }
-        }
-
-        if (!insertRdList.isEmpty())
-            insert insertRdList;
-    }   
     
     
 }
