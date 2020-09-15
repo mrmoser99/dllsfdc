@@ -1,2 +1,2 @@
-//RateUtility.getProgram('0000102923-0004','REGULAR');
-RateUtility.getProgram('0000102923-0004','PROMOTION');
+RateUtility.getProgram('0000102923-0004','REGULAR');
+//RateUtility.getProgram('0000102923-0004','PROMOTION');

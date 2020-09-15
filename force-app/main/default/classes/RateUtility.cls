@@ -5,6 +5,7 @@
 * Change Log:
 *
 * 9/4/2020 - MRM Created
+* 9/14/2020 - MRM Reworked 
 **********************************************************************************************/
 global without sharing class RateUtility { 
 
@@ -48,7 +49,7 @@ global without sharing class RateUtility {
 		try{ 
 			string accessToken = getAccessToken();
 			
-			system.debug('at:' + accessToken);
+			//system.debug('at:' + accessToken);
 			
 			HttpRequest reqAPI = new HttpRequest();  
 			
@@ -100,23 +101,25 @@ global without sharing class RateUtility {
                 List<String> listOfRateCards = new List<String>();
                 listOfRateCards.add('1080');
 
-                system.debug('List of rate card ids is: ' + listOfRateCards );
+                //system.debug('List of rate card ids is: ' + listOfRateCards );
                 
                 List<dataForSave> saveList = new List<dataForSave>();
 
-                System.debug('Save list is: ' + saveList + ' size is: ' +  saveList.size()) ; 
+                //System.debug('Save list is: ' + saveList + ' size is: ' +  saveList.size()) ; 
                 for (String s: listOfRateCards)
                     saveList = getRateCardDetail(s,oracleVendorId,includeType);
 
                 System.debug('Save list size is: ' +  saveList.size()) ; 
                 
+                system.debug('****************************************************************************');
                 system.debug('******************* Saving to Database *************************************');
+                system.debug('****************************************************************************');
                 
                 try { 
                     
-                    system.debug('Save list 0:'  + saveList[0]);
-                    system.debug('break');
-                    system.debug('Sae list 1:'  + saveList[1]);
+                    //system.debug('Save list 0:'  + saveList[0]);
+                    //system.debug('break');
+                    //system.debug('Sae list 1:'  + saveList[1]);
 
                     for (dataForSave d:saveList){
                         //System.debug('Trying to save this: ' + d);
@@ -155,7 +158,7 @@ global without sharing class RateUtility {
     *************************************************************************************************/
     public static List<String> getListOfRateCards(HTTPResponse res1){     
 
-        system.debug('************ entering process results');
+        //system.debug('************ entering process results');
         List<String> results = new List<String>();
 
         RateCardAccountJSON2Apex result = RateCardAccountJSON2Apex.parse(string.valueOf(res1.getBody()));
@@ -166,12 +169,12 @@ global without sharing class RateUtility {
         if (result.program == null)
             return null;
 
-        system.debug('Result Program is' + result.program);
+        //system.debug('Result Program is' + result.program);
 
         for (RateCardAccountJSON2Apex.program p:result.program){
             results.add(p.rateCardId); 
         }
-        system.debug('returning...');
+        //system.debug('returning...');
         return results;
 
     }
@@ -197,7 +200,7 @@ global without sharing class RateUtility {
 			
             string endpoint = 'https://apiacc.dllgroup.com/vf/us/v1/ratecards/' + rateCard + '/ratefactors';
 
-            system.debug('endpoint is: ' + endpoint);
+            //system.debug('endpoint is: ' + endpoint);
         	 
         	reqAPI.setEndpoint(endpoint); 
             reqAPI.setMethod('POST');   
@@ -225,7 +228,7 @@ global without sharing class RateUtility {
                 insert b;
             }
             else{
-                system.debug('Rate Card Detail: ' + res1.getBody());
+                //system.debug('Rate Card Detail: ' + res1.getBody());
 
                 RateCardDetailsJSON2Apex result = RateCardDetailsJSON2Apex.parse(string.valueOf(res1.getBody()));
                 saveList = saveRateCardData(result,a);
@@ -261,10 +264,6 @@ global without sharing class RateUtility {
         }
 
     }
-
-
-    
-    
     /*************************************************************************************************
     * 
     * saveRateCardData - save the data in structures for later save event
@@ -290,9 +289,7 @@ global without sharing class RateUtility {
         for (RateCardDetailsJSON2Apex.Data d:result.data){
             rateSet.add(d.rateCardId);
         }
-
-        system.debug('Looking for : ' + rateSet);
-        
+ 
         existingHeaderList = [select rate_id__c, rate_card_id__c 
                             from genesis__Rate_Card_Setup_Header__c
                             where rate_card_id__c in :rateSet
@@ -326,18 +323,15 @@ global without sharing class RateUtility {
 
         for (RateCardDetailsJSON2Apex.Data d:result.data){
 
-            system.debug('=================================>');
+            system.debug('============================================================================================>');
             system.debug('Rate Id: ' + d.id + ' Rate Card Name: ' + d.name + ' Program Rate card id: ' + d.rateCardId);
-            //system.debug('Rate Card Details....' + d);
-            system.debug('*****************************************************************\n');
+            system.debug('=============================================================================================<');
             
             dataForSave s = new dataForSave(null,null, null,null,null);    // header,  update, product,  rca,  detail 
             /*
              softCostAllowancePct;
             */
             // no inserts if already there 
-
-            system.debug('******** Rate Map ' + rateMap);
 
             clcommon__CL_Product__c pr = new clcommon__CL_Product__c();
             if ((rateMap.keySet().contains(d.rateCardId) && rateMap.get(d.rateCardId).contains(d.id))){
@@ -494,6 +488,8 @@ global without sharing class RateUtility {
             if (!insertRdList.isEmpty())
                 s.detailList = insertRdList;
 
+            system.debug('*****************************************************************\n');
+            system.debug('*****************************************************************\n');
             system.debug('=============END OF RATE CARD SAVING RESULTS IN SAVE LIST ====================>');
             system.debug('Rate Id: ' + d.id + ' Rate Card Name: ' + d.name + ' Program Rate card id: ' + d.rateCardId);
             system.debug('*****************************************************************\n');
@@ -512,9 +508,12 @@ global without sharing class RateUtility {
     *                   
     *************************************************************************************************/
     public static String storeDataInDB( dataForSave s){  
+
+        Savepoint sp = Database.setSavepoint();
+
         try { 
 
-            system.debug( ' Data for Save is: ' + s);
+            //system.debug( ' Data for Save is: ' + s);
             if (s.headerIsUpdate)
                 update s.header;
             else
@@ -535,12 +534,7 @@ global without sharing class RateUtility {
             }
             
             
-            system.debug('*');
-            system.debug('*');
-            system.debug('*');
-            system.debug('*');
-            system.debug('*');
-            
+           
             
             for (genesis__Rate_Card_Setup_Detail__c l:s.detailList){
                 system.debug('Detail header id is: ' + l.genesis__Rate_Card_Setup_Header__c);
@@ -552,7 +546,8 @@ global without sharing class RateUtility {
                 insert s.detailList;
         }
         catch (exception e){
-            
+            Database.rollback(sp);
+
             cllease__Batch_Process_Log__c b = new cllease__Batch_Process_Log__c();
             b.cllease__Message__c= e.getMessage() + '  - ' + e.getStackTraceString();
             b.name = 'RateUtility';
@@ -560,6 +555,7 @@ global without sharing class RateUtility {
             insert b;
             System.debug(LoggingLevel.ERROR, 'Exception: '+e.getMessage());    
             System.debug(LoggingLevel.ERROR, 'Exception Stack: '+e.getStackTraceString());
+             
             
         }
         
@@ -605,7 +601,7 @@ global without sharing class RateUtility {
             }
         }
         
-       	system.debug('******** returning access token');
+       	//system.debug('******** returning access token');
         return access_token;
          
     }
