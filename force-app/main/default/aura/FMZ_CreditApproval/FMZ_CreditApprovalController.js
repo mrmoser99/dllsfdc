@@ -17,7 +17,10 @@
       action.setCallback(this, function(response) {
         var state = response.getState();
         if (state === "SUCCESS") {
+          console.log('found account');
           var accId = response.getReturnValue();
+          console.log('adccid : ' + accId);
+          
           component.set("v.accountId", accId);
           component.set("v.newAccount", false);
           helper.loadFields(component, helper);
@@ -26,6 +29,7 @@
       });
       $A.enqueueAction(action);
     } else if (tradeUpDetails) {
+      console.log('check customer name');
       var action = component.get("c.checkCustomerName");
       action.setParams({
         customerName: tradeUpDetails.leaseDetails.customerName
@@ -33,6 +37,7 @@
       action.setCallback(this, function(response) {
         var state = response.getState();
         if (state === "SUCCESS") {
+          console.log('hello2');
           var accId = response.getReturnValue();
           if (accId != null && accId != "") {
             component.set("v.accountId", accId);
@@ -46,6 +51,7 @@
       });
       $A.enqueueAction(action);
     } else {
+      console.log('hello');
       helper.loadFields(component, helper);
       helper.loadDealerId(component);
     }
@@ -92,12 +98,13 @@
     var fields = event.getParam("fields");
     var accountId = component.get("v.accountId");
     console.log('found this account id' + component.get("v.accountId"));
-    
+    console.log('fields:' + fields);
+
     var dealerId = component.get("v.dealerId");
     
     var isValid = helper.isValid(component);
-    
-    var recordId = component.get("v.recordId");
+    console.log('hello');
+     var recordId = component.get("v.recordId");
     var account = component.get("v.account");
 
     var tradeUpDetails = component.get("v.tradeUpDetails");
@@ -136,8 +143,8 @@
       fields["genesis__Business_Name__c"] = account.Name;
     }
     else{
-      console.log('new account' + component.get("v.searchString"));
-      fields["genesis__Business_Name__c"] = component.get("v.searchString");
+      console.log('new account' + component.get("v.inputValue"));
+      fields["genesis__Business_Name__c"] = component.get("v.inputValue");
     }
     
    
@@ -156,6 +163,7 @@
     action.setCallback(this, function(response) {
       var state = response.getState();
       console.log('here11');
+      console.log('state is: ' + state);
       if (state === "SUCCESS") {
         console.log('here1');
         var createResponse = response.getReturnValue();
@@ -339,6 +347,7 @@
     return;
   },
   searchHandler : function (component, event, helper) {
+    console.log('in searchHandler' + event.target.value);
     component.set("v.processing", true);
     const searchString = event.target.value;
     console.log('in search handler' + 'search string is: ' + searchString);

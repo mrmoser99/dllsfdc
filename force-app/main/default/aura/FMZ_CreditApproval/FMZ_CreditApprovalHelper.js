@@ -11,6 +11,7 @@
     action.setCallback(this, function(response) {
       var state = response.getState();
       if (state === "SUCCESS") {
+        console.log('here1111');
         component.set("v.fields", response.getReturnValue());
         var tradeUpDetails = component.get("v.tradeUpDetails");
         if (component.get("v.accountId")) {
@@ -24,6 +25,7 @@
             );
           }
         } else if (tradeUpDetails) {
+          console.log('here112211');
           this.prepopulateField(
             component,
             "genesis__Business_Name__c",
@@ -164,6 +166,7 @@
             "genesis__Business_Name__c",
             account.Name
           );
+          
         }
        
         console.log('here' + account.Phone);
@@ -220,121 +223,79 @@
 
   // set the value of inputField based on field set position
   prepopulateField: function(component, fieldName, value) {
-    console.log('enter pre prop' + value + ' fieldName' + fieldName);
-    var inputField = component.find("inputField"),
-      inputFieldPhone = component.find("inputFieldPhone"),
-      inputAccountName = component.find("inputFieldAccountId");
+    console.log('enter pre prop ' + value + ' fieldName : ' + fieldName);
+    var inputField = component.find("inputField");
+    var inputFieldPhone = component.find("inputFieldPhone");
+       
+      
 
-     
+    console.log('hello dog');
     if (inputField) {
       
-      if (!Array.isArray(inputField)) {
-     
-        inputField = [inputField, inputFieldPhone, inputAccountName];
-     
-      } else {
-         
-        if (Array.isArray(inputFieldPhone)){
-          inputField.push(inputFieldPhone[0]);
-        }
-        else {
-          inputField.push(inputFieldPhone);
-        }
-        
-        inputField.push(inputAccountName);
-     
-      }
+        inputField = [inputFieldPhone];
     }
-   
-    for (var i = 0; i < inputField.length; i++) {
-     
-      if (fieldName == inputField[i].get("v.fieldName")) {
-        inputField[i].set("v.value", value);
-        break;
-      }
+
+    if (fieldName == 'genesis__Business_Name__c'){
+      console.log('handle business name please ' + ' value is: ' + value); 
+      component.set("v.inputValue", value); 
     }
     
+    if (fieldName == 'Primary_Phone_number__c'){
+      if (Array.isArray(inputFieldPhone)){
+        inputFieldPhone[0].set("v.value", value);
+      }
+      else{
+        inputFieldPhone.set("v.value", value);
+    }
+     
+    }
+    console.log('done prepop')    ;
   },
 
   // check for required fields
   isValid: function(component) {
-      
-      var result = true,
-      fields = component.get("v.fields"),
-      inputField = component.find("inputField"),
-      inputFieldPhone = component.find("inputFieldPhone"),
-      inputFieldFinance = component.find("inputFieldFinance");
+    
+    console.log('in is valid');
+    var result = true;
+    console.log('ugh2');
+    var inputFieldPhone = component.find("inputFieldPhone");
+    console.log('ugh3');
+    var inputFieldFinance = component.find("inputFieldFinance");
 
-    /*
-    if (component.get("v.newAccount")) {
-      var inputAccountId = component.find("inputFieldAccountId");
-      if (
-        !inputAccountId.get("v.value") ||
-        inputAccountId.get("v.value") == ""
-      ) {
-        $A.util.addClass(inputAccountId, "slds-has-error");
-        result = false;
-      }
-    } else {
-      var inputAccountName = component.find("inputFieldAccountName");
-      if (
-        !inputAccountName.get("v.value") ||
-        inputAccountName.get("v.value") == ""
-      ) {
-        $A.util.addClass(inputAccountName, "slds-has-error");
-        result = false;
-      }
-    }
-    */
-     
-    if (inputField) {
-      if (!Array.isArray(inputField)) {
-        inputField = [inputField, inputFieldPhone, inputFieldFinance];
-      } else {
-        if (Array.isArray(inputFieldPhone)){
-          inputField.push(inputFieldPhone[0]);
-        }
-        else{
-          inputField.push(inputFieldPhone);
-        }
-        if (Array.isArray(inputFieldFinance)){
-          inputField.push(inputFieldFinance[0]);
-        }
-        else{
-          inputField.push(inputFieldFinance);
-        }
-          
-      }
-    }
+    console.log('ugh4');
+
      
     var phoneValue;
     if (Array.isArray(inputFieldPhone)){
-      phoneValue = inputFieldPhone[0].get("v.value").replace(/(\(|\)| |-)/g, "");
+        console.log('is');
+        phoneValue = inputFieldPhone[0].get("v.value").replace(/(\(|\)| |-)/g, "");
     }
     else{
-      phoneValue = inputFieldPhone.get("v.value").replace(/(\(|\)| |-)/g, "");
+        console.log('isnt');
+        phoneValue = inputFieldPhone.get("v.value").replace(/(\(|\)| |-)/g, "");
     }
-     
+    console.log ('checking for phone' +  phoneValue);
+    console.log('phonevalue is: ' + phoneValue);
     var regularExpression;
     var re = new RegExp("[1-9]{1}[0-9]{9}");
-    console.log("REGEXP PHONE: " + !re.test(phoneValue));
+    console.log("REGEXP PHONE: " + !re.test(phoneValue) + ' lenght is:' + phoneValue.length);
+
     if (!re.test(phoneValue) || phoneValue.length != 10) {
       component.set("v.invalidFormatPhone", true);
       $A.util.addClass(inputFieldPhone, "slds-has-error");
       result = false;
     }
-    
+    console.log('feed me 1');
     var finance;
-     
     if (Array.isArray(inputFieldFinance)){
-      console.log('fin is array')
-      console.log('finance is: ' + inputFieldFinance[0].get("v.value)"));
-      finance = inputFieldFinance[0];
+        console.log('feed me 2');
+        finance = inputFieldFinance[0];
     }
     else{
+      console.log('feed me 3');
       finance = inputFieldFinance;
     }
-     
+    console.log('feed me 4');
     if (
       !finance.get("v.value") ||
       finance.get("v.value") == ""
@@ -342,19 +303,7 @@
       $A.util.addClass(finance, "slds-has-error");
       result = false;
     }
-    var requiredByFieldPath = [];
-    for (var i = 0; i < fields.length; i++) {
-      requiredByFieldPath[fields[i].fieldPath] = fields[i].required;
-    }
-    for (var j = 0; i < inputField.length; i++) {
-      if (
-        requiredByFieldPath[inputField[j].get("v.fieldName")] &&
-        !Boolean(inputField[j].get("v.value"))
-      ) {
-        $A.util.addClass(inputField[j], "slds-has-error");
-        result = false;
-      }
-    }
+   
     var addressLine1 = component.find("addressLine1").get("v.value");
     var city = component.find("city").get("v.value");
     var county = component.find("county").get("v.value");

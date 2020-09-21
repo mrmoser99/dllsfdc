@@ -51,8 +51,6 @@
   <aura:attribute name="inputValue" type="String" />
   <aura:attribute name="inputSearchFunction" type="Object" />
   <aura:attribute name="searchString" type="String" />
-  
-  
    
 
 
@@ -143,97 +141,72 @@
                 </div>
               </div>
             </div>
-            <aura:iteration items="{!v.fields}" var="f">
-               
-              <aura:if
-                isTrue="{!((v.recordId==null&amp;&amp;f.fieldPath=='genesis__Business_Name__c'))}"
-              >
-                <aura:if
-                  isTrue="{!and(not(v.newAccount), empty(v.tradeUpDetails))}"
-                >
-              
-                  <lightning:inputField
-                    fieldName="genesis__Account__c"
-                    aura:id="inputFieldAccountName"
-                    class="input-is-required"
-                    onchange="{!c.lookupChange}"
-                    value="{!v.accountId}"
-                    autocomplete="nope"
-                  />
-                  <aura:set attribute="else">
-                    <!--                    <lightning:inputField
-                      fieldName="genesis__Business_Name__c"
-                      aura:id="inputFieldAccountId"
-                      class="input-is-required"
-                      autocomplete="nope2"
-                    />
-                    -->
-                    <div class="slds-form-element slds-p-bottom_x-small">
-                      <label class="slds-form-element__label" for="combobox-id-21"
-                          style="{! empty(v.label) ? 'display:hidden;' : 'display:block;'}">{!v.label}</label>
-                      <div class="slds-form-element__control">
-                          <div class="slds-combobox_container">
-                              <div class="{! v.openDropDown ? 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open' : 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click'}"
-                                  aria-expanded="true" aria-haspopup="listbox" role="combobox">
-                                  
-                        
-                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                          <input type="text"
-                                          class="input-is-required slds-input slds-combobox__input slds-has-focus slds-combobox__input-value"
-                                          id="combobox-id-21" aria-autocomplete="list" aria-controls="listbox-id-11"
-                                          autoComplete="nope" onkeyup="{!c.searchHandler}" onpaste="{!c.searchHandler}" role="textbox" placeholder="Search Account..."
-                                          required="true"
-                                          value="{!v.inputValue}" />
-                                      
-                           
-                          <aura:if isTrue="{!empty(v.selectedOption)}">
-                            <span
-                              class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
-                              <lightning:icon iconName="utility:search"  size="small"/>
-                            </span>
-                            <aura:set attribute="else">
-                                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
-                                                  title="Clear the text input" onclick="{!c.clearOption}">
-                                    <lightning:icon iconName="utility:clear" size="small" />
-                                </button>
-                            </aura:set>
-                          </aura:if>
+
+
+            <div class="slds-form-element slds-p-bottom_x-small">
+                <label class="slds-form-element__label" for="combobox-id-21"
+                    style="{! empty(v.label) ? 'display:hidden;' : 'display:block;'}">{!v.label}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-combobox_container">
+                        <div class="{! v.openDropDown ? 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open' : 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click'}"
+                            aria-expanded="true" aria-haspopup="listbox" role="combobox">
+                            
+                  
+                  <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                    <input type="text"
+                                    class="input-is-required slds-input slds-combobox__input slds-has-focus slds-combobox__input-value"
+                                    id="combobox-id-21" aria-autocomplete="list" aria-controls="listbox-id-11"
+                                    autoComplete="nope" onkeyup="{!c.searchHandler}"  onpaste="{!c.searchHandler}" role="textbox" placeholder="Search Account..."
+                                    required="true"
+                                    fieldName="genesis__Business_Name__c"
+                                   
+                                    value="{!v.inputValue}" />
+                                
+                     
+                    <aura:if isTrue="{!empty(v.selectedOption)}">
+                      <span
+                        class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
+                        <lightning:icon iconName="utility:search"  size="small"/>
+                      </span>
+                      <aura:set attribute="else">
+                          <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                                            title="Clear the text input" onclick="{!c.clearOption}">
+                              <lightning:icon iconName="utility:clear" size="small" />
+                          </button>
+                      </aura:set>
+                    </aura:if>
+                  </div>
+                            
+                  
+                  <div id="listbox-id-11" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
+                                role="listbox">
+                                <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                    <aura:iteration items="{!v.results}" var="result">
+                                        <li role="presentation" class="slds-listbox__item" data-id="{!result.id}"
+                                            data-value="{!result.value}" onclick="{!c.optionClickHandler}">
+                                            <div id="{!result.id}"
+                                                class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
+                                                role="option">
+                                                <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                                <span class="slds-media__body">
+                                                    <span class="slds-truncate" title="All Opportunities">
+                                                        <span>{!result.value}</span>
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </li>
+                                    </aura:iteration>
+                                </ul>
+                            </div>
                         </div>
-                                  
-                        
-                        <div id="listbox-id-11" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid"
-                                      role="listbox">
-                                      <ul class="slds-listbox slds-listbox_vertical" role="presentation">
-                                          <aura:iteration items="{!v.results}" var="result">
-                                              <li role="presentation" class="slds-listbox__item" data-id="{!result.id}"
-                                                  data-value="{!result.value}" onclick="{!c.optionClickHandler}">
-                                                  <div id="{!result.id}"
-                                                      class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
-                                                      role="option">
-                                                      <span class="slds-media__figure slds-listbox__option-icon"></span>
-                                                      <span class="slds-media__body">
-                                                          <span class="slds-truncate" title="All Opportunities">
-                                                              <span>{!result.value}</span>
-                                                          </span>
-                                                      </span>
-                                                  </div>
-                                              </li>
-                                          </aura:iteration>
-                                      </ul>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
                     </div>
-                  </aura:set>
+                </div>
+              </div>
+            
+            <aura:iteration items="{!v.fields}" var="f">
+     
 
-
-                </aura:if>
-              </aura:if>
-
-              <aura:if
-                isTrue="{!v.recordId!=null||(v.recordId==null&amp;&amp;f.fieldPath!='genesis__Business_Name__c')}"
-              >
+               
                 <aura:if isTrue="{!f.fieldPath == 'Primary_Phone_number__c'}">
                   <lightning:inputField
                     fieldName="{!f.fieldPath}"
@@ -259,21 +232,12 @@
                         required="true"
                         
                       />
-                      <aura:set attribute="else">
-                        <lightning:inputField
-                          fieldName="{!f.fieldPath}"
-                          aura:id="inputField"
-                          class="{!f.required?'input-is-required':''}"
-                          autocomplete="nope"
-                        />
-                      </aura:set>
+                      
                     </aura:if>
                   </aura:set>
                 </aura:if>
-              </aura:if>
+               
             </aura:iteration>
-            
-            
              
              
             <lightning:input

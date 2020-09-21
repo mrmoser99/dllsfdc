@@ -90,7 +90,7 @@ public without sharing class FMZ_ApplicationDocumentsController {
 				SELECT Id
 				FROM clcommon__Document_Category__c
 				WHERE
-				clcommon__Category_Name__c =: a.genesis__Account__r.name
+				clcommon__account__c =: a.genesis__Account__c
 				AND genesis__Application__c =: applicationId
 				LIMIT 1
 			];

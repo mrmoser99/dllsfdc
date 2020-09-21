@@ -5,6 +5,7 @@
 *
 * 9/25/19 - Changed to use the new genesis__cl_product__c from ursa
 * 9/14/2020 - Added custom rate card feature
+* 9/14/2020 - udpated type ahead to use any word instead of all words together, this confilicts with rate card.
 
 
 
@@ -23,9 +24,25 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
         if(extendedWhereClause == null){
             extendedWhereClause = '';
         }
+
+        String query = 'SELECT '+ idFieldApiName+', ' + valueFieldApiName + ' FROM ' + objectApiName + ' WHERE ' + valueFieldApiName;
+        system.debug('querey is: ' + query);
+        List<String> sLIst = searchString.split(' '); 
+        integer i=0;
+        for (String s: sList){
+            if (i == 0)
+                query += ' LIKE \'%' + s + '%\'';
+            else
+                query += ' OR ' + valueFieldApiName + ' LIKE \'%' + s + '%\'';
+            i++;
+            system.debug('querey is: ' + query);
+
+        }
+
+        query +=  extendedWhereClause + ' LIMIT '+ maxRecords;
+        system.debug('querey is: ' + query);
         
-        String query = 'SELECT '+idFieldApiName+', '+valueFieldApiName+' FROM '+objectApiName+' WHERE '+valueFieldApiName+' LIKE \'%'+searchString+'%\' '+extendedWhereClause+' LIMIT '+maxRecords;
-        return Database.query(query);
+       return Database.query(query);
     }
 
     @AuraEnabled
@@ -75,14 +92,16 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
             Account dealer = getDealerInfo();
 
             List<clcommon__CL_Product__c> customPList = new List<clcommon__CL_Product__c>();
+            /* temp comment out so type ahead can move forward
             customPList = [SELECT Id FROM clcommon__CL_Product__c WHERE dealer__c = :dealer.id];
             qq.Dealer__c = dealer.Id;
             qq.Dealer_Name__c = dealer.Name;
-            //qq.Legal_Entity__c = dealer.clcommon__Legal_Entity_Type__c;
+            */
+            // keep this commented out forever: qq.Legal_Entity__c = dealer.clcommon__Legal_Entity_Type__c;
             /* ursa change */
-            if (!customPlist.isEmpty())
-                qq.genesis__CL_Product__c = customPlist[0].id;
-            else
+            //if (!customPlist.isEmpty())
+            //    qq.genesis__CL_Product__c = customPlist[0].id;
+            //else
                 qq.genesis__CL_Product__c = [SELECT Id FROM clcommon__CL_Product__c WHERE clcommon__Product_Name__c = 'Finance Lease' LIMIT 1].Id;
 
             qq.genesis__Company__c = [SELECT Id FROM genesis__Company__c WHERE genesis__Default__c = true LIMIT 1].Id;
