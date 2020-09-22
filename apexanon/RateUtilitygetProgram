@@ -1,3 +1,7 @@
 //RateUtility.getProgram('0000102923-0004','REGULAR');
 
-RateUtility.getProgram('0000102923-0004',null);
+//RateUtility.getProgram('0000102923-0004',null);
+
+Map<ID,String> leaseMap = new Map<ID,String>();
+leasemap.put('a6J3u000000gB2h','hello');
+supertrumputil.sendRequest(leaseMap);

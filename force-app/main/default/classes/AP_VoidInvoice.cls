@@ -3,6 +3,7 @@
 * ChangeLog:
 *
 * 	9/19/19 - MRM Changed invoice__c to clcommon__Consolidated_Invoice__c
+*   9/22/2020 - MRM removed pnc file check .   
 *
 *
 ************************************************************************************************/
@@ -25,16 +26,22 @@ global with sharing class AP_VoidInvoice {
         if (i.voided_in_pnc__c){
             response.put('Message','This invoice has been previously voided!');
             return JSON.serialize(response);
+
         }
 
-         List<Int_PX_Billing__c> lineList = [Select line_data__c
+        
+        List<Int_PX_Billing__c> lineList = [Select line_data__c
                                         from Int_PX_Billing__c 
                                         where committed__c = false
                                     ];
-         if (!lineList.isEmpty()) {
+        
+        
+        /*
+        if (!lineList.isEmpty()) {
             response.put('Message','There is a pending PNC void transaction. Retry in a few minutes!');
             return JSON.serialize(response);
         }
+        */ 
         
         if (!i.sent_to_pnc__c){
             response.put('Message','This invoice was never sent to PNC! Contact system administrator!');

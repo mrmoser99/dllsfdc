@@ -5,6 +5,7 @@
 *	Change Log:
 *	7/24/18 - MRM Created
 *   6/23/2020 = MRM changed rent/equipment - rent will not include tradeup and equipment will be summed into one row 
+*   9/22/2020 - MRM changed rate_factor__c to pricing_Rate_factor__c
 *
 *   execute anonomys script - 
 *
@@ -186,7 +187,7 @@ public with sharing class SupertrumpUtil {
 												where cllease__Contract__c = :l.id
 												]; 
 
-		genesis__Applications__c app =[select rate_factor__c from genesis__applications__c where lease_number__c = :eList[0].cllease__Contract__c];
+		genesis__Applications__c app =[select pricing_rate_factor__c from genesis__applications__c where lease_number__c = :eList[0].cllease__Contract__c];
 
     	Integer i = 0;
 		for (cllease__Contract_Equipment__c e:eList){
@@ -204,8 +205,8 @@ public with sharing class SupertrumpUtil {
 	
 				system.debug('here1');
 				system.debug(e.cllease__Total_Dealer_Charges__c);
-				system.debug(app.rate_factor__c);
-				Decimal rent = (e.cllease__Total_Dealer_Charges__c * app.rate_factor__c).setScale(2); 
+				system.debug(app.pricing_rate_factor__c);
+				Decimal rent = (e.cllease__Total_Dealer_Charges__c * app.pricing_rate_factor__c).setScale(2); 
 
 				system.debug('calling with rent = ' + rent);
 	 			w.writeStartElement(null, 'CashflowSteps', null); //CashFlowSteps

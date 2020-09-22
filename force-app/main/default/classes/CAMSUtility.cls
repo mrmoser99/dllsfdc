@@ -5,6 +5,7 @@
 * Change Log:
 *
 * 9/24/19 - MRM created
+* 9/22/2020 - MRM new fields assetType and crossBorder
 *
 **********************************************************************************************/
 global without sharing class CAMSUtility { 
@@ -189,6 +190,11 @@ global without sharing class CAMSUtility {
         
         gen.writeStringField('publiclyTradedIndicator', string.valueOf(cc.Publicly_Traded__c));
         gen.writeStringField('publiclyTradedFullSubsidiary', string.valueOf(cc.Publicly_Traded_Full_Subsidiary__c));
+
+        // new fields 9/22/2020
+        gen.writeStringField('assetType', 'Other');
+        gen.writeStringField('crossBorder', 'No');
+        
         gen.writeEndObject();
         
         String jsonS = gen.getAsString();
