@@ -116,6 +116,7 @@
         tradeUpDetails.expirationDate;
     }
     
+    fields["Email_Address__c"] = component.get("v.emailAddress");
     fields["Primary_Phone_number__c"] = fields[
       "Primary_Phone_number__c"
     ].replace(/(\(|\)| |-)/g, "");
@@ -347,6 +348,16 @@
     return;
   },
   searchHandler : function (component, event, helper) {
+    console.log('key code is: ' + event.key);
+    console.log('event is:' + event);
+    if (event.keyCode == 9){
+      console.log('hi there  tab was pressed');
+      component.set("v.results", []);
+      component.set("v.openDropDown", false);
+      component.set("v.inputValue", event.target.value);
+      
+    }
+    else{
     console.log('in searchHandler' + event.target.value);
     component.set("v.processing", true);
     const searchString = event.target.value;
@@ -372,6 +383,7 @@
         component.set("v.openDropDown", false);
         console.log('r: ' + component.get("v.results"));
     }
+  }
     component.set("v.processing", false);
 },
 optionClickHandler : function (component, event, helper) {
@@ -409,10 +421,12 @@ optionClickHandler : function (component, event, helper) {
 },
 
 clearOption : function (component, event, helper) {
-  console.log('clear option');
-  component.set("v.results", []);
-  component.set("v.openDropDown", false);
-  component.set("v.inputValue", "");
-  component.set("v.selectedOption", "");
+    console.log('clear option');
+    component.set("v.results", []);
+    component.set("v.openDropDown", false);
+    component.set("v.inputValue", "");
+    component.set("v.selectedOption", "");
+   
+
 }
 });

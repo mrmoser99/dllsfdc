@@ -182,6 +182,7 @@
           "Email_Address__c",
           account.Email_Address__c
         );
+        component.set("v.emailAddress",account.Email_Address__c);
         console.log('primary?:' + account.Primary_Address__r);
         if (account.Primary_Address__r) {
           console.log("Populatng Address Fields");

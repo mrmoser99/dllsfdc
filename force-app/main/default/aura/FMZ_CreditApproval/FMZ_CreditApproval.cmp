@@ -18,6 +18,7 @@
   <aura:attribute name="newAccount" type="Boolean" default="true" />
   <aura:attribute name="recordId" type="String" />
   <aura:attribute name="accountId" type="String" />
+  <aura:attribute name="emailAddress" type="String" />
   <aura:attribute name="account" type="Account" />
   <aura:attribute name="dealerId" type="String" />
   <aura:attribute name="fields" type="List" />
@@ -153,16 +154,17 @@
                             
                   
                   <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    <input type="text"
+                    
+                      <input type="text"
                                     class="input-is-required slds-input slds-combobox__input slds-has-focus slds-combobox__input-value"
                                     id="combobox-id-21" aria-autocomplete="list" aria-controls="listbox-id-11"
-                                    autoComplete="nope" onkeyup="{!c.searchHandler}"  onpaste="{!c.searchHandler}" role="textbox" placeholder="Search Account..."
+                                    autoComplete="nope" onkeydown="{!c.searchHandler}"  onkeyup="{!c.searchHandler}"   onpaste="{!c.searchHandler}" role="textbox" placeholder="Search Account..."
                                     required="true"
                                     fieldName="genesis__Business_Name__c"
                                    
                                     value="{!v.inputValue}" />
                                 
-                     
+                    
                     <aura:if isTrue="{!empty(v.selectedOption)}">
                       <span
                         class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right">
@@ -239,7 +241,16 @@
                
             </aura:iteration>
              
-             
+            <lightning:input
+              aura:id="email address"
+              type="email"
+              label="Email Address"
+              value="{!v.emailAddress}"
+              required="false"
+              pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
+              autocomplete="nope"
+              message-when-too-long="Your email address must not be more than 50 characters."
+            />
             <lightning:input
               aura:id="addressLine1"
               type="text"
