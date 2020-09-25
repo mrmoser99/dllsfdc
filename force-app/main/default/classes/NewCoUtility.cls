@@ -9,6 +9,7 @@
 * 9/24/19 - MRM added cams check to process
 * 2/5/20 - MRM added logic to allow for welcome packet to run for portal users
 * 2/26/2020 - MRM added maintain parents class
+* 9/23/2020 - MRM added prevent duplicated int_olmn_ap__c future class
 *
 **********************************************************************************************/
 global without sharing class NewCoUtility { 
@@ -90,7 +91,22 @@ global without sharing class NewCoUtility {
     		
     		
     }
+    /*************************************************************************************************
+    *
+    * future delete ofac records
+    *
+    *************************************************************************************************/
+    @future
+    public static void deleteAP(Map<ID,String> apMap){
+		List <Int_OLMN_AP__c> deleteList = new List<Int_OLMN_AP__c>();
+    	
+    	deletelist = [select id from Int_OLMN_AP__c where id in : apMap.keySet()];
+    	
+    	if (!deleteList.isEmpty())
+    		delete deleteList;
+	}		
     
+    	
     /*************************************************************************************************
     * 
     * future delete ofac fincen

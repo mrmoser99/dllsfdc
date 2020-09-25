@@ -256,47 +256,23 @@
   // check for required fields
   isValid: function(component) {
     
-    console.log('in is valid');
-    var result = true;
-    console.log('ugh2');
+   
     var inputFieldPhone = component.find("inputFieldPhone");
-    console.log('ugh3');
     var inputFieldFinance = component.find("inputFieldFinance");
-
-    console.log('ugh4');
-
-     
+  
     var phoneValue;
-    if (Array.isArray(inputFieldPhone)){
-        console.log('is');
-        phoneValue = inputFieldPhone[0].get("v.value").replace(/(\(|\)| |-)/g, "");
-    }
-    else{
-        console.log('isnt');
-        phoneValue = inputFieldPhone.get("v.value").replace(/(\(|\)| |-)/g, "");
-    }
-    console.log ('checking for phone' +  phoneValue);
-    console.log('phonevalue is: ' + phoneValue);
+    phoneValue = inputFieldPhone.get("v.value").replace(/(\(|\)| |-)/g, "");
+
     var regularExpression;
     var re = new RegExp("[1-9]{1}[0-9]{9}");
-    console.log("REGEXP PHONE: " + !re.test(phoneValue) + ' lenght is:' + phoneValue.length);
 
     if (!re.test(phoneValue) || phoneValue.length != 10) {
-      component.set("v.invalidFormatPhone", true);
       $A.util.addClass(inputFieldPhone, "slds-has-error");
       result = false;
     }
-    console.log('feed me 1');
     var finance;
-    if (Array.isArray(inputFieldFinance)){
-        console.log('feed me 2');
-        finance = inputFieldFinance[0];
-    }
-    else{
-      console.log('feed me 3');
-      finance = inputFieldFinance;
-    }
-    console.log('feed me 4');
+    finance = inputFieldFinance;
+   
     if (
       !finance.get("v.value") ||
       finance.get("v.value") == ""

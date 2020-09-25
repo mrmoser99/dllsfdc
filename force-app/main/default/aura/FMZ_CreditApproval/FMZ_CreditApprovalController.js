@@ -7,6 +7,7 @@
   doInit: function(component, event, helper) {
     
     console.log( 'in do init');
+    
     var recordId = component.get("v.recordId");
     var tradeUpDetails = component.get("v.tradeUpDetails");
     if (recordId) {
@@ -116,7 +117,9 @@
         tradeUpDetails.expirationDate;
     }
     
-    fields["Email_Address__c"] = component.get("v.emailAddress");
+    fields["Email_Address__c"] = component.find("v.emailAddress").get("v.value");
+   
+    fields["Estimated_Financed_Amount__c"] = component.find("v.inputFieldFinance").get("v.value");
     fields["Primary_Phone_number__c"] = fields[
       "Primary_Phone_number__c"
     ].replace(/(\(|\)| |-)/g, "");
@@ -322,6 +325,23 @@
     helper.clearAddressData(component);
     component.set("v.processing", false);
   },
+  onKeyPressEvent: function(component, event, helper) {
+    console.log('key pressed=' + event.key);
+
+    if (event.key == 'Enter') {
+      console.log('trying switcheroo');
+       
+      event.preventDefault();
+      component.set("v.results", []);
+      component.set("v.openDropDown", false);
+      component.set("v.inputValue", event.target.value);
+      console.log('setting focus');
+      component.find("inputFieldFinance").focus();
+      $A.util.removeClass( component.find("inputFieldPhone"), "slds-has-error");
+      
+      console.log('switcheroo');
+    }
+  },
   showSupportHandler: function(component, event, helper) {
     component.set("v.showSupport", true);
   },
@@ -347,14 +367,31 @@
     helper.emailSupport(component, subject, body);
     return;
   },
+  switchKey : function (component, event, helper) {
+    
+    component.set("v.results", []);
+    component.set("v.openDropDown", false);
+    component.set("v.inputValue", event.target.value);
+    console.log('setting focus');
+    $A.util.addClass(inputFieldFinance, "slds-has-focus");
+    
+     
+  },
   searchHandler : function (component, event, helper) {
     console.log('key code is: ' + event.key);
     console.log('event is:' + event);
-    if (event.keyCode == 9){
-      console.log('hi there  tab was pressed');
+    
+    if (event.keyCode == 9 || event.keyCode == 13){
+      console.log('hi there  tab/enter was pressed');
       component.set("v.results", []);
       component.set("v.openDropDown", false);
       component.set("v.inputValue", event.target.value);
+      if (event.keyCode == 13) {
+        console.log('trying focus2' + component.find("inputFieldFinance"));
+        console.log( component.find("inputFieldFinance").get("v.value") );
+        component.set('v.isFocus1', true);
+        console.log('trying focus end');
+      } 
       
     }
     else{
@@ -362,7 +399,7 @@
     component.set("v.processing", true);
     const searchString = event.target.value;
     console.log('in search handler' + 'search string is: ' + searchString);
-    if (searchString.length >= 3) {
+    if (searchString.length >= 4) {
         //Ensure that not many function execution happens if user keeps typing
         if (component.get("v.inputSearchFunction")) {
             clearTimeout(component.get("v.inputSearchFunction"));

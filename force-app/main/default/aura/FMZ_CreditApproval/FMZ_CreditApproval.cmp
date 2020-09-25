@@ -13,6 +13,12 @@
                 access="global"  
 >
   <aura:attribute name="tradeUpDetails" type="Object" access="public" />
+  <aura:attribute name="options" type="List" default="[
+  {'label': '$10,000', 'value': '10000'},
+  {'label': '$25,000', 'value': '25000'},
+  {'label': '$50,000', 'value': '50000'},
+  ]" />
+  <aura:attribute name="isFocus1" type="Boolean" default="false" />
   <aura:attribute name="settings" type="String" />
   <aura:attribute name="submitFields" type="Object" />
   <aura:attribute name="newAccount" type="Boolean" default="true" />
@@ -70,6 +76,7 @@
       </aura:if>
     </aura:set>
     -->
+   
     <lightning:recordEditForm
       aura:id="qqForm"
       objectApiName="genesis__Quick_Quotes__c"
@@ -79,7 +86,7 @@
       onsuccess="{!c.handleSuccess}"
       onerror="{!c.handleError}"
     >
-      <div class="slds-p-around--medium">
+      <div class="slds-var-p-around_medium" onkeyup="{!c.onKeyPressEvent}">
         <aura:if isTrue="{!v.showSupport}">
           <lightning:inputRichText
             value="{!v.body}"
@@ -99,8 +106,8 @@
             <!--<lightning:messages aura:id="messages"/>-->
 
             <aura:if isTrue="{!not(empty(v.tradeUpDetails))}">
-              <div class="slds-m-bottom_small">
-                <div class="slds-text-title_caps slds-m-bottom_xx-small"
+              <div class="slds-var-m-bottom_small">
+                <div class="slds-text-title_caps slds-var-m-bottom_xx-small"
                   >TRADE-UP DETAILS</div
                 >
                 <div class="slds-border_bottom">
@@ -123,30 +130,37 @@
                     disabled="true"
                     value="{!v.tradeUpDetails.quoteAmount}"
                   />
-                  <div class="slds-m-bottom_x-small" />
+                  <div class="slds-var-m-bottom_x-small" />
                 </div>
               </div>
             </aura:if>
 
             <div
-              class="{!'slds-notify_container slds-is-relative slds-m-left_x-small ' + (v.isInvalid ? '' : 'slds-hide')}"
+              class="{!'slds-notify_container slds-is-relative slds-var-m-left_x-small ' + (v.isInvalid ? '' : 'slds-hide')}"
             >
               <div
                 role="alert"
-                class="slds-notify slds-notify_toast slds-theme_error"
+                class=" slds-notify_toast slds-theme_error"
               >
-                <div class="slds-notify_content">
+                <div class="">
                   <h2 class="slds-text-heading_small"
                     >Please complete required fields.</h2
                   >
                 </div>
               </div>
             </div>
+             
+           
+           
+             
+           
+            <div class="slds-form-element slds-var-p-bottom_x-small">
+                <label class="slds-form-element__label" for="combobox-id-21" style="{! empty(v.label) ? 'display:hidden;' : 'display:block;'}">
+                  {!v.label}
+                </label>
 
-
-            <div class="slds-form-element slds-p-bottom_x-small">
-                <label class="slds-form-element__label" for="combobox-id-21"
-                    style="{! empty(v.label) ? 'display:hidden;' : 'display:block;'}">{!v.label}</label>
+              
+                
                 <div class="slds-form-element__control">
                     <div class="slds-combobox_container">
                         <div class="{! v.openDropDown ? 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-is-open' : 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click'}"
@@ -154,14 +168,15 @@
                             
                   
                   <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
-                    
+                  
                       <input type="text"
                                     class="input-is-required slds-input slds-combobox__input slds-has-focus slds-combobox__input-value"
-                                    id="combobox-id-21" aria-autocomplete="list" aria-controls="listbox-id-11"
-                                    autoComplete="nope" onkeydown="{!c.searchHandler}"  onkeyup="{!c.searchHandler}"   onpaste="{!c.searchHandler}" role="textbox" placeholder="Search Account..."
-                                    required="true"
+                                    id="combobox-id-21" aria-controls="listbox-id-11"
+                                    onkeydown="{!c.switchKey}"  onkeyup="{!c.searchHandler}" onpaste="{!c.searchHandler}" role="textbox" 
+                                    placeholder="Search Account..."
+                                    required="true" 
+                                    aria-autocomplete="list"
                                     fieldName="genesis__Business_Name__c"
-                                   
                                     value="{!v.inputValue}" />
                                 
                     
@@ -184,7 +199,7 @@
                                 role="listbox">
                                 <ul class="slds-listbox slds-listbox_vertical" role="presentation">
                                     <aura:iteration items="{!v.results}" var="result">
-                                        <li role="presentation" class="slds-listbox__item" data-id="{!result.id}"
+                                        <li role="presentation" class="" data-id="{!result.id}"
                                             data-value="{!result.value}" onclick="{!c.optionClickHandler}">
                                             <div id="{!result.id}"
                                                 class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small"
@@ -204,43 +219,29 @@
                     </div>
                 </div>
               </div>
-            
-            <aura:iteration items="{!v.fields}" var="f">
-     
-
-               
-                <aura:if isTrue="{!f.fieldPath == 'Primary_Phone_number__c'}">
-                  <lightning:inputField
-                    fieldName="{!f.fieldPath}"
-                    aura:id="inputFieldPhone"
-                    class="{!f.required?'input-is-required':''}"
-                    autocomplete="nope"
-                    
-                  />
-                  <aura:if isTrue="{!v.invalidFormatPhone}">
-                    <div class="slds-text-color_error"
-                      >Phone cannot start with 0 and should be 10 digits (NO
-                      '-')</div
-                    >
-                  </aura:if>
-                  <aura:set attribute="else">
-                    <aura:if
-                      isTrue="{!f.fieldPath == 'Estimated_Financed_Amount__c'}"
-                    >
-                      <lightning:inputField
-                        fieldName="{!f.fieldPath}"
-                        aura:id="inputFieldFinance"
-                        autocomplete="nope"
-                        required="true"
-                        
-                      />
-                      
-                    </aura:if>
-                  </aura:set>
-                </aura:if>
-               
-            </aura:iteration>
+           
+            <lightning:combobox 
+              aura:id="inputFieldFinance"
+              label="Estimated Financed Amount" 
+              placeholder="Select Amount" 
+              options="{! v.options }" 
+              onchange="{! c.handleChange }"
+              required="true"
              
+             
+            />
+          
+           
+            <lightning:input
+                aura:id="inputFieldPhone"
+                label="Primary Phone Number"
+                fieldName="Primary_Phone_Number__c"
+                required="true"
+                autocomplete="nope"
+                html-autocomplete="nope"
+                 
+            />
+            
             <lightning:input
               aura:id="email address"
               type="email"
@@ -251,6 +252,7 @@
               autocomplete="nope"
               message-when-too-long="Your email address must not be more than 50 characters."
             />
+          
             <lightning:input
               aura:id="addressLine1"
               type="text"
@@ -264,7 +266,7 @@
             <div aura:id="matchesOverlay" class="no-display match_overlay">
               <aura:iteration items="{!v.matches}" var="match">
                 <div
-                  class="hover_color slds-p-around_x-small"
+                  class="hover_color slds-var-p-around_x-small"
                   data-value="{!match.format}"
                   onclick="{!c.selectMatch}"
                 >
@@ -318,21 +320,22 @@
             />
           </div>
         </div>
+        
         <lightning:button
-          class="slds-m-top_large"
+          class="slds-var-m-top_large"
           label="Cancel"
           onclick="{!c.handleCancel}"
         />
         <aura:if isTrue="{!v.showSupport}">
           <lightning:button
-            class="slds-m-top_large"
+            class="slds-var-m-top_large"
             variant="brand"
             label="Back to Application"
             onclick="{!c.hideSupportHandler}"
           />
           <aura:set attribute="else">
             <lightning:button
-              class="slds-m-top_large"
+              class="slds-var-m-top_large"
               variant="brand"
               label="Contact Support"
               onclick="{!c.showSupportHandler}"
@@ -341,7 +344,7 @@
         </aura:if>
         <aura:if isTrue="{!v.showSupport == false}">
           <lightning:button
-            class="slds-m-top_large"
+            class="slds-var-m-top_large"
             variant="brand"
             type="submit"
             label="Create"
@@ -358,4 +361,5 @@
       </div>
     </lightning:recordEditForm>
   </lightning:card>
+  
 </aura:component>

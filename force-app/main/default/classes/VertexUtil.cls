@@ -5,6 +5,7 @@
  * Change Log: 
  *    MRM 3/31/2020 correct up front tax
  *    8/18/2020 - MRM changed flex date to book date again after q2 wiped out the code 
+ *    9/22/2020 - MRM changed flex date to commencment date
  **/
 public class VertexUtil { 
 
@@ -121,13 +122,13 @@ public class VertexUtil {
             leaseSet.add(dueDetailLine.cllease__Contract__c);
 
         List<cllease__lease_account__c> leaseList = new List<cllease__Lease_Account__c>();
-        leaseList = [select booking_date__c 
+        leaseList = [select cllease__Commencement_Date__c
                      from cllease__lease_Account__c
                      where id in: leaseSet
                     ];
         Map<Id,DateTime> leaseMap = new Map<Id,DateTime>();
         for (cllease__lease_account__c l:leaseList)
-            leaseMap.put(l.id,l.booking_date__c);
+            leaseMap.put(l.id,l.cllease__Commencement_Date__c);
 
         // Entering Due Detail lines details    
         for(cllease__Due_Detail_Lines__c dueDetailLine : dueDetailLines) {
@@ -135,6 +136,7 @@ public class VertexUtil {
             startDate = dueDetailLine.cllease__Bill__r.cllease__Lease_Account__r.cllease__First_Payment_Date__c;
             endDate   = dueDetailLine.cllease__Bill__r.cllease__Lease_Account__r.cllease__Maturity_Date__c;
             lengthOfContract = startDate.daysBetween(endDate);
+            //really commencement date from query....
             DateTime bookDateTime = leaseMap.get(dueDetailLine.cllease__Contract__c).addhours(5);
             String bookDate = formatDate(bookDateTime);
             
@@ -334,18 +336,19 @@ public class VertexUtil {
             leaseSet.add(charge.cllease__lease_account__c);
 
         List<cllease__lease_account__c> leaseList = new List<cllease__Lease_Account__c>();
-        leaseList = [select booking_date__c 
+        leaseList = [select  cllease__Commencement_Date__c
                      from cllease__lease_Account__c
                      where id in: leaseSet
                     ];
         Map<Id,DateTime> leaseMap = new Map<Id,DateTime>();
         for (cllease__lease_account__c l:leaseList)
-            leaseMap.put(l.id,l.booking_date__c);
+            leaseMap.put(l.id,l.cllease__Commencement_Date__c);
 
         for(cllease__Charge__c charge : charges){
             // Calculating Length of contract
             startDate = charge.cllease__Lease_Account__r.cllease__First_Payment_Date__c;
             endDate   = charge.cllease__Lease_Account__r.cllease__Maturity_Date__c;
+             //really commencement date from query....
             DateTime bookDateTime = leaseMap.get(charge.cllease__lease_account__c).addHours(5);
             String bookdate = formatDate(bookDateTime);
             

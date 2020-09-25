@@ -208,4 +208,19 @@ public with sharing class TestIntTriggers {
 		FixQ2Errors.addNumbers();
 		
 	}
+
+	static testmethod void test15(){
+
+		Int_OLMN_AP__c a = new Int_OLMN_AP__c(invoice_number__c = 'test', contract_number__c = 'test', invoice_amount__c = 999.22);
+		insert a;
+
+		Int_OLMN_AP__c b = new Int_OLMN_AP__c(invoice_number__c = 'test', contract_number__c = 'test', invoice_amount__c = 999.22);
+		insert b;
+
+
+
+
+	
+		
+	}
 }
