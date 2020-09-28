@@ -11,7 +11,7 @@
     action.setCallback(this, function(response) {
       var state = response.getState();
       if (state === "SUCCESS") {
-        console.log('here1111');
+         
         component.set("v.fields", response.getReturnValue());
         var tradeUpDetails = component.get("v.tradeUpDetails");
         if (component.get("v.accountId")) {
@@ -242,12 +242,7 @@
     }
     
     if (fieldName == 'Primary_Phone_number__c'){
-      if (Array.isArray(inputFieldPhone)){
-        inputFieldPhone[0].set("v.value", value);
-      }
-      else{
-        inputFieldPhone.set("v.value", value);
-    }
+      inputFieldPhone.set("v.value", value);
      
     }
     console.log('done prepop')    ;
@@ -255,20 +250,18 @@
 
   // check for required fields
   isValid: function(component) {
-    var result = false;
-    
+    var result = true;
+
     console.log('in isValid');
     var inputFieldPhone = component.find("inputFieldPhone");
     var inputFieldFinance = component.find("inputFieldFinance");
   
-    var finance;
-    finance = inputFieldFinance;
-   
     if (
-      !finance.get("v.value") ||
-      finance.get("v.value") == ""
+      !component.find("inputFieldFinance").get("v.value") ||
+      component.find("inputFieldFinance").get("v.value") == ""
     ) {
-      $A.util.addClass(finance, "slds-has-error");
+      $A.util.addClass(component.find("inputFieldPhone"), "slds-has-error");
+      console.log('in isValid3aa');
       result = false;
     }
     console.log('in isValid2');
@@ -279,14 +272,19 @@
     var postalCode = component.find("postalCode").get("v.value");
     console.log('in isValid3');
     if (!addressLine1 || addressLine1 == "") {
+      console.log('in isValid3a');
       result = false;
     } else if (!city || city == "") {
+      console.log('in isValid3b');
       result = false;
     } else if (!state || state == "") {
       result = false;
+      console.log('in isValid3c');
     } else if (!county || county == "") {
+      console.log('in isValid3d');
       result = false;
     } else if (!postalCode || postalCode == "") {
+      console.log('in isValid3e');
       result = false;
     }
     console.log('Result is: ' + result);

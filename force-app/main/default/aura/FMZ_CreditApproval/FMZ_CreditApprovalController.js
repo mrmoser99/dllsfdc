@@ -94,20 +94,39 @@
   handleLoad: function(component, event, helper) {
     $A.util.addClass(component, "is-loaded");
   },
+   
   handleSubmit: function(component, event, helper) {
     console.log('clicked create');
-    var fields = event.getParam("fields");
+    component.set('v.processing', true);
     var accountId = component.get("v.accountId");
     console.log('found this account id' + component.get("v.accountId"));
+    var fields = component.get("v.submitFields");
      
+    var action = component.get("c.getQQFields");
+    action.setParams({
+      fieldsetName: "FMZ_NewQuickQuote"
+    });
+    action.setStorable();
+    action.setCallback(this, function(response) {
+      var state = response.getState();
+      if (state === "SUCCESS") {
+         component.set("v.fields", response.getReturnValue());
+      }
+    });
+
+    $A.enqueueAction(action);
+
+  
 
     var dealerId = component.get("v.dealerId");
     
     var isValid = helper.isValid(component);
-    console.log('hello');
-     var recordId = component.get("v.recordId");
-    var account = component.get("v.account");
+    console.log('back from isValid' + isValid);
 
+    var recordId = component.get("v.recordId");
+    console.log('1');
+    var account = component.get("v.account");
+    console.log('2');
     var tradeUpDetails = component.get("v.tradeUpDetails");
     if (tradeUpDetails) {
       fields["Oracle_Trade_up_Lease_Number__c"] = tradeUpDetails.leaseNumber;
@@ -116,17 +135,34 @@
       fields["Oracle_Trade_up_Quote_Expiration_Date__c"] =
         tradeUpDetails.expirationDate;
     }
-    console.log('hello2' + component.find("inputFieldEmail").get("v.value"));
-    if (component.find("inputFieldEmail").get("v.value") != ""){
-      fields["Email_Address__c"] = component.find("inputFieldEmail").get("v.value");
-    }
-    else{
-      fields["Email_Address__c"] = ""; 
-    }
-    console.log('hello2b');
+    console.log('3');
+    console.log('hi' + component.find("inputFieldEmail").get("v.value")) ;
+    fields["Email_Address__c"] = component.find("inputFieldEmail").get("v.value");
+    console.log('4');  
+    console.log('hi' + component.find("inputFieldFinance").get("v.value")) ;
     fields["Estimated_Financed_Amount__c"] = component.find("inputFieldFinance").get("v.value");
-    fields["Primary_Phone_number__c"] = component.find("inputFieldPhone").get("v.value");
+    
+    console.log('hi' +  component.find("inputFieldPhone").get("v.value")) ;
+    fields["Primary_Phone_Number__c"] = component.find("inputFieldPhone").get("v.value");
+    
+    
     console.log('hello2a');
+    var action = component.get("c.getQQFields");
+    action.setParams({
+      fieldsetName: "FMZ_AddressFields"
+    });
+    action.setStorable();
+    action.setCallback(this, function(response) {
+      var state = response.getState();
+      if (state === "SUCCESS") {
+         var currentList = component.get("v.fields");
+         currentList.push(response.getReturnValue());
+         component.set("v.fields", currentList);
+      }
+    });
+    $A.enqueueAction(action);
+
+
     fields["genesis__Address_Line_1__c"] = component
       .find("addressLine1")
       .get("v.value");
@@ -154,23 +190,33 @@
       console.log('new account' + component.get("v.inputValue"));
       fields["genesis__Business_Name__c"] = component.get("v.inputValue");
     }
+    console.log( ' addre lin 1 is : ' + fields["genesis__Address_Line_1__c"] );
     
-   
     component.set("v.isInvalid", !isValid);
     console.log(component.get("v.isInvalid"));
     //if (!isValid(component)) {
     //  console.log('not valid');
     //  return;
     //}
-    console.log('here3');
+
+    
+    console.log('stringify parms:' + JSON.stringify(fields) );
+    component.set("v.submitFields",fields);
+    console.log(component.get("v.submitFields"));
+    console.log('submit:' + component.get("v.submitFields"));
+     
     var action = component.get("c.createRecords");
     action.setParams({
-      qq: fields,
+      qq:JSON.stringify(fields),
       ignoreDuplicates: false
     });
+    console.log('made it');
+    console.log(component.get("v.submitFields"));
+
     action.setCallback(this, function(response) {
+      console.log('in callback');
       var state = response.getState();
-      console.log('here11');
+      console.log('here11' + response);
       console.log('state is: ' + state);
       if (state === "SUCCESS") {
         console.log('here1');
@@ -270,6 +316,7 @@
         component.set("v.processing", false);
       }
     });
+
     component.set("v.processing", true);
     $A.enqueueAction(action);
     event.preventDefault();
@@ -341,7 +388,7 @@
       component.set("v.inputValue", event.target.value);
       console.log('setting focus');
       component.find("inputFieldFinance").focus();
-      $A.util.removeClass( component.find("inputFieldPhone"), "slds-has-error");
+       
       
       console.log('switcheroo');
     }

@@ -85,8 +85,23 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
         return [SELECT genesis__Status__c FROM genesis__Quick_Quotes__c WHERE Id =: qqId LIMIT 1].genesis__Status__c;
     }
 
+    
     @AuraEnabled
-    public static CreateResponse createRecords(genesis__Quick_Quotes__c qq, Boolean ignoreDuplicates) {
+    public static string createRecords(String qq, Boolean ignoreDuplicates) {    
+        system.debug('***************** qq is: ' + qq);
+        system.debug('***************** qq is: ' + qq);
+        system.debug('***************** qq is: ' + qq);
+        system.debug('***************** qq is: ' + qq);
+        system.debug('***************** qq is: ' + qq);
+        system.debug('***************** qq is: ' + qq);
+        system.debug('***************** qq is: ' + qq);
+        system.debug('***************** qq is: ' + qq);
+        return ' test';
+    }
+
+    @AuraEnabled
+    public static CreateResponse createRecords2(genesis__Quick_Quotes__c qq, Boolean ignoreDuplicates) {
+        system.debug('***************** qq is: ' + qq);
         Savepoint sp = Database.setSavepoint();
         try{
             Account dealer = getDealerInfo();

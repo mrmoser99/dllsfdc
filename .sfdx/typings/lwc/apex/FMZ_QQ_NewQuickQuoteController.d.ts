@@ -22,6 +22,9 @@ declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.getQuickQuoteSta
 declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.createRecords" {
   export default function createRecords(param: {qq: any, ignoreDuplicates: any}): Promise<any>;
 }
+declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.createRecords2" {
+  export default function createRecords2(param: {qq: any, ignoreDuplicates: any}): Promise<any>;
+}
 declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.getAccountInfo" {
   export default function getAccountInfo(param: {accountId: any}): Promise<any>;
 }
