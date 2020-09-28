@@ -6,7 +6,7 @@
 
   -->
 
-<aura:component
+  <aura:component
   description="New Credit Approval"
   implements="force:lightningQuickActionWithoutHeader,force:hasRecordId"
   controller="FMZ_QQ_NewQuickQuoteController"
@@ -86,7 +86,7 @@
       onsuccess="{!c.handleSuccess}"
       onerror="{!c.handleError}"
     >
-      <div class="slds-var-p-around_medium" onkeyup="{!c.onKeyPressEvent}">
+      <div class="slds-var-p-around_medium" onkeydown="{!c.onKeyPressEvent}">
         <aura:if isTrue="{!v.showSupport}">
           <lightning:inputRichText
             value="{!v.body}"
@@ -224,6 +224,7 @@
               aura:id="inputFieldFinance"
               label="Estimated Financed Amount" 
               placeholder="Select Amount" 
+              fieldName="Estimated_Financed_Amount__c"
               options="{! v.options }" 
               onchange="{! c.handleChange }"
               required="true"
@@ -238,14 +239,17 @@
                 fieldName="Primary_Phone_Number__c"
                 required="true"
                 autocomplete="nope"
+                pattern="[1-9]{1}[0-9]{8}"
                 html-autocomplete="nope"
+                messageWhenPatternMismatch="Phone must be 9 digits (999999999)!"
                  
             />
             
             <lightning:input
-              aura:id="email address"
+              aura:id="inputFieldEmail"
               type="email"
               label="Email Address"
+              fieldName="Email_Address__c"
               value="{!v.emailAddress}"
               required="false"
               pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
@@ -348,6 +352,7 @@
             variant="brand"
             type="submit"
             label="Create"
+            onclick="{!c.handleSubmit}"
           />
         </aura:if>
 

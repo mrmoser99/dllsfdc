@@ -255,21 +255,12 @@
 
   // check for required fields
   isValid: function(component) {
+    var result = false;
     
-   
+    console.log('in isValid');
     var inputFieldPhone = component.find("inputFieldPhone");
     var inputFieldFinance = component.find("inputFieldFinance");
   
-    var phoneValue;
-    phoneValue = inputFieldPhone.get("v.value").replace(/(\(|\)| |-)/g, "");
-
-    var regularExpression;
-    var re = new RegExp("[1-9]{1}[0-9]{9}");
-
-    if (!re.test(phoneValue) || phoneValue.length != 10) {
-      $A.util.addClass(inputFieldPhone, "slds-has-error");
-      result = false;
-    }
     var finance;
     finance = inputFieldFinance;
    
@@ -280,13 +271,13 @@
       $A.util.addClass(finance, "slds-has-error");
       result = false;
     }
-   
+    console.log('in isValid2');
     var addressLine1 = component.find("addressLine1").get("v.value");
     var city = component.find("city").get("v.value");
     var county = component.find("county").get("v.value");
     var state = component.find("state").get("v.value");
     var postalCode = component.find("postalCode").get("v.value");
-
+    console.log('in isValid3');
     if (!addressLine1 || addressLine1 == "") {
       result = false;
     } else if (!city || city == "") {
@@ -298,6 +289,8 @@
     } else if (!postalCode || postalCode == "") {
       result = false;
     }
+    console.log('Result is: ' + result);
+
     component.set("v.isInvalid", !result);
     
     return result;

@@ -99,7 +99,7 @@
     var fields = event.getParam("fields");
     var accountId = component.get("v.accountId");
     console.log('found this account id' + component.get("v.accountId"));
-    console.log('fields:' + fields);
+     
 
     var dealerId = component.get("v.dealerId");
     
@@ -116,13 +116,17 @@
       fields["Oracle_Trade_up_Quote_Expiration_Date__c"] =
         tradeUpDetails.expirationDate;
     }
-    
-    fields["Email_Address__c"] = component.find("v.emailAddress").get("v.value");
-   
-    fields["Estimated_Financed_Amount__c"] = component.find("v.inputFieldFinance").get("v.value");
-    fields["Primary_Phone_number__c"] = fields[
-      "Primary_Phone_number__c"
-    ].replace(/(\(|\)| |-)/g, "");
+    console.log('hello2' + component.find("inputFieldEmail").get("v.value"));
+    if (component.find("inputFieldEmail").get("v.value") != ""){
+      fields["Email_Address__c"] = component.find("inputFieldEmail").get("v.value");
+    }
+    else{
+      fields["Email_Address__c"] = ""; 
+    }
+    console.log('hello2b');
+    fields["Estimated_Financed_Amount__c"] = component.find("inputFieldFinance").get("v.value");
+    fields["Primary_Phone_number__c"] = component.find("inputFieldPhone").get("v.value");
+    console.log('hello2a');
     fields["genesis__Address_Line_1__c"] = component
       .find("addressLine1")
       .get("v.value");
@@ -141,7 +145,7 @@
       .get("v.value");
     fields["genesis__Account__c"] = accountId;
     fields["Dealer__c"] = dealerId;
-    
+    console.log('hello4t');
     if (account && account.Name) {
       console.log('account');
       fields["genesis__Business_Name__c"] = account.Name;
@@ -373,7 +377,7 @@
     component.set("v.openDropDown", false);
     component.set("v.inputValue", event.target.value);
     console.log('setting focus');
-    $A.util.addClass(inputFieldFinance, "slds-has-focus");
+     
     
      
   },
@@ -386,11 +390,14 @@
       component.set("v.results", []);
       component.set("v.openDropDown", false);
       component.set("v.inputValue", event.target.value);
+      component.find("inputFieldFinance").focus();
       if (event.keyCode == 13) {
         console.log('trying focus2' + component.find("inputFieldFinance"));
         console.log( component.find("inputFieldFinance").get("v.value") );
+        component.find("inputFieldFinance").focus();
         component.set('v.isFocus1', true);
         console.log('trying focus end');
+
       } 
       
     }
@@ -407,7 +414,7 @@
 
         var inputTimer = setTimeout($A.getCallback(function () {
             helper.searchRecords(component, searchString);
-        }), 1000);
+        }), 1);
         component.set("v.inputSearchFunction", inputTimer);
         console.log('not found');
         console.log('search string is' + searchString);
