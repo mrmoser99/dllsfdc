@@ -234,23 +234,28 @@
              
              
             />
-
-            <lightning:inputField
+            
+            <!--  making this lighting input so autocomplete can be overridden -->
+            <lightning:input 
             aura:id="inputFieldPhone"
+            label="Primary Phone Number"
             fieldName="Primary_Phone_Number__c"
             required="true"
             autocomplete="nope"
+            html-autocomplete="nope"
             pattern="[1-9]{1}[0-9]{9}"
             message-when-pattern-mismatch="Phone must be 10 digits (9999999999)!"
-          />
-           
-            <lightning:inputField
+            />
+          
+             <!--  making this lighting input so autocomplete can be overridden -->
+            <lightning:input 
               aura:id="inputFieldEmail"
               label="Email Address"
               fieldName="Email_Address__c"
               required="false"
               pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
               autocomplete="nope"
+              html-autocomplete="nope"
               message-when-too-long="Your email address must not be more than 50 characters."
             />
           
@@ -261,8 +266,11 @@
               placeholder="Search Address with Experian"
               onchange="{!c.findMatchingAddresses}"
               required="true"
-              messageWhenValueMissing="Street Address is Required"
               autocomplete="nope"
+              html-autocomplete="nope"
+              
+              messageWhenValueMissing="Street Address is Required"
+               
             />
             <div aura:id="matchesOverlay" class="no-display match_overlay">
               <aura:iteration items="{!v.matches}" var="match">
