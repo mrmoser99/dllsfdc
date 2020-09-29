@@ -201,13 +201,13 @@
 
     
     console.log('stringify parms:' + JSON.stringify(fields) );
-    component.set("v.submitFields",fields);
-    console.log(component.get("v.submitFields"));
-    console.log('submit:' + component.get("v.submitFields"));
+    //component.set("v.submitFields",fields);
+    //console.log(component.get("v.submitFields"));
+    //console.log('submit:' + JSON.stringify(component.get("v.submitFields")));
      
     var action = component.get("c.createRecords");
     action.setParams({
-      qq:JSON.stringify(fields),
+      jsonText:JSON.stringify(fields),
       ignoreDuplicates: false
     });
     console.log('made it');

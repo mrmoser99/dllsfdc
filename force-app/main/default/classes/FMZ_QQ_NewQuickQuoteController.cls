@@ -87,21 +87,27 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
 
     
     @AuraEnabled
-    public static string createRecords(String qq, Boolean ignoreDuplicates) {    
+    public static string createRecords2(String jsonText, Boolean ignoreDuplicates) {    
+
+        genesis__Quick_Quotes__c qq = new genesis__Quick_Quotes__c();
+
+        qq = (genesis__Quick_Quotes__c)JSON.deserialize(jsonText, genesis__Quick_Quotes__c.class);
+
+
         system.debug('***************** qq is: ' + qq);
-        system.debug('***************** qq is: ' + qq);
-        system.debug('***************** qq is: ' + qq);
-        system.debug('***************** qq is: ' + qq);
-        system.debug('***************** qq is: ' + qq);
-        system.debug('***************** qq is: ' + qq);
-        system.debug('***************** qq is: ' + qq);
-        system.debug('***************** qq is: ' + qq);
+       
         return ' test';
     }
 
     @AuraEnabled
-    public static CreateResponse createRecords2(genesis__Quick_Quotes__c qq, Boolean ignoreDuplicates) {
+    public static CreateResponse createRecords(String jsonText, Boolean ignoreDuplicates) {
+
+        genesis__Quick_Quotes__c qq = new genesis__Quick_Quotes__c();
+
+        qq = (genesis__Quick_Quotes__c)JSON.deserialize(jsonText, genesis__Quick_Quotes__c.class);
+        
         system.debug('***************** qq is: ' + qq);
+
         Savepoint sp = Database.setSavepoint();
         try{
             Account dealer = getDealerInfo();
