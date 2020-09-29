@@ -255,12 +255,13 @@
     console.log('in isValid');
     var inputFieldPhone = component.find("inputFieldPhone");
     var inputFieldFinance = component.find("inputFieldFinance");
-  
+    
+    console.log('financed amount is: ' + component.find("inputFieldFinance").get("v.value"));
     if (
       !component.find("inputFieldFinance").get("v.value") ||
       component.find("inputFieldFinance").get("v.value") == ""
     ) {
-      $A.util.addClass(component.find("inputFieldPhone"), "slds-has-error");
+      $A.util.addClass(component.find("inputFieldFinance"), "slds-has-error");
       console.log('in isValid3aa');
       result = false;
     }

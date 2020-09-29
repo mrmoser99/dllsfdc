@@ -99,135 +99,67 @@
     console.log('clicked create');
     component.set('v.processing', true);
     var accountId = component.get("v.accountId");
-    console.log('found this account id' + component.get("v.accountId"));
+
+    //create quick quote fields to send to controller
     var fields = component.get("v.submitFields");
      
-    var action = component.get("c.getQQFields");
-    action.setParams({
-      fieldsetName: "FMZ_NewQuickQuote"
-    });
-    action.setStorable();
-    action.setCallback(this, function(response) {
-      var state = response.getState();
-      if (state === "SUCCESS") {
-         component.set("v.fields", response.getReturnValue());
-      }
-    });
 
-    $A.enqueueAction(action);
-
-  
 
     var dealerId = component.get("v.dealerId");
-    
     var isValid = helper.isValid(component);
-    console.log('back from isValid' + isValid);
-
     var recordId = component.get("v.recordId");
-    console.log('1');
     var account = component.get("v.account");
-    console.log('2');
     var tradeUpDetails = component.get("v.tradeUpDetails");
+
     if (tradeUpDetails) {
       fields["Oracle_Trade_up_Lease_Number__c"] = tradeUpDetails.leaseNumber;
       fields["Oracle_Trade_Up_Quote_Amount__c"] = tradeUpDetails.quoteAmount;
       fields["Oracle_Trade_up_Quote_Number__c"] = tradeUpDetails.quoteNumber;
-      fields["Oracle_Trade_up_Quote_Expiration_Date__c"] =
-        tradeUpDetails.expirationDate;
+      fields["Oracle_Trade_up_Quote_Expiration_Date__c"] = tradeUpDetails.expirationDate;
     }
-    console.log('3');
-    console.log('hi' + component.find("inputFieldEmail").get("v.value")) ;
     fields["Email_Address__c"] = component.find("inputFieldEmail").get("v.value");
-    console.log('4');  
-    console.log('hi' + component.find("inputFieldFinance").get("v.value")) ;
     fields["Estimated_Financed_Amount__c"] = component.find("inputFieldFinance").get("v.value");
-    
-    console.log('hi' +  component.find("inputFieldPhone").get("v.value")) ;
     fields["Primary_Phone_Number__c"] = component.find("inputFieldPhone").get("v.value");
-    
-    
-    console.log('hello2a');
-    var action = component.get("c.getQQFields");
-    action.setParams({
-      fieldsetName: "FMZ_AddressFields"
-    });
-    action.setStorable();
-    action.setCallback(this, function(response) {
-      var state = response.getState();
-      if (state === "SUCCESS") {
-         var currentList = component.get("v.fields");
-         currentList.push(response.getReturnValue());
-         component.set("v.fields", currentList);
-      }
-    });
-    $A.enqueueAction(action);
-
-
-    fields["genesis__Address_Line_1__c"] = component
-      .find("addressLine1")
-      .get("v.value");
+    fields["genesis__Address_Line_1__c"] = component.find("addressLine1").get("v.value");
     fields["genesis__City__c"] = component.find("city").get("v.value");
     fields["County__c"] = component.find("county").get("v.value");
     fields["genesis__State__c"] = component.find("state").get("v.value");
-    fields["genesis__Postal_Code__c"] = component
-      .find("postalCode")
-      .get("v.value");
+    fields["genesis__Postal_Code__c"] = component.find("postalCode").get("v.value");
     fields["genesis__Country__c"] = "USA";
-    fields["Validation_Status__c"] = component
-      .find("validStatus")
-      .get("v.value");
-    fields["Validation_Time_Stamp__c"] = component
-      .find("validTime")
-      .get("v.value");
+    fields["Validation_Status__c"] = component.find("validStatus").get("v.value");
+    fields["Validation_Time_Stamp__c"] = component.find("validTime").get("v.value");
     fields["genesis__Account__c"] = accountId;
     fields["Dealer__c"] = dealerId;
-    console.log('hello4t');
+    
     if (account && account.Name) {
-      console.log('account');
+      //console.log('account');
       fields["genesis__Business_Name__c"] = account.Name;
     }
     else{
-      console.log('new account' + component.get("v.inputValue"));
       fields["genesis__Business_Name__c"] = component.get("v.inputValue");
     }
-    console.log( ' addre lin 1 is : ' + fields["genesis__Address_Line_1__c"] );
     
     component.set("v.isInvalid", !isValid);
-    console.log(component.get("v.isInvalid"));
-    //if (!isValid(component)) {
-    //  console.log('not valid');
-    //  return;
-    //}
-
-    
-    console.log('stringify parms:' + JSON.stringify(fields) );
-    //component.set("v.submitFields",fields);
-    //console.log(component.get("v.submitFields"));
-    //console.log('submit:' + JSON.stringify(component.get("v.submitFields")));
-     
+    console.log("Invalid = " + component.get("v.isInvalid"));
+    if (!isValid){
+      component.set("v.processing", false);
+      return;
+    }
     var action = component.get("c.createRecords");
     action.setParams({
       jsonText:JSON.stringify(fields),
       ignoreDuplicates: false
     });
-    console.log('made it');
-    console.log(component.get("v.submitFields"));
 
     action.setCallback(this, function(response) {
-      console.log('in callback');
       var state = response.getState();
-      console.log('here11' + response);
-      console.log('state is: ' + state);
       if (state === "SUCCESS") {
-        console.log('here1');
         var createResponse = response.getReturnValue();
         console.log(createResponse);
         if (createResponse.status == "SUCCESS") {
-          console.log('here2');
           helper.submitForApproval(component, createResponse.message);
         } else {
           let modalBody;
-          console.log('here5');
           $A.createComponent(
             "c:FMZ_SelectDuplicate",
             {

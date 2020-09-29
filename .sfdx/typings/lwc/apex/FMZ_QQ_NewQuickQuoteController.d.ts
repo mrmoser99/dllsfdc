@@ -19,9 +19,6 @@ declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.getQQFields" {
 declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.getQuickQuoteStatus" {
   export default function getQuickQuoteStatus(param: {qqId: any}): Promise<any>;
 }
-declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.createRecords2" {
-  export default function createRecords2(param: {jsonText: any, ignoreDuplicates: any}): Promise<any>;
-}
 declare module "@salesforce/apex/FMZ_QQ_NewQuickQuoteController.createRecords" {
   export default function createRecords(param: {jsonText: any, ignoreDuplicates: any}): Promise<any>;
 }
