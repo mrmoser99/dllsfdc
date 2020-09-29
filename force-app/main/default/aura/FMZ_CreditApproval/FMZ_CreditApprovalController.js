@@ -313,7 +313,7 @@
   onKeyPressEvent: function(component, event, helper) {
     console.log('key pressed=' + event.key);
 
-    if (event.key == 'Enter') {
+    if (event.key == 'Enter' || event.key == 'Tab') {
       //console.log('trying switcheroo');
        
       event.preventDefault();
