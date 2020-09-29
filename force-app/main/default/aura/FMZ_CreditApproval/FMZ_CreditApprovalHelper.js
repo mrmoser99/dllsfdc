@@ -182,6 +182,8 @@
           "Email_Address__c",
           account.Email_Address__c
         );
+        console.log('here i am');
+     
         component.set("v.emailAddress",account.Email_Address__c);
         console.log('primary?:' + account.Primary_Address__r);
         if (account.Primary_Address__r) {
@@ -227,12 +229,12 @@
     console.log('enter pre prop ' + value + ' fieldName : ' + fieldName);
     var inputField = component.find("inputField");
     var inputFieldPhone = component.find("inputFieldPhone");
+    var inputFieldEmail = component.find("inputFieldEmail");
        
       
 
     console.log('hello dog');
     if (inputField) {
-      
         inputField = [inputFieldPhone];
     }
 
@@ -240,11 +242,15 @@
       console.log('handle business name please ' + ' value is: ' + value); 
       component.set("v.inputValue", value); 
     }
-    
+
+    if (fieldName == 'Email_Address__c'){
+      inputFieldEmail.set("v.value", value);
+    }
+
     if (fieldName == 'Primary_Phone_number__c'){
       inputFieldPhone.set("v.value", value);
-     
     }
+
     console.log('done prepop')    ;
   },
 

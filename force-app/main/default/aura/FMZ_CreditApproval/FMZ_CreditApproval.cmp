@@ -246,6 +246,7 @@
               type="text"
               label="City"
               required="true"
+              
               messageWhenValueMissing="City is Required"
             
             />
@@ -254,6 +255,7 @@
               type="text"
               label="County"
               required="true"
+               
               messageWhenValueMissing="County is Required"
              
             />
@@ -262,6 +264,7 @@
               type="text"
               label="State"
               required="true"
+               
               messageWhenValueMissing="State is Required"
               
             />
@@ -270,6 +273,7 @@
               type="text"
               label="Postal Code"
               required="true"
+              
               messageWhenValueMissing="Postal Code is Required"
               
             />

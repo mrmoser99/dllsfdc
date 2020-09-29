@@ -129,6 +129,8 @@
     fields["Validation_Status__c"] = component.find("validStatus").get("v.value");
     fields["Validation_Time_Stamp__c"] = component.find("validTime").get("v.value");
     fields["genesis__Account__c"] = accountId;
+
+    console.log('account id is: ' + accountId);
     fields["Dealer__c"] = dealerId;
     
     if (account && account.Name) {
@@ -160,7 +162,7 @@
           helper.submitForApproval(component, createResponse.message);
         } else {
           let modalBody;
-          $A.createComponent(
+          $A.createComponent( 
             "c:FMZ_SelectDuplicate",
             {
               selectedId: component.getReference("v.accountId"),
@@ -180,7 +182,7 @@
                     if (accountId) {
                       var resubmitAction = component.get("c.createRecords");
                       resubmitAction.setParams({
-                        qq: fields,
+                        jsonText:JSON.stringify(fields),
                         ignoreDuplicates: true
                       });
                       resubmitAction.setCallback(this, function(response) {
