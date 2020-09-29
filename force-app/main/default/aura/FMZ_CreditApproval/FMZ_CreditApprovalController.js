@@ -312,12 +312,17 @@
     console.log('key pressed=' + event.key);
 
     if (event.key == 'Enter') {
-      console.log('trying switcheroo');
+      //console.log('trying switcheroo');
        
       event.preventDefault();
       component.set("v.results", []);
-      component.set("v.openDropDown", false);
-      component.set("v.inputValue", event.target.value);
+      var cmpTarget = component.find("searchesOverlay");
+      //console.log('trying switcheroo2');
+      $A.util.removeClass(cmpTarget, "no-display");
+      //component.set("v.openDropDown", false);
+      //temp
+      component.set("v.inputValue", component.find("searchValue").get("v.value"));
+      //console.log('trying switcheroo3');
       console.log('setting focus');
       component.find("inputFieldFinance").focus();
        
@@ -368,7 +373,9 @@
       console.log('hi there  tab/enter was pressed');
       component.set("v.results", []);
       component.set("v.openDropDown", false);
-      component.set("v.inputValue", event.target.value);
+      //temp comment
+      //component.set("v.inputValue", event.target.value);
+      component.set("v.inputValue", component.find("searchValue").get("v.value"));
       component.find("inputFieldFinance").focus();
       if (event.keyCode == 13) {
         console.log('trying focus2' + component.find("inputFieldFinance"));
@@ -383,7 +390,10 @@
     else{
     console.log('in searchHandler' + event.target.value);
     component.set("v.processing", true);
-    const searchString = event.target.value;
+    //temp comment
+    //const searchString = event.target.value;
+    const searchString = component.find("searchValue").get("v.value");
+
     console.log('in search handler' + 'search string is: ' + searchString);
     if (searchString.length >= 4) {
         //Ensure that not many function execution happens if user keeps typing
@@ -396,31 +406,38 @@
         }), 1);
         component.set("v.inputSearchFunction", inputTimer);
         console.log('not found');
-        console.log('search string is' + searchString);
         component.set("v.searchString",searchString);
         console.log('search string is' + component.get("v.searchString"));
-        
-
     } else{
         component.set("v.results", []);
-        component.set("v.openDropDown", false);
+        var cmpTarget = component.find("searchesOverlay");
+        $A.util.addClass(cmpTarget, "no-display");
+        //component.set("v.openDropDown", false);
+
         console.log('r: ' + component.get("v.results"));
     }
   }
     component.set("v.processing", false);
 },
 optionClickHandler : function (component, event, helper) {
+  //
+  console.log('option click handler');
+  //on the url of the component are data-value and data-id...these can then be retrieved by currenttarget.dataset.putname here
+  var selectedId = event.currentTarget.dataset.id;
+  var selectedValue = event.currentTarget.dataset.value;
   component.set("v.processing", true);
-  const selectedId = event.target.closest('li').dataset.id;
-  const selectedValue = event.target.closest('li').dataset.value;
+  
+  var cmpTarget = component.find("searchesOverlay");
+  $A.util.addClass(cmpTarget, "no-display");
+  
+  component.set("v.processing", true);
+  
   component.set("v.inputValue", selectedValue);
-  component.set("v.openDropDown", false);
   component.set("v.selectedOption", selectedId);
   console.log(component.get("v.selectedOption"));
   component.set("v.accountId",selectedId);
   component.set("v.recordId",selectedId);
-  console.log('do init2');
- 
+   
   var action = component.get("c.getAccountId");
     action.setParams({
       recordId: selectedId

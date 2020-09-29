@@ -152,10 +152,185 @@
                 </div>
               </div>
             </div>
-             
            
+            <!-- new type ahead  -->
            
+          <lightning:input
+            aura:id="searchValue"
+            label="Business Name"
+            value="{!v.inputValue}"
+            placeholder="Search Accounts"
+            onchange="{!c.searchHandler}"
+            required="true"
+            autocomplete="nope"
+            html-autocomplete="nope"
+            messageWhenValueMissing="Business Name is Required"
              
+          />
+        
+          <div aura:id="searchesOverlay" class="no-display match_overlay">
+            <aura:iteration items="{!v.results}" var="result">
+              <div
+                class="hover_color slds-var-p-around_x-small"
+                data-value="{!result.value}"  data-id="{!result.id}"
+                onclick="{!c.optionClickHandler}"
+              >
+                {!result.value}
+              </div>
+            </aura:iteration>
+          </div>
+          
+          <lightning:combobox 
+              aura:id="inputFieldFinance"
+              label="Estimated Financed Amount" 
+              placeholder="Select Amount" 
+              fieldName="Estimated_Financed_Amount__c"
+              options="{! v.options }" 
+              onchange="{! c.handleChange }"
+              required="true"
+             
+              
+          />
+            
+          <!--  making this lighting input so autocomplete can be overridden -->
+          <lightning:input 
+            aura:id="inputFieldPhone"
+            label="Primary Phone Number"
+            fieldName="Primary_Phone_Number__c"
+            required="true"
+            autocomplete="nope"
+            html-autocomplete="nope" 
+            pattern="[1-9]{1}[0-9]{9}"
+            message-when-pattern-mismatch="Phone must be 10 digits (9999999999)!"
+          />
+          
+             <!--  making this lighting input so autocomplete can be overridden -->
+          <lightning:input 
+              aura:id="inputFieldEmail"
+              label="Email Address"
+              fieldName="Email_Address__c"
+              required="false"
+              pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
+              autocomplete="nope"
+              html-autocomplete="nope" 
+              message-when-too-long="Your email address must not be more than 50 characters."
+          />
+          
+          <lightning:input
+              aura:id="addressLine1"
+              type="text"
+              label="Street Address"
+              placeholder="Search Address with Experian"
+              onchange="{!c.findMatchingAddresses}"
+              required="true"
+              autocomplete="nope"
+              html-autocomplete="nope" 
+              messageWhenValueMissing="Street Address is Required"
+          />
+          
+          <div aura:id="matchesOverlay" class="no-display match_overlay">
+              <aura:iteration items="{!v.matches}" var="match">
+                <div
+                  class="hover_color slds-var-p-around_x-small"
+                  data-value="{!match.format}"
+                  onclick="{!c.selectMatch}"
+                >
+                  {!match.suggestion}
+                </div>
+              </aura:iteration>
+            </div>
+
+
+            <lightning:input
+              aura:id="city"
+              type="text"
+              label="City"
+              required="true"
+              messageWhenValueMissing="City is Required"
+            
+            />
+            <lightning:input
+              aura:id="county"
+              type="text"
+              label="County"
+              required="true"
+              messageWhenValueMissing="County is Required"
+             
+            />
+            <lightning:input
+              aura:id="state"
+              type="text"
+              label="State"
+              required="true"
+              messageWhenValueMissing="State is Required"
+              
+            />
+            <lightning:input
+              aura:id="postalCode"
+              type="text"
+              label="Postal Code"
+              required="true"
+              messageWhenValueMissing="Postal Code is Required"
+              
+            />
+            <lightning:input
+              aura:id="validStatus"
+              type="text"
+              label="Validation Status"
+              disabled="true"
+              
+            />
+            <lightning:input
+              aura:id="validTime"
+              type="datetime-local"
+              label="Validation Timestamp"
+              disabled="true"
+            />
+          </div>
+        </div>
+        
+        <lightning:button
+          class="slds-var-m-top_large"
+          label="Cancel"
+          onclick="{!c.handleCancel}"
+        />
+        <aura:if isTrue="{!v.showSupport}">
+          <lightning:button
+            class="slds-var-m-top_large"
+            variant="brand"
+            label="Back to Application"
+            onclick="{!c.hideSupportHandler}"
+          />
+          <aura:set attribute="else">
+            <lightning:button
+              class="slds-var-m-top_large"
+              variant="brand"
+              label="Contact Support"
+              onclick="{!c.showSupportHandler}"
+            />
+          </aura:set>
+        </aura:if>
+       
+        <lightning:button
+            class="slds-var-m-top_large"
+            variant="brand"
+            label="Create"
+            onclick="{!c.handleSubmit}"
+           
+            
+        />
+       
+        <aura:if isTrue="{!v.processing}">
+          <lightning:spinner
+            variant="brand"
+            size="medium"
+            alternativeText="Please Wait"
+          />
+        </aura:if>
+      </div>
+    </lightning:recordEditForm>
+  </lightning:card>
+         <!--
            
             <div class="slds-form-element slds-var-p-bottom_x-small">
                 <label class="slds-form-element__label" for="combobox-id-21" style="{! empty(v.label) ? 'display:hidden;' : 'display:block;'}">
@@ -222,154 +397,5 @@
                     </div>
                 </div>
               </div>
-           
-            <lightning:combobox 
-              aura:id="inputFieldFinance"
-              label="Estimated Financed Amount" 
-              placeholder="Select Amount" 
-              fieldName="Estimated_Financed_Amount__c"
-              options="{! v.options }" 
-              onchange="{! c.handleChange }"
-              required="true"
-             
-             
-            />
-            
-            <!--  making this lighting input so autocomplete can be overridden -->
-            <lightning:input 
-            aura:id="inputFieldPhone"
-            label="Primary Phone Number"
-            fieldName="Primary_Phone_Number__c"
-            required="true"
-            autocomplete="nope"
-            html-autocomplete="nope"
-            pattern="[1-9]{1}[0-9]{9}"
-            message-when-pattern-mismatch="Phone must be 10 digits (9999999999)!"
-            />
-          
-             <!--  making this lighting input so autocomplete can be overridden -->
-            <lightning:input 
-              aura:id="inputFieldEmail"
-              label="Email Address"
-              fieldName="Email_Address__c"
-              required="false"
-              pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
-              autocomplete="nope"
-              html-autocomplete="nope"
-              message-when-too-long="Your email address must not be more than 50 characters."
-            />
-          
-            <lightning:input
-              aura:id="addressLine1"
-              type="text"
-              label="Street Address"
-              placeholder="Search Address with Experian"
-              onchange="{!c.findMatchingAddresses}"
-              required="true"
-              autocomplete="nope"
-              html-autocomplete="nope"
-              
-              messageWhenValueMissing="Street Address is Required"
-               
-            />
-            <div aura:id="matchesOverlay" class="no-display match_overlay">
-              <aura:iteration items="{!v.matches}" var="match">
-                <div
-                  class="hover_color slds-var-p-around_x-small"
-                  data-value="{!match.format}"
-                  onclick="{!c.selectMatch}"
-                >
-                  {!match.suggestion}
-                </div>
-              </aura:iteration>
-            </div>
-            <lightning:input
-              aura:id="city"
-              type="text"
-              label="City"
-              required="true"
-              messageWhenValueMissing="City is Required"
-              autocomplete="nope"
-            />
-            <lightning:input
-              aura:id="county"
-              type="text"
-              label="County"
-              required="true"
-              messageWhenValueMissing="County is Required"
-              autocomplete="nope"
-            />
-            <lightning:input
-              aura:id="state"
-              type="text"
-              label="State"
-              required="true"
-              messageWhenValueMissing="State is Required"
-              autocomplete="nope"
-            />
-            <lightning:input
-              aura:id="postalCode"
-              type="text"
-              label="Postal Code"
-              required="true"
-              messageWhenValueMissing="Postal Code is Required"
-              autocomplete="nope"
-            />
-            <lightning:input
-              aura:id="validStatus"
-              type="text"
-              label="Validation Status"
-              disabled="true"
-            />
-            <lightning:input
-              aura:id="validTime"
-              type="datetime-local"
-              label="Validation Timestamp"
-              disabled="true"
-            />
-          </div>
-        </div>
-        
-        <lightning:button
-          class="slds-var-m-top_large"
-          label="Cancel"
-          onclick="{!c.handleCancel}"
-        />
-        <aura:if isTrue="{!v.showSupport}">
-          <lightning:button
-            class="slds-var-m-top_large"
-            variant="brand"
-            label="Back to Application"
-            onclick="{!c.hideSupportHandler}"
-          />
-          <aura:set attribute="else">
-            <lightning:button
-              class="slds-var-m-top_large"
-              variant="brand"
-              label="Contact Support"
-              onclick="{!c.showSupportHandler}"
-            />
-          </aura:set>
-        </aura:if>
-       
-        <lightning:button
-            class="slds-var-m-top_large"
-            variant="brand"
-            label="Create"
-            onclick="{!c.handleSubmit}"
-           
-            
-        />
-       
-        <aura:if isTrue="{!v.processing}">
-          <lightning:spinner
-            variant="brand"
-            size="medium"
-            alternativeText="Please Wait"
-          />
-        </aura:if>
-      </div>
-    </lightning:recordEditForm>
-  </lightning:card>
-  
+            -->
 </aura:component>

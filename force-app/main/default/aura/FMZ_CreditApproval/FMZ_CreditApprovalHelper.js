@@ -398,7 +398,11 @@
                 });
                 component.set("v.results", results);
                 if(serverResult.length>0){
-                    component.set("v.openDropDown", true);
+                    //component.set("v.openDropDown", true);
+                    //temp code
+                    var cmpTarget = component.find("searchesOverlay");
+                    $A.util.removeClass(cmpTarget, "no-display");
+        
                 }
             } else{
                 var toastEvent = $A.get("e.force:showToast");
