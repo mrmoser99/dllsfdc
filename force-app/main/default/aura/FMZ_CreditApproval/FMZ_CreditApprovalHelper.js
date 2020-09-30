@@ -6,7 +6,7 @@
   // load fields from the field set
   
   loadFields: function(component, helper) {
-  console.log('in loadFields');
+ //console.log('in loadFields');
     var action = component.get("c.getQQFields");
     action.setParams({
       fieldsetName: "FMZ_NewQuickQuote"
@@ -29,7 +29,7 @@
             );
           }
         } else if (tradeUpDetails) {
-        console.log('here112211');
+       //console.log('here112211');
           this.prepopulateField(
             component,
             "genesis__Business_Name__c",
@@ -54,7 +54,7 @@
 
           helper.helpFindMatchingAddress(component);
         }
-        console.log('final');
+       //console.log('final');
         component.set("v.processing", false);
       }
     });
@@ -65,7 +65,7 @@
   },
   // load accountid for the dealer user
   loadDealerId: function(component) {
-    console.log('in load dealer id');
+   //console.log('in load dealer id');
     var action = component.get("c.getDealerAccount");
     action.setCallback(this, function(response) {
       var state = response.getState();
@@ -78,18 +78,18 @@
 
   // submit for credit approval
   submitForApproval: function(component, qqId) {
-  console.log("!!!SubmittingForApproval: " + qqId);
+ //console.log("!!!SubmittingForApproval: " + qqId);
     var action = component.get("c.submitForApproval");
     action.setParams({
       qqId: qqId
     });
     action.setCallback(this, function(response) {
-    console.log("Callback");
+   //console.log("Callback");
       var state = response.getState();
-    console.log("STATE: " + state);
+   //console.log("STATE: " + state);
       if (state === "SUCCESS") {
         var result = response.getReturnValue();
-      console.log(result);
+     //console.log(result);
         if (
           Boolean(result) &&
           (result.indexOf("success") != -1 || result.indexOf("Submitted"))
@@ -116,7 +116,7 @@
         dismiss.fire();
         component.set("v.processing", false);
       } else if (state === "ERROR") {
-      console.log(response.getError());
+     //console.log(response.getError());
         this.showToast(
           component,
           "error",
@@ -132,7 +132,7 @@
       }
     });
     component.set("v.processing", true);
-  console.log("!!!About to Enqueue");
+ //console.log("!!!About to Enqueue");
     $A.enqueueAction(action);
   },
 
@@ -148,25 +148,25 @@
 
   // get account info to prepopulate the quick quote
   prepopulateAccountInfo: function(component, helper) {
-  console.log('in account info');
+ //console.log('in account info');
     var action = component.get("c.getAccountInfo");
-  console.log(component.get("v.accountId"));
+ //console.log(component.get("v.accountId"));
     action.setParams({
       accountId: component.get("v.accountId")
     });
     action.setCallback(this, function(response) {
-    console.log("Callback!");
+   //console.log("Callback!");
       var state = response.getState(),
       recordId = component.get("v.recordId");
       component.set("v.processing", false);
       if (state === "SUCCESS") {
-      console.log("Success!!!");
+     //console.log("Success!!!");
         var account = response.getReturnValue();
-      console.log(account);
+     //console.log(account);
         component.set("v.account", account);
-      console.log('record id:' + recordId);
+     //console.log('record id:' + recordId);
         if (recordId) {
-        console.log(' in record id');
+       //console.log(' in record id');
           this.prepopulateField(
             component,
             "genesis__Business_Name__c",
@@ -175,25 +175,25 @@
           
         }
        
-      console.log('here' + account.Phone);
+     //console.log('here' + account.Phone);
         this.prepopulateField(
           component,
           "Primary_Phone_number__c",
           account.Phone
         );
-      console.log('after here');
-      console.log(account.Phone);
+     //console.log('after here');
+     //console.log(account.Phone);
         this.prepopulateField(
           component,
           "Email_Address__c",
           account.Email_Address__c
         );
-      console.log('here i am');
+     //console.log('here i am');
      
         component.set("v.emailAddress",account.Email_Address__c);
-      console.log('primary?:' + account.Primary_Address__r);
+     //console.log('primary?:' + account.Primary_Address__r);
         if (account.Primary_Address__r) {
-        console.log("Populatng Address Fields");
+       //console.log("Populatng Address Fields");
           component
             .find("addressLine1")
             .set("v.value", account.Primary_Address__r.Address_Line_1__c || "");
@@ -224,7 +224,7 @@
         }
         component.set("v.accountId", account.Id);
         this.prepopulateField(component, "genesis__Account__c", account.Id);
-        console.log('last thing');
+       //console.log('last thing');
       }
     });
     $A.enqueueAction(action);
@@ -232,20 +232,20 @@
 
   // set the value of inputField based on field set position
   prepopulateField: function(component, fieldName, value) {
-  console.log('enter pre prop ' + value + ' fieldName : ' + fieldName);
+ //console.log('enter pre prop ' + value + ' fieldName : ' + fieldName);
     var inputField = component.find("inputField");
     var inputFieldPhone = component.find("inputFieldPhone");
     var inputFieldEmail = component.find("inputFieldEmail");
        
       
 
-    console.log('hello dog');
+   //console.log('hello dog');
     if (inputField) {
         inputField = [inputFieldPhone];
     }
 
     if (fieldName == 'genesis__Business_Name__c'){
-    console.log('handle business name please ' + ' value is: ' + value); 
+   //console.log('handle business name please ' + ' value is: ' + value); 
       component.set("v.inputValue", value); 
     }
 
@@ -257,7 +257,7 @@
       inputFieldPhone.set("v.value", value);
     }
 
-    console.log('done prepop')    ;
+   //console.log('done prepop')    ;
 
     if (fieldName == "genesis__Account__c"){
       //this means all is loaded and we can fastpath submit for approval
@@ -276,43 +276,43 @@
   isValid: function(component) {
     var result = true;
 
-  console.log('in isValid');
+ //console.log('in isValid');
     var inputFieldPhone = component.find("inputFieldPhone");
     var inputFieldFinance = component.find("inputFieldFinance");
     
-  console.log('financed amount is: ' + component.find("inputFieldFinance").get("v.value"));
+ //console.log('financed amount is: ' + component.find("inputFieldFinance").get("v.value"));
     if (
       !component.find("inputFieldFinance").get("v.value") ||
       component.find("inputFieldFinance").get("v.value") == "" || component.find("inputFieldFinance").get("v.value") == "0"
     ) {
       $A.util.addClass(component.find("inputFieldFinance"), "slds-has-error");
-    console.log('in isValid3aa');
+   //console.log('in isValid3aa');
       result = false;
     }
-  console.log('in isValid2');
+ //console.log('in isValid2');
     var addressLine1 = component.find("addressLine1").get("v.value");
     var city = component.find("city").get("v.value");
     var county = component.find("county").get("v.value");
     var state = component.find("state").get("v.value");
     var postalCode = component.find("postalCode").get("v.value");
-  console.log('in isValid3');
+ //console.log('in isValid3');
     if (!addressLine1 || addressLine1 == "") {
-    console.log('in isValid3a');
+   //console.log('in isValid3a');
       result = false;
     } else if (!city || city == "") {
-    console.log('in isValid3b');
+   //console.log('in isValid3b');
       result = false;
     } else if (!state || state == "") {
       result = false;
-    console.log('in isValid3c');
+   //console.log('in isValid3c');
     } else if (!county || county == "") {
-    console.log('in isValid3d');
+   //console.log('in isValid3d');
       result = false;
     } else if (!postalCode || postalCode == "") {
-    console.log('in isValid3e');
+   //console.log('in isValid3e');
       result = false;
     }
-    console.log('Result is: ' + result);
+   //console.log('Result is: ' + result);
 
     component.set("v.isInvalid", !result);
     
