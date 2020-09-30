@@ -1,0 +1,31 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,force:hasRecordId">
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="autoSubmitDetails" type="String" default="10000" />
+    <lightning:overlayLibrary aura:id="overlayLib" />
+
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    
+    <aura:html tag="style">
+    .cuf-content {
+        padding: 0 0rem !important;
+        visibility: hidden;
+        width:0px;
+    }
+    .slds-p-around--medium {
+         padding: 0rem !important;
+         visibility: hidden;
+         width:0px;
+    }
+    .slds-modal__content{
+        overflow-y:hidden !important;
+        height:unset !important;
+        max-height:unset !important;
+        visibility: hidden;
+        width:0px;
+    }
+</aura:html>
+
+
+
+</aura:component>	
