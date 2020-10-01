@@ -98,7 +98,7 @@
       onsubmit="{!c.handleSubmit}"
       onsuccess="{!c.handleSuccess}"
       onerror="{!c.handleError}"
-    >
+    > <!--  onkeydown="{!c.onKeyPressEvent}" -->
       <div class="slds-var-p-around_medium" onkeydown="{!c.onKeyPressEvent}">
         <aura:if isTrue="{!v.showSupport}">
           <lightning:inputRichText
@@ -167,10 +167,11 @@
            
           <lightning:input
             aura:id="searchValue"
+            tabindex="0"
             label="Business Name"
             value="{!v.inputValue}"
             placeholder="Search Accounts"
-            onchange="{!c.searchHandler}"
+            onchange="{!c.searchHandler}"   
             required="true"
             autocomplete="nope"
             html-autocomplete="nope"
@@ -203,7 +204,9 @@
           />
           -->
 
-          <lightning:select  aura:id="inputFieldFinance" name="financedAmount" label="Estimated Financed Amount" value="{!v.selectedFinanceAmount}" required="true">
+          <lightning:select  aura:id="inputFieldFinance" name="financedAmount" label="Estimated Financed Amount"
+             value="{!v.selectedFinanceAmount}"  
+              required="true" onchange="{!c.focusPhone}">
               <aura:iteration items="{!v.options2}" var="option">
                 <option text="{!option.label}" value="{!option.value}" selected="{!option.selected}"/>
               </aura:iteration>
@@ -216,7 +219,9 @@
           <lightning:input 
             aura:id="inputFieldPhone"
             label="Primary Phone Number"
-            fieldName="Primary_Phone_Number__c"
+            fieldName="Primary_Phone_number__c"
+            onChange="{!c.focusEmail}"
+            tabindex="0"
             required="true"
             autocomplete="nope"
             html-autocomplete="nope" 
@@ -228,6 +233,8 @@
           <lightning:input 
               aura:id="inputFieldEmail"
               label="Email Address"
+              tabindex="0"
+              onChange="{!c.focusAddress}"
               fieldName="Email_Address__c"
               required="false"
               pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
@@ -239,6 +246,7 @@
           <lightning:input
               aura:id="addressLine1"
               type="text"
+              tabindex="0"
               label="Street Address"
               placeholder="Search Address with Experian"
               onchange="{!c.findMatchingAddresses}"
@@ -263,6 +271,7 @@
 
             <lightning:input
               aura:id="city"
+              tabindex="0"
               type="text"
               label="City"
               required="true"
@@ -272,6 +281,7 @@
             />
             <lightning:input
               aura:id="county"
+              tabindex="0"
               type="text"
               label="County"
               required="true"
@@ -281,6 +291,7 @@
             />
             <lightning:input
               aura:id="state"
+              tabindex="0"
               type="text"
               label="State"
               required="true"
@@ -290,6 +301,7 @@
             />
             <lightning:input
               aura:id="postalCode"
+              tabindex="0"
               type="text"
               label="Postal Code"
               required="true"

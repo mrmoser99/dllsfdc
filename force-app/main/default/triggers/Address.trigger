@@ -6,6 +6,7 @@
 * 	5/4/18 - MRM Created
 *   7/21/2020 - MRM create return for scramble class
 *   08/18/2020 - MRM remove email requirement
+*   09/30/2020 - MRM add searchable street, city, state, zip for account
 *
 * This trigger udpates the email to contact and billing contact on the account
 * Also, a system contact is maintained so that conga has a contact to send invoices to
@@ -50,39 +51,57 @@ trigger Address on Address__c (before insert, before update) {
     List<Contact> uCList = new List<Contact>();
     	
     system.debug(aMap);
-    List<Account> uList = new List<Account>();
+	List<Account> uList = new List<Account>();
+	Map<ID,Account> accountMap = new Map<ID,Account>();
+	Map<ID,Contact> contactMap = new Map<ID,Contact>();
+
    	for (Address__c a:trigger.new){
+		accountMap.put(a.account__c,aMap.get(a.account__c));
+		if (a.Primary_Address__c == true){
+			Account temp = accountMap.get(a.account__c);
+			temp.primary_street__c = a.address_line_1__c; 
+			temp.primary_city__c  = a.city__c;
+			temp.primary_state__c = a.state__c;
+			temp.Primary_zip_code__c = a.zip_code__c;
+			accountMap.put(a.account__c,temp);
+		}
+		 
      	if (a.bill_to_usage__c == true){
 			if (Test.isRunningTest())
      			a.email_address__c = 'test@test.com';
-     					
-     		//if (a.Email_Address__c == null){
-   			//	a.email_address__c.addError('Email is required if bill to is true!');
-     		//}else{
-     			Account temp = aMap.get(a.account__c);
-     			temp.Billing_Email__c = a.Email_Address__c;
-     			uList.add(temp);
-     			
-     			if (cMap.get(a.account__c) == null){
-     				Contact c = new Contact(accountId = a.account__c
-     										, firstName = 'System'
-     										, lastName = 'BillTo'
-     										, email = a.email_address__c);
-     				iClist.add(c);
-     			}
-     			else{
-     				Contact c= cMap.get(a.account__c);
-     				c.email = a.email_address__c;
-     				uCList.add(c);
-     			}
-     				
-     		//}
+			 
+			Account temp = accountMap.get(a.account__c);
+     		temp.Billing_Email__c = a.Email_Address__c;
+			accountMap.put(a.account__c,temp);
+				
+     		if (cMap.get(a.account__c) == null){
+     			Contact c = new Contact(accountId = a.account__c
+     							, firstName = 'System'
+     							, lastName = 'BillTo'
+     							, email = a.email_address__c);
+     			iClist.add(c);
+     		}
+     		else{
+				 
+     			Contact c= cMap.get(a.account__c);
+     			c.email = a.email_address__c;
+				contactMap.put(c.id,c);
+			}
      	}
+		 
+		
      }
-     if (!uList.isEmpty())
-     	update uList;
-     	
-     if (!uCList.isEmpty())
+	 
+	for (ID i:accountMap.keySet())
+	 	uList.add(accountMap.get(i));
+	 
+	for (ID i:contactMap.keySet())
+		 uCList.add(contactMap.get(i));
+		 
+	 if (!uList.isEmpty())
+		 update uList;
+
+	if (!uCList.isEmpty())
      	update uCList;
      	
      if (!iCList.isEmpty())

@@ -30,13 +30,14 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
         List<String> sLIst = searchString.split(' '); 
         integer i=0;
         for (String s: sList){
-            if (i == 0)
-                query += ' LIKE \'%' + s + '%\'';
-            else
-                query += ' OR ' + valueFieldApiName + ' LIKE \'%' + s + '%\'';
-            i++;
-            system.debug('querey is: ' + query);
-
+            if (s.length() > 3){ 
+                if (i == 0) 
+                    query += ' LIKE \'%' + s + '%\'';
+             else
+                    query += ' OR ' + valueFieldApiName + ' LIKE \'%' + s + '%\'';
+             i++;
+             system.debug('querey is: ' + query);
+            }
         }
 
         query +=  extendedWhereClause + ' LIMIT '+ maxRecords;

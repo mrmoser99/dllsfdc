@@ -7,7 +7,7 @@
 ({
   doInit: function(component, event, helper) {
     
-   //console.log( 'in do init');
+  console.log( 'in do init');
     
     var recordId = component.get("v.recordId");
     var tradeUpDetails = component.get("v.tradeUpDetails");
@@ -15,13 +15,13 @@
     if (typeof autoSubmitDetails !== 'undefined')
       component.set("v.autoMode",true);
 
-   //console.log("Auto:" +  autoSubmitDetails) ;
-   //console.log("Automode = " + component.get("v.autoMode"));
+  console.log("Auto:" +  autoSubmitDetails) ;
+  console.log("Automode = " + component.get("v.autoMode"));
      
-   //console.log('value is: ' + component.get("v.selectedFinanceAmount"));
+  console.log('value is: ' + component.get("v.selectedFinanceAmount"));
     if (autoSubmitDetails == "10000")
       component.set("v.selectedFinanceAmount","$10,000");
-   //console.log('value is: ' + component.get("v.selectedFinanceAmount"));
+  console.log('value is: ' + component.get("v.selectedFinanceAmount"));
 
     if (recordId) {
       var action = component.get("c.getAccountId");
@@ -31,21 +31,21 @@
       action.setCallback(this, function(response) {
         var state = response.getState();
         if (state === "SUCCESS") {
-         //console.log('found account');
+        console.log('found account');
           var accId = response.getReturnValue();
-         //console.log('adccid : ' + accId);
+        console.log('adccid : ' + accId);
           
           component.set("v.accountId", accId);
           component.set("v.newAccount", false);
-         //console.log('before fast path');
+        console.log('before fast path');
           helper.loadFields(component, helper);
           helper.loadDealerId(component);
-         //console.log('fastpath');
+        console.log('fastpath');
         }
       });
       $A.enqueueAction(action);
     } else if (tradeUpDetails) {
-     //console.log('check customer name');
+    console.log('check customer name');
       var action = component.get("c.checkCustomerName");
       action.setParams({
         customerName: tradeUpDetails.leaseDetails.customerName
@@ -53,7 +53,7 @@
       action.setCallback(this, function(response) {
         var state = response.getState();
         if (state === "SUCCESS") {
-       //console.log('hello2');
+      console.log('hello2');
           var accId = response.getReturnValue();
           if (accId != null && accId != "") {
             component.set("v.accountId", accId);
@@ -67,12 +67,12 @@
       });
       $A.enqueueAction(action);
     } else {
-     //console.log('hello');
+    console.log('hello');
       helper.loadFields(component, helper);
       helper.loadDealerId(component);
     }
 
-   //console.log('leaving do init');
+  console.log('leaving do init');
    
   },
   findMatchingAddresses: function(component, event, helper) {
@@ -100,7 +100,7 @@
     $A.enqueueAction(action);
   },
   doneLoading: function(component, event, helper) {
-   //console.log('start doneloading');
+  console.log('start doneloading');
     var accountId = component.get("v.accountId");
     if (accountId) {
       if (Array.isArray(accountId)) {
@@ -109,14 +109,14 @@
       helper.prepopulateAccountInfo(component, helper);
     }
     component.set("v.processing", false);
-   //console.log('last thing really');
+  console.log('last thing really');
   },
   handleLoad: function(component, event, helper) {
     $A.util.addClass(component, "is-loaded");
   },
    
   handleSubmit: function(component, event, helper) {
- //console.log('clicked create');
+console.log('clicked create');
     component.set('v.processing', true);
     var accountId = component.get("v.accountId");
 
@@ -126,9 +126,9 @@
 
 
     var dealerId = component.get("v.dealerId");
-   //console.log('calling is valid on wed');
+  console.log('calling is valid on wed');
     var isValid = helper.isValid(component);
-   //console.log('back from isvalid');
+  console.log('back from isvalid');
     var recordId = component.get("v.recordId");
     var account = component.get("v.account");
     var tradeUpDetails = component.get("v.tradeUpDetails");
@@ -140,16 +140,16 @@
       fields["Oracle_Trade_up_Quote_Expiration_Date__c"] = tradeUpDetails.expirationDate;
     }
     fields["Email_Address__c"] = component.find("inputFieldEmail").get("v.value");
-   //console.log('assigning f amount');
+  console.log('assigning f amount');
     if (component.get("v.autoSubmitDetails") == "10000"){
       fields["Estimated_Financed_Amount__c"] = "10000";
     }
     else{
-       //console.log('hi');
-       //console.log('value is: ' + component.get("v.selectedFinanceAmount"));
+      console.log('hi');
+      console.log('value is: ' + component.get("v.selectedFinanceAmount"));
         fields["Estimated_Financed_Amount__c"] = component.get("v.selectedFinanceAmount");
     }
-    fields["Primary_Phone_Number__c"] = component.find("inputFieldPhone").get("v.value");
+    fields["Primary_Phone_number__c"] = component.find("inputFieldPhone").get("v.value");
     fields["genesis__Address_Line_1__c"] = component.find("addressLine1").get("v.value");
     fields["genesis__City__c"] = component.find("city").get("v.value");
     fields["County__c"] = component.find("county").get("v.value");
@@ -160,11 +160,11 @@
     fields["Validation_Time_Stamp__c"] = component.find("validTime").get("v.value");
     fields["genesis__Account__c"] = accountId;
 
- //console.log('account id is: ' + accountId);
+console.log('account id is: ' + accountId);
     fields["Dealer__c"] = dealerId;
     
     if (account && account.Name) {
-    //console.log('account');
+   console.log('account');
       fields["genesis__Business_Name__c"] = account.Name;
     }
     else{
@@ -172,7 +172,7 @@
     }
     
     component.set("v.isInvalid", !isValid);
- //console.log("Invalid = " + component.get("v.isInvalid"));
+console.log("Invalid = " + component.get("v.isInvalid"));
     if (!isValid){
       component.set("v.processing", false);
       return;
@@ -187,7 +187,7 @@
       var state = response.getState();
       if (state === "SUCCESS") {
         var createResponse = response.getReturnValue();
-     //console.log(createResponse);
+    console.log(createResponse);
         if (createResponse.status == "SUCCESS") {
           helper.submitForApproval(component, createResponse.message);
         } else {
@@ -286,7 +286,7 @@
     event.preventDefault();
   },
   lookupChange: function(component, event, helper) {
- //console.log('look up change');
+console.log('look up change');
     var accountId = component.get("v.accountId");
     if (accountId) {
       if (Array.isArray(accountId)) {
@@ -305,20 +305,20 @@
     if (event.getName() === "error") {
       var error = event.getParam("error");
 
-   //console.log(error.message);
+  console.log(error.message);
 
       // top level error messages
       error.data.output.errors.forEach(function(msg) {
-     //console.log(msg.errorCode);
-     //console.log(msg.message);
+    console.log(msg.errorCode);
+    console.log(msg.message);
       });
 
       // field specific error messages
       Object.keys(error.data.output.fieldErrors).forEach(function(field) {
         error.data.output.fieldErrors[field].forEach(function(msg) {
-       //console.log(msg.fieldName);
-       //console.log(msg.errorCode);
-       //console.log(msg.message);
+      console.log(msg.fieldName);
+      console.log(msg.errorCode);
+      console.log(msg.message);
         });
       });
     }
@@ -341,25 +341,47 @@
     component.set("v.processing", false);
   },
   onKeyPressEvent: function(component, event, helper) {
- //console.log('key pressed=' + event.key);
+    console.log('key pressed=' + event.key);
 
     if (event.key == 'Enter' || event.key == 'Tab') {
-    //console.log('trying switcheroo');
-       
-      event.preventDefault();
+      
+      //console.log('target: ' + target.get("v.label"));
+      console.log('trying switcheroo');
+     
       component.set("v.results", []);
       var cmpTarget = component.find("searchesOverlay");
-    //console.log('trying switcheroo2');
+      //console.log('trying switcheroo2');
       $A.util.removeClass(cmpTarget, "no-display");
       //component.set("v.openDropDown", false);
       //temp
       component.set("v.inputValue", component.find("searchValue").get("v.value"));
-    //console.log('trying switcheroo3');
-   //console.log('setting focus');
-      component.find("inputFieldFinance").focus();
-       
-      
-   //console.log('switcheroo');
+     // console.log('trying switcheroo3');
+      console.log('hocus pocus focus' );
+      console.log('finance' +  component.find("inputFieldFinance").get("v.value"));
+      console.log('phone' +  component.find("inputFieldPhone").get("v.value"));
+      console.log('email' +  component.find("inputFieldEmail").get("v.value"));
+      console.log('addr1' +  component.find("addressLine1").get("v.value"));
+     
+
+      if (component.find("searchValue").get("v.value") != null && component.find("searchValue").get("v.value") != ""){
+        component.find("inputFieldFinance").focus();
+        console.log('1');
+        if ( component.find("inputFieldFinance").get("v.value") == "10000.00"|| component.find("inputFieldFinance").get("v.value") == "25000.00" || component.find("inputFieldFinance").get("v.value") == "50000.00"){
+          component.find("inputFieldPhone").focus();
+          console.log('2');
+          if (component.find("inputFieldPhone").get("v.value") != null && component.find("inputFieldPhone").get("v.value") != ""){
+            component.find("inputFieldEmail").focus();
+            console.log('3');
+            if (component.find("inputFieldEmail").get("v.value") != null && component.find("inputFieldEmail").get("v.value") != ""){
+              component.find("addressLine1").focus();
+              console.log('4');
+            }
+          }
+        }
+        
+      }
+    
+      console.log('switcheroo');
     }
   },
   showSupportHandler: function(component, event, helper) {
@@ -392,42 +414,25 @@
     component.set("v.results", []);
     component.set("v.openDropDown", false);
     component.set("v.inputValue", event.target.value);
- //console.log('setting focus');
-     
-    
-     
+    console.log('setting focus');
   },
   searchHandler : function (component, event, helper) {
- //console.log('key code is: ' + event.key);
- //console.log('event is:' + event);
+    console.log('key code is: ' + event.key);
+    console.log('event is:' + event);
     
     if (event.keyCode == 9 || event.keyCode == 13){
-   //console.log('hi there  tab/enter was pressed');
       component.set("v.results", []);
       component.set("v.openDropDown", false);
-      //temp comment
-      //component.set("v.inputValue", event.target.value);
       component.set("v.inputValue", component.find("searchValue").get("v.value"));
-      component.find("inputFieldFinance").focus();
-      if (event.keyCode == 13) {
-     //console.log('trying focus2' + component.find("inputFieldFinance"));
-     //console.log( component.find("inputFieldFinance").get("v.value") );
-        component.find("inputFieldFinance").focus();
-        component.set('v.isFocus1', true);
-     //console.log('trying focus end');
-
-      } 
       
     }
     else{
- //console.log('in searchHandler' + event.target.value);
-    component.set("v.processing", true);
-    //temp comment
-    //const searchString = event.target.value;
-    const searchString = component.find("searchValue").get("v.value");
+      console.log('in searchHandler' + event.target.value);
+      component.set("v.processing", true);
+      const searchString = component.find("searchValue").get("v.value");
 
- //console.log('in search handler' + 'search string is: ' + searchString);
-    if (searchString.length >= 4) {
+      console.log('in search handler' + 'search string is: ' + searchString);
+      if (searchString.length >= 4) {
         //Ensure that not many function execution happens if user keeps typing
         if (component.get("v.inputSearchFunction")) {
             clearTimeout(component.get("v.inputSearchFunction"));
@@ -437,20 +442,21 @@
             helper.searchRecords(component, searchString);
         }), 1);
         component.set("v.inputSearchFunction", inputTimer);
-     //console.log('not found');
+        console.log('not found');
         component.set("v.searchString",searchString);
-     //console.log('search string is' + component.get("v.searchString"));
-    } else{
+        console.log('search string is' + component.get("v.searchString"));
+      } else{
         component.set("v.results", []);
         var cmpTarget = component.find("searchesOverlay");
         $A.util.addClass(cmpTarget, "no-display");
         //component.set("v.openDropDown", false);
 
-     //console.log('r: ' + component.get("v.results"));
+        console.log('r: ' + component.get("v.results"));
+      }
     }
-  }
-    component.set("v.processing", false);
+  component.set("v.processing", false);
 },
+
 optionClickHandler : function (component, event, helper) {
   //
 console.log('option click handler');
@@ -476,9 +482,9 @@ console.log(component.get("v.selectedOption"));
     });
     action.setCallback(this, function(response) {
       var state = response.getState();
-   //console.log(state);
+  console.log(state);
       if (state === "SUCCESS") {
-     //console.log('success');
+    console.log('success');
         var accId = response.getReturnValue();
         component.set("v.accountId", accId);
         component.set("v.newAccount", false);
@@ -493,7 +499,7 @@ console.log(component.get("v.selectedOption"));
 },
 
 clearOption : function (component, event, helper) {
- //console.log('clear option');
+console.log('clear option');
     component.set("v.results", []);
     component.set("v.openDropDown", false);
     component.set("v.inputValue", "");
@@ -509,7 +515,28 @@ loadOptions: function (component, event, helper) {
             { value: "50000.00", label: "$50,000" }
         ];
         component.set("v.options2", opts);
-    }
+},
+focusAddress: function (component, event, helper) {
+  console.log('focus on address');
+  component.find("addressLine1").focus();
+
+},
+focusEmail: function (component, event, helper) {
+  console.log('focus on address');
+  component.find("inputFieldEmail").focus();
+
+},
+focusPhone: function (component, event, helper) {
+  console.log('focus on address');
+  component.find("inputFieldPhone").focus();
+
+},
+focusFinance: function (component, event, helper) {
+  console.log('focus on address');
+  component.find("inputFieldFinance").focus();
+
+},
+
 });
 
 
