@@ -25,6 +25,7 @@
 	2/26/2020 - MRM Added logic to combine accounts under parent ein account
 	5/4/2020 - MRM Added check for EIN being masked with X's instead of *'s
 *	5/28/2020 - MRM Removed LC01 check and now check for PDRequiredTreatment = CRE
+*	10/02/2020 - MRM Used DML for the account name update so dup rules are ignored.   
 *
 ********************************************************************************************************************/
 global class ICSResponse {
@@ -774,7 +775,18 @@ global class ICSResponse {
 		a.quick_quote__c = q.id;
 		
 		update a;
-		update acc;
+
+		/*****  ingnore dup on credit name update  */
+		//update acc;
+
+		Database.DMLOptions dml = new Database.DMLOptions();
+		dml.DuplicateRuleHeader.allowSave = true;
+		dml.DuplicateRuleHeader.runAsCurrentUser = true; 
+
+		Database.SaveResult dr = Database.update(acc, dml); 
+		if (dr.isSuccess()) {   
+  			System.debug('Duplicate account has been inserted in Salesforce!'); 
+		}
 		
 		
 		q.Credit_Approval_Date__c = date.today();
