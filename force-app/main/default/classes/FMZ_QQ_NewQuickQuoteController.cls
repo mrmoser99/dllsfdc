@@ -24,13 +24,16 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
         if(extendedWhereClause == null){
             extendedWhereClause = '';
         }
+        if (searchString == null)
+            return null;
+
 
         String query = 'SELECT '+ idFieldApiName+', ' + valueFieldApiName + ' FROM ' + objectApiName + ' WHERE ' + valueFieldApiName;
         system.debug('querey is: ' + query);
         List<String> sLIst = searchString.split(' '); 
         integer i=0;
         for (String s: sList){
-            if (s.length() > 3){ 
+            if (s.length() >= 4){ 
                 if (i == 0) 
                     query += ' LIKE \'%' + s + '%\'';
              else

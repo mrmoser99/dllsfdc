@@ -1,0 +1,8 @@
+<aura:component description="Existing Customer LIst" implements="forceCommunity:availableForAllPageTypes" controller="FMZ_ExistingCustomerController" access="global">
+
+    <lightning:navigation aura:id="nav"/>
+
+    <lightning:overlayLibrary aura:id="overlayLib"/>
+    <lightning:button class="slds-size_full address-button" iconName="utility:check" name="modal" variant="brand" label="Existing Customer" onclick="{!c.gotoList}"/>
+
+</aura:component> 
