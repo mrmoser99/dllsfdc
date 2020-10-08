@@ -7,6 +7,7 @@
 * 2/15/18 - MRM Created
 * 5/16/19 - MRM Added logic to mark a payment request as confirmed;;; guard rail effort
 * 9/22/2020 MRM Added logic to update dealer funding details
+* 10/08/2020 MRM added credit notification email
 *
 **********************************************************************************************/
 trigger Int_OLMN_Payment_Confirmation on Int_OLMN_Payment_Confirmation__c (before insert) {
@@ -37,6 +38,12 @@ trigger Int_OLMN_Payment_Confirmation on Int_OLMN_Payment_Confirmation__c (befor
 	for (cllease__Dealer_Funding_Detail__c f:fundingList){
 		fundingMap.put(f.cllease__Contract__r.name + '-' + string.valueOf(f.cllease__Dealer_Charges__c),f);
 	}
+
+	List<cllease__Lease_Account__c> cList = new List<cllease__Lease_Account__c>();
+	clist = [Select id, name, cllease__Dealer__r.primary_address__r.email_address__c from cllease__Lease_Account__c where name in: contractSet];
+	Map<String,cllease__Lease_Account__c> leaseMap = new Map<String,cllease__Lease_Account__c>();
+	for (cllease__Lease_Account__c c:cList)
+		leaseMap.put(c.name,c);
 
 	system.debug('funding map:' + fundingMap);
 
@@ -90,10 +97,15 @@ trigger Int_OLMN_Payment_Confirmation on Int_OLMN_Payment_Confirmation__c (befor
 						fundingListUpdate.add(temp);
 					}
 				}	
+
+				r.LS_Contract__c = leaseMap.get(r.Contract_Number__c).id;
+				r.Credit_Notificaiton_Email__c = leaseMap.get(r.Contract_Number__c).cllease__Dealer__r.primary_address__r.email_address__c;
 	}
 
 	for (Int_OLMN_AP__c a:pList){
 		a.ap_confirmed__c = true;
+		 
+
 	}
 
 	if (!pList.isEmpty())

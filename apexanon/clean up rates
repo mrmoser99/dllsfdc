@@ -1,0 +1,24 @@
+Account a = [select id from account where mosaic_primary_id__c = '125760-0003'];
+
+List<clcommon__CL_Product__c> pList = [select id from clcommon__CL_Product__c where Dealer__c = :a.id];
+
+List<genesis__Product_Rate_Card_Association__c> dList = [ 
+            select  id
+            from genesis__Product_Rate_Card_Association__c
+            where genesis__CL_Product__c = null];
+delete dList;
+
+Set<ID> pSet = new Set<ID>();
+for (clcommon__CL_Product__c p:pList)
+    pSet.add(p.id);
+
+List <genesis__Rate_Card_Setup_Header__c> hList = [select id from genesis__Rate_Card_Setup_Header__c where genesis__CL_Product__c  in :pSet];
+delete hList;
+
+List<genesis__Product_Rate_Card_Association__c> rcaList = [select id from genesis__Product_Rate_Card_Association__c where id in:pSet];
+delete rcaList;
+
+delete pList;
+
+ 
+                     
