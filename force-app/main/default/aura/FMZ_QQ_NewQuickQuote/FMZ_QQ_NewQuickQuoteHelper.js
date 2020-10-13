@@ -1,7 +1,7 @@
 ({
     // load fields from the field set
     loadFields: function(component) {
-console.log('loadFields');
+//console.log('loadFields');
         var action = component.get('c.getQQFields');
         action.setParams({
             fieldsetName: 'FMZ_NewQuickQuote'
@@ -47,7 +47,7 @@ console.log('loadFields');
             var state = response.getState();
             if (state === 'SUCCESS') {
                 var result = response.getReturnValue();
-                console.log(result);
+               ////console.log(result);
                 if (Boolean(result) && result.indexOf('success') != -1) {
                     this.showToast (
                         component,
@@ -69,7 +69,7 @@ console.log('loadFields');
                     component.set('v.processing', false);
                 }
             } else if (state === 'ERROR') {
-                console.log(response.getError());
+               ////console.log(response.getError());
                 this.showToast(
                     component,
                     'error',
@@ -88,20 +88,20 @@ console.log('loadFields');
 
     // get account info to prepopulate the quick quote
     prepopulateAccountInfo: function(component) {
-console.log('prepop');
+//console.log('prepop');
         var action = component.get('c.getAccountInfo');
         action.setParams({
             accountId : component.get('v.accountId')
         });
-console.log(component.get('v.accountId'));
+//console.log(component.get('v.accountId'));
         action.setCallback(this, function(response) {
-            console.log('Callback!');
+           ////console.log('Callback!');
             var state = response.getState(),
                 recordId = component.get('v.recordId');
             component.set('v.processing', false);
-console.log(state);
+//console.log(state);
             if (state === 'SUCCESS') {
-                console.log('Success!!!');
+               ////console.log('Success!!!');
                 var account = response.getReturnValue();
                 component.set('v.account', account);
                 if (recordId) {
@@ -109,7 +109,7 @@ console.log(state);
                 }
                 this.prepopulateField(component, 'Primary_Phone_number__c', account.Phone);
                 if (account.Primary_Address__r) {
-                    console.log('Populatng Address Fields');
+                   ////console.log('Populatng Address Fields');
                     this.prepopulateField(component, 'genesis__Address_Line_1__c', account.Primary_Address__r.Address_Line_1__c);
                     this.prepopulateField(component, 'genesis__City__c', account.Primary_Address__r.City__c);
                     this.prepopulateField(component, 'genesis__State__c', account.Primary_Address__r.State__c);

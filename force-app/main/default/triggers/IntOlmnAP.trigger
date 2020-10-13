@@ -6,6 +6,7 @@
 * Change Log:
 *
 * 9/23/2020 - MRM Created cls creates duplicates in the ap file.. this prevents them
+* 10/9/2020 - MRM Removed Delete
 *
 **********************************************************************************************/
 trigger IntOlmnAP on Int_OLMN_AP__c (after insert) {
@@ -43,7 +44,7 @@ trigger IntOlmnAP on Int_OLMN_AP__c (after insert) {
         
     }    
 
-    if (!apMap.isEmpty())
-        NewCoUtility.deleteAP(apMap);
+    //if (!apMap.isEmpty())
+    //    NewCoUtility.deleteAP(apMap);
 
 }

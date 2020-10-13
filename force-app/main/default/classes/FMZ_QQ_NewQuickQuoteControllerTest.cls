@@ -3,7 +3,7 @@ public with sharing class FMZ_QQ_NewQuickQuoteControllerTest {
 
     public static final String PORTAL_PROFILE = 'NewCo Dealer Portal Manager';
     public static final String QQ_FIELDSET = 'FMZ_NewQuickQuote';
-
+ 
     static testMethod void portalUser_getAccount_found() {
 
         RecordType dealerRT = [SELECT Id FROM RecordType WHERE Name = 'Dealer' AND SobjectType = 'Account'];
@@ -371,6 +371,7 @@ public with sharing class FMZ_QQ_NewQuickQuoteControllerTest {
                 genesis__Address_Line_1__c = '123 Maple St',
                 genesis__City__c = 'New York',
                 genesis__State__c = 'NY',
+                dealer__c = dealer.id,
                 County__c = 'New York',
                 genesis__Postal_Code__c = '10019',
                 Estimated_Financed_Amount__c = '10000',
@@ -378,7 +379,7 @@ public with sharing class FMZ_QQ_NewQuickQuoteControllerTest {
         );
 
 
-            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(qq, false);
+            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(JSON.Serialize(qq), false);
             System.assertEquals('SUCCESS', response.status);
             System.assertNotEquals(null, response.message);
         }
@@ -429,6 +430,7 @@ public with sharing class FMZ_QQ_NewQuickQuoteControllerTest {
                 genesis__City__c = 'New York',
                 genesis__State__c = 'NY',
                 County__c = 'New York',
+                dealer__c = dealer.id,
                 genesis__Postal_Code__c = '10019',
                 Estimated_Financed_Amount__c = '10000',
                 genesis__Status__c = 'NEW'
@@ -439,12 +441,12 @@ public with sharing class FMZ_QQ_NewQuickQuoteControllerTest {
             Account lessee = new Account ( Name = 'Test Lessee', RecordTypeId = lesseeRT.Id );
             insert lessee;
 
-            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(qq, false);
+            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(JSON.Serialize(qq), false);
             System.assertEquals('DUPLICATES', response.status);
             System.assertNotEquals(null, response.message);
             System.assertNotEquals(null, response.duplicates);
         }
-    }
+    }  
 
     private static List<User> getPortalDealerUsers(List<Contact> contacts){
         Id p = [select id from profile where name='NewCo Dealer Portal User'].id;

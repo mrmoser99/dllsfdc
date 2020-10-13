@@ -8,6 +8,48 @@
  *******************************************************************************************************************************/ 
 public without sharing class FMZ_ApplicationTermsController {
 
+
+    @AuraEnabled
+    public static String getDealer(String applicationId){
+        
+         
+
+        genesis__Applications__c a = [select Dealer__c 
+                            from  genesis__Applications__c 
+                            where id = :applicationId
+        ];
+
+        return a.dealer__c;
+    
+    }
+
+    @AuraEnabled
+    public static List<Map<String,String>> getRateCards(String dealerId){
+        
+        LIst<Map<String,String>> cards = new List<Map<String,String>>();
+
+        List<clcommon__CL_Product__c> pList = 
+                [ select id
+                , Rate_Card_Setup__r.name
+                , dealer__c
+                from clcommon__CL_Product__c
+                where   (dealer__c = :dealerId and active__c = true and (Rate_Card_Setup__r.genesis__Start_Date__c <= :Date.today() and Rate_Card_Setup__r.genesis__End_Date__c >= :date.today() )  )
+                   or  (dealer__c = :dealerId and active__c = true and (Rate_Card_Setup__r.genesis__Start_Date__c <= :Date.today() and Rate_Card_Setup__r.grandfather_date__c >= :date.today() ) )
+                   or  (clcommon__Product_Name__c = 'Finance Lease' and dealer__c = null)
+                order by dealer__c asc
+                ]; 
+        for (clcommon__CL_Product__c p:pList){
+            if (p.dealer__c == null)
+                cards.add(new Map<String, String>{'value' => p.Rate_Card_Setup__c, 'label' => 'Fair Market Value-ASTRA'});
+            else
+                cards.add(new Map<String, String>{'value' => p.Rate_Card_Setup__c, 'label' => p.Rate_Card_Setup__r.name});
+
+        }
+
+        return cards;
+
+    }
+     
     @AuraEnabled
     public static List<Decimal> getTermOptions(String applicationId){
         List<Decimal> termOptions = new List<Decimal>();
@@ -57,16 +99,48 @@ public without sharing class FMZ_ApplicationTermsController {
         return termOptions;
     }
 
+    
+
     @AuraEnabled
     public static genesis__Applications__c getApplicationTerms(Id applicationId) {
 
         genesis__Applications__c result =
-            [SELECT Id, genesis__Term__c, Rate_Card_Selection__c,
+            [SELECT Id, genesis__Term__c, Rate_Card_Selection__c, rate_card_setup__c,
                     genesis__Payment_Frequency__c
             FROM genesis__Applications__c
             WHERE Id = :applicationId];
-
+        
         return result;
+
+    }
+
+    @AuraEnabled
+    public static void updateApplicationRateCard(String applicationString, String rateCardId) {
+
+        genesis__Applications__c applications =
+                (genesis__Applications__c)JSON.deserialize(applicationString, genesis__Applications__c.class);
+
+        system.debug('applications:' + applications);
+
+        list<genesis__Rate_Card_Setup_Header__c> pList = new List<genesis__Rate_Card_Setup_Header__c>();
+        clcommon__CL_Product__c p;
+         
+        if (rateCardId == 'Fair Market Value-ASTRA'){
+            p =  [select id from clcommon__CL_Product__c where dealer__c = null limit 1];  //default fmv rates
+            applications.rate_card_setup__c = null;
+        }
+        else{
+            pList = [select CL_Product__c from genesis__Rate_Card_Setup_Header__c where id = :rateCardId];
+            applications.rate_card_setup__c = rateCardid;
+        }
+        if (pList.size() == 0)
+            applications.genesis__CL_Product__c = p.id;
+        else
+            applications.genesis__CL_Product__c = pList[0].CL_Product__c;
+
+        system.debug('product is ' + applications.genesis__CL_Product__c);
+
+        update applications;
 
     }
 

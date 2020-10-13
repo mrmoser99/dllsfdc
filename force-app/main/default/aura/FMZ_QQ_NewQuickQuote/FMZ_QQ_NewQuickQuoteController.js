@@ -14,7 +14,7 @@
         $A.util.addClass(component, 'is-loaded');
     },
     handleSubmit: function(component, event, helper) {
-        console.log('clicked create');
+       ////console.log('clicked create');
         var fields = event.getParam('fields'),
             accountId = component.get('v.accountId'),
             dealerId = component.get('v.dealerId'),
@@ -34,7 +34,7 @@
         component.find('qqForm').submit(fields);
     },
     lookupChange: function(component, event, helper) {
-console.log('lookupChange');
+//console.log('lookupChange');
         component.set('v.accountId', event.getParam('value'));
         var accountId = component.get('v.accountId');
         if (accountId) {
@@ -56,15 +56,15 @@ console.log('lookupChange');
 
             var error = event.getParam('error');
 
-            console.log(error.message);
+           ////console.log(error.message);
 
             if(error.data) {
 
                 // top level error messages
                 error.data.output.errors.forEach(
                     function (msg) {
-                        console.log(msg.errorCode);
-                        console.log(msg.message);
+                       ////console.log(msg.errorCode);
+                       ////console.log(msg.message);
                     }
                 );
 
@@ -72,9 +72,9 @@ console.log('lookupChange');
                 Object.keys(error.data.output.fieldErrors).forEach(function (field) {
                     error.data.output.fieldErrors[field].forEach(
                         function (msg) {
-                            console.log(msg.fieldName);
-                            console.log(msg.errorCode);
-                            console.log(msg.message);
+                           ////console.log(msg.fieldName);
+                           ////console.log(msg.errorCode);
+                           ////console.log(msg.message);
                         }
                     )
                 });
@@ -87,7 +87,7 @@ console.log('lookupChange');
         dismiss.fire();
     },
     handleNewCustomer: function(component, event, helper) {
-        console.log('HANDLING NEW CUSTOMER!');
+       ////console.log('HANDLING NEW CUSTOMER!');
         component.set("v.accountId", event.getParams().id);
         helper.prepopulateAccountInfo(component);
     }

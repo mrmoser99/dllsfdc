@@ -1,7 +1,10 @@
 <aura:component controller="FMZ_ApplicationTermsController">
 
     <aura:attribute name="applicationId" type="Id"/>
+    <aura:attribute name="dealerId" type="Id"/>
+    <aura:attribute name="selectedRateCardId" type="Id"/>
     <aura:attribute name="termOpts" type="List"/>
+    <aura:attribute name="cards" type="List" />
     <aura:attribute name="onchange" type="Aura.Action" description="Handle any data changes"/>
     <aura:attribute name="nbrofpayments" type="String"/>
     <aura:attribute name="application" type="Object" access="private"/>
@@ -45,12 +48,13 @@
     </lightning:layout>
 
     <lightning:layout>
-        <lightning:layoutItem size="12" mediumDeviceSize="8" largeDeviceSize="6">
-            <lightning:input type="text" tabIndex="-1"
-                             label="Rate Card" required="false"
-                             value="{!v.application.Rate_Card_Selection__c}"
-                             readonly="true" class="slds-form-element_readonly"/>
-        </lightning:layoutItem>
+        <lightning:select  aura:id="rateCard" name="rateCard" label="Rate Card"
+            value="{!v.selectedRateCardId}" onchange="{!c.updateRateCard}" required="true">
+              <aura:iteration items="{!v.cards}" var="c">
+                <option text="{!c.label}" value="{!c.value}" selected="{!v.selectedRateCardId}" />
+              </aura:iteration>
+        </lightning:select> 
     </lightning:layout>
-
+          
+         
 </aura:component>

@@ -193,6 +193,8 @@ global without sharing class RateUtility {
         Map<String,List<RateCardAccountJSON2Apex.program>> resultMap = new Map<String,List<RateCardAccountJSON2Apex.program>>();
 
         RateCardAccountJSON2Apex result = RateCardAccountJSON2Apex.parse(string.valueOf(res1.getBody()));
+
+         RateCardAccountJSON2Apex result = RateCardAccountJSON2Apex.parse(string.valueOf(res1.getBody()));
         
         if (result == null)
             return null;

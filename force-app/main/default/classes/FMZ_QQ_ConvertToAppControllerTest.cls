@@ -54,6 +54,7 @@ public with sharing class FMZ_QQ_ConvertToAppControllerTest {
                 genesis__Address_Line_1__c = '123 Maple St',
                 genesis__City__c = 'New York',
                 genesis__State__c = 'NY',
+                dealer__c = dealer.id,
                 County__c = 'New York',
                 genesis__Postal_Code__c = '10019',
                 Estimated_Financed_Amount__c = '10000',
@@ -61,7 +62,7 @@ public with sharing class FMZ_QQ_ConvertToAppControllerTest {
         );
 
 
-            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(qq, false);
+            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(JSON.serialize(qq), false);
             System.assertEquals('SUCCESS', response.status);
             System.assertNotEquals(null, response.message);
             Id qqId = response.message;
@@ -127,6 +128,7 @@ public with sharing class FMZ_QQ_ConvertToAppControllerTest {
                 Primary_Phone_number__c = '8005551212',
                 genesis__Address_Line_1__c = '123 Maple St',
                 genesis__City__c = 'New York',
+                dealer__c = dealer.id,
                 genesis__State__c = 'NY',
                 County__c = 'New York',
                 genesis__Postal_Code__c = '10019',
@@ -135,7 +137,7 @@ public with sharing class FMZ_QQ_ConvertToAppControllerTest {
         );
 
 
-            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(qq, false);
+            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(JSON.Serialize(qq), false);
             System.assertEquals('SUCCESS', response.status);
             System.assertNotEquals(null, response.message);
             Id qqId = response.message;
@@ -202,6 +204,7 @@ public with sharing class FMZ_QQ_ConvertToAppControllerTest {
                 genesis__Address_Line_1__c = '123 Maple St',
                 genesis__City__c = 'New York',
                 genesis__State__c = 'NY',
+                dealer__c = dealer.id,
                 County__c = 'New York',
                 genesis__Postal_Code__c = '10019',
                 Estimated_Financed_Amount__c = '10000',
@@ -209,7 +212,7 @@ public with sharing class FMZ_QQ_ConvertToAppControllerTest {
         );
 
 
-            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(qq, false);
+            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(JSON.Serialize(qq), false);
             System.assertEquals('SUCCESS', response.status);
             System.assertNotEquals(null, response.message);
             Id qqId = response.message;
@@ -277,6 +280,7 @@ public with sharing class FMZ_QQ_ConvertToAppControllerTest {
                 genesis__Address_Line_1__c = '123 Maple St',
                 genesis__City__c = 'New York',
                 genesis__State__c = 'NY',
+                dealer__c = dealer.id,
                 County__c = 'New York',
                 genesis__Postal_Code__c = '10019',
                 Estimated_Financed_Amount__c = '10000',
@@ -284,7 +288,7 @@ public with sharing class FMZ_QQ_ConvertToAppControllerTest {
         );
 
 
-            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(qq, false);
+            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(JSON.Serialize(qq), false);
             System.assertEquals('SUCCESS', response.status);
             System.assertNotEquals(null, response.message);
             Id qqId = response.message;
@@ -540,6 +544,7 @@ public with sharing class FMZ_QQ_ConvertToAppControllerTest {
                 genesis__Address_Line_1__c = '123 Maple St',
                 genesis__City__c = 'New York',
                 genesis__State__c = 'NY',
+                dealer__c = dealer.id,
                 County__c = 'New York',
                 genesis__Postal_Code__c = '10019',
                 Estimated_Financed_Amount__c = '10000',
@@ -547,7 +552,7 @@ public with sharing class FMZ_QQ_ConvertToAppControllerTest {
         );
 
 
-            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(qq, false);
+            FMZ_QQ_NewQuickQuoteController.CreateResponse response = FMZ_QQ_NewQuickQuoteController.createRecords(JSON.Serialize(qq), false);
             System.assertEquals('SUCCESS', response.status);
             System.assertNotEquals(null, response.message);
             Id qqId = response.message;

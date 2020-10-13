@@ -33,6 +33,11 @@ global with sharing class Account_GetRatesController {
 			response.put(RESPONSE_KEYWORD_MESSAGE,'A mosaic primary id is required to update rates!');
     		error=true;
         }
+
+        if (error){
+            if (!test.isRunningTest())
+               return JSON.serialize(response);
+        }
        
         
         String callOutCode = RateUtility.getProgram(a.mosaic_primary_id__c);

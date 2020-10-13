@@ -2,14 +2,20 @@
     // load or reload terms associated with this application
     loadApplicationTerms: function(component) {
         try {
+            console.log('loading terms');
             var action = component.get('c.getApplicationTerms');
             action.setParams({
                 applicationId: component.get('v.applicationId')
             });
+
             action.setCallback(this, function (response) {
                 var state = response.getState();
                 if (state === 'SUCCESS') {
                     component.set('v.application', response.getReturnValue());
+                   
+                    var app = component.get('v.application');
+                    console.log('seeting rate card id' + app.Rate_Card_Setup__c);
+                    component.set('v.selectedRateCardId',app.Rate_Card_Setup__c);
                 } else if (state === 'ERROR') {
                     let error = response.getError();
                     if (error && error[0]) {
@@ -18,6 +24,48 @@
                 }
             });
             $A.enqueueAction(action);
+        } catch (e) {
+            console.log(e);
+        }
+    },
+    
+
+    getDealer: function(component) {
+        try {
+            var action = component.get('c.getDealer');
+            action.setParams({
+                applicationId: component.get('v.applicationId')
+            });
+            action.setCallback(this, function (response) {
+                var state = response.getState();
+                if (state === 'SUCCESS') {
+                    component.set('v.dealerId', response.getReturnValue());
+                    var action = component.get('c.getRateCards');
+                    action.setParams({
+                        dealerId: component.get('v.dealerId')
+                    });
+                    action.setCallback(this, function (response) {
+                         var state = response.getState();
+                        if (state === 'SUCCESS') {
+                            component.set('v.cards', response.getReturnValue());
+                        } else if (state === 'ERROR') {
+                            console.log('card error');
+                            let error = response.getError();
+                            if (error && error[0]) {
+                                console.log(error[0].message);
+                            }
+                       }
+                    });
+                    $A.enqueueAction(action);
+                } else if (state === 'ERROR') {
+                    let error = response.getError();
+                    if (error && error[0]) {
+                        console.log(error[0].message);
+                    }
+                }
+            });
+            $A.enqueueAction(action);
+            
         } catch (e) {
             console.log(e);
         }
@@ -35,6 +83,32 @@
                     console.log('Term Options: '+response.getReturnValue());
                     component.set('v.termOpts', response.getReturnValue());
                 } else if (state === 'ERROR') {
+                    let error = response.getError();
+                    if (error && error[0]) {
+                        console.log(error[0].message);
+                    }
+                }
+            });
+            $A.enqueueAction(action);
+        } catch (e) {
+            console.log(e);
+        }
+    },
+
+    loadCards: function(component) {
+        try {
+            console.log('in cards load');
+            var action = component.get('c.getRateCards');
+            action.setParams({
+                dealerId: component.get('v.dealerId')
+            });
+            action.setCallback(this, function (response) {
+                var state = response.getState();
+                if (state === 'SUCCESS') {
+                   
+                    component.set('v.cards', response.getReturnValue());
+                } else if (state === 'ERROR') {
+                    console.log('card error');
                     let error = response.getError();
                     if (error && error[0]) {
                         console.log(error[0].message);
@@ -79,7 +153,7 @@
             console.log(e);
         }
     },
-
+    
     helpSaveAndValidate : function(component){
         try {
             let application = component.get('v.application'),
