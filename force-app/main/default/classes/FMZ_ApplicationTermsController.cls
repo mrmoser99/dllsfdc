@@ -124,9 +124,15 @@ public without sharing class FMZ_ApplicationTermsController {
 
         list<genesis__Rate_Card_Setup_Header__c> pList = new List<genesis__Rate_Card_Setup_Header__c>();
         clcommon__CL_Product__c p;
-         
+        
+        p =  [select id from clcommon__CL_Product__c where dealer__c = null limit 1]; 
+
+        cllease__Lease_Product__c lp =  [select id 
+                                        from cllease__Lease_Product__c
+                                        where cllease__CL_Product__c = :p.id
+                                        ];
+        
         if (rateCardId == 'Fair Market Value-ASTRA'){
-            p =  [select id from clcommon__CL_Product__c where dealer__c = null limit 1];  //default fmv rates
             applications.rate_card_setup__c = null;
         }
         else{
@@ -139,6 +145,8 @@ public without sharing class FMZ_ApplicationTermsController {
             applications.genesis__CL_Product__c = pList[0].CL_Product__c;
 
         system.debug('product is ' + applications.genesis__CL_Product__c);
+
+        applications.Lease_Product_Name__c = lp.id;
 
         update applications;
 

@@ -62,7 +62,7 @@ global without sharing class RateUtility {
 
             Account a = [select id from Account where mosaic_primary_id__c  = :mosaicPrimaryId];
             
-            string endpoint = 'https://apiacc.dllgroup.com/vf/us/v1/partner-insight/Details/' + string.valueOf(vId) + '-' + string.valueOf(vList[1]);
+            string endpoint = 'https://' + System.Label.ICVDomain + '.dllgroup.com/vf/us/v1/partner-insight/Details/' + string.valueOf(vId) + '-' + string.valueOf(vList[1]);
 
             system.debug('endpoint is: ' + endpoint);
         	
@@ -194,8 +194,6 @@ global without sharing class RateUtility {
 
         RateCardAccountJSON2Apex result = RateCardAccountJSON2Apex.parse(string.valueOf(res1.getBody()));
 
-         RateCardAccountJSON2Apex result = RateCardAccountJSON2Apex.parse(string.valueOf(res1.getBody()));
-        
         if (result == null)
             return null;
         else
@@ -234,7 +232,7 @@ global without sharing class RateUtility {
 			
 			HttpRequest reqAPI = new HttpRequest();  
 			
-            string endpoint = 'https://apiacc.dllgroup.com/vf/us/v1/ratecards/' + rateCard + '/ratefactors';
+            string endpoint = 'https://' + System.Label.ICVDomain + '.dllgroup.com/vf/us/v1/ratecards/' + rateCard + '/ratefactors';
 
             system.debug('endpoint is: ' + endpoint);
         	 
