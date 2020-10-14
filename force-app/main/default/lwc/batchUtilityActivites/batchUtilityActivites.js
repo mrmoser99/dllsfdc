@@ -4,11 +4,11 @@ import getJobDetails from "@salesforce/apex/BatchUtility.getJobDetails";
 
 export default class BatchUtilityActivites extends LightningElement {
   @track jobDetails;
-  
+  _wiredJobDetails;
   @track refreshExecute = "";
   @track loading = false;
   error;
-  _wiredJobDetails;
+ 
   
 
   columnConfig = [
