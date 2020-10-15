@@ -1,22 +1,13 @@
 <template>
-    <div style="height: 300px;">
+    <div>
         <lightning-datatable
                 key-field="id"
                 data={leaseDetails}
                 columns={columns}
-                onrowaction={handleRowAction}>
+                onrowaction={handleRowAction}
+                hide-checkbox-column="true"
+                >
         </lightning-datatable>
     </div>
-    <div class="slds-var-m-around_medium" style="width: 30rem;">
-        <article class="slds-tile">
-           
-            <div class="slds-tile__detail">
-                <dl class="slds-list_horizontal slds-wrap">
-                    <dt class="slds-item_label slds-text-color_weak slds-truncate" title="Name">Name:</dt>
-                    <dd class="slds-item_detail slds-truncate">{record.name}</dd>
-                    
-                </dl>
-            </div>
-        </article>
-    </div>
+    
 </template>

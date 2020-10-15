@@ -18,8 +18,18 @@ public with sharing class NewcoPortfolioUtility {
         List<cllease__Lease_Account__c> lList = new List<cllease__Lease_Account__c>();
 
         lList = [select id
-                ,name
+                ,Name
+                ,cllease__Account__r.Name
+                ,Total_Monthly_Payment__c
+                ,cllease__Term__c
+                ,Remaining_Payments__c
+                ,Equipment_Count__c
+                ,Billing_Address_Line_1__c
+                ,City__c
+                ,State__c
+                ,Zip_Code__c
                 From cllease__Lease_Account__c
+                order by Remaining_Payments__c asc, cllease__Maturity_Date__c asc
                 ];
 
             
