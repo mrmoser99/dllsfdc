@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Customer_LE_Type__c</fullName>
-    <defaultValue>&#39;PLC&#39;</defaultValue>
+    <defaultValue>&apos;PLC&apos;</defaultValue>
     <externalId>false</externalId>
     <label>Customer LE Type</label>
     <required>false</required>

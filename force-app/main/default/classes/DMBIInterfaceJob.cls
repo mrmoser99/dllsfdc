@@ -6,16 +6,18 @@ global with sharing class DMBIInterfaceJob implements Database.Batchable<sObject
     public map<string,string> IntCodeMapping = new map<string,string>();
     global map<string,integer> SobjectCountMap = new map<string,integer>();
     global set<String> DataObjSet = new set<String>{'Int_Agreement__c','Int_Agreement_Classification__c','Int_Agreement_Exposure__c','Int_Agreement_Feature__c','Int_Agreement_Interest__c','Int_Agreement_Line__c','Int_Agreement_Line_Asset__c','Int_Agreement_Party__c','Int_Agreement_Payment_Schedule__c','Int_Asset__c','Int_Party__c','Int_Party_External_Reference__c','Int_Party_Street_Address__c'};
-        global map<string,string> SobjectHashMap = new map<string,string>();
+    global map<string,string> SobjectHashMap = new map<string,string>();
     global boolean isSuccess = true;
     global datetime BatchstartTime = system.now();  
-    global map<String,Int_Party__c> insertedPartiesMap = new map<String,Int_Party__c>();  
+    global map<String,Int_Party__c> insertedPartiesMap = new map<String,Int_Party__c>(); 
+    
     //Start method for fetching records.
     global Database.QueryLocator start(Database.BatchableContext BC){
         IntCodeMapping = DMBIInterfaceRecordGeneratorJob.getIntMapping();
         query = DMBIInterfaceRecordGeneratorJob.ConstructQuery() ;       
         return Database.getQueryLocator(query);
     }
+    
     //Execute method 
     global void execute(Database.BatchableContext BC, List<sObject> scope){
         //system.debug('scope---->'+scope.size());
@@ -98,7 +100,11 @@ global with sharing class DMBIInterfaceJob implements Database.Batchable<sObject
             if(!AgreementsToInsert1.isEmpty()){
                 //Insert AgreementsToInsert1;
                 Database.insert(AgreementsToInsert1,False);
+                //count 
                 ConstructControlMap('Int_Party_Street_Address__c',DMBIInterfaceRecordGeneratorJob.CountInsertedRecords(AgreementsToInsert1));//    
+            }else if(AgreementsToInsert1.size()==0){
+                System.debug('AgreementsToInsert1 Size : ' + AgreementsToInsert1.size());
+                throw new OtherException('No record inserted in Int_Party_Street_Address__c object, Please re-run the job.');
             }
             if(!AgreementsToInsert2.isEmpty()){
                 System.debug('before insert count--->'+AgreementsToInsert2.size());

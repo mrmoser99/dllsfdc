@@ -7,5 +7,5 @@
     <masterLabel>Select List of Similars</masterLabel>
     <openType>onClickJavaScript</openType>
     <protected>false</protected>
-    <url>alert(&#39;Selecting list of similars&#39;);</url>
+    <url>alert(&apos;Selecting list of similars&apos;);</url>
 </WebLink>

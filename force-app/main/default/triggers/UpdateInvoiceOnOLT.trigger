@@ -21,7 +21,7 @@ trigger UpdateInvoiceOnOLT on cllease__Dealer_Funding_Detail__c (after update) {
 
         // 3. Querying Other Transactions to update details from Equipment
         Map<Id, clcommon__Disbursement_Transaction__c> dealerFundTxnsMap = 
-            new Map<Id, clcommon__Disbursement_Transaction__c>([SELECT Id, Invoice_Number__c, Invoice_Date__c 
+            new Map<Id, clcommon__Disbursement_Transaction__c>([SELECT Id, Invoice_Number__c, Invoice_Date__c, Contract_Equipment__c
                                                             FROM clcommon__Disbursement_Transaction__c 
                                                             WHERE Id in :dealerTxnEquipmentMap.keyset()]);
 
@@ -32,7 +32,8 @@ trigger UpdateInvoiceOnOLT on cllease__Dealer_Funding_Detail__c (after update) {
             // Updating foloowing fields from Equipment to dealerFunding Transaction
             dealerFundTxn.Invoice_Number__c = equipment.Invoice_Number__c;
             dealerFundTxn.Invoice_Date__c   = equipment.Invoice_Date__c;
-            dealerFundTxn.AP_Processing_Status__c = 'New';
+            dealerFundTxn.Contract_Equipment__c=equipment.Id; //--JE 10/8/20 --mapping contract equipment to disbursement transaction - Case: 02407541
+            //dealerFundTxn.AP_Processing_Status__c = 'New'; --JE 10/7/20 --commented out line to resolved duplicate AP records issuse - Case: 02386585
             dealerFundTxnsToUpdate.add(dealerFundTxn);
         }
         System.debug(LoggingLevel.ERROR, '^^^^ dealerFundTxnsToUpdate : ' + dealerFundTxnsToUpdate);

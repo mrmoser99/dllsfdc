@@ -3887,6 +3887,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Int_OLMN_Payment_Confirmation__c.Credit_Notificaiton_Email__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Int_OLMN_Payment_Confirmation__c.Funding_Type__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -3903,6 +3908,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Int_OLMN_Payment_Confirmation__c.Invoice_Number__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Int_OLMN_Payment_Confirmation__c.LS_Contract__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>

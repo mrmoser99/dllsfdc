@@ -17,7 +17,7 @@ if(r == true)
    var message = sforce.apex.execute(&quot;CongaGenerateInvoice&quot;,&quot;generateInvoiceDocument&quot;,
                                     {recordId:&quot;{!Invoice__c.Id}&quot;});
     alert(message);
-    if(message==&#39;Document generated successfully&#39;){
+    if(message==&apos;Document generated successfully&apos;){
         window.location.reload();
     }
 }</url>

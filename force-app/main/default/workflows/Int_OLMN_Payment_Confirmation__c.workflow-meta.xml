@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Newco_Notification_For_Funding</fullName>
+        <description>Newco Notification For Funding</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Credit_Notificaiton_Email__c</field>
+            <type>email</type>
+        </recipients>
+        <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>cnotify__Notification_Templates/Newco_Notification_For_Funding</template>
+    </alerts>
+</Workflow>

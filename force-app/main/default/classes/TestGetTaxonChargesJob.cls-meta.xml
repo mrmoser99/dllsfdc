@@ -7,7 +7,7 @@
         <namespace>clcommon</namespace>
     </packageVersions>
     <packageVersions>
-        <majorNumber>3</majorNumber> 
+        <majorNumber>3</majorNumber>
         <minorNumber>3011</minorNumber>
         <namespace>cllease</namespace>
     </packageVersions>

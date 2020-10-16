@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "itemCount": 1
+  },
+  "data": {
+    "code": 31001310,
+    "name": "7130cdn Color Printer",
+    "referencePrice": 1999.989990234375,
+    "isActive": true,
+    "isTitled": false,
+    "isSerialized": true,
+    "program": {
+      "code": 53,
+      "name": "Generic OE US"
+    },
+    "masterAssetType": {
+      "code": 107,
+      "name": "Office Equipment"
+    },
+    "objectCategory": {
+      "code": 800102,
+      "name": "Printers"
+    },
+    "assetType": {
+      "code": 40000671,
+      "name": "Color Printer"
+    },
+    "brand": {
+      "code": 30000302,
+      "name": "Dell"
+    }
+  },
+  "links": {
+    "self": "http://assetsdev4.waynemo.dll.corp:9400/api/v1/programs/53/models/31001310"
+  }
+}

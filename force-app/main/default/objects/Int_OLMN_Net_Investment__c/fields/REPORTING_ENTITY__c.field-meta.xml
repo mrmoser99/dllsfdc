@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>REPORTING_ENTITY__c</fullName>
-    <defaultValue>&#39;00101&#39;</defaultValue>
+    <defaultValue>&apos;00101&apos;</defaultValue>
     <externalId>false</externalId>
     <label>REPORTING ENTITY</label>
     <length>30</length>

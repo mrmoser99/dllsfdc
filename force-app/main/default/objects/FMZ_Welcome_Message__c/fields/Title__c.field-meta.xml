@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Title__c</fullName>
-    <description>Use &#39;{0}&#39; for current users name. Use &#39;{1}&#39; for the current users first name.</description>
+    <description>Use &apos;{0}&apos; for current users name. Use &apos;{1}&apos; for the current users first name.</description>
     <externalId>false</externalId>
-    <inlineHelpText>Use &#39;{0}&#39; for current users name. Use &#39;{1}&#39; for the current users first name.</inlineHelpText>
+    <inlineHelpText>Use &apos;{0}&apos; for current users name. Use &apos;{1}&apos; for the current users first name.</inlineHelpText>
     <label>Title</label>
     <length>255</length>
     <required>false</required>

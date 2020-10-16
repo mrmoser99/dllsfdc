@@ -538,6 +538,3 @@ focusFinance: function (component, event, helper) {
 },
 
 });
-
-
- 

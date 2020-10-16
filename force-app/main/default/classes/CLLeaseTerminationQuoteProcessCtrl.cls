@@ -1,0 +1,41 @@
+global class CLLeaseTerminationQuoteProcessCtrl {
+    webService static String fullTermination(String appId){ 
+    
+        List<cllease__Termination_Quote_Header__c> quoteHeaderList;
+        try{
+           List<genesis__Applications__c> appList=[select id,name,Oracle_Trade_up_Quote_Number__c from genesis__Applications__c where id=:appId]; 
+            //system.debug('appList[0].Oracle_Trade_up_Quote_Number__c=' +appList[0].Oracle_Trade_up_Quote_Number__c);
+            if(appList[0].Oracle_Trade_up_Quote_Number__c!=null){
+               quoteHeaderList=[select id,name,cllease__Contract__r.Name,cllease__Quote_Reason__c,cllease__Quote_Type__c,cllease__Termination_Date__c,
+                                                                       cllease__Status__c,cllease__Effective_From__c,cllease__Quote_Amount__c from cllease__Termination_Quote_Header__c
+                                                                       where name=:appList[0].Oracle_Trade_up_Quote_Number__c and cllease__Status__c='ACCEPTED'];
+              
+                
+                  //System.debug('Status : ' +quoteHeaderList[0].cllease__Status__c);
+                  //system.debug('Termination Id =' + quoteHeaderList[0].name);
+                  cllease.TerminationQuoteAPI  termQuoteAPI = new cllease.TerminationQuoteAPI(quoteHeaderList[0].id);  
+                  termQuoteAPI.processQuote(); 
+                  //system.debug('Termination Id =' + quoteHeaderList[0].name);
+                  return 'Termination Processed Sucessfully'; 
+                          
+                   
+            }else{
+                 //system.debug('TradeUpQuoteNumber should not be null');
+                 return 'TradeUpQuoteNumber should not be null !!';
+            }
+            
+           
+            
+        }catch(Exception ex){
+            //System.debug('Exception : ' + ex);
+            if(quoteHeaderList.size()==0){
+                return 'Termination Quote is not in ACCEPTED status !!';
+            }else{
+                return 'Exception : ' + ex.getMessage();
+            }
+            
+        }
+        
+        
+    }
+}

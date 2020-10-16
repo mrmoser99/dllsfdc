@@ -17,9 +17,9 @@ global with sharing class DMBIDataCleanUpJob implements Database.Batchable<sObje
     global void execute(Database.BatchableContext BC, List<sObject> scope){
         try{
             /*if(!scope.isEmpty()&&scope.size()>10000){
-DMBIInterfaceRecordGeneratorJob.HandleBulkDML(scope,'Delete');    
-}
-else{*/                                        
+            DMBIInterfaceRecordGeneratorJob.HandleBulkDML(scope,'Delete');    
+            }
+            else{*/                                        
             NumberOfRecordsDeleted += scope.size();
             If(ObjectToQuery!='Int_Agreement__c'){
                 DELETE Scope;
@@ -46,6 +46,7 @@ else{*/
             }
             
             Database.executeBatch(new DMBIInterfaceJob(),10);
+            System.debug('***********DMBIInterfaceJob Call **************');
             
         }
     }

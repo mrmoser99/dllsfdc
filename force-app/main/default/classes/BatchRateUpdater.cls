@@ -54,4 +54,4 @@ global class BatchRateUpdater implements Database.Batchable<SObject>,Database.St
 
     }
   
-}  
+}

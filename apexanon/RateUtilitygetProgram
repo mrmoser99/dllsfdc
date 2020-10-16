@@ -1,3 +1,9 @@
 
       
-RateUtility.getProgram('125760-0003');
+//RateUtility.getProgram('125760-0003');
+    Id batchJobId= Database.executeBatch(new MarksBatchIterable(), 1); //Btch size=1
+     
+
+//String leaseId = 'a6J5C0000004VPwUAM';
+//CLLeaseTerminationQuoteServices.
+//CLLeaseTerminationQuoteServices.generateTerminationQuotes(leaseId);

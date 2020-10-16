@@ -21,6 +21,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
         }
         Return MappingMap;
     } 
+    
     //query method
     public static string ConstructQuery(){
         // returning constrcted Dynamic Query on Contract Object 
@@ -1041,6 +1042,7 @@ Public class DMBIInterfaceRecordGeneratorJob {
                 }  
             } 
         }
+        //PSADMap.values().clear(); 
         Return PSADMap.values();
     }    
     //------------------------------------- PartyStreetAddress creation Ends -----------------------------------------------------*/

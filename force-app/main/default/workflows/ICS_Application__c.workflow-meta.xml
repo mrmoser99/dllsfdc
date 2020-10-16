@@ -13,7 +13,7 @@
     <fieldUpdates>
         <fullName>Failed</fullName>
         <field>Status__c</field>
-        <formula>&#39;No Response in 5 Min&#39;</formula>
+        <formula>&apos;No Response in 5 Min&apos;</formula>
         <name>Failed</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>

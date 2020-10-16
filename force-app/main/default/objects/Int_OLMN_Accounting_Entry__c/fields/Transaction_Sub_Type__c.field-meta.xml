@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Transaction_Sub_Type__c</fullName>
-    <description>This field helps in storing Fee&#39;s name when type is charge. This is interface table mapping field.</description>
+    <description>This field helps in storing Fee&apos;s name when type is charge. This is interface table mapping field.</description>
     <externalId>false</externalId>
-    <inlineHelpText>This field helps in storing Fee&#39;s name when type is charge.This is interface table mapping field.</inlineHelpText>
+    <inlineHelpText>This field helps in storing Fee&apos;s name when type is charge.This is interface table mapping field.</inlineHelpText>
     <label>Transaction Sub-Type</label>
     <length>30</length>
     <required>false</required>

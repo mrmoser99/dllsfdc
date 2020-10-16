@@ -46,6 +46,16 @@
         <visible>false</visible>
     </applicationVisibilities>
     <applicationVisibilities>
+        <application>NewCo_Rate_Card</application>
+        <default>false</default>
+        <visible>false</visible>
+    </applicationVisibilities>
+    <applicationVisibilities>
+        <application>Newco_Portfoliio_Manager</application>
+        <default>false</default>
+        <visible>false</visible>
+    </applicationVisibilities>
+    <applicationVisibilities>
         <application>Portfolio_Management</application>
         <default>false</default>
         <visible>false</visible>
@@ -151,6 +161,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>Account_GetRatesController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>AddressDataQualityExt</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -175,6 +189,26 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>AssetUtility</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>AssetUtilityCallOutMock</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>AssetUtility_Test</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>BacthAssetUpdate</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>BacthAssetUpdate_Test</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>BatchBridgerPasswordMaint</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -188,6 +222,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>BatchNPBACalc</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>BatchRateUpdater</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -232,6 +270,26 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CD_ManualController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CLLeaseTerminationQuoteProcessCtrl</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CLLeaseTerminationQuoteProcessCtrlTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CLLeaseTerminationQuoteServices</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CLLeaseTerminationQuoteServicesCopy</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CLLeaseTerminationQuoteServicesTest</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -423,6 +481,14 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>ExecuteBatchAssetUpdate</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ExecuteBatchAssetUpdate_Test</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ExecuteBatchStatsReport</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -552,6 +618,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>FMZ_EDQ_Address_Callout</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>FMZ_ExistingCustomerController</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -763,6 +833,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>JSON2Apex</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>JWT</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -791,6 +865,22 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>ModelsListJSON2Apex</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ModelsListJSON2Apex_Test</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ModelsModelCodeDetailsJSON2Apex</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ModelsModelCodeDetailsJSON2Apex_Test</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>MyProfilePageController</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -815,7 +905,15 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>NewcoPortfolioUtility</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>OFACCall</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>OtherException</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -868,6 +966,14 @@
     </classAccesses>
     <classAccesses>
         <apexClass>ProcessCreditApprovalResponse</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RateCardAccountJSON2Apex</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>RateCardDetailsJSON2Apex</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -5193,6 +5299,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Int_OLMN_Payment_Confirmation__c.Credit_Notificaiton_Email__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Int_OLMN_Payment_Confirmation__c.Funding_Type__c</field>
         <readable>false</readable>
@@ -5211,6 +5322,11 @@
         <editable>false</editable>
         <field>Int_OLMN_Payment_Confirmation__c.Invoice_Number__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Int_OLMN_Payment_Confirmation__c.LS_Contract__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
@@ -8871,6 +8987,10 @@
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>Newco_Portfolio</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>OFAC_Log__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
@@ -8893,6 +9013,10 @@
     <tabVisibilities>
         <tab>Portfolio_Contract__c</tab>
         <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Portfolio_Manager</tab>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>Property_Tax_Rate_Factors__c</tab>
@@ -8995,8 +9119,16 @@
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>clcommon__CL_Product__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>clcommon__ComponentStructure__c</tab>
         <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>clcommon__Disbursement_Transaction__c</tab>
+        <visibility>DefaultOff</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>clcommon__Document_Definition__c</tab>
@@ -9037,6 +9169,10 @@
     <tabVisibilities>
         <tab>cllease__Contract_Fees__c</tab>
         <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>cllease__Dealer_Funding_Detail__c</tab>
+        <visibility>DefaultOff</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>cllease__Due_Detail_Lines__c</tab>
@@ -9095,6 +9231,10 @@
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>genesis__Company__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>genesis__Conversion_Mapping__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
@@ -9117,6 +9257,14 @@
     <tabVisibilities>
         <tab>genesis__Quick_Quote_Equipment__c</tab>
         <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>genesis__Rate_Card_Setup_Detail__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>genesis__Rate_Card_Setup_Header__c</tab>
+        <visibility>DefaultOff</visibility>
     </tabVisibilities>
     <userLicense>Salesforce</userLicense>
     <userPermissions>

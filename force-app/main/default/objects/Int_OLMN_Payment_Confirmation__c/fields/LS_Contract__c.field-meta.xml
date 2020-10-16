@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>LS_Contract__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <externalId>false</externalId>
+    <label>LS Contract</label>
+    <referenceTo>cllease__Lease_Account__c</referenceTo>
+    <relationshipLabel>Int OLMN Payment Confirmation</relationshipLabel>
+    <relationshipName>Int_OLMN_Payment_Confirmation</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

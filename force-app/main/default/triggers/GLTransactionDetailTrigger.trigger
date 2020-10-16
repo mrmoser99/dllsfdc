@@ -4,6 +4,10 @@
         - Store Bill and charges if Tax Type
     b. Tax Type
         - For Bill, Charge, Payment Tax, Assign Contract__r.State__c as Movement Code
+
+    Change Log:
+
+    10/10/20 - Added logic to pull state from the asset level for Tax GL entry on Estimated Property Taxes Charges - 02388116  
 */
 trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before insert, before update) {
     
@@ -143,10 +147,11 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                 continue;
             } 
 
-            // Incase of Charge chagne it to BILLING as 
+            // Incase of Charge change it to BILLING as -- commented out this log. Needed to seperate bills and charge for estimated property tax-- JE 10/10/20
+            /*
             if(clleaseTxnType == 'CHARGE') {
                 clleaseTxnType = 'BILLING';
-            }
+            } */
 
             System.debug(LoggingLevel.ERROR, 'State: '+contractsMap.get(glEntry.cllease__Contract__c).State__c);
             // Retrieve Movement Record for
@@ -157,12 +162,17 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
             if(!clleaseTxnSubType.containsIgnoreCase('TAX')) {
                 movementCode = txnMovementCodesMap.get(clleaseTxnType);
 
+            } else if(clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
+                && contractsMap.get(glEntry.cllease__Contract__c) !=null
+                && contractsMap.get(glEntry.cllease__Contract__c).State__c != null){
+                movementCode = taxMovementCodesMap.get(glEntry.Destination_State__c);
+
             } else if(clleaseTxnSubType.containsIgnoreCase('TAX')
                 && contractsMap.get(glEntry.cllease__Contract__c) !=null
                 && contractsMap.get(glEntry.cllease__Contract__c).State__c != null){
                 movementCode = taxMovementCodesMap.get(contractsMap.get(glEntry.cllease__Contract__c).State__c);
-            
-            }
+
+            } 
 
             System.debug(LoggingLevel.ERROR, 'movementCode: '+movementCode);
             //Skip the process incase of movement code is null for given transaction
@@ -208,7 +218,7 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                             if(accountName == 'On Account'){
                                 glEntry.Movement_Code_Dr__c = movementOnAccountCode.Movement_Code__c;
                             } else{
-                            	glEntry.Movement_Code_Dr__c = contractsMap.get(glEntry.cllease__Contract__c).State__c;
+                              glEntry.Movement_Code_Dr__c = contractsMap.get(glEntry.cllease__Contract__c).State__c;
                             }
                         } else if(!clleaseTxnSubType.containsIgnoreCase('tax')){ 
                             System.debug(LoggingLevel.ERROR, '^^^ accountName : ' + accountName);
@@ -216,12 +226,20 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                                 System.debug(LoggingLevel.ERROR, '^^^ movementOnAccountCode : ' + movementOnAccountCode);
                                 glEntry.Movement_Code_Dr__c = movementOnAccountCode.Movement_Code__c;
                             } else{
-                            	glEntry.Movement_Code_Dr__c = movementCode.Movement_Code__c;
+                              glEntry.Movement_Code_Dr__c = movementCode.Movement_Code__c;
                             }
                         }
 
+                    } else if(clLeaseTxnType == 'CHARGE') {
+                        if(clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
+                            && glBillAccountString !=null 
+                            && glDebitAccountCodeString !=null
+                            && glBillAccountString.containsIgnoreCase(glDebitAccountCodeString)) {
+                            glEntry.Movement_Code_Dr__c = movementCode.Movement_Code__c;
+
+                        }
                     } else if(clLeaseTxnType == 'BILLING'
-                        || clLeaseTxnType == 'CHARGE') {
+                        || clLeaseTxnType == 'CHARGE') {                    
                         if(clleaseTxnSubType.containsIgnoreCase('tax')
                             && glBillAccountString !=null 
                             && glDebitAccountCodeString !=null
@@ -232,8 +250,8 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                             glEntry.Movement_Code_Dr__c = movementCode.Movement_Code__c;
 
                         }
-                    }
-                    remark = 'Successfully Updated Movement Codes...';  
+                    }                   
+                remark = 'Successfully Updated Movement Codes...';  
 
                 }
 
@@ -273,7 +291,7 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                             if(accountName == 'On Account'){
                                 glEntry.Movement_Code_Cr__c = movementOnAccountCode.Movement_Code__c;
                             } else{
-                            	glEntry.Movement_Code_Cr__c = contractsMap.get(glEntry.cllease__Contract__c).State__c;
+                              glEntry.Movement_Code_Cr__c = contractsMap.get(glEntry.cllease__Contract__c).State__c;
                             }
 
                         } else if(!clleaseTxnSubType.containsIgnoreCase('tax')){
@@ -282,12 +300,20 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                                 glEntry.Movement_Code_Cr__c = movementOnAccountCode.Movement_Code__c;
                             } else{
                                 System.debug(LoggingLevel.ERROR, '^^^ movementCode : ' + movementCode);
-                            	glEntry.Movement_Code_Cr__c = movementCode.Movement_Code__c;
+                              glEntry.Movement_Code_Cr__c = movementCode.Movement_Code__c;
                             }
                         }
 
+                    } else if(clLeaseTxnType == 'CHARGE') {
+                        if(clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
+                            && glBillAccountString !=null 
+                            && glCreditAccountCodeString !=null
+                            && glBillAccountString.containsIgnoreCase(glCreditAccountCodeString)) {
+                            glEntry.Movement_Code_Cr__c = movementCode.Movement_Code__c;
+
+                        }
                     } else if(clLeaseTxnType == 'BILLING'
-                        || clLeaseTxnType == 'CHARGE') {
+                        || clLeaseTxnType == 'CHARGE') {                    
                         if(clleaseTxnSubType.containsIgnoreCase('tax')
                             && glBillAccountString !=null 
                             && glCreditAccountCodeString !=null
@@ -299,6 +325,7 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
 
                         }
                     }
+
                 }
                 remark = 'Successfully Updated Movement Codes...';  
             }
