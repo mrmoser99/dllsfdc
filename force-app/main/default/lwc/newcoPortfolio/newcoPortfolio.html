@@ -13,16 +13,16 @@
         </lightning-layout>
         <lightning-layout>
             <lightning-button variant="success" label="Filter Results" title="Successful action" onclick={handleClick} class="slds-m-left_x-small slds-p-around_medium"></lightning-button>
-          
         </lightning-layout>
-        <lightning-datatable
-                key-field="Id"
-                data={leaseList}
-                columns={columns}
-                onrowaction={handleRowAction}
-                hide-checkbox-column="true"
-                >
+       
+        <div class="slds-m-around_large">
+            <div if:true={loading} class="slds-is-relative">
+                <lightning-spinner alternative-text="Loading..." variant="brand"></lightning-spinner>
+            </div>
+        </div>    
+       
+        <lightning-datatable key-field="Id" data={leaseList} columns={columns} onrowaction={handleRowAction} hide-checkbox-column="true">
         </lightning-datatable>
-
+        
     </lightning-card>
 </template>

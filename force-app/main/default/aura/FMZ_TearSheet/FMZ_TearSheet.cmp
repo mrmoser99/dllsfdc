@@ -1,4 +1,7 @@
 <aura:component description="FMZ_TearSheet" controller="FMZ_PortfolioManager">
+  <!---FROM DATA -->
+  <aura:attribute name="fromNewco" type="Boolean" default="false" />
+
   <!-- CUSTOMER INFORMATION BEGIN -->
   <aura:attribute name="customerName" type="String" />
   <aura:attribute name="accountNumber" type="String" />
@@ -27,7 +30,7 @@
   <!-- MISC BEGIN -->
   <aura:attribute name="leaseNumber" type="String" default="25110465" />
   <aura:attribute name="isLoading" type="Boolean" default="false" />
-  <aura:attribute name="leaseDetails" type="String" />
+  <aura:attribute name="leaseDetails" type="String" access="public"/>
   <!-- MISC BEGIN -->
 
   <!-- HANDLERS BEGIN -->

@@ -26,9 +26,13 @@
 
   fetchData: function(component) {
     component.set("v.isLoading", true);
+    
+    var leaseDetails;
+    console.log('lease details: ' + JSON.stringify(component.get('v.leaseDetails')));
+   
 
-    var leaseDetails = component.get("v.leaseDetails");
-
+    leaseDetails = component.get("v.leaseDetails");
+    
     var recordObject = JSON.parse(leaseDetails);
     console.log(recordObject);
 
@@ -128,5 +132,25 @@
     component.set("v.data", assets);
 
     component.set("v.isLoading", false);
+  },
+
+  fetchDataFromNewco: function(component) {
+    component.set("v.isLoading", true);
+
+    //get lease details
+    this.getLeaseDetails(component);
+
+    component.set("v.isLoading", false);
+  },
+
+  getLeaseDetails: function(component) {
+
+    console.log('getting lease detail for lease number:' + component.get('v.leaseNumber'));     
+    
+    var leaseDetailsAction = component.get("c.getLeaseDetails");
+    leaseDetailsAction.setParams({
+      leaseNumber: component.get("v.leaseNumber")
+    });
   }
+  
 });

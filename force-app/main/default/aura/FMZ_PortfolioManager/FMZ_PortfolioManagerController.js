@@ -270,6 +270,7 @@
         return;
     }
   },
+  
 
   openTearSheetModal: function(component, event, helper) {
     component.set("v.isTearSheetVisible", true);
@@ -474,4 +475,7 @@
     helper.emailTearSheetOrQuoteHelper(component, subject, body);
     return;
   }
+
+ 
+ 
 });

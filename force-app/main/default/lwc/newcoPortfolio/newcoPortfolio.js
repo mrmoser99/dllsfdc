@@ -15,7 +15,7 @@ const actions = [
 
 
 const columns = [
-    { label: 'Customer', fieldName: 'CustomerName' }, 
+    { label: 'Customer', fieldName: 'CustomerName', wrapText:false}, 
     { label: 'Lease Number', fieldName: 'Name' },
     { label: 'Equip Count', fieldName: 'Equipment_Count__c' },
     { label: 'Payment', fieldName: 'Total_Monthly_Payment__c', type: 'currency'},
@@ -48,7 +48,8 @@ export default class NewcoPortfolio extends LightningElement {
     leaseList = [];
     _wiredLeaseList;
     @track refreshExecute = "";
-    @track loading = false;
+    @track loading = true;
+   
     error;
     data = [];
     record = {}; 
@@ -72,23 +73,40 @@ export default class NewcoPortfolio extends LightningElement {
     quote(row) {
 
         console.log('ready to call quote with lease id: ' + row.Id);
-        
-    }
 
+        const lease = row.Id;
+    
+        const displayQuoteEvent = new CustomEvent('displayquote', {
+            detail: { lease },
+        });
+        // Fire the custom event
+        this.dispatchEvent(displayQuoteEvent);
+    }
+        
+    
 
     tear(row) {
         this.record = row;
+        const lease = row.Name;
+        console.log('lease is  ' + lease);
+        const displayTearEvent = new CustomEvent('displaytear', {
+            detail: { lease },
+        });
+        // Fire the custom event
+        this.dispatchEvent(displayTearEvent);
     }
 
     @wire(getLeaseList,{ refreshExecute: "$refreshExecute"}) 
         wired_getLeases({ error, data }) {
-
+            
             this._wiredLeaseList = [];
             this.leaseList = [];
-             
+            
             //need to flatten to display for relationship fields
             this.data = data;
             if (this.data) {
+                console.log ('refresh execute');
+                this.loading = true;
                 let preparedLeases = [];
                 this.data.forEach(lease => {
                     let preparedLease = {};
@@ -117,13 +135,14 @@ export default class NewcoPortfolio extends LightningElement {
         wired_filterLeases({ error, data }) {}
 
     onRefresh(){
-     
+        console.log('on refresh');
         var today = new Date();
         this.loading = true;
         this.refreshExecute  = today.getSeconds() + today.getMilliseconds();
     }
 
     getLoading(){
+        console.log('get loading');
         return this.loading;
     }
 
@@ -147,50 +166,64 @@ export default class NewcoPortfolio extends LightningElement {
          
          
     }
+
     
     handleClick(evt) {
-        const allValid = [...this.template.querySelectorAll('lightning-input')]
-            .reduce((validSoFar, inputCmp) => {
-                inputCmp.reportValidity();
-                return validSoFar && inputCmp.checkValidity();
-            }, true);
-            if (allValid) {
-                //alert('All form entries look valid. Ready to submit!');
-                
-                this.searchCustomer = this.customerName;
-                this.searchLease = this.leaseNumber;
-                this.searchSerial = this.serialNumber;
-
-                filterLeaseList({searchCustomer: this.searchCustomer, searchLease: this.searchLease, searchSerial: this.searchSerial})
-                .then(result =>{
-                    console.log('in result');
-                    let preparedLeases = [];
-                    result.forEach(lease => {
-                        let preparedLease = {};
-                        preparedLease.Id = lease.Id;
-                        preparedLease.CustomerName = lease.cllease__Account__r.Name;
-                        preparedLease.Name = lease.Name;
-                        preparedLease.Total_Monthly_Payment__c = lease.Total_Monthly_Payment__c;
-                        preparedLease.Remaining_Payments__c = lease.Remaining_Payments__c;
-                        preparedLease.Equipment_Count__c = lease.Equipment_Count__c;
-                        preparedLease.cllease__Term__c = lease.cllease__Term__c;
-                        preparedLease.Billing_Address_Line_1__c = lease.Billing_Address_Line_1__c;
-                        preparedLease.City__c = lease.City__c;
-                        preparedLease.State__c = lease.State__c;
-                        preparedLease.Zip_Code__c = lease.Zip_Code__c;
-                        preparedLeases.push(preparedLease);
+        console.log('handle click');
+        this.loading = true;
+        new Promise(
+            (resolve,reject) => {
+                setTimeout(()=> {
+                    const allValid = [...this.template.querySelectorAll('lightning-input')]
+                        .reduce((validSoFar, inputCmp) => {
+                            inputCmp.reportValidity();
+                            return validSoFar && inputCmp.checkValidity();
+                        }, true);
                     
-                    });
-                    this.leaseList = preparedLeases;
-                   
-                })
-                .catch(error =>{
-                    this.errorMsg = error;
-                     
-                })
-            } else {
-                alert('Please update the invalid form entries and try again.');
-            }
-       }
+                    if (allValid) {
+                        //alert('All form entries look valid. Ready to submit!');
+                        
+                        this.searchCustomer = this.customerName;
+                        this.searchLease = this.leaseNumber;
+                        this.searchSerial = this.serialNumber;
+        
+                        filterLeaseList({searchCustomer: this.searchCustomer, searchLease: this.searchLease, searchSerial: this.searchSerial})
+                        .then(result =>{
+                            this.loading = true;
+                            let preparedLeases = [];
+                            result.forEach(lease => {
+                                let preparedLease = {};
+                                preparedLease.Id = lease.Id;
+                                preparedLease.CustomerName = lease.cllease__Account__r.Name;
+                                preparedLease.Name = lease.Name;
+                                preparedLease.Total_Monthly_Payment__c = lease.Total_Monthly_Payment__c;
+                                preparedLease.Remaining_Payments__c = lease.Remaining_Payments__c;
+                                preparedLease.Equipment_Count__c = lease.Equipment_Count__c;
+                                preparedLease.cllease__Term__c = lease.cllease__Term__c;
+                                preparedLease.Billing_Address_Line_1__c = lease.Billing_Address_Line_1__c;
+                                preparedLease.City__c = lease.City__c;
+                                preparedLease.State__c = lease.State__c;
+                                preparedLease.Zip_Code__c = lease.Zip_Code__c;
+                                preparedLeases.push(preparedLease);
+                            
+                            });
+                            this.leaseList = preparedLeases;
+                            this.loading = false;
+                        })
+                        .catch(error =>{
+                            this.errorMsg = error;
+                             
+                        })
+                    } else {
+                        alert('Please update the invalid form entries and try again.');
+                    }
+                resolve();
+            }, 2000);
+        }).then(
+            () => this.loading = false
+        );
+        
+        
+    }
     
 }

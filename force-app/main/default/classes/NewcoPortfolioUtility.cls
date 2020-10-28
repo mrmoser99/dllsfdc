@@ -40,7 +40,7 @@ public with sharing class NewcoPortfolioUtility {
     public static List<cllease__Lease_Account__c> filterLeaseList( String searchCustomer, String searchLease, String searchSerial) {
     
         Set<ID> leaseSet = new Set<ID>();
-        system.debug('cust: ' + searchCustomer + '-' + 'lease: ' + searchLease + '-' + 'searial: ' + searchSerial);
+        system.debug('cust: ' + searchCustomer + '-' + 'lease: ' + searchLease + '-' + 'serial: ' + searchSerial);
         if (searchSerial != null){
             List<cllease__Contract_Equipment__c> eList =    [select cllease__Contract__c
                                                              from cllease__Contract_Equipment__c
@@ -83,7 +83,10 @@ public with sharing class NewcoPortfolioUtility {
             searchQuery += leaseSetString;
         }
         else{
-            searchQuery += ' where name = ' + '\'' + 'nowayman' + ' \'';
+            if ((searchcustomer == null || searchCustomer == '') && (searchLease == null || searchLease == '') && (searchSerial == null || searchSerial == ''))
+                searchQuery += ' ';
+            else
+                searchQuery += ' where name = ' + '\'' + 'nowayman' + '\'';
         }
 
         if (searchCustomer != null && searchCustomer != '') 
