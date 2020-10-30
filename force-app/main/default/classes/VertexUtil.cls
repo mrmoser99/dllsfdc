@@ -507,6 +507,12 @@ public class VertexUtil {
     *******************************************************************************************************************************/
     public static Dom.Document getUpfrontXml(list<genesis__Application_Equipment__c> appEqpList) { 
            
+
+         /*-------------- Modified By: Tesh -------------------- */
+        //1. get rate factor from Applications
+        Decimal appEqpListRate_Factor=[SELECT Id, Rate_Factor__c FROM genesis__Applications__c WHERE id =:appEqpList[0].genesis__Application__c LIMIT 1].Rate_Factor__c;
+       
+        /*-------------------------------------------------------------------*/
         // Getting Vertex API Configuration from customerom settings & Validating
         VertexApi__c vertexConfig = CLSCustomUtil.getVertexConfiguration();
         validateVertexConfig(vertexConfig);
@@ -623,8 +629,23 @@ public class VertexUtil {
             // ExtendedPrice Tag
             Decimal ddlAmount = (appEqp.genesis__Estimated_Selling_Price__c !=null ? appEqp.genesis__Estimated_Selling_Price__c : 0.00);
             ddlAmount = cllease.ValueUtil.round(ddlAmount, 2 , 'Nearest');
+            /* Modified By Tesh--------------*/
+            
+           //3. set the The extended Price value as a product of Rate_Factor__c * genesis__Estimated_Selling_Price__c
+           Decimal newExtendedPrice;
+           if(appEqpListRate_Factor!= null){
+               // newExtendedPrice=ddlAmount*tmpRate;
+                newExtendedPrice=ddlAmount*appEqpListRate_Factor;
+                newExtendedPrice= cllease.ValueUtil.round(newExtendedPrice, 2 , 'Nearest');
+            }else {
+                newExtendedPrice=0.00;
+            }
+            String strExtendedPrice = String.valueof(newExtendedPrice);           
+           
+
+            /*-----------------------------*/
             String extdPrice = String.valueof(ddlAmount);
-            lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(extdPrice);
+            lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(strExtendedPrice);
             lineItem.addChildElement('urn:Cost',null,null).addTextNode(extdPrice);
 
             // calculating Purchase Options flag details
@@ -746,6 +767,12 @@ public class VertexUtil {
     *******************************************************************************************************************************/
     public static Dom.Document getUpfrontXmlBook(list<genesis__Application_Equipment__c> appEqpList) { 
         
+         /*-------------- Modified By: Tesh  Modified  Date: 10/29/2020 -------------------- */
+
+        //1. Get Rate Factor from Applications
+        Decimal appEqpListRate_Factor=[SELECT Id, Rate_Factor__c FROM genesis__Applications__c WHERE id =:appEqpList[0].genesis__Application__c LIMIT 1].Rate_Factor__c;
+       
+         /*-------------------------------------------------------------------*/
 
         Decimal totalTax = 0;
         for(genesis__Application_Equipment__c appEqp : appEqpList) {
@@ -881,8 +908,23 @@ public class VertexUtil {
             // ExtendedPrice Tag
             Decimal ddlAmount = (appEqp.genesis__Estimated_Selling_Price__c !=null ? appEqp.genesis__Estimated_Selling_Price__c : 0.00);
             ddlAmount = cllease.ValueUtil.round(ddlAmount, 2 , 'Nearest');
-            String extdPrice = String.valueof(ddlAmount);
-            lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(extdPrice);
+            /* Modified By Tesh--------------*/
+            
+           //2. set the The extended Price value as a product of Rate_Factor__c * genesis__Estimated_Selling_Price__c
+           Decimal newExtendedPrice;
+           if(appEqpListRate_Factor!= null){
+               // newExtendedPrice=ddlAmount*tmpRate;
+                newExtendedPrice=ddlAmount*appEqpListRate_Factor;
+                newExtendedPrice= cllease.ValueUtil.round(newExtendedPrice, 2 , 'Nearest');
+            }else {
+                newExtendedPrice=0.00;
+            }
+            String strExtendedPrice = String.valueof(newExtendedPrice);         
+           /*-----------------------------*/
+           String extdPrice = String.valueof(ddlAmount);  
+
+           lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(strExtendedPrice);
+           //Tesh commented lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(extdPrice);
             lineItem.addChildElement('urn:Cost',null,null).addTextNode(extdPrice);
             lineItem.addChildElement('urn:InputTotalTax',null,null).addTextNode(string.valueOf(appEqp.genesis__Tax_Amount__c));
 
