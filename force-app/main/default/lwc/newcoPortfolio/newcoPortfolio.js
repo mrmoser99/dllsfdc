@@ -16,15 +16,15 @@ const actions = [
 
 const columns = [
     { label: 'Customer', fieldName: 'CustomerName', wrapText:false}, 
-    { label: 'Lease Number', fieldName: 'Name' },
-    { label: 'Equip Count', fieldName: 'Equipment_Count__c' },
-    { label: 'Payment', fieldName: 'Total_Monthly_Payment__c', type: 'currency'},
-    { label: 'Remaining Payments', fieldName: 'Remaining_Payments__c' },
-    { label: 'Term', fieldName: 'cllease__Term__c' },
-    { label: 'Address', fieldName: 'Billing_Address_Line_1__c' },
-    { label: 'City', fieldName: 'City__c' },
-    { label: 'State', fieldName: 'State__c' },
-    { label: 'Zip', fieldName: 'Zip_Code__c' },
+    { label: 'Lease Number', fieldName: 'contractNumber' },
+    { label: 'Equip Count', fieldName: 'nbrOfAssets' },
+    { label: 'Payment', fieldName: 'contractPayment', type: 'currency'},
+    { label: 'Remaining Payments', fieldName: 'numberOfRemainingPayments' },
+    { label: 'Term', fieldName: 'contractTerm' },
+    { label: 'Address', fieldName: 'assetAddressLine1' },
+    { label: 'City', fieldName: 'assetCity' },
+    { label: 'State', fieldName: 'assetState' },
+    { label: 'Zip', fieldName: 'assetZipCode' },
 
     {
         type: 'action',
@@ -62,6 +62,7 @@ export default class NewcoPortfolio extends LightningElement {
         switch (actionName) {
             case 'quote':
                 this.quote(row);
+               
                 break;
             case 'tear':
                 this.tear(row);
@@ -75,9 +76,11 @@ export default class NewcoPortfolio extends LightningElement {
         console.log('ready to call quote with lease id: ' + row.Id);
 
         const lease = row.Id;
+
+        console.log('  quote rqo is row: ' + row);
     
         const displayQuoteEvent = new CustomEvent('displayquote', {
-            detail: { lease },
+            detail: { lease, row },
         });
         // Fire the custom event
         this.dispatchEvent(displayQuoteEvent);
@@ -112,15 +115,15 @@ export default class NewcoPortfolio extends LightningElement {
                     let preparedLease = {};
                     preparedLease.Id = lease.Id;
                     preparedLease.CustomerName = lease.cllease__Account__r.Name;
-                    preparedLease.Name = lease.Name;
-                    preparedLease.Total_Monthly_Payment__c = lease.Total_Monthly_Payment__c;
-                    preparedLease.Remaining_Payments__c = lease.Remaining_Payments__c;
-                    preparedLease.Equipment_Count__c = lease.Equipment_Count__c;
-                    preparedLease.cllease__Term__c = lease.cllease__Term__c;
-                    preparedLease.Billing_Address_Line_1__c = lease.Billing_Address_Line_1__c;
-                    preparedLease.City__c = lease.City__c;
-                    preparedLease.State__c = lease.State__c;
-                    preparedLease.Zip_Code__c = lease.Zip_Code__c;
+                    preparedLease.contractNumber = lease.Name;
+                    preparedLease.contractPayment = lease.Total_Monthly_Payment__c;
+                    preparedLease.numberOfRemainingPayments = lease.Remaining_Payments__c;
+                    preparedLease.nbrOfAssets = lease.Equipment_Count__c;
+                    preparedLease.contractTerm = lease.cllease__Term__c;
+                    preparedLease.assetAddressLine1 = lease.Billing_Address_Line_1__c;
+                    preparedLease.assetCity = lease.City__c;
+                    preparedLease.assetState = lease.State__c;
+                    preparedLease.assetZipCode = lease.Zip_Code__c;
                     preparedLeases.push(preparedLease);
                     
                 });

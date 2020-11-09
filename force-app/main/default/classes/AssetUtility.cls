@@ -1,9 +1,10 @@
 public with sharing class AssetUtility {
     
-    public static Map<Integer,ModelsListJSON2Apex.Data> mapModelsList = new Map<Integer,ModelsListJSON2Apex.Data>();
+    public static Map<Integer,ModelsJSON2Apex.Data> mapModelsList = new Map<Integer,ModelsJSON2Apex.Data>();
     Public static Map<Integer, Integer> mapModelsListCode2Id= new  Map<Integer, Integer>();
-    public static Map<Integer,ModelsModelCodeDetailsJSON2Apex.Data> mapModelsModelCodeDetails= new Map<Integer,ModelsModelCodeDetailsJSON2Apex.Data>();
-    
+    public static Map<Integer,ModelsDetailsJSON2Apex.Data> mapModelsDetails= new Map<Integer,ModelsDetailsJSON2Apex.Data>();
+    Public static List<genesis__Equipment_Master__c> lstEquipmentMasterRecords=new  List<genesis__Equipment_Master__c>();
+       
     public static string getAccessToken(){     
     	
     	if (Test.isRunningTest())
@@ -34,14 +35,12 @@ public with sharing class AssetUtility {
        return access_token;
          
     }
-    public static HttpResponse makeCallout( String url){ 
+    
+    public static HttpResponse makeCallout(String url){ 
 
         HttpResponse returnResponse;
-        string endpoint = 'http://assetsdev4.waynemo.dll.corp:9400/api/v1/programs/53/';
-       //  endpoint= url;
-       // http://assetsdev4.waynemo.dll.corp:9400/api/v1/programs/53/models
-        //http://assetsdev4.waynemo.dll.corp:9400/api/v1/programs/53/models/31001310
-        //http://assetsdev4.waynemo.dll.corp:9400/api/v1/programs/53/models/31001310/details
+
+        string endpoint = 'https://apiacc.dllgroup.com/vf/us/v1/asset-programs/53/';
        
         endpoint+=url;
                 
@@ -51,7 +50,7 @@ public with sharing class AssetUtility {
         HttpRequest request = new HttpRequest();
         request.setMethod('GET');   
         request.setHeader('originatorId', 'MOSAIC');    
-        request.setHeader('messageId', 'Test');   
+        request.setHeader('messageId', 'test');   
         request.setHeader('Accept', 'application/json');
         request.setHeader('Charset', 'UTF-8');
         request.setHeader('Content-Type', 'application/json');
@@ -83,79 +82,83 @@ public with sharing class AssetUtility {
 
     }
 
-    public static Boolean getModels( Integer page){  
-        
+   // public static Boolean getModels( Integer page){  
+     public Static List<genesis__Equipment_Master__c> getModels( Integer page){   
         Boolean returnValue= false;
-
+   ///     List<genesis__Equipment_Master__c> lstEquipmentMasterRecords=new  List<genesis__Equipment_Master__c>();
+        EquipmentMasterForSave listForSave;//= new EquipmentMasterForSave();
         String urlPostfix=  'models';
         HttpResponse response;
-        try{
+       Savepoint sp = Database.setSavepoint();
+        try{           
+
       //#. Make Call out  and get the response  with url postfix 
-      //  response=makeCallout(urlPostfix);
+      response=makeCallout(urlPostfix);
 
       //#.  While endpoint is not exposed use data from StaticResource
-
-      StaticResource sr=[select id, Name, body from StaticResource Where name='ModelList' limit 1];
-      String fakeResponse=sr.body.tostring();// ==> String.valueOf( response.getBody())
-
+     // StaticResource sr=[select id, Name, body from StaticResource Where name='ModelList' limit 1];
+     // String fakeResponse=sr.body.tostring();// ==> 
+      String strResponse=String.valueOf( response.getBody());
+      system.debug('Models '+response.getStatus());
       //#.  parse the JSON body 
-      ModelsListJSON2Apex parsedResult=ModelsListJSON2Apex.parse(fakeResponse);
+      //ModelsListJSON2Apex parsedResult=ModelsListJSON2Apex.parse(fakeResponse);
+      ModelsJSON2Apex parsedResult=ModelsJSON2Apex.parse(strResponse);
+      
           
      //#. collect the  Model code and Id in the map
-            for(ModelsListJSON2Apex.Data modelData: parsedResult.data){
+            for(ModelsJSON2Apex.Data modelData: parsedResult.data){
                 mapModelsListCode2Id.put(modelData.code,modelData.Id);
             }
         //for each  Brand code in the set  call Models  detail and get data to  populate the map
-           mapModelsModelCodeDetails.putAll(callModelsDetails(mapModelsListCode2Id.keySet()));
+        mapModelsDetails.putAll(callModelsDetails(mapModelsListCode2Id.keySet()));
 
           // create list of EquipmentMasterWrapper
-          List<genesis__Equipment_Master__c> lstEquipmentMasterToSave=new  List<genesis__Equipment_Master__c>();
-         //Populate EquipmentMasterWrapper with the data
-          for( Integer cod:mapModelsModelCodeDetails.keySet()){
+        //  List<genesis__Equipment_Master__c> lstEquipmentMasterRecords=new  List<genesis__Equipment_Master__c>();
+         //Populate EquipmentMaster with the data
+         integer cnt =1;
+          for( Integer cod:mapModelsDetails.keySet()){
 
             genesis__Equipment_Master__c eq= new genesis__Equipment_Master__c();
 
-            eq.genesis__Model__c=mapModelsModelCodeDetails.get(cod).name;
-            eq.Asset_Type_ID__c=String.valueOf(mapModelsModelCodeDetails.get(cod).assetType.code);
-            eq.Asset_Type_Name__c=mapModelsModelCodeDetails.get(cod).assetType.name;
-            eq.MSRP__c=mapModelsModelCodeDetails.get(cod).referencePrice;
-            eq.Manufacturer__c=mapModelsModelCodeDetails.get(cod).brand.name;
-            eq.Master_Asset_Type_ID__c=String.valueOf(mapModelsModelCodeDetails.get(cod).masterAssetType.code);
-            eq.Master_Asset_Type__c=mapModelsModelCodeDetails.get(cod).masterAssetType.name;
-            eq.Object_Category_ID__c=String.valueOf(mapModelsModelCodeDetails.get(cod).objectCategory.code);
-            eq.Object_Category_Name__c=mapModelsModelCodeDetails.get(cod).objectCategory.name;
+            eq.genesis__Model__c=mapModelsDetails.get(cod).name;
+            eq.Asset_Type_ID__c=String.valueOf(mapModelsDetails.get(cod).assetType.code);
+            eq.Asset_Type_Name__c=mapModelsDetails.get(cod).assetType.name;
+
+            eq.MSRP__c=Decimal.valueOf(mapModelsDetails.get(cod).referencePrice).setscale(2);
+            eq.Manufacturer__c=mapModelsDetails.get(cod).brand.name;
+            eq.Master_Asset_Type_ID__c=String.valueOf(mapModelsDetails.get(cod).masterAssetType.code);
+            eq.Master_Asset_Type__c=mapModelsDetails.get(cod).masterAssetType.name;
+            eq.Object_Category_ID__c=String.valueOf(mapModelsDetails.get(cod).objectCategory.code);
+            eq.Object_Category_Name__c=mapModelsDetails.get(cod).objectCategory.name;
             eq.Economic_Life__c=64;
-            eq.Composite_Key__c=mapModelsModelCodeDetails.get(cod).brand.name+'-'+mapModelsModelCodeDetails.get(cod).name;
+            eq.Composite_Key__c=mapModelsDetails.get(cod).brand.name+'-'+mapModelsDetails.get(cod).name;
             eq.Gard_External_Id__c=String.valueOf(mapModelsListCode2Id.get(cod));
             //add records into the list
-            System.debug(eq);
-            lstEquipmentMasterToSave.add(eq);
-
+            System.debug('Record#'+ cnt+'. '+eq);
+            lstEquipmentMasterRecords.add(eq);
+            listForSave=new EquipmentMasterForSave(eq);
+           // Boolean saveresult =saveEquipmentMasterData(listForSave);
+            cnt++;
           }
-          System.debug('Nr of records to upsert :' + lstEquipmentMasterToSave.size());
-      //  upsert lstEquipmentMasterToSave;
-      
-        // System.debug('record to upsert'+lstEquipmentMasterToSave);
-        // Save the data
-        List<Database.UpsertResult> upResults= Database.upsert(lstEquipmentMasterToSave, false);
-        for(Database.UpsertResult rslt:upResults){
-            if(rslt.isSuccess() && rslt.isCreated()){
-                System.debug(upResults.size()+ ' Items upserted Successfuly');
-            }
-        }
+          //listForSave.addAll(lstEquipmentMasterRecords);
+         
+          System.debug('Nr of records to upsert :' + lstEquipmentMasterRecords.size());
+          savedata(lstEquipmentMasterRecords);
 
-        returnValue=true;
+       } catch(Exception ex){
 
-        } catch(Exception ex){
+       Database.rollback(sp);
+
             //Add Error log record
             cllease__Batch_Process_Log__c bchLog = new cllease__Batch_Process_Log__c();
             bchLog.name = 'EquipmentMasterUtility';
             bchLog.cllease__Message__c = ex.getMessage() + '  - ' + ex.getStackTraceString();
-          //  insert bchLog;
+           insert bchLog;
             system.debug('Error Messge: '+ex.getMessage() +'\n Stack: '+ex.getStackTraceString());
         }
-        return returnValue;
-     }
+       // return returnValue;
+       return lstEquipmentMasterRecords;
+     }/*
      public static Map<Integer,ModelsListJSON2Apex.Data>  getModelsData(String uResponse){  
          //public static Map<Integer,ModelsListJSON2Apex.Data>  getModelsData(HttpResponse uResponse){ 
         Map<Integer,ModelsListJSON2Apex.Data> mapModelsData = new Map<Integer,ModelsListJSON2Apex.Data>();
@@ -173,42 +176,82 @@ public with sharing class AssetUtility {
             }          
         } 
         return   mapModelsData;     
-    }
-    public static Map<Integer,ModelsModelCodeDetailsJSON2Apex.Data> callModelsDetails(Set<integer> modelCode){
+    }*/
+    public static Map<Integer,ModelsDetailsJSON2Apex.Data> callModelsDetails(Set<integer> modelCode){
   
         ///api/v1/programs/53/models/31001310/details
-        Map<Integer,ModelsModelCodeDetailsJSON2Apex.Data> mapDetailsDataToReturn= new Map<Integer,ModelsModelCodeDetailsJSON2Apex.Data>();
-        String urlPostfixD=  'models';
-  //      for(Integer mcode:modelCode){
-      //      urlPostfixD+=string.valueOf(mcode) +'details';
-       //     HttpResponse detailResponse= makeCallout(urlPostfixD);
+        Map<Integer,ModelsDetailsJSON2Apex.Data> mapDetailsDataToReturn= new Map<Integer,ModelsDetailsJSON2Apex.Data>();
+       // String urlPostfixD=  'models/';
+        for(Integer mcode:modelCode){
+            String urlPostfixD=  'models/';
+            System.debug('model Code '+mcode);
+            urlPostfixD+=string.valueOf(mcode) +'/details';
+            System.debug('urlPostfixD  '+urlPostfixD);
+            HttpResponse htpResponse= makeCallout(urlPostfixD);
 
            // String srModelList='ModelList';
-            String srModelsModelCodeDetails='ModelsModelCodeDetails';
+           // String srModelsModelCodeDetails='ModelsModelCodeDetails';
             
-            StaticResource sr=[select id, Name, body from StaticResource Where name='ModelsModelCodeDetails' ];
-            String detailResponse=sr.body.tostring();
-            //system.debug(detailResponse);
+           // StaticResource sr=[select id, Name, body from StaticResource Where name='ModelsModelCodeDetails' ];
+           // String detailResponse=sr.body.tostring();
+            String strDetailResponse=String.valueOf( htpResponse.getBody());
+            system.debug(htpResponse.getStatus());
 
-            mapDetailsDataToReturn.putAll(getModelsDetailsData(detailResponse));
+            mapDetailsDataToReturn.putAll(getModelsDetailsData(strDetailResponse));
 
-     //   }
+        }
         
         return mapDetailsDataToReturn;
     }
-    public static Map<Integer,ModelsModelCodeDetailsJSON2Apex.Data>  getModelsDetailsData(String dtlResponse){ 
+
+    public static Map<Integer,ModelsDetailsJSON2Apex.Data>  getModelsDetailsData(String dtlResponse){ 
        // public static Map<Integer,ModelsModelCodeDetailsJSON2Apex.Data>  getModelsDetailsData(HttpResponse dtlResponse){ 
         
-        Map<Integer,ModelsModelCodeDetailsJSON2Apex.Data> mapToReturnData= new Map<Integer,ModelsModelCodeDetailsJSON2Apex.Data>();
+        Map<Integer,ModelsDetailsJSON2Apex.Data> mapToReturnData= new Map<Integer,ModelsDetailsJSON2Apex.Data>();
        // ModelsModelCodeDetailsJSON2Apex parsedResultDetails= ModelsModelCodeDetailsJSON2Apex.parse(String.valueOf(dtlResponse.getBody()));
         
        //here use the Static resource for test
-        ModelsModelCodeDetailsJSON2Apex parsedResultDetails= ModelsModelCodeDetailsJSON2Apex.parse(dtlResponse);
+       ModelsDetailsJSON2Apex parsedResultDetails= ModelsDetailsJSON2Apex.parse(dtlResponse);
         
-        ModelsModelCodeDetailsJSON2Apex.Data dtl=parsedResultDetails.data;
+       ModelsDetailsJSON2Apex.Data dtl=parsedResultDetails.data;
          mapToReturnData.put(dtl.code, dtl);
        
          return mapToReturnData;
     } 
+    public static void savedata(List<genesis__Equipment_Master__c> equ){
+        upsert equ Composite_Key__c;
+    }
+    Public static Boolean saveEquipmentMasterData( EquipmentMasterForSave equipmentToSave){
+        Boolean isSved=false;
+        
+            Savepoint sp = Database.setSavepoint();
+            try{
+                //upsert lstEquipmentMasterToSave Composite_Key__c;
+                upsert equipmentToSave.EquipMaster Composite_Key__c;
+                System.debug(' Records upserted successfully');
+                isSved=true;
+            }catch(exception e){
+            //    Database.rollback(sp);
+
+                cllease__Batch_Process_Log__c b = new cllease__Batch_Process_Log__c();
+                b.cllease__Message__c= e.getMessage() + '  - ' + e.getStackTraceString();
+                b.name = 'AssetUtility';
+                b.cllease__Message__c= e.getMessage() + '  - ' + e.getStackTraceString() + e.getLineNumber();
+                insert b;
+                system.debug(e.getMessage());
+            }
+            
+        
+        return isSved;
+
+    }
+    public class EquipmentMasterForSave{
+        
+        public genesis__Equipment_Master__c EquipMaster {get;set;}
+
+        public EquipmentMasterForSave(genesis__Equipment_Master__c equipment){
+            this.EquipMaster=equipment;
+        }
+    }
 
 }

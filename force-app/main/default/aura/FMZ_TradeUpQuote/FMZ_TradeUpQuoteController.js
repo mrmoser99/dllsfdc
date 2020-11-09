@@ -1,6 +1,7 @@
 ({
   doInit: function(component, event, helper) {
     // Equipment Summary Columns
+    console.log('in do init of tradeupquotecontroller');
     component.set("v.equipmentColumns", [
       { label: "Asset Number", fieldName: "assetNumber", type: "text" },
       { label: "Make", fieldName: "make", type: "text" },
@@ -50,28 +51,33 @@
     ]);
     let row = component.get("v.row");
     let leaseNumber = component.get("v.leaseNumber");
-    console.log("row");
-    console.log(row);
-    component.set("v.leaseNumber", leaseNumber);
+   
+    console.log('row is: ' + row);
+    console.log('fromnewco is : ' + component.get('v.fromNewco'));
+   
+     
     if (row) {
       let rowRecord = JSON.parse(row);
       component.set("v.selectedRowObj", rowRecord);
       component.set("v.leaseNumber", rowRecord.contractNumber);
     }
+
     helper.getEnvSettingsHelper(component);
+   
 
     if (!row) {
+      console.log('not row');
       helper.fetchData(component).then(data => {
         component.set("v.row", JSON.stringify(data));
         component.set("v.selectedRowObj", data);
+        console.log('call 1');
         helper.getLeaseDetailsHelper(component, JSON.stringify(data));
+      
         Promise.all([
-          helper.generateQuoteByTypeHelper(
-            component,
-            "TRADEUP_WITHOUT_PURCHASE"
-          ),
+          helper.generateQuoteByTypeHelper(component,"TRADEUP_WITHOUT_PURCHASE"),
           helper.generateQuoteByTypeHelper(component, "TRADEUP_WITH_PURCHASE")
         ]).then(() => {
+         
           let quoteData = component.get("v.tradeUpWithoutPurchase");
           let quoteData2 = component.get("v.tradeUpWithPurchase");
 
@@ -89,68 +95,84 @@
               quoteNumber: quoteData.quoteNumber,
               quoteNumberDisplay: quoteData.quoteNumber.split("TU")[1],
               leaseNumber: component.get("v.leaseNumber")
-            };
+              };
             let obj2 = {
               quoteType: quoteData2.terminationQuoteType,
               quoteAmount: quoteData2.amount,
               quoteNumber: quoteData2.quoteNumber,
               quoteNumberDisplay: quoteData2.quoteNumber.split("TU")[1],
               leaseNumber: component.get("v.leaseNumber")
-            };
+              };
             tableData.push(obj);
             tableData.push(obj2);
             component.set("v.quoteSummaryData", tableData);
-          } else {
-            component.find("notifLib").showToast({
-              title: "Something went wrong, please refresh!",
-              variant: "error",
-              showCloseButton: true
-            });
+         }  
+          else {
+              component.find("notifLib").showToast({
+                title: "Something went wrong, please refresh!",
+                variant: "error",
+                showCloseButton: true
+              });
           }
         });
       });
     } else {
+      console.log('in row');
+      console.log('call 1a');
       helper.getLeaseDetailsHelper(component, row);
+      console.log('hello');
       Promise.all([
-        helper.generateQuoteByTypeHelper(component, "TRADEUP_WITHOUT_PURCHASE"),
+        helper.generateQuoteByTypeHelper(component,"TRADEUP_WITHOUT_PURCHASE"),
         helper.generateQuoteByTypeHelper(component, "TRADEUP_WITH_PURCHASE")
       ]).then(() => {
+        
         let quoteData = component.get("v.tradeUpWithoutPurchase");
         let quoteData2 = component.get("v.tradeUpWithPurchase");
+        
+        if (quoteData && quoteData2) { 
+           
+            let data = JSON.parse(JSON.stringify(quoteData));
+            helper.getQuoteDetailsHelper(component, data.quoteNumber, 1);
 
-        if (quoteData && quoteData2) {
-          let data = JSON.parse(JSON.stringify(quoteData));
-          helper.getQuoteDetailsHelper(component, data.quoteNumber, 1);
+            let data2 = JSON.parse(JSON.stringify(quoteData2));
+            helper.getQuoteDetailsHelper(component, data2.quoteNumber, 2);
 
-          let data2 = JSON.parse(JSON.stringify(quoteData2));
-          helper.getQuoteDetailsHelper(component, data2.quoteNumber, 2);
-
-          const tableData = [];
-          let obj = {
-            quoteType: quoteData.terminationQuoteType,
-            quoteAmount: quoteData.amount,
-            quoteNumber: quoteData.quoteNumber,
-            quoteNumberDisplay: quoteData.quoteNumber.split("TU")[1],
-            leaseNumber: component.get("v.leaseNumber")
-          };
-          let obj2 = {
-            quoteType: quoteData2.terminationQuoteType,
-            quoteAmount: quoteData2.amount,
-            quoteNumber: quoteData2.quoteNumber,
-            quoteNumberDisplay: quoteData2.quoteNumber.split("TU")[1],
-            leaseNumber: component.get("v.leaseNumber")
-          };
-          tableData.push(obj);
-          tableData.push(obj2);
-          component.set("v.quoteSummaryData", tableData);
+            const tableData = [];
+            var qDisplay;
+            var qDisplay2;
+            if (component.get('v.fromNewco') == true){
+                qDisplay = quoteData.quoteNumber;
+                qDisplay2 = quoteData2.quoteNumber;
+            }
+            else{
+                qDisplay = quoteData.quoteNumber.split("TU")[1];
+                qDisplay2 = quoteData2.quoteNumber.split("TU")[1];
+            }
+            let obj = {
+              quoteType: quoteData.terminationQuoteType,
+              quoteAmount: quoteData.amount,
+              quoteNumber: qDisplay,
+              quoteNumberDisplay: qDisplay,
+              leaseNumber: component.get("v.leaseNumber")
+            };
+            let obj2 = {
+              quoteType: quoteData2.terminationQuoteType,
+              quoteAmount: quoteData2.amount,
+              quoteNumber: qDisplay2,
+              quoteNumberDisplay: qDisplay2,
+              leaseNumber: component.get("v.leaseNumber")
+            };
+            tableData.push(obj);
+            tableData.push(obj2);
+            component.set("v.quoteSummaryData", tableData);
         } else {
-          component.find("notifLib").showToast({
+           component.find("notifLib").showToast({
             title: "Something went wrong, please refresh!",
             variant: "error",
             showCloseButton: true
           });
         }
-      });
+      });  //promise all
     }
   },
 

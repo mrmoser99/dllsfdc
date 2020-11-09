@@ -37,6 +37,19 @@ public class FMZ_PortfolioManager {
 
     }
 
+    @AuraEnabled 
+    public static String getLeaseDetailsNewco (String leaseNumber) {
+       System.Debug('LEASE DETAILS NEWCO');
+       System.Debug(leaseNumber);
+       String response;
+
+       response = PMCalloutUtility.getLeaseDetailsNewco(leaseNumber);
+       
+       return response;
+
+   }
+
+
     // Generate Quote by type
     @AuraEnabled
     public static PMUtility.TerminationQuoteResponse generateQuoteByType (String leaseNumber, String type, String customerName) {
@@ -47,9 +60,30 @@ public class FMZ_PortfolioManager {
         return response;
     }
 
+     // Generate Quote by type for newco portfolio
+     @AuraEnabled
+     public static PMUtility.TerminationQuoteResponse generateQuoteByTypeNewco (String leaseNumber, String type, String customerName) {
+         PMUtility.TerminationQuoteResponse response = new PMUtility.TerminationQuoteResponse();
+ 
+         response = PMCalloutUtility.generateQuoteByTypeNewco(leaseNumber, type, customerName);
+ 
+         return response;
+     }
+
     // Quote Details
    @AuraEnabled
     public static Lease_OLM_Quote__c getQuoteDetails (String quoteNumber) {
+       // Lease_OLM_Quote__c response = Lease_OLM_Quote__c();
+
+       Lease_OLM_Quote__c quote = [SELECT Id, Amount__c, Remaining_Rental_Payments__c, Discount__c, Equipment_Price__c, Sales_Tax__c, Property_Tax__c, Past_Due_Service__c, Lease_Charges__c, Security_Deposit__c, Quote_Validity_Date__c FROM Lease_OLM_Quote__c WHERE Name =: quoteNumber];
+
+       return quote;
+
+   }
+
+    // Quote Details
+    @AuraEnabled
+    public static Lease_OLM_Quote__c getQuoteDetailsNewco (String quoteNumber) {
        // Lease_OLM_Quote__c response = Lease_OLM_Quote__c();
 
        Lease_OLM_Quote__c quote = [SELECT Id, Amount__c, Remaining_Rental_Payments__c, Discount__c, Equipment_Price__c, Sales_Tax__c, Property_Tax__c, Past_Due_Service__c, Lease_Charges__c, Security_Deposit__c, Quote_Validity_Date__c FROM Lease_OLM_Quote__c WHERE Name =: quoteNumber];

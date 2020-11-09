@@ -114,6 +114,7 @@
               quoteData2="{!v.quoteData2}"
               leaseNumber="{!v.leaseNumber}"
               isQuoteModuleVisible="{!v.isQuoteModuleVisible}"
+              fromNewco="true"
             />
           </div>
         </section>

@@ -11,10 +11,32 @@
         console.group('vis: ' + component.get('v.isTearSheetVisible'));
       
     },
+/*
+    asdfasd
+    handleRowAction: function(component, event, helper) {
+      var rowAction = event.getParam("action");
+      var row = event.getParam("row");
+  
+      switch (rowAction.name) {
+        case "tearsheet":
+          component.set("v.selectedRow", JSON.stringify(row));
+          helper.fetchLeaseDetails(component, JSON.stringify(row));
+          return;
+        case "quote":
+          component.set("v.selectedRow", JSON.stringify(row));
+          $A.enqueueAction(component.get("c.openQuoteModule"));
+          return;
+      }
+    },
 
+    asdfasd
+*/
     handleDisplayQuote: function(component, event) {
         
-        console.log('Display the quote sheet brther');
+        console.log('Display the quote sheet brther: ' + event.getParam('row'));
+        component.set('v.row', event.getParam('row'));
+        component.set('v.selectedRow', JSON.stringify(event.getParam('row')));
+        component.set('v.leaseNumber',event.getParam('lease'));
         component.set('v.fromNewco', true);
         component.set('v.isQuoteModuleVisible', true);
     },

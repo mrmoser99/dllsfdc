@@ -45,13 +45,25 @@
       })
     );
   },
+
+  
   getLeaseDetailsHelper: function(component, data) {
     return new Promise(
       $A.getCallback((resolve, reject) => {
-        var action = component.get("c.getLeaseDetails");
+        var action;
+        if (component.get('v.fromNewco') == true){
+          console.log('calling newco get lease');
+          action = component.get("c.getLeaseDetailsNewco");
+    
+        }
+        else{
+          console.log('NOT calling newco get lease');
+          action = component.get("c.getLeaseDetails");
+        }
         action.setParams({
           leaseNumber: data
         });
+  
         action.setCallback(this, response => {
           let state = response.getState();
           if (state === "SUCCESS") {
@@ -62,10 +74,7 @@
             console.log(data);
 
             component.set("v.customerName", data.customerName);
-            component.set(
-              "v.minPaymentsRemaining",
-              data.numberOfRemainingPayments
-            );
+            component.set("v.minPaymentsRemaining",data.numberOfRemainingPayments);
             component.set("v.leaseTerm", data.contractTerm);
             component.set("v.equipmentPayment", data.contractPayment);
             component.set("v.servicePayment", data.contractService);
@@ -73,17 +82,16 @@
             component.set("v.originationDate", data.contractStartDate);
             component.set("v.leaseType", data.contractType);
             component.set("v.maturityDate", data.contractExpireDate);
-            component.set(
-              "v.quoteDate",
-              $A.localizationService.formatDate(new Date(), "YYYY-MM-DD")
+            component.set("v.quoteDate",$A.localizationService.formatDate(new Date(), "YYYY-MM-DD")
             );
-
+            console.log ('here');
             let equipmentDetails = [];
             data.assetDetail.sort((a, b) =>
               Number(a.assetSequenceNumber) > Number(b.assetSequenceNumber)
                 ? 1
                 : -1
             );
+            console.log ('here 2');
             data.assetDetail.map(el => {
               const obj = {
                 assetNumber: el.assetSequenceNumber,
@@ -104,6 +112,7 @@
               equipmentDetails.push(obj);
             });
             component.set("v.equipmentData", equipmentDetails);
+            console.log ('here 3');
           } else {
             let error = response.getError();
             console.log(error);
@@ -113,14 +122,21 @@
               showCloseButton: true
             });
           }
-          resolve();
+          console.log('resolve in get lease details');
+          //resolve();
         });
         $A.enqueueAction(action);
       })
-    );
+    );  //end new promise
   },
 
+ 
+  
+
   generateQuoteByTypeHelper: function(component, type) {
+
+    
+
     component.set("v.isLoading", true);
     let contractNumber = component.get("v.leaseNumber");
     let row = JSON.parse(component.get("v.row"));
@@ -128,11 +144,28 @@
     console.log(row);
     return new Promise(
       $A.getCallback((resolve, reject) => {
-        var generateQuotesAction = component.get("c.generateQuoteByType");
+        if (component.get('v.fromNewco') == true){
+
+          if (type == 'TRADEUP_WITH_PURCHASE'){
+            //only 1 call for fromNewco
+            resolve();
+            return;
+          }
+        }
+        var generateQuotesAction;
+        if (component.get('v.fromNewco') != true){
+          console.log('newco is not processing quote');
+          generateQuotesAction = component.get("c.generateQuoteByType");
+        }  
+        else{
+          console.log('newco is processing quote');
+          generateQuotesAction = component.get("c.generateQuoteByTypeNewco");
+        }
+        
         generateQuotesAction.setParams({
-          leaseNumber: contractNumber,
-          type: type,
-          customerName: row.customerName
+            leaseNumber: contractNumber,
+            type: type,
+            customerName: row.customerName
         });
         generateQuotesAction.setCallback(this, response => {
           let state = response.getState();
@@ -150,11 +183,16 @@
                 showCloseButton: true
               });
             }
-
-            if (type == "TRADEUP_WITHOUT_PURCHASE") {
+            if (component.get('v.fromNewco') == true){
               component.set("v.tradeUpWithoutPurchase", data.quotes[0]);
-            } else {
-              component.set("v.tradeUpWithPurchase", data.quotes[0]);
+              component.set("v.tradeUpWithPurchase", data.quotes[1]);
+            }
+            else{
+              if (type == "TRADEUP_WITHOUT_PURCHASE") {
+                component.set("v.tradeUpWithoutPurchase", data.quotes[0]);
+              } else {
+                component.set("v.tradeUpWithPurchase", data.quotes[0]);
+              }
             }
           } else {
             let error = response.getError();
@@ -235,6 +273,7 @@
           }
           component.set("v.isLoading", false);
           resolve();
+          callback(response);
         });
         $A.enqueueAction(quoteDetailsAction);
       })

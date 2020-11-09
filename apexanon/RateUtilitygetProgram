@@ -1,9 +1,64 @@
 
       
 //RateUtility.getProgram('125760-0003');
-    Id batchJobId= Database.executeBatch(new MarksBatchIterable(), 1); //Btch size=1
+//    Id batchJobId= Database.executeBatch(new MarksBatchIterable(), 1); //Btch size=1
      
 
+//PMCalloutUtility.generateQuoteByTypeNewco( 'a6J3u000000g9LS','TRADEUP_WITHOUT_PURCHASE');
+/*
+public class quoteLine {
+    public String ContractNumber;
+    public String EquipmentPrice;
+    public String NetTradeupAmount;
+    public String OutstandingLeaseCharges;
+    public String PastDueServiceAndMeterCoverage;
+    public String PropertyTaxReimbursement;
+    public String QuoteAmount;
+    public String QuoteExpirationDate;
+    public String QuoteNumber;
+    public String QuoteStatus;
+}
+
+Map<String,Object> resultMap = new Map<String,Object>();
+resultMap = CLLeaseTerminationQuoteServices.CreateTerminationQuotes('a6J5C0000000I5E');
+List<Object> objectList= (List<Object>)resultMap.get('Quote Summary');
+for(Object obj : objectList){
+    Map<String,Object> maps =(Map<String,Object>)obj;
+    System.debug('QuoteNumber : ' + maps.get('QuoteNumber')); 
+}
+
+*/
+
+String client = System.Label.ICV_client;  
+    	String secret = System.Label.ICV_secret;  
+		HttpRequest req_token = new HttpRequest();        
+		
+		String tokenEndpoint = System.Label.ICV_tokenendpoint;  
+		req_token.setEndpoint(tokenEndpoint);
+        req_token.setMethod('POST');        
+        req_token.setHeader('content-type', 'application/x-www-form-urlencoded');
+        req_token.setHeader('cache-control', 'no-cache');        
+        req_token.setBody('client_id='+'0c9b112a-c10c-4ac9-8233-2509d2a41572'+'&client_secret='+ 'ada7fccb-1be1-4464-a2a3-dd5d89ccc567' +'&grant_type=client_credentials');
+      
+        Http http = new Http(); 
+        HTTPResponse res = http.send(req_token);
+        System.debug(res.getBody());
+		
+		String access_token;
+
+		JSONParser parser = JSON.createParser(res.getBody());
+            
+        while (parser.nextToken() != null) {
+        	if (parser.getCurrentName() == 'access_token') {
+            	access_token = parser.getText();
+            	//system.debug(parser.getText());
+            }
+        }
+        
+       	system.debug('******** returning access token' + access_token);
+        //return access_token;
+
+// system.debug('Results:' + CLLeaseTerminationQuoteServices.CreateTerminationQuotes('a6J5C0000000I5E'));
 //String leaseId = 'a6J5C0000004VPwUAM';
 //CLLeaseTerminationQuoteServices.
 //CLLeaseTerminationQuoteServices.generateTerminationQuotes(leaseId);

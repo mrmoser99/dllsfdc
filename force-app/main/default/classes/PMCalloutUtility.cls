@@ -545,6 +545,101 @@ public with sharing class PMCalloutUtility {
         return qResponse;
     }
 
+     /************************************************************************************************************************************************************
+    *   generateQuotesbyTypeNewco - this is for the newco portfolio
+
+        type   'TRADEUP_WITHOUT_PURCHASE'  #1
+               'TRADEUP_WITH_PURCHASE' #2
+    *************************************************************************************************************************************************************/
+    public static PMUtility.TerminationQuoteResponse generateQuoteByTypeNewco(String leaseId, String type, String customerName){
+        
+        PMUtility.TerminationQuoteResponse qResponse = new PMUtility.TerminationQuoteResponse();
+        PMUtility.Quote q;
+      
+        /* the return from q2 code is a map<string,object>.  They don't know how to use JSON.  Therefore this ugly code is present. */
+
+        Map<String,Object> resultMap = new Map<String,Object>();
+        cllease__lease_account__c l = [select id from cllease__lease_account__c where name = :leaseId];
+
+        resultMap = CLLeaseTerminationQuoteServices.CreateTerminationQuotes(l.id);
+        
+        qResponse.responseCode = null;
+        qResponse.quotes = new List<PMUtility.Quote>();
+
+        //???? - not returned from cls
+
+        List<Object> objectList= (List<Object>)resultMap.get('Quote Summary');
+        Integer i=0;
+        for(Object obj : objectList){
+            i++;
+            Map<String,Object> maps =(Map<String,Object>)obj;
+             
+            qResponse.partnerTransactionReference = string.valueOf(System.Now());  //???
+            qResponse.contractNumber  = string.valueOf(maps.get('ContractNumber'));
+            qResponse.quoteNumber  = string.valueOf(maps.get('QuoteNumber'));
+            qResponse.quoteValidityDate = string.valueOf(maps.get('QuoteExpirationDate'));
+            qResponse.quoteMessage = null;   //???
+            if (i ==1)
+                qResponse.terminationQuoteType = 'TRADEUP_WITHOUT_PURCHASE';
+            else
+                qResponse.terminationQuoteType  = 'TRADEUP_WITH_PURCHASE';
+           
+            qResponse.partnerOrderId  = null;  //????
+
+            if (type == 'TRADEUP_WITHOUT_PURCHASE' ) {
+                //detail quotes fill in
+                q = new PMUtility.Quote();
+                q.terminationQuoteType = string.valueOf(maps.get('QuoteType'));
+                q.quoteValidityDate = string.valueOf(maps.get('QuoteExpirationDate'));
+                q.quoteMessage = 'Tradeup Without Purchase'; //????
+                q.quoteNumber = string.valueOf(maps.get('QuoteNumber'));
+                q.quoteCalculationDescription = null; //???
+                q.remainingRentalPayments = string.valueOf(maps.get('RemainingLeasePayments'));
+                q.discount = null;
+                q.equipmentPrice = string.valueOf(maps.get('EquipmentPrice'));
+                q.salesTax = string.valueOf(maps.get('SalesTax'));
+                q.propertyTax = null;  //???
+                q.leaseCharges = string.valueOf(maps.get('OutstandingLeaseCharges'));
+                q.securityDeposit = null;
+                q.pastDueService = string.valueOf(maps.get('PastDueServiceAndMeterCoverage'));
+                q.amount = string.valueOf(maps.get('QuoteAmount'));
+                qResponse.quotes.add(q);
+            }
+            if (type == 'TRADEUP_WITH_PURCHASE') {
+                //detail quotes fill in
+                q = new PMUtility.Quote();
+                q.terminationQuoteType = string.valueOf(maps.get('QuoteType'));
+                q.quoteValidityDate = string.valueOf(maps.get('QuoteExpirationDate'));
+                q.quoteMessage = 'Tradeup With Purchase'; //????
+                q.quoteNumber = string.valueOf(maps.get('QuoteNumber'));
+                q.quoteCalculationDescription = null; //???
+                q.remainingRentalPayments = string.valueOf(maps.get('RemainingLeasePayments'));
+                q.discount = null;
+                q.equipmentPrice = string.valueOf(maps.get('EquipmentPrice'));
+                q.salesTax = string.valueOf(maps.get('SalesTax'));
+                q.propertyTax = null;  //???
+                q.leaseCharges = string.valueOf(maps.get('OutstandingLeaseCharges'));
+                q.securityDeposit = null;
+                q.pastDueService = string.valueOf(maps.get('PastDueServiceAndMeterCoverage'));
+                q.amount = string.valueOf(maps.get('QuoteAmount'));
+                qResponse.quotes.add(q);
+
+            }
+        }
+        
+        //List<Lease_OLM_Quote__c> newQuotes = new List<Lease_OLM_Quote__c>();
+        
+        //Lease_OLM_Quote__c lq = PMCalloutUtility.popluateLeaseQuote(qResponse);
+       
+        //lq.customer_name__c = customerName;
+
+       // newQuotes.add(lq);
+
+        //insert newQuotes; 
+        system.debug('qReesponse: ' + qResponse);
+        return qResponse;
+    }
+
 
     /************************************************************************************************************************************************************
     *   populate the lease quote info
@@ -787,18 +882,22 @@ public with sharing class PMCalloutUtility {
 
     }
 
+    
+
     /************************************************************************************************************************************************************
     *   getLeaseDetails from newco data instead of junko portofolio system 
     *************************************************************************************************************************************************************/
     @AuraEnabled
     public static String getLeaseDetailsNewco(String leaseNumber){
     
-        PMUtility.Data data = new PMUtility.Data();
         
+        PMUtility.Data data = (PMUtility.Data) System.JSON.deserialize(leaseNumber,PMUtility.Data.class);
+        
+        system.debug('data is: ' + data);
         cllease__Lease_Account__c l = [Select cllease__Account__r.primary_address__r.Address_Line_1__c, cllease__Account__r.primary_address__r.Address_Line_2__c, cllease__Account__r.primary_address__r.Address_Line_3__c, cllease__Account__r.primary_address__r.Address_Line_4__c, cllease__Account__r.primary_address__r.city__c,cllease__Account__r.primary_address__r.state__c,  cllease__Account__r.primary_address__r.zip_code__c, cllease__Account__r.phone , Account_Number__c, Dealer_Program__r.name, equipment_count__c, cllease__Account__r.name, cllease__Account__r.account_number__c,Account_Salesperson__c, Additional_Residual_Amount__c, Allowable_Soft_Cost__c, Application_Number__c, Application__c, Applied_Amount_Conga__c, AutoCaluclate_Finance_Charge_Grace_Days__c, AutoCaluclate_Late_Charge_Grace_Days__c, Bill_Not_Paid_Estimated_Property_Tax__c, Bill_Not_Paid_Insurance_Fees__c, Bill_Not_Paid_Late_Fees__c, Bill_Not_Paid_Origination_Fees__c, Bill_Not_Paid_Rent__c, Bill_Not_Paid_Service_Pass_Through__c, Bill_Residual_Amount__c, Bill_To_Contact_Id__c, Bill_not_Paid_Finance_Fees__c, Billed_Not_Paid__c, Billed_Rent_Only_Not_Paid__c, Billed_Tax_Only_Not_Paid__c, Billing_Address_Line_1__c, Billing_Address_Line_2__c, Billing_Address__c, Billing_Email__c, Bokg_Yr_Mo__c, Booked_Residual__c, Booking_Date__c, Business_Unit_Name__c, Buyout_With_Purchase__c, Buyout_Without_Purchase__c, CTA_Booked_Date__c, Charges_Estimated_Property_Tax_Paid__c, City__c, Contract_Signer_Last_Name__c, Contract_Signer_Title__c, Contract_Signer__c, Cost_of_Funds__c, Country__c, County__c, Cr_Apl_Tp_Code__c, CreatedById, CreatedDate, Current_BranchSystemDate__c, Custom_Finance_Charge_Grace_Days__c, Custom_Late_Charge_Grace_Days__c, Customer_City__c, Customer_Number__c, Customer_Primary_Contact__c, Customer_Primary_Phone__c, Customer_State__c, Customer_Zip_Code__c, Customer__c, DLL_Reference_Number__c, Dealer_Approved_Date__c, Dealer_Email__c, Dealer_Name__c, Dealer_Oracle_Vendor_Id__c, Dealer_Party__c, Dealer_Program__c, Dealer_State__c, Default_State__c, Due_This_Period_Conga__c, EIN__c, Ending_Net_Investment_Last_Month__c, Equipment_Exempt_Count__c, Estimated_Property_Tax1__c, Estimated_Property_Tax__c, Evergreen_Eligibility__c, Exposure_Estimated_Property_Tax__c, Exposure__c, Fee_Schedule_Estimated_Property_Tax__c, Final_Letter_Sent__c, Final_Notice_Letter_Send__c, Final_Notice_Letter_Sent__c, Final_Notice_Letter__c, Hyp_Based_Ent__c, Id, InsuranceNotification_Sent__c, Insurance_Effective_date__c, Insurance_Fees1__c, Insurance_Fees__c, Interim_Rent__c, IsDeleted, KYC_Cleared__c, LastActivityDate, LastModifiedById, LastModifiedDate, LastReferencedDate, LastViewedDate, Lease_Number__c, Lease_Type__c, Lessee_Company__c, NPA_Amount__c, NPA_Booking_Transaction_Amount__c, NPBA_Amount_Calculated_Date_Time__c, NPBA_Amount_Calculated__c, NPBA_Amount_Temp__c, NPBA_Amount__c, Name, Net_Dealer_Funding__c, Net_Trade_Up_Amount__c, New_Welcome_Packet__c, Next_Insurance_Fee__c, Number_of_Days_TO_Mature__c, Operating_Lease__c, Oracle_Trade_Up_Quote_Amount__c, Oracle_Trade_up_Lease_Number__c, Oracle_Trade_up_Quote_Expiration_Date__c, Oracle_Trade_up_Quote_Number__c, OwnerId, PO_Number__c, Payment_Amount_Conga__c, Payment_Stream__c, Primary_Customer_Address_2__c, Primary_Customer_Address__c, Prom_Code__c, Purchase_Option__c, Quote_Discount_Roll_over__c, Quote_Discount__c, RecordTypeId, Remaining_Amount_Due_Conga__c, Remaining_Payments1__c, Remaining_Payments__c, Rent_Amount__c, Rst_Residual__c, Rst_Total_Income__c, Rst_Total_Receivable__c, Rst_Total_Residual_Income__c, ST_Derived_Product_Name__c, ST_Lessee_Accounting_Method__c, ST_Lessor_Accounting_Method__c, ST_Tax_Classification__c, Sales_Rep_Name__c, Server_Url__c, Service_Fees1__c, Service_Fees__c, SessionId__c, Source_System__c, State__c, Sum_of_Equipment_Dealer_Charges__c, SystemModstamp, System_date__c, Tax_Conga__c, Termination_Date__c, Test_Welcome_Packet__c, Todaydate__c, Total_Amount_Conga__c, Total_Monthly_Payment__c, Trade_Up_Amount__c, Trade_Up_From__c, Trade_up_With_Purchase__c, Trade_up_Without_Purchase__c, Transaction_Code__c, Trigger_New_Packet_Workflow__c, Unbilled_Estimated_Property_Tax__c, Unbilled_Receivable__c, Unbilled_Rent__c, Unbilled_Service_and_Maintenance__c, Vertex_Tax_Amount__c, Welcome_Package_Requested__c, Welcome_Packet__c, Zero_Value__c, Zip_Code__c, cllease__ACH_Account_Number__c, cllease__ACH_Account_Type__c, cllease__ACH_Active__c, cllease__ACH_Bank_Name__c, cllease__ACH_Bank__c, cllease__ACH_Debit_Amount__c, cllease__ACH_Drawer_Name__c, cllease__ACH_End_Date__c, cllease__ACH_Frequency__c, cllease__ACH_Next_Debit_Date__c, cllease__ACH_Relationship_Type__c, cllease__ACH_Routing_Number__c, cllease__ACH_Start_Date__c, cllease__Account__c, cllease__Accrual_Streams__c, cllease__Accrue_Fee__c, cllease__Accrue_Lease_Income__c, cllease__Ach_Debit_Day__c, cllease__Active_flag__c, cllease__Address__c, cllease__Advance_Payments__c, cllease__Aging_History__c, cllease__Aging__c, cllease__Amort_Finance_Amount__c, cllease__Amort_Start_Date__c, cllease__Amortized_Yield__c, cllease__Amount_Due_at_Signing__c, cllease__Amount_to_Current__c, cllease__Application_Date__c, cllease__Approval_Date__c, cllease__Auto_Termination__c, cllease__Average_Monthly_Income__c, cllease__Balloon_Payment__c, cllease__Bill_Group__c, cllease__Bill_Rent__c, cllease__Billing_Group__c, cllease__Borrower_ACH__c, cllease__Branch__c, cllease__CL_Product__c, cllease__Calculation_Method__c, cllease__Cap_Reduction__c, cllease__Cash_Collected_By_Dealer__c, cllease__Charged_Off_Date__c, cllease__City_Surcharge_Amount__c, cllease__City_Tax_Amount__c, cllease__City_Tax_Rate__c, cllease__Closed_Date__c, cllease__Commencement_Date__c, cllease__Commission_Amount__c, cllease__Consider_Prebill_For_Evergreen__c, cllease__Consolidate_Invoice__c, cllease__Contact__c, cllease__Contract_Date__c, cllease__Contract_Restructured__c, cllease__County_Surcharge_Amount__c, cllease__County_Tax_Amount__c, cllease__County_Tax_Rate__c, cllease__Currency_Code__c, cllease__Current_Due_Day__c, cllease__Current_Evergreen_Term__c, cllease__Current_Payment_Amount__c, cllease__Current_Term_Rental_Payment__c, cllease__Current_Term_Surcharge_On_Stream__c, cllease__Current_Term_Tax_On_Stream__c, cllease__Current_Term_Total_Payment__c, cllease__Current_Term__c, cllease__Current_Yield__c, cllease__Days_Convention__c, cllease__Days_Past_Due__c, cllease__Dealer_Fees__c, cllease__Dealer_Funded__c, cllease__Dealer_Payment_Date__c, cllease__Dealer__c, cllease__Delinquency_Grace_Days__c, cllease__Delinquency_flag__c, cllease__Delinquent_Amount__c, cllease__Delivery_and_Acceptance_Date__c, cllease__Depreciate_Over_Asset_Life__c, cllease__Depreciation_Calculation_Basis__c, cllease__Depreciation_Expense_Flag__c, cllease__Depreciation_Method__c, cllease__Disbursement_File_To_Be_Generated__c, cllease__Documentation_Fees_Amount__c, cllease__Down_Payment__c, cllease__Due_Day__c, cllease__Early_Pre_Payment_Penalty_Indicator__c, cllease__Early_Termination_Fees__c, cllease__Effective_Date__c, cllease__Effective_End_Date__c, cllease__Effective_Term__c, cllease__Equipment_Cost__c, cllease__Equipment_Return_Fee__c, cllease__Equipment_Selling_Price__c, cllease__Equipment_returned_flag__c, cllease__Estimated_Selling_Price__c, cllease__Evergreen_Count__c, cllease__Evergreen_Current_Payment_Amount__c, cllease__Evergreen_Depreciation_Amount__c, cllease__Evergreen_Depreciation_Basis__c, cllease__Evergreen_Depreciation_Term__c, cllease__Evergreen_Due_Day__c, cllease__Evergreen_End_Date__c, cllease__Evergreen_Flag__c, cllease__Evergreen_Frequency__c, cllease__Evergreen_Last_Due_Date__c, cllease__Evergreen_Next_Due_Date__c, cllease__Evergreen_Next_Due_Generation_Date__c, cllease__Evergreen_Start_Date__c, cllease__Evergreen_Term__c, cllease__Excess__c, cllease__Fee_Set1__c, cllease__Fee_Set__c, cllease__Fees_Amount__c, cllease__Financed_Amount__c, cllease__First_Payment_Amount__c, cllease__First_Payment_Date__c, cllease__Fund_Date__c, cllease__GPS_Removal_Fee__c, cllease__Generating_Streams__c, cllease__Grace_Period_for_Repayments__c, cllease__Has_Asset_Level_Rent__c, cllease__Has_Changed__c, cllease__History_Tracking_Id__c, cllease__If_Other_Describe__c, cllease__Income_Accrual_Flag__c, cllease__Income_Accrual_Frequency__c, cllease__Initial_Direct_Cost_Amount1__c, cllease__Initial_Direct_Cost_Amount__c, cllease__Initial_Direct_Cost__c, cllease__Initial_Streams_Generated__c, cllease__Install_Date__c, cllease__Installation_Flag__c, cllease__Invalid_Data__c, cllease__Is_Rescheduled_For_Fee__c, cllease__Is_Rescheduled__c, cllease__Last_Current_To_NPA_Date__c, cllease__Last_Due_Date__c, cllease__Last_Due_Generation_Date__c, cllease__Last_Income_Accrual_Date__c, cllease__Last_NPA_To_Current_Date__c, cllease__Last_Payment_Amount__c, cllease__Last_Payment_Date__c, cllease__Last_Transaction_Timestamp__c, cllease__Last_Transaction_Type__c, cllease__Lease_Account_External_Id__c, cllease__Lease_Product_Name__c, cllease__Lease_Receivable_Amount__c, cllease__Lease_Status__c, cllease__Manually_Override_NPA_Status__c, cllease__Matured_flag__c, cllease__Maturity_Date_Current__c, cllease__Maturity_Date__c, cllease__Metro2_First_Delinquency_Date__c, cllease__Metro2_Payment_History__c, cllease__Metro2_Payment_Rating__c, cllease__Metro2_Portfolio_Type__c, cllease__Migration_Date__c, cllease__NPA_Status__c, cllease__Net_Balance_Amount__c, cllease__Net_Fee_Balance__c, cllease__Next_Commission_Payment_Date__c, cllease__Next_Due_Date__c, cllease__Next_Due_Generation_Date__c, cllease__Next_Income_Accrual_Date__c, cllease__Number_of_Pieces_of_Equipment__c, cllease__OT_ACH_Account_Number__c, cllease__OT_ACH_Account_Type__c, cllease__OT_ACH_Bank_Name__c, cllease__OT_ACH_Debit_Date__c, cllease__OT_ACH_Drawer_Address1__c, cllease__OT_ACH_Drawer_Address2__c, cllease__OT_ACH_Drawer_City__c, cllease__OT_ACH_Drawer_Name__c, cllease__OT_ACH_Drawer_State__c, cllease__OT_ACH_Drawer_Zip__c, cllease__OT_ACH_Fee_Amount__c, cllease__OT_ACH_Payment_Amount__c, cllease__OT_ACH_Relationship_Type__c, cllease__OT_ACH_Routing_Number__c, cllease__Oldest_Due_Date__c, cllease__Origin_Source__c, cllease__Other_Financed_Fees__c, cllease__Overdue_Amount_As_Of_Today__c, cllease__Override_Tax_Flag__c, cllease__Override_Tax_Rate__c, cllease__Override_VAT_Rate__c, cllease__PV_Rate__c, cllease__Payable_To_Dealer__c, cllease__Payment_Amount__c, cllease__Payment_Frequency__c, cllease__Payment_Method__c, cllease__Payment_Spread__c
             , cllease__Payment_Tolerance_End_Date__c, cllease__Payment_Tolerance_Rate__c, cllease__Payment_Tolerance_Start_Date__c, cllease__Payment_in_Arrears__c, cllease__Payoff_Fee_Indicator__c, cllease__Periodic_Fee__c, cllease__Periodic_Payment_Starts__c, cllease__Pre_Bill_Days__c, cllease__Prefund_Date__c, cllease__Prepayment_Method__c, cllease__Prepayment_Penalty_Indicator__c, cllease__Prepayment_Penalty_Periods__c, cllease__Prepayment_Value__c, cllease__Present_Value__c, cllease__Private_Label__c, cllease__Process_Fee__c, cllease__Product_Sub_Type__c, cllease__Product_Type__c, cllease__Referral_Category__c, cllease__Referral_Fee_Amount__c, cllease__Referral_Fee_Paid_On_Amount__c, cllease__Referral_Fee_Points_ReadOnly__c, cllease__Referral_Fee_Points__c, cllease__Referral_Fee__c, cllease__Referral_Payee__c, cllease__Rent_Maturity_Date__c, cllease__Rental_Accrual_Flag__c, cllease__Repayment_Billing_Method__c, cllease__Repayment_Procedure__c, cllease__Repayment_Term_Payment_Percent__c, cllease__Residual_Amount__c, cllease__Residual_Billed_At_Maturity__c, cllease__Residual_Owner__c, cllease__Residual_Type__c, cllease__Restructure_Date__c, cllease__Restructure_Reason__c, cllease__Restructured_Contract__c, cllease__Sales_Division__c, cllease__Sales_Rep__c, cllease__Secondary_Term__c, cllease__Security_Deposit_Amount__c, cllease__Set_Restructure_Yield__c, cllease__Skip_Child_Equip_Import__c, cllease__State_Surcharge_Amount__c, cllease__State_Tax_Amount__c, cllease__State_Tax_Rate__c, cllease__Status_Order__c, cllease__Stream_Generation_Required__c, cllease__Subsidized_Yield__c, cllease__Subsidy1__c, cllease__Subsidy__c, cllease__Subvention_Stream_Basis__c, cllease__Subvention__c, cllease__Tax_Amount__c, cllease__Tax_Exempt__c, cllease__Tax_Treatment__c, cllease__Tax_Upfront__c, cllease__Term_Residual_Frequency__c, cllease__Term_Residual_Months__c, cllease__Term__c, cllease__Termination_Discount_Rate__c, cllease__Termination_Quote_accepted_flag__c, cllease__Title_Transfer_Fee__c, cllease__Total_Amount_Paid__c, cllease__Total_Charges_Due__c, cllease__Total_Dealer_Charges__c, cllease__Total_Surcharge_Amount__c, cllease__Total_Tax_Amount__c, cllease__Total_Tax_Rate_Derived__c, cllease__Total_Tax_Rate__c, cllease__Upfront_Rental_Amount__c, cllease__Upfront_Tax_Basis__c, cllease__Upfront_Tax_Flag__c, cllease__Warranty_Amount__c, cllease__Who_remitted_Upfront_Tax__c, cllease__Write_off_Tolerance_Amount__c, cllease__Yield_Based_Payment__c, cllease__Yield__c, cllease__application_number__c, cllease__batch_job_completed__c, cllease__enable_calculation_setup_logs__c, cllease__generated_Streams_for_Restructure__c, cllease__isMigrated__c, cllease__needStreamRegenerated__c, cllease__sample__c, cllease__temp_payment__c 
             FROM cllease__Lease_Account__c 
-            where name = :leaseNumber
+            where name = :data.contractNumber
         ];
 
         List<cllease__Contract_Equipment__c> eList = [Select Additional_Residual_Amount__c, Asset_ID__c, Asset_Type_ID__c, Asset_Type_Name__c, Balance_Net_Trade_Up_Amount__c, Bill_Residual_Amount__c, Business_Unit__c, City_InstallAddress__c, Cost_Center__c, Country_InstallAddress__c, County_InstallAddress__c, CreatedById, CreatedDate, Dealer_Charges__c, Department_Name__c, Eligible_for_property_tax__c, Equipment_Description1__c, Evergreen_Depreciable_Cost__c, Evergreen_Depreciable_Life__c, External_Id__c, GARD__c, Id, Install_Account__c, Install_Address_Line_1__c, Install_Address_Line_2__c, Install_Address__c, Install_Date__c, Invoice_Date__c, Invoice_Number__c, IsDeleted, LastModifiedById, LastModifiedDate, Last_Residual_Burndown_Date__c, Lessee_Code__c, Lessee_Company__c, Manufacturer__c, Master_Asset_Type_ID__c, Master_Asset_Type__c, NBV__c, NPA_Amount__c, NPBA_Amount__c, Name, Net_Trade_Up_Amount__c, Object_Category_ID__c, Object_Category_Name__c, Oracle_Trade_Up_Amount__c, Owner_Class__c, Prior_Owner_Class__c, Product_Type__c, Remaining_Evergreen_Depreciable_Cost__c, Rent_Amount__c, Residual_Percentage__c, Salvage_Value__c, Serial_Number__c, State_Code__c, State__c, SystemModstamp, Termination_Date__c, Total_Equipment_Cost__c, Zip_Code_InstallAddress__c, cllease__Account__c, cllease__Asset_Split_Equipment__c, cllease__Bill_Group__c, cllease__Billing_Group__c, cllease__City_Surcharge__c, cllease__City_Tax_Rate__c, cllease__City__c, cllease__Contract__c, cllease__Country__c, cllease__County_Surcharge__c, cllease__County_Tax_Rate__c, cllease__County__c, cllease__Created_Through_Contract__c, cllease__Dealer_Contact_Email__c, cllease__Dealer_Contact_Name__c, cllease__Dealer_Fees__c, cllease__Dealer_Funded__c, cllease__Dealer_Name__c, cllease__Dealer_Party__c, cllease__Dealer_Phone_Number__c, cllease__Depreciation_Basis__c, cllease__Equipment_Book_Value__c, cllease__Equipment_Calculated_Cost__c, cllease__Equipment_Cost__c, cllease__Equipment_Description__c, cllease__Equipment_External_Id__c, cllease__Equipment_Id__c, cllease__Equipment_Net_Book_Value__c, cllease__Equipment_Serial_Number__c, cllease__Equipment_Type__c, cllease__Estimated_Selling_Price__c, cllease__Evergreen_Depreciation_Amount__c, cllease__External_Id__c, cllease__Flag_To_Delete__c, cllease__Generate_Book_Depreciation__c, cllease__History_Tracking_Id__c, cllease__Item_Code__c, cllease__LeaseApplicationNumber__c, cllease__LeaseApplication__c, cllease__Make__c, cllease__Model__c, cllease__NBV_On_Restructure_Date__c, cllease__New_Invoice_Price__c, cllease__New_Rent__c, cllease__Next_Variable_Rent_Due_Date__c, cllease__Original_Equipment_Id__c, cllease__Other_Financed_Fees__c, cllease__Override_Tax_Flag__c, cllease__Override_Tax_Rate__c, cllease__Override_VAT_Code__c, cllease__Quantity__c, cllease__Rent__c, cllease__Residual_Amount__c, cllease__Select_Equipment__c, cllease__State_Province__c, cllease__State_Surcharge__c, cllease__State_Tax_Rate__c, cllease__Status__c, cllease__Street_Address__c, cllease__Subsidy__c, cllease__Subvention__c, cllease__Tax_Amount__c, cllease__Tax_Code__c, cllease__Tax_Depreciation_Method__c, cllease__Tax_Depreciation__c, cllease__Tax_Residual_Value__c, cllease__Tax_exemption__c, cllease__Total_Dealer_Charges__c, cllease__Total_Tax_Amount__c, cllease__Total_Tax_Rate_Derived__c, cllease__Total_Tax_Rate__c, cllease__Upfront_Tax_Basis__c, cllease__Upfront_Tax_Flag__c, cllease__VIN__c, cllease__Variable_Rent_Frequency__c, cllease__Variable_Rent_Start_Date__c, cllease__Warehouse_Equipment__c, cllease__Warranty_Amount__c, cllease__Year__c, cllease__Zip_Code__c, cllease__life_in_months__c, cllease__return_status__c, cllease__status1__c, cllease__tax_financed__c 

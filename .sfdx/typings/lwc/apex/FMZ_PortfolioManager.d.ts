@@ -4,11 +4,20 @@ declare module "@salesforce/apex/FMZ_PortfolioManager.getData" {
 declare module "@salesforce/apex/FMZ_PortfolioManager.getLeaseDetails" {
   export default function getLeaseDetails(param: {leaseNumber: any}): Promise<any>;
 }
+declare module "@salesforce/apex/FMZ_PortfolioManager.getLeaseDetailsNewco" {
+  export default function getLeaseDetailsNewco(param: {leaseNumber: any}): Promise<any>;
+}
 declare module "@salesforce/apex/FMZ_PortfolioManager.generateQuoteByType" {
   export default function generateQuoteByType(param: {leaseNumber: any, type: any, customerName: any}): Promise<any>;
 }
+declare module "@salesforce/apex/FMZ_PortfolioManager.generateQuoteByTypeNewco" {
+  export default function generateQuoteByTypeNewco(param: {leaseNumber: any, type: any, customerName: any}): Promise<any>;
+}
 declare module "@salesforce/apex/FMZ_PortfolioManager.getQuoteDetails" {
   export default function getQuoteDetails(param: {quoteNumber: any}): Promise<any>;
+}
+declare module "@salesforce/apex/FMZ_PortfolioManager.getQuoteDetailsNew" {
+  export default function getQuoteDetailsNew(param: {quoteNumber: any}): Promise<any>;
 }
 declare module "@salesforce/apex/FMZ_PortfolioManager.emailTearSheetOrQuote" {
   export default function emailTearSheetOrQuote(param: {subject: any, body: any}): Promise<any>;
