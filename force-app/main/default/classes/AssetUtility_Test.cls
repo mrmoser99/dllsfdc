@@ -1,4 +1,8 @@
 @isTest private class AssetUtility_Test {
+
+  
+           
+    
     @isTest static void testMakeCallout(){
         // Create the mock response based on a static resource
         StaticResourceCalloutMock mock = new StaticResourceCalloutMock();
@@ -27,16 +31,28 @@
         System.assertNotEquals(null, at, 'There is access Token found');
 
         
-    }
-
-    @isTest static void testGetModels(){
+    }*/
+     
+    Static testmethod void testGetModels(){
 
         Test.startTest();
-        Boolean  b=AssetUtility.getModels(1);
+        Id batchJobId= Database.executeBatch(new BatchAssetUpdate(), 100);
+        System.debug('Batch JobId '+batchJobId);
+        Test.stopTest();
+        System.assertNotEquals(Null, batchJobId, 'There is no job id found');
+        
+    }
+    @isTest(SeeAllData=true) static void testGetModelsDetailsData(){
+
+        StaticResource sr=[select id, Name, body from StaticResource Where name='ModelsModelCodeDetails' ];
+        String fekeResponse=sr.body.tostring();   
+
+        Test.startTest();
+        Map<Integer,ModelsModelCodeDetailsJSON2Apex.Data>  mdldetail=AssetUtility.getModelsDetailsData(fekeResponse);
         Test.stopTest();
 
-        System.assertNotEquals(false, b, 'There is access Token found');
+        System.assertNotEquals(Null, mdldetail, 'There is no access Token found');
 
         
-    }*/
+    }
 }

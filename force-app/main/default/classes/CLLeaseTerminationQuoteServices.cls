@@ -8,6 +8,7 @@ global class CLLeaseTerminationQuoteServices {
     Private static String quoteStatus;
     Private static Set<String> quoteHeaderIdsSet=new Set<String>(); 
     Private static Map<String,Object> returnResultMap;
+    Private static String JOB_NAME = 'CLLeaseTerminationQuoteServices';
     
     
     // Create Termination Quote.
@@ -23,15 +24,17 @@ global class CLLeaseTerminationQuoteServices {
             
             conName = equipmList[0].cllease__Contract__r.name; 
             terminationDate = System.today();
-            quoteStatus = 'ACCEPTED';
+            quoteStatus = 'GENERATED';
             quoteReason='ROLL-OVER';
             quoteTypeList.add('TERMINATION WITH PURCHASE');
             quoteTypeList.add('TERMINATION WITHOUT PURCHASE');
             
             cllease__Termination_Quote_Header__c quoteHeader;
+            
             for(String quoteType : quoteTypeList){ 
                 cllease.TerminationQuoteAPI  termQuoteAPI = new cllease.TerminationQuoteAPI(conName,equipNames,quoteReason,quoteType,terminationDate,quoteStatus); 
-                quoteHeader = termQuoteAPI.createTerminationQuote(); 
+                
+                quoteHeader = termQuoteAPI.createTerminationQuote();
                 quoteHeaderIdsSet.add(quoteHeader.Id);
             }
             
@@ -118,10 +121,10 @@ global class CLLeaseTerminationQuoteServices {
                 
                 returnResultMap = (Map<String,Object>)JSON.deserializeUntyped(StringQuoteHeader);
                 
-                /*for(String key : returnResultMap.keySet()){
+                for(String key : returnResultMap.keySet()){
                     system.debug(key + ' : ' + returnResultMap.get(key));
                 }
-                List<Object> quoteSummary =(List<Object>)returnResultMap.get('Quote Summary'); 
+                /*List<Object> quoteSummary =(List<Object>)returnResultMap.get('Quote Summary'); 
                 for(Object obj : quoteSummary){
                    //System.debug('quoteSummary  =' + obj);
                 }*/
@@ -130,8 +133,6 @@ global class CLLeaseTerminationQuoteServices {
             return returnResultMap;
         }catch(Exception ex){
             Database.rollback(sp);
-            System.debug('Exception : '+ ex.getMessage());
-            System.debug('LineNumber : '+ ex.getLineNumber());
             JSONGenerator gen = JSON.createGenerator(false); 
             gen.writeStartObject(); 
             gen.writeStringField('ResponseMessage', 'Quote Creation Failed, Error Message: '+ex.getMessage()+', LineNumber : '+ex.getLineNumber()); 
@@ -139,6 +140,17 @@ global class CLLeaseTerminationQuoteServices {
             
             returnResultMap = (Map<String,Object>)JSON.deserializeUntyped(gen.getAsString());
             System.debug('returnResultMap = ' + returnResultMap);
+            
+            Exception_Log__c log = new Exception_Log__c();
+            log.Name = JOB_NAME;
+            log.Date__c = System.now();
+            log.Message__c = String.valueOf(returnResultMap.get('ResponseMessage'));
+            log.Line_Number__c = String.valueOf(ex.getLineNumber());
+            log.Stack_Trace__c = ex.getStackTraceString();
+            log.Type_Name__c = ex.getTypeName();
+            
+            insert log;
+           
             return returnResultMap;
         }   
         
@@ -174,6 +186,14 @@ global class CLLeaseTerminationQuoteServices {
                     String returnResponse = gen.getAsString();
                     returnResultMap = (Map<String,Object>)JSON.deserializeUntyped(returnResponse);
                     System.debug('returnResultMap =' +returnResultMap);
+                    
+                    Exception_Log__c log = new Exception_Log__c();
+                    log.Name = JOB_NAME;
+                    log.Date__c = System.now();
+                    log.Message__c = String.valueOf(returnResultMap.get('ResponseMessage'));
+ 
+                    insert log;
+                    
                     return returnResultMap;
                 }
             }
@@ -270,6 +290,7 @@ global class CLLeaseTerminationQuoteServices {
                 
             } 
             returnResultMap = (Map<String,Object>)JSON.deserializeUntyped(returnResponse);
+            
             for(String key : returnResultMap.keySet()){
                system.debug(key + ' : ' + returnResultMap.get(key));
             }
@@ -284,6 +305,17 @@ global class CLLeaseTerminationQuoteServices {
             String jsonBody=gen.getAsString(); 
             returnResultMap = (Map<String,Object>)JSON.deserializeUntyped(jsonBody);
             system.debug('returnResultMap =' +returnResultMap);
+            
+            Exception_Log__c log = new Exception_Log__c();
+            log.Name = JOB_NAME;
+            log.Date__c = System.now();
+            log.Message__c = String.valueOf(returnResultMap.get('ResponseMessage'));
+            log.Line_Number__c = String.valueOf(ex.getLineNumber());
+            log.Stack_Trace__c = ex.getStackTraceString();
+            log.Type_Name__c = ex.getTypeName();
+            
+            insert log;
+            
             return returnResultMap;  
         }
         
@@ -305,9 +337,20 @@ global class CLLeaseTerminationQuoteServices {
             
         }catch(Exception ex){
             Database.rollback(sp);
-            System.debug('Exception :' +ex);
+            
             returnMap.put('ResponseMessage ', 'Quote Id: '+quoteHeaderId+' Termination Quote Failed to Process, Error Message: '+ex.getMessage()+' LineNumber: '+ex.getLineNumber());
             System.debug('returnMap=' +returnMap); 
+            
+            Exception_Log__c log = new Exception_Log__c();
+            log.Name = JOB_NAME;
+            log.Date__c = System.now();
+            log.Message__c = String.valueOf(returnResultMap.get('ResponseMessage'));
+            log.Line_Number__c = String.valueOf(ex.getLineNumber());
+            log.Stack_Trace__c = ex.getStackTraceString();
+            log.Type_Name__c = ex.getTypeName();
+            
+            insert log;
+            
             return returnMap;
         }
         

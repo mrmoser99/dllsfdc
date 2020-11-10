@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
     <labels>
+        <fullName>Asset_Page_Size</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Asset Page Size</shortDescription>
+        <value>90</value>
+    </labels>
+    <labels>
+        <fullName>Assets_Gard_Client_Secret_TZ</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Assets Gard Client Secret TZ</shortDescription>
+        <value>85d3e648-6c38-4197-97ff-c7e2e81e0ba7</value>
+    </labels>
+    <labels>
+        <fullName>Assets_Gard_Client_TZ</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Assets_Gard_Client_TZ</shortDescription>
+        <value>0026e5c3-57d3-4d57-b588-25763228bcd1</value>
+    </labels>
+    <labels>
+        <fullName>Assets_Gard_Endpoint_Token_TZ</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Assets Gard Endpoint Token TZ</shortDescription>
+        <value>https://apiacc.dllgroup.com/oauth/token</value>
+    </labels>
+    <labels>
         <fullName>CAMS_Check</fullName>
         <language>en_US</language>
         <protected>false</protected>
@@ -467,6 +495,13 @@ The NewCo Team&lt;br/&gt;
         <protected>false</protected>
         <shortDescription>Welcome Template</shortDescription>
         <value>a2m1I0000002Qe3</value>
+    </labels>
+    <labels>
+        <fullName>asset_program</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>asset program</shortDescription>
+        <value>53</value>
     </labels>
     <labels>
         <fullName>conga_Email</fullName>

@@ -16,8 +16,8 @@ declare module "@salesforce/apex/FMZ_PortfolioManager.generateQuoteByTypeNewco" 
 declare module "@salesforce/apex/FMZ_PortfolioManager.getQuoteDetails" {
   export default function getQuoteDetails(param: {quoteNumber: any}): Promise<any>;
 }
-declare module "@salesforce/apex/FMZ_PortfolioManager.getQuoteDetailsNew" {
-  export default function getQuoteDetailsNew(param: {quoteNumber: any}): Promise<any>;
+declare module "@salesforce/apex/FMZ_PortfolioManager.getQuoteDetailsNewco" {
+  export default function getQuoteDetailsNewco(param: {quoteNumber: any}): Promise<any>;
 }
 declare module "@salesforce/apex/FMZ_PortfolioManager.emailTearSheetOrQuote" {
   export default function emailTearSheetOrQuote(param: {subject: any, body: any}): Promise<any>;

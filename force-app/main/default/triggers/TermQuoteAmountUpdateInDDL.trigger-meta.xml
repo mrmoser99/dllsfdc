@@ -11,5 +11,5 @@
         <minorNumber>9000</minorNumber>
         <namespace>mfiflexUtil</namespace>
     </packageVersions>
-    <status>Active</status>
+    <status>Inactive</status>
 </ApexTrigger>

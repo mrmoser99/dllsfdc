@@ -25,12 +25,12 @@
     Static testmethod void test(){
 
         Test.startTest();
-        List<genesis__Equipment_Master__c> Eq=[SELECT genesis__Model__c, Asset_Type_ID__c, Asset_Type_Name__c, MSRP__c, Manufacturer__c, Master_Asset_Type_ID__c, Master_Asset_Type__c, Object_Category_ID__c, Object_Category_Name__c, Economic_Life__c, Composite_Key__c, Gard_External_Id__c FROM genesis__Equipment_Master__c];
+        //List<genesis__Equipment_Master__c> Eq=[SELECT genesis__Model__c, Asset_Type_ID__c, Asset_Type_Name__c, MSRP__c, Manufacturer__c, Master_Asset_Type_ID__c, Master_Asset_Type__c, Object_Category_ID__c, Object_Category_Name__c, Economic_Life__c, Composite_Key__c, Gard_External_Id__c FROM genesis__Equipment_Master__c];
         Id batchJobId= Database.executeBatch(new BacthAssetUpdate(), 100);
         System.debug('Batch JobId '+batchJobId);
         Test.stopTest();
-        String GardExternalId=[SELECT id, Gard_External_Id__c FROM genesis__Equipment_Master__c WHERE Composite_Key__c='Dell-7130cdn Color Printer' LIMIT 1].Gard_External_Id__c;
-       // System.assertEquals('3122', GardExternalId);
+        System.assertNotEquals(Null, batchJobId, 'There is no job id found');
+        
     }
     
 }
