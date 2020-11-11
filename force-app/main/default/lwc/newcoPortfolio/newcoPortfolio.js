@@ -90,10 +90,12 @@ export default class NewcoPortfolio extends LightningElement {
 
     tear(row) {
         this.record = row;
-        const lease = row.Name;
+
+        console.log('ready to call tear sheet with lease id: ' + row.Id);
+        const lease = row;
         console.log('lease is  ' + lease);
         const displayTearEvent = new CustomEvent('displaytear', {
-            detail: { lease },
+            detail: { lease , row},
         });
         // Fire the custom event
         this.dispatchEvent(displayTearEvent);

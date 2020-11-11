@@ -48,6 +48,7 @@
 
   
   getLeaseDetailsHelper: function(component, data) {
+    console.log('in get lease detail shelper');
     return new Promise(
       $A.getCallback((resolve, reject) => {
         var action;
@@ -60,8 +61,10 @@
           console.log('NOT calling newco get lease');
           action = component.get("c.getLeaseDetails");
         }
+
+        console.log('data contract is: ' + component.get('v.leaseNumber'));
         action.setParams({
-          leaseNumber: data
+          leaseNumber: component.get('v.leaseNumber')
         });
   
         action.setCallback(this, response => {
@@ -306,7 +309,7 @@
           }
           component.set("v.isLoading", false);
           resolve();
-         
+          //callback(response);
         });
         $A.enqueueAction(quoteDetailsAction);
       })
