@@ -83,12 +83,51 @@ public class FMZ_PortfolioManager {
 
     // Quote Details
     @AuraEnabled
-    public static Lease_OLM_Quote__c getQuoteDetailsNewco (String quoteNumber) {
-       // Lease_OLM_Quote__c response = Lease_OLM_Quote__c();
+    public static cllease__Termination_Quote_Header__c getQuoteDetailsNewco (String quoteNumber) {
+        cllease__Termination_Quote_Header__c response = new cllease__Termination_Quote_Header__c();
 
-       Lease_OLM_Quote__c quote = [SELECT Id, Amount__c, Remaining_Rental_Payments__c, Discount__c, Equipment_Price__c, Sales_Tax__c, Property_Tax__c, Past_Due_Service__c, Lease_Charges__c, Security_Deposit__c, Quote_Validity_Date__c FROM Lease_OLM_Quote__c WHERE Name =: quoteNumber];
 
-       return quote;
+       response = [SELECT cllease__Accelerated_Accrual_Option__c
+       , Billed_not_Paid_Charges__c
+       , cllease__Cancel_Contract__c
+       , cllease__Contract__c
+       , cllease__Contract_Status_Check__c
+       , cllease__Discount_Rate__c
+       , cllease__Early_Termination__c
+       , cllease__Effective_From__c
+       , cllease__Full_Termination__c
+       , cllease__is_Equipment_Termination__c
+       , cllease__Quote_Amount__c
+       , CreatedById
+       , cllease__Quote_Type__c
+       , cllease__Quote_Reason__c
+       , cllease__Requested_Termination_Date__c
+       , cllease__Rebate_Percentage__c
+       , cllease__Rebate_Amount__c, cllease__Status__c
+       , cllease__Termination_Date__c
+       , cllease__Termination_With_Purchase__c
+       , cllease__Third_Party_Sale__c
+       , cllease__Third_Party_Sale_Amount__c
+       , CreatedDate, Ending_Net_Investment__c
+       , Equipment_Price__c
+       , Id
+       , Less_Discount__c
+       , Name, Outstanding_Charges__c
+       , QUOTE_DISCOUNT__c
+       ,QUOTE_ESTIMATED_PROPERTY_TAX__c
+       , QUOTE_ESTIMATED_SALES_TAX__c
+       , QUOTE_FEE__c
+       , QUOTE_PURCHASE_AMOUNT__c
+       , QUOTE_ROLLOVER_INCENTIVE__c
+       , QUOTE_SERVICE_AND_MAINTENANCE__c
+       , QUOTE_UNBILLED_RECEIVABLE__c
+       , Remaining_Payments__c
+       , cllease__Effective_To__c 
+       FROM cllease__Termination_Quote_Header__c
+       where name = :quoteNumber
+       ];
+
+       return response;
 
    }
 

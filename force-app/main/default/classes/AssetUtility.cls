@@ -44,6 +44,7 @@ public class AssetUtility {
             req_token.setBody('client_id='+client+'&client_secret='+secret+'&grant_type=client_credentials');
             //req_token.setBody('client_id='+'0c9b112a-c10c-4ac9-8233-2509d2a41572'+'&client_secret='+ 'ada7fccb-1be1-4464-a2a3-dd5d89ccc567' +'&grant_type=client_credentials');
             Http http = new Http(); 
+            try{
             HTTPResponse res = http.send(req_token);           
             
             if(res.getStatusCode()>=200 && res.getStatusCode()<300){
@@ -63,7 +64,17 @@ public class AssetUtility {
                 //    access_token= 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJbaW52YWxpZCBmaWVsZF0iLCJzY3AiOiJhc3NldC1wcm9ncmFtcy5XUklURSBwYXJ0eS5hZGQgcGFydG5lcnBvcnRmb2xpby5SRUFEIGFzc2V0LXByb2dyYW1zLlJFQUQgY29udHJhY3RwZXJmb3JtYW5jZWRhdGEuUkVBRCByZXNvdXJjZS5XUklURSBwYXJ0eS51cGRhdGUgUGFydG5lcl9JbnNpZ2h0LlJFQUQgd3JpdGUuZ3VhcmFudGVlIHZpZXdfbWFpbnRhaW5Db21taXRtZW50IHJlc291cmNlLlJFQUQgcmVhZC5ndWFybnRlZSBjcmVhdGVfYW5kX21hbmFnZV9maW5hbmNpYWxfY29udHJhY3RzIGFzc2V0cy5SRUFEIHBhcnR5LmRlbGV0ZSByYXRlY2FyZGZhY3RvcnMuUkVBRCIsInZlciI6IjEuMCIsImlzcyI6ImV4dGVybmFsZ2F0ZXdheWFjYy5kbGwuY29ycCIsIm9pZCI6IltpbnZhbGlkIGZpZWxkXSIsImdpdmVuX25hbWUiOiJObyBMREFQIiwidGlkIjoiW2ludmFsaWQgZmllbGRdIiwiYXVkIjoiW2ludmFsaWQgZmllbGRdIiwiYWNyIjoiMSIsInVwbiI6Ik5vIExEQVAiLCJ1bmlxdWVfbmFtZSI6Ik5vIExEQVAiLCJuYmYiOjE2MDQzMzc1ODgsImFwcGlkYWNyIjoiMCIsImFwcGlkIjoiMGM5YjExMmEtYzEwYy00YWM5LTgyMzMtMjUwOWQyYTQxNTcyIiwiZXhwIjoxNjA0OTQyMzg4LCJpYXQiOjE2MDQzMzc1ODgsImZhbWlseV9uYW1lIjoiTm8gTERBUCJ9.etdITkYSGHW1i8Oa4MqbssOZ_d7_I22Vpr2GZFohjiSSJbMKPhIP5CyTLVbs6LoZ304tL96XYP4fUIA7S_4Q-PTWIxiOEewl3jbscY6zBinDEZLdQUgApAg9R4J4yfQKErTowjBm5VXahWxOpiwemAEsTp1nzgjrtE_J7f2r1wm6z0KTUTWfmtQXfOl9U2Mzf05LWNc-piJwC7DoNSRfdrOAd_0ZpgjF_AZJbW4PVmSClg3VH6etSfiUU10ZblI4UY18za_GSQOO-jN2mhNKJAsScMr6-PLFv33Ojk-Uo_OCa4YsKKNLx7bV0sAXgAxRGv54o68QHddl1_DGyUV6Zg';
                 
             }
-            //Assign the access_token to the static variable to minimize the number of callouts
+            
+        }catch(Exception ex){
+            //Add Error log record
+            cllease__Batch_Process_Log__c bchLog = new cllease__Batch_Process_Log__c();
+            bchLog.name = 'AssetUtility';
+            bchLog.cllease__Message__c ='Exception : '+ ex.getMessage() + '  - ' + ex.getStackTraceString();
+            insert bchLog;
+            system.debug('Error Messge: '+ex.getMessage() +'\n Stack: '+ex.getStackTraceString());
+            
+        }
+        //Assign the access_token to the static variable to minimize the number of callouts
             strAccessToken  =access_token;
             return access_token;
             
@@ -132,7 +143,7 @@ public class AssetUtility {
             //Add Error log record
             cllease__Batch_Process_Log__c bchLog = new cllease__Batch_Process_Log__c();
             bchLog.name = 'AssetUtility';
-            bchLog.cllease__Message__c = ex.getMessage() + '  - ' + ex.getStackTraceString();
+            bchLog.cllease__Message__c ='Exception : '+ ex.getMessage() + '  - ' + ex.getStackTraceString();
             insert bchLog;
             system.debug('Error Messge: '+ex.getMessage() +'\n Stack: '+ex.getStackTraceString());
             
@@ -198,7 +209,8 @@ public class AssetUtility {
                             eq.Asset_Type_ID__c=String.valueOf(mapModelsDetails.get(cod).assetType.code);
                             eq.Asset_Type_Name__c=mapModelsDetails.get(cod).assetType.name;
                             
-                            eq.MSRP__c=Decimal.valueOf(mapModelsDetails.get(cod).referencePrice).setscale(2);
+                           // eq.MSRP__c=Decimal.valueOf(mapModelsDetails.get(cod).referencePrice).setscale(2);
+                            eq.MSRP__c=mapModelsDetails.get(cod).referencePrice.setscale(2);
                             if(eq.MSRP__c<=0) continue; 
                             eq.Manufacturer__c=mapModelsDetails.get(cod).brand.name;
                             eq.Master_Asset_Type_ID__c=String.valueOf(mapModelsDetails.get(cod).masterAssetType.code);
@@ -206,7 +218,8 @@ public class AssetUtility {
                             eq.Object_Category_ID__c=String.valueOf(mapModelsDetails.get(cod).objectCategory.code);
                             eq.Object_Category_Name__c=mapModelsDetails.get(cod).objectCategory.name;
                             eq.Economic_Life__c=Decimal.valueOf(64);
-                            eq.Composite_Key__c=mapModelsDetails.get(cod).brand.name+'-'+mapModelsDetails.get(cod).name;
+                            eq.Composite_Key__c=String.valueOf(mapModelsDetails.get(cod).assetType.code)+'-'+mapModelsDetails.get(cod).brand.name+'-'+mapModelsDetails.get(cod).name;
+                            System.debug('CHK 101. Composite_Key__c'+eq.Composite_Key__c);
                             eq.Gard_External_Id__c=String.valueOf(mapModelsListCode2Id.get(cod));
                             eq.Model_Code__c=String.valueOf(cod);//mapModelsDetails.get(cod).code
                             System.debug('Record#'+ cnt+'. '+eq);
@@ -230,8 +243,8 @@ public class AssetUtility {
             
             //Add Error log record
             cllease__Batch_Process_Log__c bchLog = new cllease__Batch_Process_Log__c();
-            bchLog.name = 'EquipmentMasterUtility';
-            bchLog.cllease__Message__c = ex.getMessage() + '  - ' + ex.getStackTraceString();
+            bchLog.name = 'AssetUtility';
+            bchLog.cllease__Message__c = 'Exception : '+ex.getMessage() + '  - ' + ex.getStackTraceString();
             insert bchLog;
             system.debug('Error Messge: '+ex.getMessage() +'\n Stack: '+ex.getStackTraceString());
         }

@@ -12,8 +12,10 @@ global class BacthAssetUpdate implements Database.Batchable<Integer>,Database.St
    
    private List<Integer> listPageNumber = new List<Integer>();
    private  integer totalPageNumber;
-   //for debug only
-   private static List<genesis__Equipment_Master__c> allEquipmentListToAttach =new List<genesis__Equipment_Master__c>();  
+   
+   public class MyException extends Exception {
+
+   }
          
     /************************************************************************************************    
     * @Description  :   Constructor for BacthAssetUpdate Class
@@ -31,6 +33,7 @@ global class BacthAssetUpdate implements Database.Batchable<Integer>,Database.St
         For(Integer i=1; i<= totalPageNumber; i++){
                 this.listPageNumber.add(i);                
         }
+        
         system.debug('BacthAssetUpdate CHK 01. Constructor: List of Page Numbers '+this.listPageNumber.size());
     }
     /************************************************************************************************    
@@ -61,15 +64,13 @@ global class BacthAssetUpdate implements Database.Batchable<Integer>,Database.St
          System.debug('BacthAssetUpdate CHK 03. Execute: Scope size in execute '+scope.size());
          //To get the list of genesis__Equipment_Master__c records, 
          //execute the AssetUtility.getModels with page numbers 
+         Integer intPage;
           for(Integer p:scope) {  
-
+            intPage=p;
             equipmentList.addAll(AssetUtility.getModels(p));
             System.debug('BacthAssetUpdate CHK 03a. scope executed Page#: '+p);
            }
-            //For debug purpose Only!!!!
-            allEquipmentListToAttach.addAll(equipmentList);
-          
-           
+            
            if(equipmentList.size()>0){
                for(genesis__Equipment_Master__c equipment: equipmentList){
                     System.debug('BacthAssetUpdate CHK 03b. Composite_Key__c value: '+equipment.Composite_Key__c);
@@ -79,18 +80,38 @@ global class BacthAssetUpdate implements Database.Batchable<Integer>,Database.St
                               
                //Upsert the genesis__Equipment_Master__c with Composite_Key__c;
                 System.debug('BacthAssetUpdate CHK 03c. Size: '+equipmentList.size()+' equipmentList: '+equipmentList);
-                Database.UpsertResult [] upsrtResults=Database.Upsert(equipmentList, genesis__Equipment_Master__c.Composite_Key__c,true);
-               //Database.UpsertResult [] upsrtResults=Database.Upsert(equipmentMap.values(), genesis__Equipment_Master__c.Composite_Key__c,true);
+                String customErrMsg;
+                try{
+                //Database.UpsertResult [] upsrtResults=Database.Upsert(equipmentList, genesis__Equipment_Master__c.Composite_Key__c,true);
+                Database.UpsertResult [] upsrtResults=Database.Upsert(equipmentList, genesis__Equipment_Master__c.Composite_Key__c,false);
+               
+                //Database.UpsertResult [] upsrtResults=Database.Upsert(equipmentMap.values(), genesis__Equipment_Master__c.Composite_Key__c,true);
               
                for(Database.UpsertResult rslt: upsrtResults){
                     if(rslt.isSuccess()){
                         System.debug('BacthAssetUpdate Upsert result CHK 03d.'+rslt.getId());
                     }else {
                         for(Database.Error err:rslt.errors){
+                            //if the err.getMessage() doesn't cotainins dupplicate throw exception.
+                            if(!err.getMessage().contains('DUPLICATE')) {
+                                customErrMsg='Page= '+String.valueOf(intPage)+' '+err.getMessage();
+                                throw new MyException (err.getMessage());
+                            }
+
+                                
                             system.debug('BacthAssetUpdate Upsert Error Info CHK 03e.'+LoggingLevel.ERROR+'\n  Status code: '+err.getStatusCode()+'\n Msg: '+err.getMessage()+'\n  Fields: '+err.getFields());
                         }
                     }
                 }
+            }Catch(Exception ex){
+                cllease__Batch_Process_Log__c bchLog = new cllease__Batch_Process_Log__c();
+                bchLog.name = 'BatchAssetUpdate';
+                bchLog.cllease__Message__c ='Exception : '+'Page= '+String.valueOf(intPage)+': '+customErrMsg+'\t'+ ex.getMessage() + '  - ' + ex.getStackTraceString();
+                insert bchLog;
+                system.debug('Error Messge: '+ex.getMessage() +'\n Stack: '+ex.getStackTraceString());
+                //Throw exception with old 
+                
+            }
             }
            
            System.debug('BacthAssetUpdate CHK 03f.Saved items: '+equipmentList.size()); 
@@ -104,9 +125,7 @@ global class BacthAssetUpdate implements Database.Batchable<Integer>,Database.St
     * User Story    :   US..
     *************************************************************************************************/       
     global void finish(Database.BatchableContext bc) {
-        //for debug only
-        String createAttachment=AssetUtility.addAttachment(allEquipmentListToAttach);               
-        System.debug('Finis CHK 04 Create Attachment : '+createAttachment);
+        
         //Todo
 
     }
@@ -131,9 +150,10 @@ global class BacthAssetUpdate implements Database.Batchable<Integer>,Database.St
             //Get the meta data from parsed result
             ModelsJSON2Apex.Meta meta= parsedResult.meta;
             //Get the size and item count
-            Integer msize=meta.size;
+           // String sizeString=System.Label.Asset_Page_Size;
+            Integer msize=90;//meta.size;
             integer mItems= meta.itemCount;
-
+            system.debug('CHK 04. Metada Items= '+mItems);
             if(mItems > msize){
                 //Divide the items by size and assign to the pagecount. 
                 pageCount=mItems/msize;
@@ -144,6 +164,12 @@ global class BacthAssetUpdate implements Database.Batchable<Integer>,Database.St
 
             }  
             System.debug('BacthAssetUpdate CHK 4. Total Page Number: '+pageCount);
+           /* List<Integer> lstModelCode=new List<Integer>();
+            for(ModelsJSON2Apex.Data modelData: parsedResult.data){
+                lstModelCode.add(modelData.code);
+                
+            }
+            System.debug('CHK 5. Total Model Codes: '+lstModelCode.size());*/
            return pageCount;
            //return 4;
         }

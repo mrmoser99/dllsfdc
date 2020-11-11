@@ -24,7 +24,8 @@ public class ModelsDetailsJSON2Apex {
 	public class Data {
 		public Integer code;
 		public String name;
-		public Integer referencePrice;
+		//public Integer referencePrice; //ModifiedDate 2010-11-10 By. Tesh
+		public Decimal referencePrice;
 		public Boolean isActive;
 		public Boolean isTitled;
 		public Boolean isSerialized;

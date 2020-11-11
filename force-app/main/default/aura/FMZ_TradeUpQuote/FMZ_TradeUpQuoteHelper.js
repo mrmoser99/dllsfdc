@@ -217,63 +217,96 @@
     component.set("v.isLoading", true);
     return new Promise(
       $A.getCallback((resolve, reject) => {
-        var quoteDetailsAction = component.get("c.getQuoteDetails");
+        var quoteDetailsAction;
+        console.log('from newco:' +component.get('v.fromNewco') );
+        if (component.get('v.fromNewco') != true)
+          quoteDetailsAction = component.get("c.getQuoteDetails");
+        else
+          quoteDetailsAction = component.get("c.getQuoteDetailsNewco");
+
         quoteDetailsAction.setParams({
           quoteNumber: quoteNumber
         });
         quoteDetailsAction.setCallback(this, response => {
-          let state = response.getState();
+          let state = response.getState(); 
           if (state === "SUCCESS") {
+            console.log('success');
             var data = response.getReturnValue();
             if (number === 1) {
-              component.set("v.quoteData", data);
-              component.set("v.quoteId", data.Id);
-              component.set(
-                "v.remainingLeasePayments",
-                data.Remaining_Rental_Payments__c
-              );
-              component.set("v.tradeUpDiscount", data.Discount__c);
-              component.set("v.equipmentPrice", data.Equipment_Price__c);
-              component.set("v.salesTax", data.Sales_Tax__c);
-              component.set("v.propertyTaxReimbursement", data.Property_Tax__c);
-              component.set("v.pastDueService", data.Past_Due_Service__c);
-              component.set("v.outstandingLeaseCharges", data.Lease_Charges__c);
-              component.set("v.securityDeposit", data.Security_Deposit__c);
-              component.set("v.netTradeUpAmount", data.Amount__c);
-              component.set("v.expirationDate", data.Quote_Validity_Date__c);
-            } else {
-              component.set("v.quoteData2", data);
-              component.set("v.quoteId2", data.Id);
-              component.set(
-                "v.remainingLeasePayments2",
-                data.Remaining_Rental_Payments__c
-              );
-              component.set("v.tradeUpDiscount2", data.Discount__c);
-              component.set("v.equipmentPrice2", data.Equipment_Price__c);
-              component.set("v.salesTax2", data.Sales_Tax__c);
-              component.set(
-                "v.propertyTaxReimbursement2",
-                data.Property_Tax__c
-              );
-              component.set("v.pastDueService2", data.Past_Due_Service__c);
-              component.set(
-                "v.outstandingLeaseCharges2",
-                data.Lease_Charges__c
-              );
-              component.set("v.securityDeposit2", data.Security_Deposit__c);
-              component.set("v.netTradeUpAmount2", data.Amount__c);
-              component.set("v.expirationDate2", data.Quote_Validity_Date__c);
-            }
-          } else {
+              if (component.get('v.fromNewco') != true){ 
+                component.set("v.quoteData", data);
+                component.set("v.quoteId", data.Id);
+                component.set("v.remainingLeasePayments",data.Remaining_Rental_Payments__c);
+                component.set("v.tradeUpDiscount", data.Discount__c);
+                component.set("v.equipmentPrice", data.Equipment_Price__c);
+                component.set("v.salesTax", data.Sales_Tax__c);
+                component.set("v.propertyTaxReimbursement", data.Property_Tax__c);
+                component.set("v.pastDueService", data.Past_Due_Service__c);
+                component.set("v.outstandingLeaseCharges", data.Lease_Charges__c);
+                component.set("v.securityDeposit", data.Security_Deposit__c);
+                component.set("v.netTradeUpAmount", data.Amount__c);
+                component.set("v.expirationDate", data.Quote_Validity_Date__c);
+              }
+              else{
+                //newco mapping
+                console.log('start 1');
+                component.set("v.quoteData", data);
+                component.set("v.quoteId", data.Id);
+                component.set("v.remainingLeasePayments",data.QUOTE_UNBILLED_RECEIVABLE__c);
+                component.set("v.tradeUpDiscount", data.QUOTE_DISCOUNT__c);
+                component.set("v.equipmentPrice", data.QUOTE_PURCHASE_AMOUNT__c);
+                component.set("v.salesTax", data.QUOTE_ESTIMATED_SALES_TAX__c);
+                component.set("v.propertyTaxReimbursement",data.QUOTE_ESTIMATED_PROPERTY_TAX__c);
+                component.set("v.pastDueService", data.QUOTE_SERVICE_AND_MAINTENANCE__c);
+                component.set("v.outstandingLeaseCharges",data.Outstanding_Charges__c);
+                component.set("v.securityDeposit", '0');
+                component.set("v.netTradeUpAmount", data.cllease__Quote_Amount__c);
+                component.set("v.expirationDate", data.cllease__Effective_To__c);
+                console.log('end 1');
+              }
+            } 
+
+            else {  //else number ===1
+              if (component.get('v.fromNewco') != true){ 
+                component.set("v.quoteData2", data);
+                component.set("v.quoteId2", data.Id);
+                component.set("v.remainingLeasePayments2",data.Remaining_Rental_Payments__c);
+                component.set("v.tradeUpDiscount2", data.Discount__c);
+                component.set("v.equipmentPrice2", data.Equipment_Price__c);
+                component.set("v.salesTax2", data.Sales_Tax__c);
+                component.set("v.propertyTaxReimbursement2",data.Property_Tax__c);
+                component.set("v.pastDueService2", data.Past_Due_Service__c);
+                component.set("v.outstandingLeaseCharges2",data.Lease_Charges__c);
+                component.set("v.securityDeposit2", data.Security_Deposit__c);
+                component.set("v.netTradeUpAmount2", data.Amount__c);
+                component.set("v.expirationDate2", data.Quote_Validity_Date__c);
+              }
+              else{
+                component.set("v.quoteData2", data);
+                component.set("v.quoteId2", data.Id);
+                component.set("v.remainingLeasePayments2",data.QUOTE_UNBILLED_RECEIVABLE__c);
+                component.set("v.tradeUpDiscount2", data.QUOTE_DISCOUNT__c);
+                component.set("v.equipmentPrice2", data.QUOTE_PURCHASE_AMOUNT__c);
+                component.set("v.salesTax2", data.QUOTE_ESTIMATED_SALES_TAX__c);
+                component.set("v.propertyTaxReimbursement2",data.QUOTE_ESTIMATED_PROPERTY_TAX__c);
+                component.set("v.pastDueService2", data.QUOTE_SERVICE_AND_MAINTENANCE__c);
+                component.set("v.outstandingLeaseCharges2",data.Outstanding_Charges__c);
+                component.set("v.securityDeposit2", '0');
+                component.set("v.netTradeUpAmount2", data.cllease__Quote_Amount__c);
+                component.set("v.expirationDate2", data.cllease__Effective_To__c);
+              }
+            }  //end number check 
+          }
+          else{
             component.find("notifLib").showToast({
-              title: "nable to get quote details, please refresh!",
+              title: "Unable to get quote details, please refresh!",
               variant: "error",
               showCloseButton: true
             });
           }
           component.set("v.isLoading", false);
           resolve();
-          callback(response);
+         
         });
         $A.enqueueAction(quoteDetailsAction);
       })

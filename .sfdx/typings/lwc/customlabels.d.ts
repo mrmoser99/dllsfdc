@@ -1,3 +1,19 @@
+declare module "@salesforce/label/c.Asset_Page_Size" {
+    var Asset_Page_Size: string;
+    export default Asset_Page_Size;
+}
+declare module "@salesforce/label/c.Assets_Gard_Client_Secret_TZ" {
+    var Assets_Gard_Client_Secret_TZ: string;
+    export default Assets_Gard_Client_Secret_TZ;
+}
+declare module "@salesforce/label/c.Assets_Gard_Client_TZ" {
+    var Assets_Gard_Client_TZ: string;
+    export default Assets_Gard_Client_TZ;
+}
+declare module "@salesforce/label/c.Assets_Gard_Endpoint_Token_TZ" {
+    var Assets_Gard_Endpoint_Token_TZ: string;
+    export default Assets_Gard_Endpoint_Token_TZ;
+}
 declare module "@salesforce/label/c.CAMS_Check" {
     var CAMS_Check: string;
     export default CAMS_Check;
@@ -249,6 +265,10 @@ declare module "@salesforce/label/c.Welcome_Query2" {
 declare module "@salesforce/label/c.Welcome_Template" {
     var Welcome_Template: string;
     export default Welcome_Template;
+}
+declare module "@salesforce/label/c.asset_program" {
+    var asset_program: string;
+    export default asset_program;
 }
 declare module "@salesforce/label/c.conga_Email" {
     var conga_Email: string;
