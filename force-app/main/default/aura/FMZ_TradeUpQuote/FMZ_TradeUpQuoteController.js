@@ -64,7 +64,7 @@
 
     helper.getEnvSettingsHelper(component);
    
-
+    //something has to change here to support newco quote.    this fetch data is called for reg porfolio and fetch data fills in service info...need to fill in data in newco
     if (!row) {
       console.log('not row');
       helper.fetchData(component).then(data => {

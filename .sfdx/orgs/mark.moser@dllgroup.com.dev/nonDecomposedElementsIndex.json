@@ -318,5 +318,30 @@
         "fullName": "conga_Email",
         "type": "CustomLabels",
         "metadataFilePath": "b:\\myDev\\myDev\\force-app\\main\\default\\labels\\CustomLabels.labels-meta.xml"
+    },
+    "CustomLabels__Asset_Page_Size": {
+        "fullName": "Asset_Page_Size",
+        "type": "CustomLabels",
+        "metadataFilePath": "c:\\Users\\MoserM2\\OneDrive - De Lage Landen International B.V\\myDev\\myDev\\force-app\\main\\default\\labels\\CustomLabels.labels-meta.xml"
+    },
+    "CustomLabels__Assets_Gard_Client_Secret_TZ": {
+        "fullName": "Assets_Gard_Client_Secret_TZ",
+        "type": "CustomLabels",
+        "metadataFilePath": "c:\\Users\\MoserM2\\OneDrive - De Lage Landen International B.V\\myDev\\myDev\\force-app\\main\\default\\labels\\CustomLabels.labels-meta.xml"
+    },
+    "CustomLabels__Assets_Gard_Client_TZ": {
+        "fullName": "Assets_Gard_Client_TZ",
+        "type": "CustomLabels",
+        "metadataFilePath": "c:\\Users\\MoserM2\\OneDrive - De Lage Landen International B.V\\myDev\\myDev\\force-app\\main\\default\\labels\\CustomLabels.labels-meta.xml"
+    },
+    "CustomLabels__Assets_Gard_Endpoint_Token_TZ": {
+        "fullName": "Assets_Gard_Endpoint_Token_TZ",
+        "type": "CustomLabels",
+        "metadataFilePath": "c:\\Users\\MoserM2\\OneDrive - De Lage Landen International B.V\\myDev\\myDev\\force-app\\main\\default\\labels\\CustomLabels.labels-meta.xml"
+    },
+    "CustomLabels__asset_program": {
+        "fullName": "asset_program",
+        "type": "CustomLabels",
+        "metadataFilePath": "c:\\Users\\MoserM2\\OneDrive - De Lage Landen International B.V\\myDev\\myDev\\force-app\\main\\default\\labels\\CustomLabels.labels-meta.xml"
     }
 }

@@ -4212,6 +4212,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Int_OLMN_Payment_Confirmation__c.Account_Name__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Int_OLMN_Payment_Confirmation__c.Committed__c</field>
         <readable>false</readable>
     </fieldPermissions>

@@ -313,6 +313,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>CLVendorPoint</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CalculateInsurance</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -5351,6 +5355,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Int_OLMN_Payment_Confirmation__c.Account_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Int_OLMN_Payment_Confirmation__c.Committed__c</field>
         <readable>true</readable>
@@ -9995,6 +10004,10 @@
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>clcommon__Dynamic_Query__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>clcommon__GatewayConfiguration__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
@@ -10064,6 +10077,10 @@
     </tabVisibilities>
     <tabVisibilities>
         <tab>cllease__Termination_Config__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>cllease__Termination_Quote_Header__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>

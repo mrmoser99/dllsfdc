@@ -16,7 +16,11 @@ public class AssetUtility {
    public static List<genesis__Equipment_Master__c> lstEquipmentMasterRecords=new  List<genesis__Equipment_Master__c>();
     public static integer cnt =1; 
     public static integer cntCallout =1; 
-    public static String strAccessToken='';  
+    public static String strAccessToken=''; 
+
+    public class MyException extends Exception {
+
+    }
     /************************************************************************************************    
     * @Description  :   The getAccessToken method will be utilized to get the Asset access token from external system 
     * @Parameter    :   
@@ -47,7 +51,7 @@ public class AssetUtility {
             try{
             HTTPResponse res = http.send(req_token);           
             
-            if(res.getStatusCode()>=200 && res.getStatusCode()<300){
+            if(res.getStatusCode()==200 ){
                 system.debug('Get Access Token *+*+* \n Response status: '+res.getStatus()+'\n Response body: '+res.getBody());
                 
                 //parse the body 
@@ -62,7 +66,7 @@ public class AssetUtility {
             }else{
                     system.debug('Callout failed \n status: '+res.getStatus() + '\n status code: '+res.getStatusCode() +'\n Body: '+res.getBody());
                 //    access_token= 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJbaW52YWxpZCBmaWVsZF0iLCJzY3AiOiJhc3NldC1wcm9ncmFtcy5XUklURSBwYXJ0eS5hZGQgcGFydG5lcnBvcnRmb2xpby5SRUFEIGFzc2V0LXByb2dyYW1zLlJFQUQgY29udHJhY3RwZXJmb3JtYW5jZWRhdGEuUkVBRCByZXNvdXJjZS5XUklURSBwYXJ0eS51cGRhdGUgUGFydG5lcl9JbnNpZ2h0LlJFQUQgd3JpdGUuZ3VhcmFudGVlIHZpZXdfbWFpbnRhaW5Db21taXRtZW50IHJlc291cmNlLlJFQUQgcmVhZC5ndWFybnRlZSBjcmVhdGVfYW5kX21hbmFnZV9maW5hbmNpYWxfY29udHJhY3RzIGFzc2V0cy5SRUFEIHBhcnR5LmRlbGV0ZSByYXRlY2FyZGZhY3RvcnMuUkVBRCIsInZlciI6IjEuMCIsImlzcyI6ImV4dGVybmFsZ2F0ZXdheWFjYy5kbGwuY29ycCIsIm9pZCI6IltpbnZhbGlkIGZpZWxkXSIsImdpdmVuX25hbWUiOiJObyBMREFQIiwidGlkIjoiW2ludmFsaWQgZmllbGRdIiwiYXVkIjoiW2ludmFsaWQgZmllbGRdIiwiYWNyIjoiMSIsInVwbiI6Ik5vIExEQVAiLCJ1bmlxdWVfbmFtZSI6Ik5vIExEQVAiLCJuYmYiOjE2MDQzMzc1ODgsImFwcGlkYWNyIjoiMCIsImFwcGlkIjoiMGM5YjExMmEtYzEwYy00YWM5LTgyMzMtMjUwOWQyYTQxNTcyIiwiZXhwIjoxNjA0OTQyMzg4LCJpYXQiOjE2MDQzMzc1ODgsImZhbWlseV9uYW1lIjoiTm8gTERBUCJ9.etdITkYSGHW1i8Oa4MqbssOZ_d7_I22Vpr2GZFohjiSSJbMKPhIP5CyTLVbs6LoZ304tL96XYP4fUIA7S_4Q-PTWIxiOEewl3jbscY6zBinDEZLdQUgApAg9R4J4yfQKErTowjBm5VXahWxOpiwemAEsTp1nzgjrtE_J7f2r1wm6z0KTUTWfmtQXfOl9U2Mzf05LWNc-piJwC7DoNSRfdrOAd_0ZpgjF_AZJbW4PVmSClg3VH6etSfiUU10ZblI4UY18za_GSQOO-jN2mhNKJAsScMr6-PLFv33Ojk-Uo_OCa4YsKKNLx7bV0sAXgAxRGv54o68QHddl1_DGyUV6Zg';
-                
+                throw new MyException('Get Token failed '+res.getStatusCode());
             }
             
         }catch(Exception ex){
@@ -94,7 +98,7 @@ public class AssetUtility {
         String instanceName=System.Label.icvdomain;
         String assetprogram=System.Label.asset_program;
         string endpoint = 'https://'+instanceName+'.dllgroup.com/vf/us/v1/asset-programs/'+assetprogram+'/';
-        
+        String customErrorMessage;
         //Build end point url 
         endpoint+=url;
 
@@ -120,6 +124,7 @@ public class AssetUtility {
         request.setHeader('Authorization', 'Bearer '+ acssToken);
         request.setTimeout(120000);
         request.setEndpoint(endpoint); 
+        
         try{
            
             // Create a new http object to send the request 
@@ -135,7 +140,9 @@ public class AssetUtility {
                 cntCallout++;
 
             }else{
-                returnResponse=null;
+                customErrorMessage='Exception Make call out Status'+response.getStatusCode()+'\n'+String.valueOf(response.getBody());
+                throw new MyException (customErrorMessage);
+                //returnResponse=null;
                 
             }
             
@@ -143,7 +150,7 @@ public class AssetUtility {
             //Add Error log record
             cllease__Batch_Process_Log__c bchLog = new cllease__Batch_Process_Log__c();
             bchLog.name = 'AssetUtility';
-            bchLog.cllease__Message__c ='Exception : '+ ex.getMessage() + '  - ' + ex.getStackTraceString();
+            bchLog.cllease__Message__c ='Exception : '+customErrorMessage+'\n '+ ex.getMessage() + '  - ' + ex.getStackTraceString();
             insert bchLog;
             system.debug('Error Messge: '+ex.getMessage() +'\n Stack: '+ex.getStackTraceString());
             
@@ -169,7 +176,7 @@ public class AssetUtility {
         String sizeString=System.Label.Asset_Page_Size;
         //Build the part of relative url string Ex. models?Page=233&Size=20
         String urlPostfix=  'models?page='+string.valueOf(page)+'&size='+sizeString;
-
+        List<Integer> lstCode =new List<Integer>();
        // List<genesis__Equipment_Master__c> lstEquipmentMasterRecords=new  List<genesis__Equipment_Master__c>();
         try{           
             //#. Make Callout to get  get the response with url string  urlPostfix
@@ -211,7 +218,10 @@ public class AssetUtility {
                             
                            // eq.MSRP__c=Decimal.valueOf(mapModelsDetails.get(cod).referencePrice).setscale(2);
                             eq.MSRP__c=mapModelsDetails.get(cod).referencePrice.setscale(2);
-                            if(eq.MSRP__c<=0) continue; 
+                            if(eq.MSRP__c<=0) {
+                                lstCode.add(cod);
+                                continue;
+                            } 
                             eq.Manufacturer__c=mapModelsDetails.get(cod).brand.name;
                             eq.Master_Asset_Type_ID__c=String.valueOf(mapModelsDetails.get(cod).masterAssetType.code);
                             eq.Master_Asset_Type__c=mapModelsDetails.get(cod).masterAssetType.name;
@@ -224,18 +234,23 @@ public class AssetUtility {
                             eq.Model_Code__c=String.valueOf(cod);//mapModelsDetails.get(cod).code
                             System.debug('Record#'+ cnt+'. '+eq);
                             //add records into the list
-                            lstEquipmentMasterRecords.add(eq);
+                            if(eq!=null){
+                                lstEquipmentMasterRecords.add(eq);
+                            }
+                            
                             
                             cnt++; //Only for debug purpose
                         }
                     }
-                    
-                 //   sp = Database.setSavepoint();
+                    /*
                     if(lstEquipmentMasterRecords.size()>0){          
-                        System.debug('counter ' + cnt+'\n Nr of records to upsert :' + lstEquipmentMasterRecords.size());
-                        // savedata(lstEquipmentMasterRecords);
+                        return lstEquipmentMasterRecords;
                         
-                    }
+                    } else{
+                        String exceptionMsg= 'Exception empty list of equipment master records in page Nr= '+page+'\n for Code#: '+lstCode;
+                        throw new MyException(exceptionMsg);
+                        
+                    }*/
             }
         } catch(Exception ex){
            // if(Sp != null)
@@ -248,10 +263,17 @@ public class AssetUtility {
             insert bchLog;
             system.debug('Error Messge: '+ex.getMessage() +'\n Stack: '+ex.getStackTraceString());
         }
-        // return returnValue;
-        //Only for debug  purpose
         
-        return lstEquipmentMasterRecords;
+        if(lstEquipmentMasterRecords.size()>0){          
+            return lstEquipmentMasterRecords;
+            
+        } else{
+            String exceptionMsg= 'Exception empty list of equipment master records in page Nr= '+page+'\n for Code#: '+lstCode;
+                        
+            throw new MyException(exceptionMsg);
+            
+        }
+        
     }
     /************************************************************************************************    
     * @Description  :   The callModelsDetails is used to get the ModelDetails 

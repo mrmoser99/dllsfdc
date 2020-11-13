@@ -38,10 +38,10 @@ public with sharing class PMCalloutUtility {
         
         //assetDetail = false;
         
-        String requestParms = 'xxassetDetail=TRUE';
+        String requestParms = '?assetDetail=TRUE';
         
         if (assetDetail == false)
-            requestParms = 'xxassetDetail=FALSE';
+            requestParms = '?assetDetail=FALSE';
         
         system.debug('contractNumber' + contractNumber);    
 
@@ -441,7 +441,7 @@ public with sharing class PMCalloutUtility {
         System.HttpRequest request = new System.HttpRequest();
         
         request.setTimeout(120000);
-        request.setEndpoint(System.Label.PM_Endpoint + '/americas/v2/terminationquotexxmessageId=' + 'newco');
+        request.setEndpoint(System.Label.PM_Endpoint + '/americas/v2/terminationquote?messageId=' + 'newco');
         request.setHeader('Content-Type', 'application/json'); 
         request.setHeader('Authorization', 'Bearer '+ accessToken);
         request.setMethod('POST');

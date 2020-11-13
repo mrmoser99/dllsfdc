@@ -55,17 +55,19 @@
         if (component.get('v.fromNewco') == true){
           console.log('calling newco get lease');
           action = component.get("c.getLeaseDetailsNewco");
+          console.log('data contract is: ' + component.get('v.leaseNumber'));
+          action.setParams({
+            leaseNumber: component.get('v.leaseNumber')
+          }); 
     
         }
         else{
           console.log('NOT calling newco get lease');
           action = component.get("c.getLeaseDetails");
+          action.setParams({
+            leaseNumber: data
+          });
         }
-
-        console.log('data contract is: ' + component.get('v.leaseNumber'));
-        action.setParams({
-          leaseNumber: component.get('v.leaseNumber')
-        });
   
         action.setCallback(this, response => {
           let state = response.getState();
@@ -73,6 +75,10 @@
             var stringData = response.getReturnValue();
             component.set("v.quoteLeaseData", stringData);
             var data = JSON.parse(stringData);
+            // trying this out
+            component.set("v.row", JSON.stringify(data));
+            component.set("v.selectedRowObj", data);
+
             console.log("Quote Helper Dta");
             console.log(data);
 
@@ -342,8 +348,11 @@
     return;
   },
   handleShowCreditApproval: function(component) {
+    console.log('in handel show credit');
     let modalBody;
     var selectedTradeUp = component.get("v.selectedTradeUp");
+    
+    console.log('selected tu:' + JSON.stringify(selectedTradeUp));
     $A.createComponent(
       "c:FMZ_CreditApproval",
       { tradeUpDetails: selectedTradeUp },

@@ -139,7 +139,7 @@
     const rowRecord = JSON.parse(row);
     component.set("v.leaseNumber", rowRecord.contractNumber);
     let selectedRow = component.get("v.selectedRow");
-
+    console.log('selected row: ' + JSON.stringify(selectedRow));
     var leaseDetailsAction = component.get("c.getLeaseDetails");
     leaseDetailsAction.setParams({
       leaseNumber: component.get("v.selectedRow")

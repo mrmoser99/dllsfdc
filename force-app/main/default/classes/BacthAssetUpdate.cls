@@ -46,8 +46,13 @@ global class BacthAssetUpdate implements Database.Batchable<Integer>,Database.St
     *************************************************************************************************/       
     global List<Integer> start(Database.BatchableContext bc) {  
             System.debug('BacthAssetUpdate CHK 02. Start: '+listPageNumber);
+            if(Test.isRunningTest()){
+                List<Integer> tstList=new List<Integer>{1};
+                return tstList;
+            }else{
             //return the static member variable listPageNumber
-            return this.listPageNumber;        
+            return this.listPageNumber; 
+            }       
     }
     /************************************************************************************************    
     * @Description  :   Execute Method to upsert the genesis__Equipment_Master__c records
@@ -67,7 +72,12 @@ global class BacthAssetUpdate implements Database.Batchable<Integer>,Database.St
          Integer intPage;
           for(Integer p:scope) {  
             intPage=p;
-            equipmentList.addAll(AssetUtility.getModels(p));
+            List<genesis__Equipment_Master__c> tmpEquipmentList= new List<genesis__Equipment_Master__c>();
+            tmpEquipmentList.addAll(AssetUtility.getModels(p));
+            if(tmpEquipmentList.size()>0){
+                equipmentList.addAll(tmpEquipmentList);
+            }
+            //equipmentList.addAll(AssetUtility.getModels(p));
             System.debug('BacthAssetUpdate CHK 03a. scope executed Page#: '+p);
            }
             
@@ -96,6 +106,11 @@ global class BacthAssetUpdate implements Database.Batchable<Integer>,Database.St
                             if(!err.getMessage().contains('DUPLICATE')) {
                                 customErrMsg='Page= '+String.valueOf(intPage)+' '+err.getMessage();
                                 throw new MyException (err.getMessage());
+                            }else{
+                                cllease__Batch_Process_Log__c bchLog1 = new cllease__Batch_Process_Log__c();
+                                bchLog1.name = 'BatchAssetUpdate';
+                                bchLog1.cllease__Message__c ='Exception : '+'Page= '+String.valueOf(intPage)+': '+err.getMessage();
+                                insert bchLog1;
                             }
 
                                 
@@ -125,8 +140,10 @@ global class BacthAssetUpdate implements Database.Batchable<Integer>,Database.St
     * User Story    :   US..
     *************************************************************************************************/       
     global void finish(Database.BatchableContext bc) {
-        
-        //Todo
+        /*        
+        if(!Test.isRunningTest())
+        Id batchJobId= Database.executeBatch(new BacthAssetUpdate(),1);
+         */    
 
     }
     /************************************************************************************************    
