@@ -1,4 +1,4 @@
-<aura:component implements="flexipage:availableForAllPageTypes,force:appHostable,force:lightningQuickAction" controller="PMCalloutUtility">
+<aura:component implements="forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes,force:appHostable,force:lightningQuickAction" controller="PMCalloutUtility">
 
         <aura:attribute name="fromNewco" type="Boolean" default="false" />
         <aura:attribute name="leaseDetails" type="String" />

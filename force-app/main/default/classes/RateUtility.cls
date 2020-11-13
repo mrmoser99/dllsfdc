@@ -60,7 +60,7 @@ global without sharing class RateUtility {
 
             Integer vId = integer.valueOf(vList[0]);
 
-            Account a = [select id from Account where mosaic_primary_id__c  = :mosaicPrimaryId];
+            Account a = [select id, rate_card_program__c from Account where mosaic_primary_id__c  = :mosaicPrimaryId];
             
             string endpoint = 'https://' + System.Label.ICVDomain + '.dllgroup.com/vf/us/v1/partner-insight/Details/' + string.valueOf(vId) + '-' + string.valueOf(vList[1]);
 
@@ -102,7 +102,7 @@ global without sharing class RateUtility {
                 Integer skip = 0;
             }
             else{
-                vendorProgramMap  = getVendorProgramMap(res1,mosaicPrimaryId);
+                vendorProgramMap  = getVendorProgramMap(res1,mosaicPrimaryId,a.rate_card_program__c);
             
                 system.debug('Program Map: ' + vendorProgramMap );
                 
@@ -185,7 +185,7 @@ global without sharing class RateUtility {
     * getVendorProgramMap - returns a map of the ratecard and its program names
  	*	
     *************************************************************************************************/
-    public static Map<String,List<RateCardAccountJSON2Apex.program>> getVendorProgramMap(HTTPResponse res1, String mosaicPrimaryId){     
+    public static Map<String,List<RateCardAccountJSON2Apex.program>> getVendorProgramMap(HTTPResponse res1, String mosaicPrimaryId, String rateCardProgram){     
 
         //system.debug('************ entering process results');
 
@@ -205,8 +205,12 @@ global without sharing class RateUtility {
 
         for (RateCardAccountJSON2Apex.program p:result.program){
             List<RateCardAccountJSON2Apex.program> temp = resultMap.get(mosaicPrimaryId);
-            temp.add(p);
-            resultMap.put(mosaicPrimaryId,temp); 
+            system.debug('p name is: ' + p.name + '-' + rateCardProgram);
+            if (p.name ==  rateCardProgram){
+                system.debug('found rate card program....adding' + p);
+                temp.add(p);
+                resultMap.put(mosaicPrimaryId,temp); 
+            }
         }
         //system.debug('returning...' + resultMap);
         return resultMap;
