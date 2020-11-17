@@ -15,21 +15,37 @@ const actions = [
 
 
 const columns = [
-    { label: 'Customer', fieldName: 'CustomerName', wrapText:false}, 
-    { label: 'Lease Number', fieldName: 'contractNumber' },
-    { label: 'Equip Count', fieldName: 'nbrOfAssets' },
-    { label: 'Payment', fieldName: 'contractPayment', type: 'currency'},
-    { label: 'Remaining Payments', fieldName: 'numberOfRemainingPayments' },
-    { label: 'Term', fieldName: 'contractTerm' },
-    { label: 'Address', fieldName: 'assetAddressLine1' },
-    { label: 'City', fieldName: 'assetCity' },
-    { label: 'State', fieldName: 'assetState' },
-    { label: 'Zip', fieldName: 'assetZipCode' },
-
+    { label: 'Customer', fieldName: 'CustomerName', wrapText:false, initialWidth: 250}, 
+    { label: 'Lease Number', fieldName: 'contractNumber', initialWidth: 120 },
+    { label: 'Equip Count', fieldName: 'nbrOfAssets', initialWidth: 100 },
+    { label: 'Payment', fieldName: 'contractPayment', type: 'currency', initialWidth: 90},
+    { label: 'Remaining Payments', fieldName: 'numberOfRemainingPayments', initialWidth: 100 },
+    { label: 'Term', fieldName: 'contractTerm',  initialWidth: 80  },
+    { label: 'Address', fieldName: 'assetAddressLine1', initialWidth: 200},
+    { label: 'City', fieldName: 'assetCity', initialWidth: 100  },
+    { label: 'State', fieldName: 'assetState', initialWidth: 90 },
+    { label: 'Zip', fieldName: 'assetZipCode', initialWidth: 90  },
     {
-        type: 'action',
-        typeAttributes: { rowActions: actions }
-    }
+        label: "TearSheet",
+        type: "button",
+        initialWidth: 100,
+        typeAttributes: {
+          label: "TearSheet",
+          name: "tear",
+          title: "Click to generate tear sheet"
+        }
+      },
+      {
+        label: "Quote",
+        type: "button",
+        initialWidth: 100,
+        typeAttributes: {
+          label: "Quote",
+          name: "quote",
+          title: "Click to generate quotes"
+        }
+      }
+   
 ];
 
 
@@ -110,7 +126,7 @@ export default class NewcoPortfolio extends LightningElement {
             //need to flatten to display for relationship fields
             this.data = data;
             if (this.data) {
-                console.log ('refresh execute');
+                console.log ('refresh execute 2');
                 this.loading = true;
                 let preparedLeases = [];
                 this.data.forEach(lease => {

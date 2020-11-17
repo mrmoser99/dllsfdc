@@ -559,7 +559,13 @@ public with sharing class PMCalloutUtility {
         /* the return from q2 code is a map<string,object>.  They don't know how to use JSON.  Therefore this ugly code is present. */
 
         Map<String,Object> resultMap = new Map<String,Object>();
-        cllease__lease_account__c l = [select id from cllease__lease_account__c where name = :leaseId];
+        cllease__lease_account__c l = [select id, cllease__Lease_Status__c from cllease__lease_account__c where name = :leaseId];
+
+        if (!l.cllease__Lease_Status__c.contains('ACTIVE') && !l.cllease__Lease_Status__c.contains('EVERGREEN')){
+            qResponse.responseCode = '400';
+            return qResponse;
+        }
+
 
         resultMap = CLLeaseTerminationQuoteServices.CreateTerminationQuotes(l.id);
         

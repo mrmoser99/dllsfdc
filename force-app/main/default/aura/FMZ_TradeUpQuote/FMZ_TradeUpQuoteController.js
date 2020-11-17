@@ -108,6 +108,7 @@
             component.set("v.quoteSummaryData", tableData);
          }  
           else {
+              console.log('fatal error');
               component.find("notifLib").showToast({
                 title: "Something went wrong, please refresh!",
                 variant: "error",

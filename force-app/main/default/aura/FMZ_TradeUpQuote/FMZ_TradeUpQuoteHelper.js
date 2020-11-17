@@ -145,7 +145,7 @@
   generateQuoteByTypeHelper: function(component, type) {
 
     
-
+    component.set('v.fataError',false);
     component.set("v.isLoading", true);
     let contractNumber = component.get("v.leaseNumber");
     let row = JSON.parse(component.get("v.row"));
@@ -181,31 +181,40 @@
           if (state === "SUCCESS") {
             var data = response.getReturnValue();
             console.log("Helper TRADEUP");
-            console.log(data);
+            console.log('data is: ' + data);
 
             if (data.responseCode && data.responseCode == "400") {
               component.set("v.isQuoteModuleVisible", false);
-              component.find("notifLib").showToast({
-                title:
-                  "This Contract has been terminated and can not be quoted at this time",
-                variant: "error",
-                showCloseButton: true
+              console.log('ready to show tost');
+
+              var toastEvent = $A.get("e.force:showToast");
+              toastEvent.setParams({
+                "title": "Error!",
+                "message": "Lease status must be ACTIVE or EVERGREEN to perform tradeup!",
+                "type" : "error"
               });
-            }
-            if (component.get('v.fromNewco') == true){
-              component.set("v.tradeUpWithoutPurchase", data.quotes[0]);
-              component.set("v.tradeUpWithPurchase", data.quotes[1]);
+              toastEvent.fire();
+
+              component.set("v.isLoading", false);
+              component.set('v.fatalError',true);
             }
             else{
-              if (type == "TRADEUP_WITHOUT_PURCHASE") {
+              if (component.get('v.fromNewco') == true){
                 component.set("v.tradeUpWithoutPurchase", data.quotes[0]);
-              } else {
-                component.set("v.tradeUpWithPurchase", data.quotes[0]);
+                component.set("v.tradeUpWithPurchase", data.quotes[1]);
+              }
+              else{
+                if (type == "TRADEUP_WITHOUT_PURCHASE") {
+                  component.set("v.tradeUpWithoutPurchase", data.quotes[0]);
+                } else {
+                  component.set("v.tradeUpWithPurchase", data.quotes[0]);
+                }
               }
             }
           } else {
+            component.set('v.fataError',true);
             let error = response.getError();
-            console.log(error);
+             
             component.find("notifLib").showToast({
               title: "Unable to generate quotes, please refresh!",
               variant: "error",

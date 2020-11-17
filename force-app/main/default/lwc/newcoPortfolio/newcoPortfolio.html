@@ -1,18 +1,18 @@
 <template>
-    <lightning-card title="Newco Portfolio" icon-name="standard:investment_account" size="medium">
+    <lightning-card title="Newco Portfolio" icon-name="standard:investment_account" >
         <lightning-layout>
-            <div class="slds-p-around_medium lgc-bg">
+            <div class="slds-p-around_small lgc-bg">
                 <lightning-input type="text" name="customerName" label="Customer Name" autocomplete="nope" class="input" onchange={handleChange}></lightning-input>
             </div>
-            <div class="slds-p-around_medium lgc-bg">
+            <div class="slds-p-around_small lgc-bg">
                 <lightning-input type="text" name="leaseNumber" label="Lease Number" autocomplete="nope" class="input" onchange={handleChange}></lightning-input>
             </div>
-            <div class="slds-p-around_medium lgc-bg">
+            <div class="slds-p-around_small lgc-bg">
                 <lightning-input type="text" name="serialNumber" label="Equipment Serial Number" autocomplete="nope" class="input" onchange={handleChange}></lightning-input>
             </div>
         </lightning-layout>
         <lightning-layout>
-            <lightning-button variant="success" label="Filter Results" title="Successful action" onclick={handleClick} class="slds-m-left_x-small slds-p-around_medium"></lightning-button>
+            <lightning-button variant="success" label="Filter Results" title="Successful action" onclick={handleClick} class="slds-m-left_x-small slds-p-around_none"></lightning-button>
         </lightning-layout>
        
         <div class="slds-m-around_large">
