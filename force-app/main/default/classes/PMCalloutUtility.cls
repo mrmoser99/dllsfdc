@@ -1230,4 +1230,44 @@ public with sharing class PMCalloutUtility {
         return currentData;
     }
 
+   @AuraEnabled
+   public static void emailTearSheetOrQuote (String subject, String body) {
+        Id userId = UserInfo.getUserId();
+        List<User> userList = [SELECT Name, Email FROM User WHERE Id =: userId];
+       
+        List<String> emailTo = new List<String>();
+        List<String> emailCc = new List<String>();
+
+        OrgWideEmailAddress ow = [select id
+                                ,Address
+                                ,DisplayName
+                                from OrgWideEmailAddress 
+                                where DisplayName = 'NewCo Customer Service'
+                                ];
+
+       
+
+
+        //MRM removed this
+       
+
+        List<Messaging.SingleEmailMessage> mails =  new List<Messaging.SingleEmailMessage>();
+
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        emailTo.add(userList[0].Email);
+        emailTo.add('mark.moser@dllgroup.com');
+        emailCc.add(ow.Address);
+       
+        mail.setCcAddresses(emailCc);
+        mail.setToAddresses(emailTo);
+        mail.setOrgWideEmailAddressId(ow.id);
+        mail.setSubject(subject);
+        mail.setHtmlBody(body);
+
+        mails.add(mail);
+
+        Messaging.sendEmail(mails);
+   }
+
+
 }

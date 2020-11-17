@@ -291,6 +291,7 @@
   },
 
   downloadTearSheet: function(component, event, helper) {
+    console.log('from newco is: ' + component.get('v.fromNewco'));
     let message = component.get("v.leaseDetails");
     const vfWindow = component.find("vfFrame").getElement().contentWindow;
     //Sending message using postMessage function

@@ -207,7 +207,7 @@
   //   component.set("v.selectedTradeUp", null);
   // },
   emailTearSheetOrQuoteHelper: function(component, subject, body) {
-    console.log("In Helper");
+    console.log("In Helper 2");
     var emailTearSheetOrQuoteAction = component.get("c.emailTearSheetOrQuote");
     emailTearSheetOrQuoteAction.setParams({
       subject: subject,

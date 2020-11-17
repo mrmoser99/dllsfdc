@@ -8,6 +8,7 @@
   <aura:attribute name="billingAddress" type="String" />
   <aura:attribute name="equipmentLocationAddress" type="String" />
   <aura:attribute name="leaseSigner" type="String" />
+  <aura:attribute name="fromNewco" type="Boolean" default="false" />
   <!-- CUSTOMER INFORMATION END -->
 
   <!-- GENERAL INFORMATION BEGIN -->

@@ -37,6 +37,8 @@
     },
 
     downloadTearSheet: function(component, event, helper) {
+        console.log('newco download tearsheet' + component.get('v.fromNewco'));
+        console.log('lease details:' + JSON.stringify(component.get('v.leaseDetails')));
         let message = component.get("v.leaseDetails");
         const vfWindow = component.find("vfFrame").getElement().contentWindow;
         //Sending message using postMessage function
@@ -217,7 +219,35 @@
         </table>
         `;
     
-        helper.emailTearSheetOrQuoteHelper(component, subject, body);
+        console.log("In Helper");
+        var emailTearSheetOrQuoteAction = component.get("c.emailTearSheetOrQuote");
+        emailTearSheetOrQuoteAction.setParams({
+          subject: subject,
+          body: body
+        });
+        console.log("Going into callback");
+        emailTearSheetOrQuoteAction.setCallback(this, a => {
+          let state = a.getState();
+          console.log('stat is: ' + state);
+          if (state === "SUCCESS") {
+            var toastEvent = $A.get("e.force:showToast");
+              toastEvent.setParams({
+                "title": "Success!",
+                "message": "Email sent!",
+                "type" : "success"
+              });
+              toastEvent.fire();
+
+           
+          } else {
+            component.find("notifLib").showToast({
+              title: "Something went wrong!",
+              variant: "error",
+              showCloseButton: true
+            });
+          }
+        });
+        $A.enqueueAction(emailTearSheetOrQuoteAction);
         return;
       }
     

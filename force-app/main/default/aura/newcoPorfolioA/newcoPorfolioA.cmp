@@ -44,10 +44,18 @@
             class="slds-modal__content slds-p-around_medium"
             id="modal-content-id-1"
           > 
-          <aura:if isTrue="{!v.leaseDetails}">
-            <c:FMZ_TearSheet fromNewco="true" leaseNumber="{!v.leaseNumber}" leaseDetails="{!v.leaseDetails}"/>
-          </aura:if>
+            <iframe
+              aura:id="vfFrame"
+              frameborder="0"
+              width="1"
+              height="1"
+              src="{!'/dealer/apex/FMZ_TearSheet'}"
+            />
+            <aura:if isTrue="{!v.leaseDetails}">
+              <c:FMZ_TearSheet fromNewco="true" leaseNumber="{!v.leaseNumber}" leaseDetails="{!v.leaseDetails}"/>
+            </aura:if>
           </div>
+          
           <!--Modal/Popup Box Footer Starts here-->
           <footer class="slds-modal__footer"> 
             <lightning:button
