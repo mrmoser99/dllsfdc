@@ -30,12 +30,22 @@ public class ICVAsyncBookUpfrontTax implements Queueable, Database.AllowsCallout
         
         genesis__Applications__c app = [ 
     								Select
-    								  Name
+                                      Name
+                                      ,Oracle_Trade_Up_Quote_Number__c
     								From genesis__Applications__c g
     								where id = :q.genesis__Application__c
                                     ];			
                                     	
-    	VertexUpfrontTaxCalculation.VertexGetUpfrontTaxBook(app.name);
+        VertexUpfrontTaxCalculation.VertexGetUpfrontTaxBook(app.name);
+        
+
+        if (!Test.isRunningTest()){ 
+            if (app.Oracle_Trade_up_Lease_Number__c != null)
+                if (app.Oracle_Trade_Up_Quote_Number__c.startsWith('QTE')){
+    		        ICVAsyncTerminateQuote job = new ICVAsyncTerminateQuote(app.Oracle_Trade_Up_Quote_Number__c);
+                    System.enqueueJob(job);
+                }
+    	} 	
     	
     }
     

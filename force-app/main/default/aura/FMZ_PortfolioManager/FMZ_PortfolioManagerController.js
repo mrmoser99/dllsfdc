@@ -154,6 +154,7 @@
         array.data.map(el => {
           el.assetDetail.map(subEl => {
             row = Object.assign(subEl, el);
+            console.log('row is: ' + row);
           });
           csvData.push(row);
         });
