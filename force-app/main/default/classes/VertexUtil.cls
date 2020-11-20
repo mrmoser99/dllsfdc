@@ -506,11 +506,12 @@ public class VertexUtil {
     *  UPFRONT XML QUOTE
     *******************************************************************************************************************************/
     public static Dom.Document getUpfrontXml(list<genesis__Application_Equipment__c> appEqpList) { 
-           
+        Vertex_Log__c vertexLog     = new Vertex_Log__c(); 
 
-         /*-------------- Modified By: Tesh -------------------- */
+
+         /*-------------- Modified By: MRM -------------------- */
         //1. get rate factor from Applications
-        Decimal appEqpListRate_Factor=[SELECT Id, Rate_Factor__c FROM genesis__Applications__c WHERE id =:appEqpList[0].genesis__Application__c LIMIT 1].Rate_Factor__c;
+        Decimal pricingRateFactor =[SELECT Id, Pricing_Rate_Factor__c FROM genesis__Applications__c WHERE id =:appEqpList[0].genesis__Application__c LIMIT 1].Pricing_Rate_Factor__c;
        
         /*-------------------------------------------------------------------*/
         // Getting Vertex API Configuration from customerom settings & Validating
@@ -633,9 +634,9 @@ public class VertexUtil {
             
            //3. set the The extended Price value as a product of Rate_Factor__c * genesis__Estimated_Selling_Price__c
            Decimal newExtendedPrice;
-           if(appEqpListRate_Factor!= null){
+           if(pricingRateFactor!= null){
                // newExtendedPrice=ddlAmount*tmpRate;
-                newExtendedPrice=ddlAmount*appEqpListRate_Factor;
+                newExtendedPrice=ddlAmount*pricingRateFactor;
                 newExtendedPrice= cllease.ValueUtil.round(newExtendedPrice, 2 , 'Nearest');
             }else {
                 newExtendedPrice=0.00;
@@ -770,7 +771,7 @@ public class VertexUtil {
          /*-------------- Modified By: Tesh  Modified  Date: 10/29/2020 -------------------- */
 
         //1. Get Rate Factor from Applications
-        Decimal appEqpListRate_Factor=[SELECT Id, Rate_Factor__c FROM genesis__Applications__c WHERE id =:appEqpList[0].genesis__Application__c LIMIT 1].Rate_Factor__c;
+        Decimal pricingRateFactor =[SELECT Id, Pricing_Rate_Factor__c FROM genesis__Applications__c WHERE id =:appEqpList[0].genesis__Application__c LIMIT 1].Pricing_Rate_Factor__c;
        
          /*-------------------------------------------------------------------*/
 
@@ -908,13 +909,13 @@ public class VertexUtil {
             // ExtendedPrice Tag
             Decimal ddlAmount = (appEqp.genesis__Estimated_Selling_Price__c !=null ? appEqp.genesis__Estimated_Selling_Price__c : 0.00);
             ddlAmount = cllease.ValueUtil.round(ddlAmount, 2 , 'Nearest');
-            /* Modified By Tesh--------------*/
+            /* Modified By MRM--------------*/
             
            //2. set the The extended Price value as a product of Rate_Factor__c * genesis__Estimated_Selling_Price__c
            Decimal newExtendedPrice;
-           if(appEqpListRate_Factor!= null){
+           if(pricingRateFactor!= null){
                // newExtendedPrice=ddlAmount*tmpRate;
-                newExtendedPrice=ddlAmount*appEqpListRate_Factor;
+                newExtendedPrice=ddlAmount*pricingRateFactor;
                 newExtendedPrice= cllease.ValueUtil.round(newExtendedPrice, 2 , 'Nearest');
             }else {
                 newExtendedPrice=0.00;
