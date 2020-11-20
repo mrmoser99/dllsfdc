@@ -145,7 +145,7 @@
             >Quote Number</td
           >
           <td class="new-highlight">
-            {!v.application.Oracle_Trade_up_Quote_Number__c_Display}
+            {!v.application.Oracle_Trade_up_Quote_Number__c}
           </td>
         </tr>
 

@@ -225,6 +225,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>BatchGardUpdate</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>BatchGenWatchBilling</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -806,6 +810,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>ICVAsyncRemoveParty</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ICVAsyncTerminateQuote</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1413,11 +1421,19 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>VertexUpfrontTaxCalculation_Copy</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>VertexUtil</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>VertexUtil2</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>VertexUtil_Copy</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -10234,6 +10250,10 @@
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>clcommon__Expression_Assignment__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>clcommon__GatewayConfiguration__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
@@ -10303,7 +10323,7 @@
     </tabVisibilities>
     <tabVisibilities>
         <tab>cllease__Termination_Config__c</tab>
-        <visibility>Hidden</visibility>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>cllease__Termination_Quote_Header__c</tab>

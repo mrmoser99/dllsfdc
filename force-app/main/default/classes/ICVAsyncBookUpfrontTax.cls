@@ -40,7 +40,7 @@ public class ICVAsyncBookUpfrontTax implements Queueable, Database.AllowsCallout
         
 
         if (!Test.isRunningTest()){ 
-            if (app.Oracle_Trade_up_Lease_Number__c != null)
+            if (app.Oracle_Trade_Up_Quote_Number__c != null)
                 if (app.Oracle_Trade_Up_Quote_Number__c.startsWith('QTE')){
     		        ICVAsyncTerminateQuote job = new ICVAsyncTerminateQuote(app.Oracle_Trade_Up_Quote_Number__c);
                     System.enqueueJob(job);

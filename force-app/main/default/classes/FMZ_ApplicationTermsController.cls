@@ -134,6 +134,7 @@ public without sharing class FMZ_ApplicationTermsController {
         
         if (rateCardId == 'Fair Market Value-ASTRA'){
             applications.rate_card_setup__c = null;
+            //applications.genesis__terms_selected__c = string.valueOf(applications.genesis__term__c) + ' MONTHLY - FAIR MARKET VALUE';  //24 MONTHLY - FAIR MARKET VALUE
         }
         else{
             pList = [select CL_Product__c from genesis__Rate_Card_Setup_Header__c where id = :rateCardId];
@@ -158,6 +159,8 @@ public without sharing class FMZ_ApplicationTermsController {
         genesis__Applications__c applications =
                 (genesis__Applications__c)JSON.deserialize(applicationString, genesis__Applications__c.class);
 
+        //applications.genesis__terms_selected__c = string.valueOf(applications.genesis__term__c) + ' MONTHLY - FAIR MARKET VALUE';  //24 MONTHLY - FAIR MARKET VALUE
+       
         update applications;
 
     }

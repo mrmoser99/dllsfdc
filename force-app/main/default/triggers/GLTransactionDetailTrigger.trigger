@@ -7,7 +7,8 @@
 
     Change Log:
 
-    10/10/20 - Added logic to pull state from the asset level for Tax GL entry on Estimated Property Taxes Charges - 02388116  
+    10/10/20 - Added logic to pull state from the asset level for Tax GL entry on Estimated Property Taxes Charges - 02388116
+    11/18/20 - Modified logic to fix an issue raised in - 02466321  
 */
 trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before insert, before update) {
     
@@ -230,14 +231,12 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                             }
                         }
 
-                    } else if(clLeaseTxnType == 'CHARGE') {
-                        if(clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
-                            && glBillAccountString !=null 
-                            && glDebitAccountCodeString !=null
-                            && glBillAccountString.containsIgnoreCase(glDebitAccountCodeString)) {
+                    } else if(clLeaseTxnType == 'CHARGE' && clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
+                        && glBillAccountString !=null 
+                        && glDebitAccountCodeString !=null
+                        && glBillAccountString.containsIgnoreCase(glDebitAccountCodeString)) {
                             glEntry.Movement_Code_Dr__c = movementCode.Movement_Code__c;
 
-                        }
                     } else if(clLeaseTxnType == 'BILLING'
                         || clLeaseTxnType == 'CHARGE') {                    
                         if(clleaseTxnSubType.containsIgnoreCase('tax')
@@ -304,14 +303,12 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                             }
                         }
 
-                    } else if(clLeaseTxnType == 'CHARGE') {
-                        if(clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
-                            && glBillAccountString !=null 
-                            && glCreditAccountCodeString !=null
-                            && glBillAccountString.containsIgnoreCase(glCreditAccountCodeString)) {
-                            glEntry.Movement_Code_Cr__c = movementCode.Movement_Code__c;
+                    } else if(clLeaseTxnType == 'CHARGE' && clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
+                        && glBillAccountString !=null 
+                        && glCreditAccountCodeString !=null
+                        && glBillAccountString.containsIgnoreCase(glCreditAccountCodeString)) {
+                           glEntry.Movement_Code_Dr__c = movementCode.Movement_Code__c;
 
-                        }
                     } else if(clLeaseTxnType == 'BILLING'
                         || clLeaseTxnType == 'CHARGE') {                    
                         if(clleaseTxnSubType.containsIgnoreCase('tax')

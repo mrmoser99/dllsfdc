@@ -16,15 +16,15 @@ const actions = [
 
 
 const columns = [
-    { label: 'Customer', fieldName: 'CustomerName', wrapText:false, initialWidth: 250}, 
-    { label: 'Lease Number', fieldName: 'contractNumber', initialWidth: 120 },
-    { label: 'Equip Count', fieldName: 'nbrOfAssets', initialWidth: 100 },
-    { label: 'Payment', fieldName: 'contractPayment', type: 'currency', initialWidth: 90},
-    { label: 'Remaining Payments', fieldName: 'numberOfRemainingPayments', initialWidth: 100 },
+    { label: 'Customer', fieldName: 'CustomerName', wrapText:false, initialWidth: 200}, 
+    { label: 'Lease', fieldName: 'contractNumber', initialWidth: 125 },
+    { label: '#Assets', fieldName: 'nbrOfAssets', initialWidth: 100 },
+    { label: 'Pay Amt', fieldName: 'contractPayment', type: 'currency', initialWidth: 90},
+    { label: 'Rem # Pays', fieldName: 'numberOfRemainingPayments', initialWidth: 120 },
     { label: 'Term', fieldName: 'contractTerm',  initialWidth: 80  },
-    { label: 'Address', fieldName: 'assetAddressLine1', initialWidth: 200},
+    { label: 'Equipment Address', fieldName: 'assetAddressLine1', initialWidth: 200},
     { label: 'City', fieldName: 'assetCity', initialWidth: 100  },
-    { label: 'State', fieldName: 'assetState', initialWidth: 90 },
+    { label: 'State', fieldName: 'assetState', initialWidth: 60 },
     { label: 'Zip', fieldName: 'assetZipCode', initialWidth: 90  },
     {
         label: "TearSheet",

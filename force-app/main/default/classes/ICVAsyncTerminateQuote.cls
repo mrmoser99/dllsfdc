@@ -3,6 +3,7 @@
 *	Change Log:
 *	11/16/2020 - MRM Created
 *   
+*   
 ********************************************************************************************************************/
 public class ICVAsyncTerminateQuote implements Queueable, Database.AllowsCallouts  {
      
@@ -15,15 +16,16 @@ public class ICVAsyncTerminateQuote implements Queueable, Database.AllowsCallout
     }
     //Execute
     public void execute(QueueableContext context) {
-        system.debug('Terminationg lease for quote: ' + tradeUpQuoteName);
+        system.debug('Terminating lease for quote: ' + tradeUpQuoteName);
 
         cllease__Termination_Quote_Header__c h = [select id
                                                 from cllease__Termination_Quote_Header__c 
                                                 where name = :tradeUpQuoteName];
+        h.cllease__Status__c = 'Accepted';
+
+        update h;
 
         CLLeaseTerminationQuoteServices.processTerminationQuote(h.id);
 
     }
 }
-
-        

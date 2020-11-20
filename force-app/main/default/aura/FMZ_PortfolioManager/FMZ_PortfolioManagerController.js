@@ -1,70 +1,82 @@
 ({
   doInit: function(component, event, helper) {
+    
     component.set("v.columns", [
       {
         label: "Customer Name",
         fieldName: "customerName",
         type: "text",
-        sortable: true
+        sortable: true,
+        initialWidth: 200
       },
       {
-        label: "Lease number",
+        label: "Lease",
         fieldName: "contractNumber",
         type: "text",
-        sortable: true
+        sortable: true,
+        initialWidth: 100 
       },
       {
-        label: "Number of assets",
+        label: "#Assets",
         fieldName: "nbrOfAssets",
         type: "text",
-        sortable: false
+        sortable: false,
+        initialWidth: 100
       },
       {
-        label: "Payment",
+        label: "Pay Amt",
         fieldName: "contractPayment",
         type: "currency",
-        sortable: false
+        sortable: false,
+        initialWidth: 90
       },
       {
-        label: "Remaining Payments",
+        label: "Rem # Pays",
         fieldName: "numberOfRemainingPayments",
         type: "text",
-        sortable: true
+        sortable: true,
+        initialWidth: 120
       },
       {
         label: "Term",
         fieldName: "contractTerm",
         type: "text",
-        sortable: false
+        sortable: false,
+        initialWidth: 80 
       },
       {
-        label: "Equipment location adddress",
+        label: "Equipment Address",
         fieldName: "assetAddressLine1",
         type: "text",
-        sortable: false
+        sortable: false,
+        initialWidth: 200
       },
       {
         label: "City",
         fieldName: "assetCity",
         type: "text",
-        sortable: false
+        sortable: false,
+        initialWidth: 100 
+      },
+     
+      {
+        label: "State",
+        fieldName: "assetState",
+        type: "text",
+        sortable: false,
+        initialWidth: 60
       },
       {
         label: "Zip",
         fieldName: "assetZipCode",
         type: "text",
-        sortable: true
-      },
-      {
-        label: "State",
-        fieldName: "assetState",
-        type: "text",
-        sortable: false
+        sortable: true,
+        initialWidth: 90
       },
       {
         label: "TearSheet",
         type: "button",
-        initialWidth: 135,
+        initialWidth: 100,
         typeAttributes: {
           label: "TearSheet",
           name: "tearsheet",
@@ -74,7 +86,7 @@
       {
         label: "Quote",
         type: "button",
-        initialWidth: 135,
+        initialWidth: 100,
         typeAttributes: {
           label: "Quote",
           name: "quote",

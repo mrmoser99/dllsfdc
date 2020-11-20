@@ -1,5 +1,9 @@
 
-id batchinstanceid = database.executeBatch(new BatchGardUpdate(),1); 
+
+ICVAsyncBookUpfrontTax job = new ICVAsyncBookUpfrontTax('a1S5C000000lUSaUAM');
+ System.enqueueJob(job);
+
+//id batchinstanceid = database.executeBatch(new BatchGardUpdate(),1); 
 
 //RateUtility.getProgram('125760-0003');
 //    Id batchJobId= Database.executeBatch(new MarksBatchIterable(), 1); //Btch size=1
