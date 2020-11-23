@@ -196,7 +196,11 @@ public class FMZ_PortfolioManager {
    // Requote Application
    @AuraEnabled
    public static void requoteApplication(Id applicationId, String leaseNumber, Decimal quoteAmount, String quoteNumber, Date quoteExpirationDate) {
-    genesis__Applications__c app = [SELECT Id, genesis__Quick_Quote__r.Oracle_Trade_Up_Quote_Amount__c, genesis__Quick_Quote__r.Oracle_Trade_up_Quote_Expiration_Date__c, genesis__Quick_Quote__r.Oracle_Trade_up_Quote_Number__c, genesis__Quick_Quote__r.Name FROM genesis__Applications__c WHERE Id =: applicationId LIMIT 1];
+    genesis__Applications__c app = [SELECT Id, genesis__Quick_Quote__r.Oracle_Trade_Up_Quote_Amount__c
+    , genesis__Quick_Quote__r.Oracle_Trade_up_Quote_Expiration_Date__c, genesis__Quick_Quote__r.Oracle_Trade_up_Quote_Number__c
+    , genesis__Quick_Quote__r.Name 
+    FROM genesis__Applications__c 
+    WHERE Id =: applicationId LIMIT 1];
 
     app.Oracle_Trade_up_Lease_Number__c = leaseNumber;
     app.Oracle_Trade_Up_Amount__c = quoteAmount;
@@ -204,16 +208,17 @@ public class FMZ_PortfolioManager {
     app.Oracle_Trade_up_Quote_Number__c = quoteNumber;
     app.Oracle_Trade_up_Quote_Expiration_Date__c = quoteExpirationDate;
 
-    app.genesis__Quick_Quote__r.Oracle_Trade_Up_Quote_Amount__c = quoteAmount;
-    app.genesis__Quick_Quote__r.Oracle_Trade_up_Quote_Expiration_Date__c = quoteExpirationDate;
-    app.genesis__Quick_Quote__r.Oracle_Trade_up_Quote_Number__c = quoteNumber;
+    genesis__Quick_Quotes__c qq = [select id 
+                                from genesis__Quick_Quotes__c 
+                                where id = :app.genesis__Quick_Quote__c limit 1];
+    
+    qq.Oracle_Trade_Up_Quote_Amount__c = quoteAmount;
+    qq.Oracle_Trade_up_Quote_Expiration_Date__c = quoteExpirationDate;
+    qq.Oracle_Trade_up_Quote_Number__c = quoteNumber;
 
+    update qq;
     update app;
 
-    Lease_OLM_Quote__c quote = [SELECT Id FROM Lease_OLM_Quote__c WHERE Name =: quoteNumber LIMIT 1];
-    quote.Quick_Quote_Number__c = app.genesis__Quick_Quote__r.Name;
-
-    update quote;
    }
 
    // Get Settings

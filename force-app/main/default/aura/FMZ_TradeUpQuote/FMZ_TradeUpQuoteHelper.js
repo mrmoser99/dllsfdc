@@ -62,25 +62,29 @@
     
         }
         else{
-          console.log('NOT calling newco get lease');
+          console.log('NOT calling newco get lease' + ' data is: ' + data);
           action = component.get("c.getLeaseDetails");
           action.setParams({
-            leaseNumber: data
+            leaseNumber: data 
           });
         }
   
         action.setCallback(this, response => {
           let state = response.getState();
+          console.log('state is : ' + state);
           if (state === "SUCCESS") {
+            console.log('success');
+           
             var stringData = response.getReturnValue();
+            console.log('string data: ' + stringData);
             component.set("v.quoteLeaseData", stringData);
             var data = JSON.parse(stringData);
             // trying this out
-            component.set("v.row", JSON.stringify(data));
-            component.set("v.selectedRowObj", data);
+            component.set('v.row', data);
 
-            console.log("Quote Helper Dta");
-            console.log(data);
+            console.log('row in lease helper is: ' + JSON.stringify(component.get('v.row')));
+
+            component.set("v.selectedRowObj", data);
 
             component.set("v.customerName", data.customerName);
             component.set("v.minPaymentsRemaining",data.numberOfRemainingPayments);
@@ -132,7 +136,7 @@
             });
           }
           console.log('resolve in get lease details');
-          //resolve();
+          resolve();
         });
         $A.enqueueAction(action);
       })
@@ -144,19 +148,18 @@
 
   generateQuoteByTypeHelper: function(component, type) {
 
-    
+    console.log('ehreasdfasd');
     component.set('v.fataError',false);
     component.set("v.isLoading", true);
     let contractNumber = component.get("v.leaseNumber");
-    let row = JSON.parse(component.get("v.row"));
-    console.log("row in helper");
-    console.log(row);
+    
     return new Promise(
       $A.getCallback((resolve, reject) => {
         if (component.get('v.fromNewco') == true){
 
           if (type == 'TRADEUP_WITH_PURCHASE'){
             //only 1 call for fromNewco
+            component.set("v.isLoading", false);
             resolve();
             return;
           }
@@ -169,8 +172,11 @@
         else{
           console.log('newco is processing quote');
           generateQuotesAction = component.get("c.generateQuoteByTypeNewco");
+
         }
-        
+        let row = component.get('v.row');
+        console.log('row right before generate: ' + JSON.stringify(row));
+     
         generateQuotesAction.setParams({
             leaseNumber: contractNumber,
             type: type,
@@ -412,6 +418,7 @@
     $A.enqueueAction(emailTearSheetOrQuoteAction);
   },
   requoteApplicationHelper: function(component, subject, body) {
+    console.log('applicaiton is is: ' + component.get('v.applicationId'));
     let applicationId = component.get("v.applicationId");
     let leaseNumber = component.get("v.leaseNumber");
     let tradeUpQuote = component.get("v.selectedTradeUp");
@@ -427,21 +434,26 @@
     requoteApplicationAction.setCallback(this, a => {
       let state = a.getState();
       if (state === "SUCCESS") {
-        component.find("notifLib").showToast({
-          title: "Requoted Application Successfully",
-          variant: "success",
-          showCloseButton: true
+        
+        var toastEvent = $A.get("e.force:showToast");
+        toastEvent.setParams({
+                "title": "Success",
+                "message": "Requoted Application Successfully!",
+                "type" : "success"
         });
+        toastEvent.fire();
+
         component.set("v.isQuoteModuleVisible", false);
         window.location.reload();
       } else {
-        let error = a.getError();
-        console.log(error);
-        component.find("notifLib").showToast({
-          title: "Something went wrong!",
-          variant: "error",
-          showCloseButton: true
+        var toastEvent = $A.get("e.force:showToast");
+        toastEvent.setParams({
+                "title": "Error!",
+                "message": "Something went wrong!",
+                "type" : "error"
         });
+        toastEvent.fire();
+      
       }
     });
     $A.enqueueAction(requoteApplicationAction);

@@ -10,7 +10,7 @@
       if (state === "SUCCESS") {
         var application = response.getReturnValue();
           console.log('app info is: ' + JSON.stringify(application));
-          if(application.Oracle_Trade_up_Quote_Number__c){
+          if(application.Oracle_Trade_up_Quote_Number__c && !application.Oracle_Trade_up_Lease_Number__c.startsWith('LES')){
               application.Oracle_Trade_up_Quote_Number__c_Display = application.Oracle_Trade_up_Quote_Number__c.split(
                   "TU"
                 )[1];

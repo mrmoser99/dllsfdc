@@ -22,6 +22,7 @@
   <aura:attribute name="originationDate" type="Date" />
   <aura:attribute name="maturityDate" type="Date" />
   <aura:attribute name="leaseType" type="String" />
+ 
   <aura:attribute name="quoteDate" type="Date" />
 
   <!-- Equipment Summary -->
@@ -35,6 +36,7 @@
   <aura:attribute name="quoteSummaryColumns" type="List" />
 
   <!-- Quote Details  -->
+
   <aura:attribute name="quoteData" type="String" />
   <aura:attribute name="quoteId" type="String" />
   <aura:attribute name="remainingLeasePayments" type="String" />

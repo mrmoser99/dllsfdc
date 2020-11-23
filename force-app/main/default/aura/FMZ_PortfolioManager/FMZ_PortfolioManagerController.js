@@ -290,6 +290,7 @@
   },
 
   openQuoteModule: function(component, event, helper) {
+    component.set('v.isLoading',true);
     component.set("v.isQuoteModuleVisible", true);
   },
 

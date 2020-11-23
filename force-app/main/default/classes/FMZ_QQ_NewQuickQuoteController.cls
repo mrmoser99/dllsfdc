@@ -152,8 +152,12 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
 
             genesis__Quick_Quotes__c qq2 = [SELECT Id, Name, Oracle_Trade_up_Quote_Number__c FROM genesis__Quick_Quotes__c WHERE Id =: qq.Id LIMIT 1];
             //skip for newco qq
+            system.debug('qq2.oracl_trade up quote' + qq2.Oracle_Trade_up_Quote_Number__c);
+            
             if (qq2.Oracle_Trade_up_Quote_Number__c != null && !qq2.Oracle_Trade_up_Quote_Number__c.contains('QTE')) {
-                Lease_OLM_Quote__c quote = [SELECT Id, Quick_Quote_Number__c FROM Lease_OLM_Quote__c WHERE Name =: qq2.Oracle_Trade_up_Quote_Number__c LIMIT 1];
+                String quoteName = '%TU' + qq2.oracle_trade_up_quote_number__c;
+                
+                Lease_OLM_Quote__c quote = [SELECT Id, Quick_Quote_Number__c FROM Lease_OLM_Quote__c WHERE name like :quoteName LIMIT 1];
                 if (quote != null) {
                     quote.Quick_Quote_Number__c = qq2.Name;
 

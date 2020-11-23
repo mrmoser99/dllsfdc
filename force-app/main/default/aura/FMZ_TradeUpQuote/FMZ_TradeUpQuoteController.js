@@ -1,6 +1,7 @@
 ({
   doInit: function(component, event, helper) {
     // Equipment Summary Columns
+    component.set('v.isLoading',true);
     console.log('in do init of tradeupquotecontroller');
     component.set("v.equipmentColumns", [
       { label: "Asset Number", fieldName: "assetNumber", type: "text" },
@@ -54,8 +55,7 @@
    
     console.log('row is: ' + row);
     console.log('fromnewco is : ' + component.get('v.fromNewco'));
-   
-     
+    
     if (row) {
       let rowRecord = JSON.parse(row);
       component.set("v.selectedRowObj", rowRecord);
@@ -63,15 +63,19 @@
     }
 
     helper.getEnvSettingsHelper(component);
-   
-    //something has to change here to support newco quote.    this fetch data is called for reg porfolio and fetch data fills in service info...need to fill in data in newco
-    if (!row) {
-      console.log('not row');
+    
+    if (component.get('v.leaseNumber').startsWith('LES')){
+      console.log('going newco' + ' app is: ' + component.get('v.applicationId'));
+      component.set('v.fromNewco',true);
+    }
+
+    if (!row && component.get('v.fromNewco') != true){
+    
       helper.fetchData(component).then(data => {
         component.set("v.row", JSON.stringify(data));
         component.set("v.selectedRowObj", data);
         console.log('call 1');
-        helper.getLeaseDetailsHelper(component, JSON.stringify(data));
+        helper.getLeaseDetailsHelper(component,data);
       
         Promise.all([
           helper.generateQuoteByTypeHelper(component,"TRADEUP_WITHOUT_PURCHASE"),
@@ -115,18 +119,23 @@
                 showCloseButton: true
               });
           }
+          component.set('v.isLoading',false);
         });
       });
     } else {
       console.log('in row');
       console.log('call 1a');
-      helper.getLeaseDetailsHelper(component, row);
-      console.log('hello');
+      
+      Promise.all([
+        helper.getLeaseDetailsHelper(component, row)
+      ]).then(() => {
+        console.log('staring promise 2');
       Promise.all([
         helper.generateQuoteByTypeHelper(component,"TRADEUP_WITHOUT_PURCHASE"),
-        helper.generateQuoteByTypeHelper(component, "TRADEUP_WITH_PURCHASE")
+        helper.generateQuoteByTypeHelper(component, "TRADEUP_WITH_PURCHASE") 
+         
       ]).then(() => {
-        
+        console.log('======>bck from genereate quote by type helpere');
         let quoteData = component.get("v.tradeUpWithoutPurchase");
         let quoteData2 = component.get("v.tradeUpWithPurchase");
         
@@ -137,7 +146,7 @@
 
             let data2 = JSON.parse(JSON.stringify(quoteData2));
             helper.getQuoteDetailsHelper(component, data2.quoteNumber, 2);
-
+           
             const tableData = [];
             var qDisplay;
             var qDisplay2;
@@ -166,6 +175,7 @@
             tableData.push(obj);
             tableData.push(obj2);
             component.set("v.quoteSummaryData", tableData);
+            component.set('v.isLoading',false);
         } else {
            component.find("notifLib").showToast({
             title: "Something went wrong, please refresh!",
@@ -174,6 +184,7 @@
           });
         }
       });  //promise all
+    });  //promise all
     }
   },
 
