@@ -37,6 +37,55 @@ public with sharing class NewcoPortfolioUtility {
         return lList;
     }
 
+    @AuraEnabled(cacheable = true)
+    public static List<cllease__Termination_Quote_Header__c> getQuoteList(String refreshExecute) {
+                        
+         
+        List<cllease__Termination_Quote_Header__c> hList = new List<cllease__Termination_Quote_Header__c>();
+        
+        Map<String,String> appQuote = new Map<String,String>();
+        Set<String> appSet= new Set<String>();
+
+    
+        hList = [SELECT Id
+           , cllease__Contract__r.cllease__Account__r.name
+            , cllease__Effective_To__c
+            , cllease__Contract__r.name
+            , cllease__Quote_Amount__c
+            , cllease__Status__c
+            , cllease__Quote_Type__c
+            , CreatedDate
+            , QUOTE_ESTIMATED_SALES_TAX__c
+            , Equipment_Price__c
+            , Remaining_Payments__c
+            , quick_quote_name__c
+            , QUOTE_ESTIMATED_PROPERTY_TAX__c
+            , QUOTE_FEE__c
+            , QUOTE_SERVICE_AND_MAINTENANCE__c
+            , cllease__Contract__r.Application_Number__c 
+            , Name 
+            FROM cllease__Termination_Quote_Header__c
+            order by name desc
+            limit 100
+        ];
+
+        for (cllease__Termination_Quote_Header__c h: hList)
+            appSet.add(h.cllease__Contract__r.Application_Number__c);
+
+        List<genesis__Quick_Quotes__c> qqList = [select name, genesis__application__r.name 
+            from genesis__Quick_Quotes__c where genesis__application__r.name  in :appSet];
+
+        for (genesis__Quick_Quotes__c  qq:qqList)
+            appQuote.put(qq.genesis__application__r.name,qq.name);
+
+        for (cllease__Termination_Quote_Header__c h:hList){
+            h.quick_quote_name__c = appQuote.get(h.cllease__Contract__r.Application_Number__c);
+            system.debug('assigning qq - '  + appQuote.get(h.cllease__Contract__r.Application_Number__c) + ' to ' + h.name );
+        }
+
+        return hList;
+    }
+
     @AuraEnabled(cacheable = false)
     public static List<cllease__Contract_Equipment__c> getLeaseListForPortfolio(String refreshExecute) {
                         

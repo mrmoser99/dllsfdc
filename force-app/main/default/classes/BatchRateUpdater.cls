@@ -37,7 +37,7 @@ global class BatchRateUpdater implements Database.Batchable<SObject>,Database.St
 
         for (Account a:scope){
             
-            RateUtility.getProgram(a.mosaic_primary_id__c);
+            //RateUtility.getProgram(a.mosaic_primary_id__c);
             
         }
         

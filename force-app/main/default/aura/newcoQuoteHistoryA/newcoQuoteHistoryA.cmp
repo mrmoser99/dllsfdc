@@ -1,0 +1,349 @@
+<aura:component
+  controller="FMZ_PortfolioManager"
+  implements="forceCommunity:availableForAllPageTypes,force:appHostable,flexipage:availableForAllPageTypes"
+  access="global"
+>
+  <!-- attributes -->
+  <aura:attribute name="data" type="Object" />
+  <aura:attribute name="columns" type="List" />
+  <aura:attribute name="settings" type="String" />
+  <aura:attribute name="isLoading" type="Boolean" default="false" />
+  <aura:attribute name="fromNewco" type="Boolean" default="false" />
+  <aura:attribute name="quickQuote" type="String" />
+  <aura:attribute name="leaseData" type="String" />
+
+  <!-- Filter options -->
+  <aura:attribute name="customerName" type="String" />
+  <aura:attribute name="contractNumber" type="String" />
+  <aura:attribute name="filtering" type="Boolean" default="false" />
+
+  <!--- Table Behavior  -->
+  <aura:attribute name="enableInfiniteLoading" type="Boolean" default="true" />
+  <aura:attribute name="pageSize" type="Integer" default="20" />
+  <aura:attribute name="offset" type="Integer" default="0" />
+  <aura:attribute name="pageNumber" type="Integer" default="0" />
+  <aura:attribute name="rowCount" type="Integer" default="0" />
+  <aura:attribute name="selectedRow" type="Object" />
+  <aura:attribute name="selectedRowString" type="String" />
+
+  <!-- Modules -->
+  <aura:attribute name="requoteConfirmationScreen" type="Boolean" default="false"/>
+  <aura:attribute name="isQuoteModuleVisible" type="Boolean" default="false" />
+  <aura:attribute name="creditApprovalScreenForward" type="Boolean" default="false"/>
+
+  <!-- Conditional Rendering -->
+  <aura:attribute name="showQuoteDetails" type="Boolean" default="false" />
+
+  <c:newcoQuoteHistory onviewdetails="{!c.handleViewDetails}" onsubmittocredit="{!c.handleSubmitToCredit}"/>
+
+  <aura:if isTrue="{!v.isLoading}">
+    <lightning:spinner alternativeText="Loading" />
+  </aura:if>
+
+  <aura:if isTrue="{!v.showQuoteDetails}">
+      <section
+        role="dialog"
+        tabindex="-1"
+        aria-labelledby="modal-heading-01"
+        aria-modal="true"
+        aria-describedby="modal-content-id-1"
+        class="slds-modal slds-fade-in-open"
+      >
+        <div class="slds-modal__container" style="width: 95%;max-width: 95%;">
+          <header class="slds-modal__header">
+            <lightning:buttonIcon
+              iconName="utility:close"
+              onclick="{!c.closeModal}"
+              alternativeText="close"
+              variant="bare-inverse"
+              class="slds-modal__close"
+            />
+            <h2
+              id="modal-heading-01"
+              class="slds-text-heading_medium slds-hyphenate"
+              >Quote Details</h2
+            >
+          </header>
+          <div
+            class="slds-modal__content slds-p-around_medium"
+            id="modal-content-id-1"
+          >
+            <h1
+              class="slds-size_1-of-1 slds-m-top_large slds-p-horizontal_small"
+              >Quote Summary</h1
+            >
+            <div class="slds-form slds-grid slds-wrap">
+              <lightning:input
+                class="slds-size_1-of-2 slds-p-horizontal_small"
+                type="text"
+                value="{!v.selectedRow.Contract_Number__c}"
+                label="Lease Number"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-2 slds-p-horizontal_small"
+                type="text"
+                value="{!v.selectedRow.Customer_Name__c}"
+                label="Lease Number"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-2 slds-p-horizontal_small"
+                type="text"
+                value="{!v.selectedRow.LS_Contract__c}"
+                label="LS Contract"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-2 slds-p-horizontal_small"
+                type="text"
+                value="{!v.selectedRow.NameDisplay}"
+                label="Quote Number"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-2 slds-p-horizontal_small"
+                type="text"
+                value="{!v.selectedRow.Termination_Quote_Type__c}"
+                label="Quote Type"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-2 slds-p-horizontal_small"
+                type="text"
+                value="{!v.selectedRow.Quick_Quote_Number__c}"
+                label="Credit Approval Number"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-2 slds-p-horizontal_small"
+                type="date"
+                dateStyle="short"
+                value="{!v.selectedRow.Quote_Validity_Date__c}"
+                label="Quote Validity Date"
+                disabled="true"
+              />
+              <h1
+                class="slds-size_1-of-1 slds-m-top_large slds-p-horizontal_small"
+                >Pricing Summary</h1
+              >
+              <lightning:input
+                class="slds-size_1-of-1 slds-p-horizontal_small"
+                type="number"
+                formatter="currency"
+                value="{!v.selectedRow.Remaining_Rental_Payments__c}"
+                label="Remaining Rental Payments"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-1 slds-p-horizontal_small"
+                type="number"
+                formatter="currency"
+                value="{!v.selectedRow.Discount__c}"
+                label="Discount"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-1 slds-p-horizontal_small"
+                type="number"
+                formatter="currency"
+                value="{!v.selectedRow.Equipment_Price__c}"
+                label="Equipment Price"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-1 slds-p-horizontal_small"
+                type="number"
+                formatter="currency"
+                value="{!v.selectedRow.Sales_Tax__c}"
+                label="Sales Tax"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-1 slds-p-horizontal_small"
+                type="number"
+                formatter="currency"
+                value="{!v.selectedRow.Property_Tax__c}"
+                label="Property Tax"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-1 slds-p-horizontal_small"
+                type="number"
+                formatter="currency"
+                value="{!v.selectedRow.Lease_Charges__c}"
+                label="Lease Charges"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-1 slds-p-horizontal_small"
+                type="number"
+                formatter="currency"
+                value="{!v.selectedRow.Security_Deposit__c}"
+                label="Security_Deposit"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-1 slds-p-horizontal_small"
+                type="number"
+                formatter="currency"
+                value="{!v.selectedRow.Past_Due_Service__c}"
+                label="Past Due Service"
+                disabled="true"
+              />
+              <lightning:input
+                class="slds-size_1-of-1 slds-p-horizontal_small"
+                type="number"
+                formatter="currency"
+                value="{!v.selectedRow.Amount__c}"
+                label="Amount"
+                disabled="true"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+    <aura:if isTrue="{!v.requoteConfirmationScreen}">
+      <section
+        role="dialog"
+        tabindex="-1"
+        aria-labelledby="modal-heading-01"
+        aria-modal="true"
+        aria-describedby="modal-content-id-1"
+        class="slds-modal slds-fade-in-open"
+      >
+        <div class="slds-modal__container" style="width: 50%;max-width: 50%;">
+          <header class="slds-modal__header">
+            <lightning:buttonIcon
+              iconName="utility:close"
+              onclick="{!c.closeModal}"
+              alternativeText="close"
+              variant="bare-inverse"
+              class="slds-modal__close"
+            />
+            <h2
+              id="modal-heading-01"
+              class="slds-text-heading_medium slds-hyphenate"
+              >Confirmation</h2
+            >
+          </header>
+          <div
+            class="slds-modal__content slds-p-around_medium"
+            id="modal-content-id-1"
+          >
+            <div class="slds-form slds-grid slds-wrap">
+              <aura:text
+                value="This quote has expired. Do you want to requote
+              this lease?"
+              ></aura:text>
+            </div>
+          </div>
+          <footer class="slds-modal__footer">
+            <lightning:button
+              variant="neutral"
+              label="Cancel"
+              title="Cancel"
+              onclick="{!c.closeModal}"
+            />
+            <lightning:button
+              variant="brand"
+              label="Requote Lease"
+              title="Requote Lease"
+              onclick="{!c.showRequoteApplicationScreen}"
+            />
+          </footer>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.isQuoteModuleVisible}">
+      <section
+        role="dialog"
+        tabindex="-1"
+        aria-labelledby="modal-heading-01"
+        aria-modal="true"
+        aria-describedby="modal-content-id-1"
+        class="slds-modal slds-fade-in-open"
+      >
+        <div class="slds-modal__container" style="width: 95%;max-width: 95%;">
+          <header class="slds-modal__header">
+            <lightning:buttonIcon
+              iconName="utility:close"
+              onclick="{!c.closeModal}"
+              alternativeText="close"
+              variant="bare-inverse"
+              class="slds-modal__close"
+            />
+            <h2
+              id="modal-heading-01"
+              class="slds-text-heading_medium slds-hyphenate"
+              >Quote - {!v.selectedRow.Contract_Number__c}</h2
+            >
+          </header>
+          <c:FMZ_TradeUpQuote
+            row="{!v.leaseData}"
+            leaseNumber="{!v.selectedRow.Contract_Number__c}"
+            isQuoteModuleVisible="{!v.isQuoteModuleVisible}"
+          />
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.creditApprovalScreenForward}">
+      <section
+        role="dialog"
+        tabindex="-1"
+        aria-labelledby="modal-heading-01"
+        aria-modal="true"
+        aria-describedby="modal-content-id-1"
+        class="slds-modal slds-fade-in-open"
+      >
+        <div class="slds-modal__container" style="width: 50%;max-width: 50%;">
+          <header class="slds-modal__header">
+            <lightning:buttonIcon
+              iconName="utility:close"
+              onclick="{!c.closeModal}"
+              alternativeText="close"
+              variant="bare-inverse"
+              class="slds-modal__close"
+            />
+            <h2
+              id="modal-heading-01"
+              class="slds-text-heading_medium slds-hyphenate"
+              >Confirmation</h2
+            >
+          </header>
+          <div
+            class="slds-modal__content slds-p-around_medium"
+            id="modal-content-id-1"
+          >
+            <div class="slds-form slds-grid slds-wrap">
+              <aura:text
+                value="This quote already has an application. Do you want to get re-directed?"
+              ></aura:text>
+            </div>
+          </div>
+          <footer class="slds-modal__footer">
+            <lightning:button
+              variant="neutral"
+              label="Cancel"
+              title="Cancel"
+              onclick="{!c.closeModal}"
+            />
+            <lightning:button
+              variant="brand"
+              label="Open Credit Approval"
+              title="Open Credit Approval"
+              onclick="{!c.redirectToApplication}"
+            />
+          </footer>
+        </div>
+      </section>
+      <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+</aura:component>

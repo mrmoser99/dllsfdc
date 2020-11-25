@@ -35,8 +35,8 @@ const columns = [
           name: "tear",
           title: "Click to generate tear sheet"
         }
-      },
-      {
+     },
+     {
         label: "Quote",
         type: "button",
         initialWidth: 100,

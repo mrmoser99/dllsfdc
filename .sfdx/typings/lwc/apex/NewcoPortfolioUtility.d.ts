@@ -1,6 +1,9 @@
 declare module "@salesforce/apex/NewcoPortfolioUtility.getLeaseList" {
   export default function getLeaseList(param: {refreshExecute: any}): Promise<any>;
 }
+declare module "@salesforce/apex/NewcoPortfolioUtility.getQuoteList" {
+  export default function getQuoteList(param: {refreshExecute: any}): Promise<any>;
+}
 declare module "@salesforce/apex/NewcoPortfolioUtility.getLeaseListForPortfolio" {
   export default function getLeaseListForPortfolio(param: {refreshExecute: any}): Promise<any>;
 }
