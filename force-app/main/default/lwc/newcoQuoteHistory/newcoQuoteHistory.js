@@ -5,12 +5,12 @@ import getQuoteList from "@salesforce/apex/NewcoPortfolioUtility.getQuoteList";
 
 
 const columns = [
-    { label: "Quote Number",     initialWidth: 140, fieldName: "NameDisplay",           type: "text", },
-    { label: "Customer Name",    initialWidth: 225, fieldName: "Customer_Name__c",      type: "text"},
-    { label: "Contract Number",     initialWidth: 150, fieldName: "Contract_Number__c",    type: "text" },
-    { label: "Quote Type",       initialWidth: 300, fieldName: "Termination_Quote_Type__c", type: "text"},
-    { label: "Quote Amount",     initialWidth: 150, fieldName: "Amount__c",             type: "currency"},
-    { label: "Quote Date",       initialWidth: 120, fieldName: "CreatedDate",           type: "date",
+    { label: "Quote Number",     initialWidth: 125, fieldName: "NameDisplay",           type: "text", },
+    { label: "Customer Name",    initialWidth: 180, fieldName: "Customer_Name__c",      type: "text"},
+    { label: "Contract Number",     initialWidth: 120, fieldName: "Contract_Number__c",    type: "text" },
+    { label: "Quote Type",       initialWidth: 180, fieldName: "Termination_Quote_Type__c", type: "text"},
+    { label: "Quote Amount",     initialWidth: 100, fieldName: "Amount__c",             type: "currency"},
+    { label: "Quote Date",       initialWidth: 100, fieldName: "CreatedDate",           type: "date",
         typeAttributes: {
             day: "numeric",
             month: "numeric",
@@ -24,7 +24,7 @@ const columns = [
             year: "numeric"
         }
     },
-    { label: "Credit Approval Number",  initialWidth: 195, fieldName: "Quick_Quote_Number__c", type: "text"},
+    { label: "Credit Approval Number",  initialWidth: 120, fieldName: "Quick_Quote_Number__c", type: "text"},
     {
       label: "View Detail",
       type: "button",
@@ -42,7 +42,8 @@ const columns = [
       typeAttributes: {
         label: "Submit to Credit Approval",
         name: "submittocredit",
-        title: "Click to Submit for Credit Approval"
+        title: "Click to Submit for Credit Approval",
+        class: { fieldName: 'ModeClass' }
       }
     }
 ];
@@ -57,7 +58,7 @@ export default class NewcoQuoteHistory extends LightningElement {
 
     @wire(getQuoteList,{ refreshExecute: "$refreshExecute"}) 
     wired_getQuotes({ error, data }) {
-        
+
         //need to flatten to display for relationship fields
         this.data = data;
         if (this.data) {
@@ -69,9 +70,11 @@ export default class NewcoQuoteHistory extends LightningElement {
                 let preparedQuote = {};
                 console.log(JSON.stringify(quote));
                 preparedQuote.Id = quote.Id;
+                preparedQuote.cllease__Status__c = quote.cllease__status__c;
                 preparedQuote.NameDisplay = quote.Name;
                 preparedQuote.Customer_Name__c = quote.cllease__Contract__r.cllease__Account__r.Name;
                 preparedQuote.Contract_Number__c = quote.cllease__Contract__r.Name;
+                preparedQuote.contractNumber = quote.cllease__Contract__r.Name;
                 preparedQuote.Termination_Quote_Type__c = quote.cllease__Quote_Type__c;
                 preparedQuote.Amount__c = quote.cllease__Quote_Amount__c;
                 preparedQuote.CreatedDate = quote.CreatedDate;
@@ -86,6 +89,14 @@ export default class NewcoQuoteHistory extends LightningElement {
                 preparedQuote.Discount__c = 0;
                 preparedQuote.Security_Deposit__c = 0;
                 preparedQuote.Past_Due_Service__c = quote.QUOTE_FEE__c;
+                console.log(' stat: ' + quote.cllease__Contract__r.cllease__Lease_Status__c);
+                const leaseStatus = quote.cllease__Contract__r.cllease__Lease_Status__c;
+                const pos = leaseStatus.indexOf('ACTIVE');
+                if (pos != -1 || leaseStatus == 'EVERGREEN')
+                    preparedQuote.ModeClass = 'slds-visible';
+                else
+                    preparedQuote.ModeClass = 'slds-hidden';
+                     
          
          
         
@@ -103,13 +114,15 @@ export default class NewcoQuoteHistory extends LightningElement {
     handleRowAction(event) {
         const actionName = event.detail.action.name;
         const row = event.detail.row;
+        console.log('handle row action ' + actionName) ;
         switch (actionName) {
+           
             case 'viewdetails':
                 this.view(row);
                
                 break;
             case 'submittocredit':
-                this.tear(row);
+                this.submittocredit(row);
                 break;
             default:
         }
@@ -121,13 +134,15 @@ export default class NewcoQuoteHistory extends LightningElement {
 
         const lease = row.Id;
 
-        console.log('  Display row: ' + JSON.stringify(row));
+        //console.log('  Display row: ' + JSON.stringify(row));
     
-        const displayViewDetailsEvent = new CustomEvent('viewdetails', {
+        const displayViewEvent = new CustomEvent('viewdetails', {
             detail: { lease, row },
         });
         // Fire the custom event
-        this.dispatchEvent(displayViewDetailsEvent);
+        console.log('fire the event');
+       
+        this.dispatchEvent(displayViewEvent);
     }
         
     
@@ -135,7 +150,7 @@ export default class NewcoQuoteHistory extends LightningElement {
     submittocredit(row) {
         this.record = row;
 
-        console.log('ready to call tear sheet with lease id: ' + row.Id);
+        console.log('ready to call submit to credit lease id: ' + row.Id);
         const lease = row;
         console.log('lease is  ' + lease);
         const displaySubmitToCreditEvent = new CustomEvent('submittocredit', {

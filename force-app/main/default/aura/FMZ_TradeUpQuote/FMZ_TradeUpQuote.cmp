@@ -3,6 +3,7 @@
   controller="FMZ_PortfolioManager"
 >
   <!-- General -->
+  <aura:attribute name="fromNewcoQuoteHistory" type="Boolean" default="false" />
   <aura:attribute name="fromNewco" type="Boolean" default="false" />
   <aura:attribute name="selectedTradeUp" type="Object" />
   <aura:attribute name="selectedRowObj" type="Object" />

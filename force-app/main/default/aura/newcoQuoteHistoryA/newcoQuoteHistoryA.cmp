@@ -11,6 +11,8 @@
   <aura:attribute name="fromNewco" type="Boolean" default="false" />
   <aura:attribute name="quickQuote" type="String" />
   <aura:attribute name="leaseData" type="String" />
+ 
+
 
   <!-- Filter options -->
   <aura:attribute name="customerName" type="String" />
@@ -33,13 +35,13 @@
 
   <!-- Conditional Rendering -->
   <aura:attribute name="showQuoteDetails" type="Boolean" default="false" />
-
-  <c:newcoQuoteHistory onviewdetails="{!c.handleViewDetails}" onsubmittocredit="{!c.handleSubmitToCredit}"/>
-
+ 
+  <c:newcoQuoteHistory onviewdetails="{!c.handleViewDetails}" onsubmittocredit="{!c.handleSubmitToCredit}" />
+ 
   <aura:if isTrue="{!v.isLoading}">
     <lightning:spinner alternativeText="Loading" />
   </aura:if>
-
+  
   <aura:if isTrue="{!v.showQuoteDetails}">
       <section
         role="dialog"
@@ -285,7 +287,8 @@
           </header>
           <c:FMZ_TradeUpQuote
             row="{!v.leaseData}"
-            leaseNumber="{!v.selectedRow.Contract_Number__c}"
+            fromNewco="{!v.fromNewco}"
+            leaseNumber="{!v.contractNumber}"
             isQuoteModuleVisible="{!v.isQuoteModuleVisible}"
           />
         </div>

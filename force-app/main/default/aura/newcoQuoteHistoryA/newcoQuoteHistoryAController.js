@@ -1,5 +1,5 @@
 ({
-    handleViewDetails: function(component, event, helper) {
+    handleViewDetails: function(component, event) {
         
         console.log('View Details -' + event.getParam('lease'));
         const row = event.getParam('row');
@@ -7,19 +7,20 @@
         component.set("v.selectedRow", row);
         component.set("v.selectedRowString", JSON.stringify(row));
         component.set("v.showQuoteDetails", true);
-        return;
+        console.log('here we are');
       
     },
 
     handleSubmitToCredit: function(component, event) {
         
         console.log('Submit to Credit' + event.getParam('row'));
-        component.set('v.row', event.getParam('row'));
-        component.set('v.selectedRow', JSON.stringify(event.getParam('row')));
-        console.log('lease is: ' + event.getParam('lease'));
-        component.set('v.leaseNumber',event.getParam('lease'));
+        const row = event.getParam('row');
+        component.set('v.leaseData', event.getParam('row'));
+        component.set('v.contractNumber',row.Contract_Number__c);
         component.set('v.fromNewco', true);
+        component.set("v.selectedRow", row);
         component.set('v.isQuoteModuleVisible', true);
+        
     },
 
     filterResults: function(component, event, helper) {
@@ -81,6 +82,7 @@
                       quoteData.quoteNumber = quoteData.Name;
                       quoteData.expirationDate = quoteData.Quote_Validity_Date__c;
                       quoteData.leaseDetails = leaseData;
+                   
     
                       helper.handleShowCreditApproval(component, quoteData);
                     }

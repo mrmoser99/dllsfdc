@@ -49,6 +49,7 @@ public with sharing class NewcoPortfolioUtility {
     
         hList = [SELECT Id
            , cllease__Contract__r.cllease__Account__r.name
+            , cllease__Contract__r.cllease__Lease_Status__c
             , cllease__Effective_To__c
             , cllease__Contract__r.name
             , cllease__Quote_Amount__c

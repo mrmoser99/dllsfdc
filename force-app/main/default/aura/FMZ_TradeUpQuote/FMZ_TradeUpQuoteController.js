@@ -53,21 +53,25 @@
     let row = component.get("v.row");
     let leaseNumber = component.get("v.leaseNumber");
    
-    console.log('row is: ' + row);
+    console.log('row is: ' + JSON.stringify(row));
     console.log('fromnewco is : ' + component.get('v.fromNewco'));
     
     if (row) {
-      let rowRecord = JSON.parse(row);
-      component.set("v.selectedRowObj", rowRecord);
-      component.set("v.leaseNumber", rowRecord.contractNumber);
+      component.set("v.selectedRowObj", row);
+      
     }
 
+    console.log('past bad stuff' + ' lease: ' + leaseNumber);
+
     helper.getEnvSettingsHelper(component);
+
+    console.log('past bad stuff3');
     
     if (component.get('v.leaseNumber').startsWith('LES')){
       console.log('going newco' + ' app is: ' + component.get('v.applicationId'));
       component.set('v.fromNewco',true);
     }
+    console.log('past bad stuff4');
 
     if (!row && component.get('v.fromNewco') != true){
     
@@ -139,6 +143,7 @@
         let quoteData = component.get("v.tradeUpWithoutPurchase");
         let quoteData2 = component.get("v.tradeUpWithPurchase");
         
+        console.log('here');
         if (quoteData && quoteData2) { 
            
             let data = JSON.parse(JSON.stringify(quoteData));
@@ -177,6 +182,7 @@
             component.set("v.quoteSummaryData", tableData);
             component.set('v.isLoading',false);
         } else {
+          console.log('show toast');
            component.find("notifLib").showToast({
             title: "Something went wrong, please refresh!",
             variant: "error",
