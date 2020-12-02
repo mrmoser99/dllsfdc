@@ -93,6 +93,7 @@ public without sharing class PMUtility {
         @AuraEnabled public String dllContractNumber;
         @AuraEnabled public String contractService; //6-19 new field
         @AuraEnabled public String contractStatus;
+        @AuraEnabled public String ModeClass;
         @AuraEnabled public String customerName;
         @AuraEnabled public String leaseSignerPhone;
         @AuraEnabled public String contractStartDate;

@@ -40,11 +40,16 @@
   <!-- COMPONENT BEGIN -->
   <lightning:notificationsLibrary aura:id="notifLib" />
   <lightning:overlayLibrary aura:id="overlayLib" />
+
+  
   <div class="container">
-    <aura:if isTrue="{!v.isLoading}">
-      <lightning:spinner alternativeText="Loading" />
-    </aura:if>
+    
     <div class="slds-form slds-grid slds-wrap">
+
+      <aura:if isTrue="{!v.isLoading}">
+          <lightning:spinner alternativeText="Loading" />
+      </aura:if>
+
       <h1 class="slds-size_1-of-1 slds-m-top_large slds-p-horizontal_small"
         >Customer information</h1
       >

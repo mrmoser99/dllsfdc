@@ -33,6 +33,10 @@
             const data = a.getReturnValue();
             console.log(data);
             if (data.data) {
+              //var i;
+              //for (i=0; i < data.data.length; i++) {
+              //  console.log('row data is: ' + JSON.stringify(data.data[i]));
+              //}
               data.data.map(el => {
                 if (el.assetDetail && el.assetDetail[0]) {
                   el.assetAddressLine1 = el.assetDetail[0].assetAddressLine1;

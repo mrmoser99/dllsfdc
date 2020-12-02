@@ -1,9 +1,12 @@
 ({
   doInit: function(component, event, helper) {
-     
+    
+   
     helper.initColumns(component);
-    helper.initFakeData(component);
+    console.log('before fetch');
+  
     helper.fetchData(component);
+   
     
   }
 });

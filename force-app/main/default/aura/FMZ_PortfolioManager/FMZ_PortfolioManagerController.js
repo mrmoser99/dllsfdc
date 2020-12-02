@@ -76,7 +76,7 @@
       {
         label: "TearSheet",
         type: "button",
-        initialWidth: 100,
+        initialWidth: 110,
         typeAttributes: {
           label: "TearSheet",
           name: "tearsheet",
@@ -90,7 +90,8 @@
         typeAttributes: {
           label: "Quote",
           name: "quote",
-          title: "Click to generate quotes"
+          title: "Click to generate quotes",
+          class: { fieldName: 'ModeClass' }
         }
       }
     ]);
@@ -278,7 +279,9 @@
         helper.fetchLeaseDetails(component, JSON.stringify(row));
         return;
       case "quote":
+        console.log('my row is: ' +  JSON.stringify(row));
         component.set("v.selectedRow", JSON.stringify(row));
+        console.log('my row2 is: ' +  JSON.stringify(row));
         $A.enqueueAction(component.get("c.openQuoteModule"));
         return;
     }

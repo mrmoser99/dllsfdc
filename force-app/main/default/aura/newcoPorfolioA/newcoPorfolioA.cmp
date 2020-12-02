@@ -5,6 +5,7 @@
         <aura:attribute name="leaseNumber" type="String" default="LES-000001111"/>
         <aura:attribute name="isTearSheetVisible" type="Boolean" default="false" />
         <aura:attribute name="isQuoteModuleVisible" type="Boolean" default="false" />
+        <aura:attribute name="isLoading" type="Boolean" default="false" />
         <aura:attribute name="selectedRow" type="String" />
         <aura:attribute name="quoteLeaseData" type="String" />
         <aura:attribute name="quoteSummaryData" type="String" />
@@ -13,8 +14,10 @@
 
         <c:newcoPortfolio ondisplaytear="{!c.handleDisplayTear}" ondisplayquote="{!c.handleDisplayQuote}"/>
 
+       
+
         <aura:if isTrue="{!v.isTearSheetVisible}" >
-         
+          
         <section
         role="dialog"
         tabindex="-1"
@@ -24,6 +27,7 @@
         class="slds-modal slds-fade-in-open"
         >
         <div class="slds-modal__container" style="width: 95%;max-width: 95%;">
+        
           <!-- Modal/Popup Box Header Starts here-->
           <header class="slds-modal__header">
             <lightning:buttonIcon
@@ -51,6 +55,10 @@
               height="1"
               src="{!'/dealer/apex/FMZ_TearSheet'}"
             />
+            <aura:if isTrue="{!v.isLoading}">
+              <lightning:spinner alternativeText="Loading" />
+            </aura:if> 
+            
             <aura:if isTrue="{!v.leaseDetails}">
               <c:FMZ_TearSheet fromNewco="true" leaseNumber="{!v.leaseNumber}" leaseDetails="{!v.leaseDetails}"/>
             </aura:if>

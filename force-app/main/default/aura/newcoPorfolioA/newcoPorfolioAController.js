@@ -9,8 +9,10 @@
         component.set('v.leaseNumber',event.getParam('row').contractNumber);
         component.set('v.selectedRow', JSON.stringify(event.getParam('row')));
         helper.getLeaseDetails(component);
+        component.set('v.isLoading', false);
         component.set('v.isTearSheetVisible', true);
         component.set("v.isQuoteModuleVisible", false);
+        component.set('v.isLoading', false);
         
       
     },
@@ -18,12 +20,15 @@
     handleDisplayQuote: function(component, event) {
         
         console.log('Display the quote sheet brther: ' + event.getParam('row'));
+        console.log('row: ' + JSON.stringify(event.getParam('row')));
         component.set('v.row', event.getParam('row'));
         component.set('v.selectedRow', JSON.stringify(event.getParam('row')));
         console.log('lease is: ' + event.getParam('lease'));
         component.set('v.leaseNumber',event.getParam('lease'));
         component.set('v.fromNewco', true);
+        component.set('v.isLoading', true);
         component.set('v.isQuoteModuleVisible', true);
+       
     },
 
     closeModal: function(component, event, helper) {

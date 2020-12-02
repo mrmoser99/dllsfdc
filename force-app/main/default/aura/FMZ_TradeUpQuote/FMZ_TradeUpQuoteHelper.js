@@ -48,7 +48,7 @@
 
   
   getLeaseDetailsHelper: function(component, data) {
-    console.log('in get lease detail shelper');
+    console.log('in get lease details helper');
     return new Promise(
       $A.getCallback((resolve, reject) => {
         var action;
@@ -83,7 +83,7 @@
             component.set('v.row', data);
 
             console.log('row in lease helper is: ' + JSON.stringify(component.get('v.row')));
-
+            component.set('v.leaseNumber',data.contractNumber);
             component.set("v.selectedRowObj", data);
 
             component.set("v.customerName", data.customerName);
@@ -164,6 +164,10 @@
             return;
           }
         }
+
+        console.log('contract number is: ' + contractNumber);
+        console.log('customer name: ' + component.get('v.customerName'));
+
         var generateQuotesAction;
         if (component.get('v.fromNewco') != true){
           console.log('newco is not processing quote');

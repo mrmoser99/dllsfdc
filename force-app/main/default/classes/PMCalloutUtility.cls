@@ -430,6 +430,10 @@ public with sharing class PMCalloutUtility {
         
         List<Lease_OLM_Quote__c> newQuotes = new List<Lease_OLM_Quote__c>();
 
+        system.debug('lease id: ' + leaseNumber);
+        system.debug('type is: ' + type);
+        system.debug('customer name is : ' + customerName);
+
         List<PMUtility.Quote> qList = new List<PMUtility.Quote>();
         String accessToken = PMUtility.getAccessToken();
         if (accessToken == '500') //retry
@@ -556,8 +560,11 @@ public with sharing class PMCalloutUtility {
         PMUtility.TerminationQuoteResponse qResponse = new PMUtility.TerminationQuoteResponse();
         PMUtility.Quote q;
       
+        system.debug('lease id: ' + leaseId);
+        system.debug('type is: ' + type);
+        system.debug('customer name is : ' + customerName);
         /* the return from q2 code is a map<string,object>.  They don't know how to use JSON.  Therefore this ugly code is present. */
-
+        customerName = 'x';
         Map<String,Object> resultMap = new Map<String,Object>();
         cllease__lease_account__c l = [select id, cllease__Lease_Status__c from cllease__lease_account__c where name = :leaseId];
 

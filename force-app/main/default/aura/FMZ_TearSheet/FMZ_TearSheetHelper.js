@@ -16,6 +16,7 @@
         type: "text"
       }
     ]);
+     
   },
 
   initFakeData: function(component) {

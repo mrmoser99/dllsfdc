@@ -2,7 +2,13 @@
   doInit: function(component, event, helper) {
     // Equipment Summary Columns
     component.set('v.isLoading',true);
+
+
     console.log('in do init of tradeupquotecontroller');
+    console.log('passed in row: ' + component.get('v.row'));
+    console.log('what');
+    //component.set('v.leaseNumber', row.contractNumber);
+    console.log('what');
     component.set("v.equipmentColumns", [
       { label: "Asset Number", fieldName: "assetNumber", type: "text" },
       { label: "Make", fieldName: "make", type: "text" },
@@ -50,29 +56,17 @@
       //   }
       // }
     ]);
-    let row = component.get("v.row");
-    let leaseNumber = component.get("v.leaseNumber");
-   
-    console.log('row is: ' + JSON.stringify(row));
-    console.log('fromnewco is : ' + component.get('v.fromNewco'));
     
-    if (row) {
-      component.set("v.selectedRowObj", row);
-      
-    }
-
-    console.log('past bad stuff' + ' lease: ' + leaseNumber);
-
+    let row = component.get('v.row');
+    
     helper.getEnvSettingsHelper(component);
 
-    console.log('past bad stuff3');
-    
-    if (component.get('v.leaseNumber').startsWith('LES')){
-      console.log('going newco' + ' app is: ' + component.get('v.applicationId'));
-      component.set('v.fromNewco',true);
+    if (component.get('v.fromNewco') == true){
+      if (component.get('v.leaseNumber').startsWith('LES')){
+        console.log('going newco');
+        component.set('v.fromNewco',true);
+      }
     }
-    console.log('past bad stuff4');
-
     if (!row && component.get('v.fromNewco') != true){
     
       helper.fetchData(component).then(data => {
@@ -135,6 +129,8 @@
       ]).then(() => {
         console.log('staring promise 2');
       Promise.all([
+ 
+        /*********************************/
         helper.generateQuoteByTypeHelper(component,"TRADEUP_WITHOUT_PURCHASE"),
         helper.generateQuoteByTypeHelper(component, "TRADEUP_WITH_PURCHASE") 
          

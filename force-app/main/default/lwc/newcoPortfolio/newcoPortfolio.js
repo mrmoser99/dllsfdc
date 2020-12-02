@@ -3,7 +3,7 @@ import { LightningElement, wire, track, api } from 'lwc';
 import getLeaseList from "@salesforce/apex/NewcoPortfolioUtility.getLeaseList";
 import getLeaseListForPortfolio from "@salesforce/apex/NewcoPortfolioUtility.getLeaseListForPortfolio";
 import filterLeaseList from "@salesforce/apex/NewcoPortfolioUtility.filterLeaseList";
-import getQuotes from "@salesforce/apex/NewcoPortfolioUtility.getQuotes";
+
 
 
 
@@ -29,7 +29,7 @@ const columns = [
     {
         label: "TearSheet",
         type: "button",
-        initialWidth: 100,
+        initialWidth: 110,
         typeAttributes: {
           label: "TearSheet",
           name: "tear",
@@ -43,7 +43,8 @@ const columns = [
         typeAttributes: {
           label: "Quote",
           name: "quote",
-          title: "Click to generate quotes"
+          title: "Click to generate quotes",
+          class: { fieldName: 'ModeClass' }
         }
       }
    
@@ -93,9 +94,9 @@ export default class NewcoPortfolio extends LightningElement {
 
     quote(row) {
 
-        console.log('ready to call quote with lease id: ' + row.Id);
+        console.log('ready to call quote with lease id: ' + row.contractNumber);
 
-        const lease = row.Id;
+        const lease = row.contractNumber;
 
         console.log('  quote rqo is row: ' + row);
     
@@ -146,6 +147,14 @@ export default class NewcoPortfolio extends LightningElement {
                     preparedLease.assetCity = lease.City__c;
                     preparedLease.assetState = lease.State__c;
                     preparedLease.assetZipCode = lease.Zip_Code__c;
+
+                    const leaseStatus = lease.cllease__Lease_Status__c;
+                    const pos = leaseStatus.indexOf('ACTIVE');
+                    if (pos != -1 || leaseStatus == 'EVERGREEN')
+                        preparedLease.ModeClass = 'slds-visible';
+                    else
+                        preparedLease.ModeClass = 'slds-hidden';
+                         
                     preparedLeases.push(preparedLease);
                     
                 });
@@ -241,7 +250,6 @@ export default class NewcoPortfolio extends LightningElement {
                         })
                         .catch(error =>{
                             this.errorMsg = error;
-                             
                         })
                     } else {
                         alert('Please update the invalid form entries and try again.');

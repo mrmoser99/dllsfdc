@@ -33,10 +33,10 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
         List<String> sLIst = searchString.split(' '); 
         integer i=0;
         for (String s: sList){
-            if (s.length() >= 4){ 
+            if (s.length() >= 1){ 
                 if (i == 0) 
                     query += ' LIKE \'%' + s + '%\'';
-             else
+                else
                     query += ' OR ' + valueFieldApiName + ' LIKE \'%' + s + '%\'';
              i++;
              system.debug('querey is: ' + query);
@@ -155,8 +155,8 @@ public with sharing class FMZ_QQ_NewQuickQuoteController {
             system.debug('qq2.oracl_trade up quote' + qq2.Oracle_Trade_up_Quote_Number__c);
             
             if (qq2.Oracle_Trade_up_Quote_Number__c != null && !qq2.Oracle_Trade_up_Quote_Number__c.contains('QTE')) {
-                String quoteName = '%TU' + qq2.oracle_trade_up_quote_number__c;
-                
+                String quoteName = '%' + qq2.oracle_trade_up_quote_number__c + '%';
+                system.debug('quotename is: ' + quoteName);
                 Lease_OLM_Quote__c quote = [SELECT Id, Quick_Quote_Number__c FROM Lease_OLM_Quote__c WHERE name like :quoteName LIMIT 1];
                 if (quote != null) {
                     quote.Quick_Quote_Number__c = qq2.Name;

@@ -187,7 +187,7 @@
               variant="brand"
               label="Quote"
               title="Quote"
-              onclick="{!c.switchToQuoteModule}"
+              onclick="{!c.switchToQuoteModule}" 
             />
           </footer>
         </div>

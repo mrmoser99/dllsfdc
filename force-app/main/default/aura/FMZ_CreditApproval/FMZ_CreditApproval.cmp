@@ -4,6 +4,7 @@
 
   1/30/2020 - MRM added autofill="nope" to keep address from filling from browser autofill
   9/28/2020 - MRM qq 2.0 with reduced autofill and type ahead account search
+  12/1/2020 - MRM changed logic for type ahead to check if searchString is >= 1 to fix ticket 1310723
 
   -->
 

@@ -432,7 +432,7 @@ console.log('look up change');
       const searchString = component.find("searchValue").get("v.value");
 
       console.log('in search handler' + 'search string is: ' + searchString);
-      if (searchString.length >= 4) {
+      if (searchString.length >= 1) {
         //Ensure that not many function execution happens if user keeps typing
         if (component.get("v.inputSearchFunction")) {
             clearTimeout(component.get("v.inputSearchFunction"));

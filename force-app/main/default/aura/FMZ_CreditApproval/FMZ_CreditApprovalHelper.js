@@ -441,7 +441,8 @@ console.log('in isValid3');
                 }
             }
         });
-        $A.enqueueAction(action);
+        if (searchString.length > 1)
+          $A.enqueueAction(action);
     }
  
 });
