@@ -168,6 +168,9 @@ public without sharing class FMZ_ApplicationDocumentsController {
 	static String partnerUrl = Label.FMZ_Portal_Soap_Url;
 	static string congaUrl;
 
+
+
+
 	public static string generateLeaseDocument2(string recordId) {
 		// getting conga query and templet URL id's from custom settings
 		string LeaseQryID = CongaURL_Settings__c.getInstance().LeaseQryID__c;
@@ -181,6 +184,9 @@ public without sharing class FMZ_ApplicationDocumentsController {
 		System.debug('congaUrl' + congaUrl);
 		return getCalloutToConga(congaUrl);
 	}
+
+
+	
 	public static string getCalloutToConga(string url) {
 		System.debug('!!! CONGA URL: '+url);
 		// Instantiate a new http object

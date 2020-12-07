@@ -3,6 +3,7 @@
 Change Log:
 
 1/27/20 - Removed email from going to sam at fortimize.  Added orgwide email id
+12/4/2020 - MRM added update to quote information for requote
 
 
 ***************************************************************************************************** */

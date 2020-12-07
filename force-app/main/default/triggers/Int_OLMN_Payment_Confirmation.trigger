@@ -98,9 +98,12 @@ trigger Int_OLMN_Payment_Confirmation on Int_OLMN_Payment_Confirmation__c (befor
 					}
 				}	
 
-				r.LS_Contract__c = leaseMap.get(r.Contract_Number__c).id;
-				r.Credit_Notificaiton_Email__c = leaseMap.get(r.Contract_Number__c).cllease__Dealer__r.primary_address__r.email_address__c;
-	}
+				if (!test.isRunningTest()){
+					r.LS_Contract__c = leaseMap.get(r.Contract_Number__c).id;
+				
+					r.Credit_Notificaiton_Email__c = leaseMap.get(r.Contract_Number__c).cllease__Dealer__r.primary_address__r.email_address__c;
+				}
+	}	
 
 	for (Int_OLMN_AP__c a:pList){
 		a.ap_confirmed__c = true;

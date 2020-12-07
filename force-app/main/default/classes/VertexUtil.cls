@@ -6,6 +6,7 @@
  *    MRM 3/31/2020 correct up front tax
  *    8/18/2020 - MRM changed flex date to book date again after q2 wiped out the code 
  *    9/22/2020 - MRM changed flex date to commencment date
+ *    12/2/2020 - MRM made document date on getXMLBills to utilize transaction date on due details
  **/
 public class VertexUtil { 
 
@@ -107,7 +108,7 @@ public class VertexUtil {
         Dom.XmlNode pwd =   login.addChildElement('urn:Password', null,null).addTextNode(vertexConfig.Password__c);
             
         Dom.XmlNode invoiceRequest = vertexEnvelope.addChildElement('urn:InvoiceRequest',null,null);
-        invoiceRequest.setattribute('documentDate',currentSystemDateStr);
+        
         invoiceRequest.setattribute('transactionType','LEASE');
             
         Dom.XmlNode seller  =  invoiceRequest.addChildElement('urn:Seller',null,null);
@@ -132,6 +133,9 @@ public class VertexUtil {
 
         // Entering Due Detail lines details    
         for(cllease__Due_Detail_Lines__c dueDetailLine : dueDetailLines) {
+            //use transaction date from any bill
+            
+            invoiceRequest.setattribute('documentDate',formatDateOnly(dueDetailLine.cllease__Transaction_Date__c));
             // Calculating the Length of Contract from first payment date to maturity date
             startDate = dueDetailLine.cllease__Bill__r.cllease__Lease_Account__r.cllease__First_Payment_Date__c;
             endDate   = dueDetailLine.cllease__Bill__r.cllease__Lease_Account__r.cllease__Maturity_Date__c;
@@ -1042,6 +1046,10 @@ public class VertexUtil {
     }
     // formate the Date to String
     private static String formatDate(DateTime d) {
+        return d.year() + '-' + d.month() + '-' + d.day();
+    } 
+
+    private static String formatDateOnly(Date d) {
         return d.year() + '-' + d.month() + '-' + d.day();
     } 
 

@@ -1,6 +1,10 @@
 /**
  * Author: Cloud Lending Solutions
  * Description: Following  job helps in calculating  the Tax for Bills
+ * 
+ * Change Log:
+ * 
+ * 12/2/2020 - MRM made document date on getXMLBills to utilize transaction date on due details
  **/
 global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Database.AllowsCallouts {  
  
@@ -68,7 +72,9 @@ global class VertexGetTaxonBillsJob extends clcommon.DynamicJob implements Datab
                         + 'cllease__Bill__r.cllease__Lease_Account__r.cllease__Term__c, '
                         + 'cllease__Bill__r.cllease__Lease_Account__r.cllease__First_Payment_Date__c, '
                         + 'cllease__Bill__r.cllease__Lease_Account__r.cllease__Maturity_Date__c, '
-                        + 'cllease__Bill__r.cllease__Lease_Account__r.cllease__Account__r.Tax_Exempt__c ';
+                        + 'cllease__Bill__r.cllease__Lease_Account__r.cllease__Account__r.Tax_Exempt__c, '
+                        + 'cllease__Transaction_Date__c ';
+                        
         
         dueDetailOC.addFields(fields); 
 
