@@ -79,7 +79,8 @@ global without sharing class FMZ_QQ_ConvertToApplicationController {
         ];
 
         List<genesis__Quick_Quotes__c> qqs = [
-            SELECT Id, Oracle_Trade_up_Lease_Number__c, Oracle_Trade_Up_Quote_Amount__c, Oracle_Trade_up_Quote_Number__c, Oracle_Trade_up_Quote_Expiration_Date__c
+            SELECT Id, Oracle_Trade_up_Lease_Number__c, Oracle_Trade_Up_Quote_Amount__c, Oracle_Trade_up_Quote_Number__c, 
+            Oracle_Trade_up_Quote_Expiration_Date__c
             FROM genesis__Quick_Quotes__c
             WHERE Id =: app.genesis__Quick_Quote__c];
 
@@ -90,6 +91,8 @@ global without sharing class FMZ_QQ_ConvertToApplicationController {
           app.Oracle_Trade_up_Lease_Number__c = qqs[0].Oracle_Trade_up_Lease_Number__c;
           app.Oracle_Trade_up_Quote_Number__c = qqs[0].Oracle_Trade_up_Quote_Number__c;
           app.Oracle_Trade_up_Quote_Expiration_Date__c = qqs[0].Oracle_Trade_up_Quote_Expiration_Date__c;
+          
+
         }
 
         Id feeDefId = [SELECT Id FROM clcommon__Fee_Definition__c WHERE Name = 'Origination Fees' LIMIT 1].Id;

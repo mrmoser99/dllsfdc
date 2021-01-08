@@ -1,4 +1,4 @@
 public class CLVendorPoint {
     public static Boolean isDefaultProgram = true; 
-    //public static Boolean isAvoidTrigger=false;
+    public static Boolean isDefaultProgram1=true;
 }

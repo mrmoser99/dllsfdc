@@ -17,10 +17,6 @@
             <recipient>john.mccann@dllgroup.com.prod</recipient>
             <type>user</type>
         </recipients>
-        <recipients>
-            <recipient>pnjenga@leasedirect.com</recipient>
-            <type>user</type>
-        </recipients>
         <senderAddress>newcocustomerservice@leasedirect.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
         <template>cnotify__Notification_Templates/ICS_ERROR</template>

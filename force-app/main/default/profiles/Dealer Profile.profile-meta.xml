@@ -173,6 +173,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>ApplicationCustomTriggerHandler</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ApplicationTriggerHandler</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -269,6 +273,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>ByPassUtils</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CAMSCall</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -286,10 +294,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CLLeaseTerminationQuoteProcessCtrl</apexClass>
-        <enabled>false</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>CLLeaseTerminationQuoteProcessCtrlCopy</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -314,6 +318,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CLSTerminationUtil</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CLSTerminationUtilCopy</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -509,6 +517,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>ExecuteBatchGardUpdate</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ExecuteBatchStatsReport</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -690,6 +702,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>FMZ_QuickActionController_Temp</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>FMZ_SubmitQuoteNewcoController</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -1121,11 +1137,19 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>TestAssetUtility</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TestAsyncXgServicesAccount</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>TestAutoTradeUp</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>TestBatchGardUpdate</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -1321,6 +1345,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>TestRateUtility</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TestRecon</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -1377,6 +1405,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>TradeUpAndVendorPointsTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>UpdateAddressHandler</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -1421,7 +1453,7 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>VertexUpfrontTaxCalculation_Copy</apexClass>
+        <apexClass>VertexUpfrontTaxCalculationCopy</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -1433,7 +1465,7 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>VertexUtil_Copy</apexClass>
+        <apexClass>VertexUtilCopy</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -1450,6 +1482,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>createAccountForCreditApproval</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>initiatePoint</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -9086,6 +9122,14 @@
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>Newco_Quote_History</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Newco_Quote_History_Aura_Wrapper</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>OFAC_Log__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
@@ -9222,6 +9266,10 @@
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>clcommon__Company__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>clcommon__ComponentStructure__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
@@ -9254,6 +9302,22 @@
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>clcommon__Party__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>clcommon__Points_Setup__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>clcommon__Points__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>clcommon__Program__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>clcommon__Template_Configuration__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
@@ -9275,6 +9339,10 @@
     </tabVisibilities>
     <tabVisibilities>
         <tab>cllease__Contract_Fees__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>cllease__Day_Process__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>

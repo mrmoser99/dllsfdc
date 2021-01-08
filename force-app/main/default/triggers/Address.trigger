@@ -7,6 +7,7 @@
 *   7/21/2020 - MRM create return for scramble class
 *   08/18/2020 - MRM remove email requirement
 *   09/30/2020 - MRM add searchable street, city, state, zip for account
+*	01/08/2021 - MRM - don't allow change of bill to address if used on application
 *
 * This trigger udpates the email to contact and billing contact on the account
 * Also, a system contact is maintained so that conga has a contact to send invoices to
@@ -29,7 +30,35 @@ trigger Address on Address__c (before insert, before update) {
     	}
     }
     
-    
+    if (trigger.isUpdate){
+		system.debug('bill to check');
+		Set<ID> addrSet = new Set<ID>();
+
+		Integer i=0;
+		for (Address__c a: trigger.new){
+			if (trigger.new[i].bill_to_usage__c == false && trigger.old[i].bill_to_usage__c == true){
+				addrSet.add(a.id);
+			}
+			i++;
+		}
+
+		Map<ID,string> addrAppMap = new Map<ID,String>();
+
+		if (!addrSet.isEmpty()){
+			List<cllease__Lease_Account__c> cList = new List<cllease__Lease_Account__c>();
+			cList = [select name, billing_address__c from cllease__Lease_Account__c where Billing_Address__c in :addrSet];
+			for (cllease__Lease_Account__c c:cList)
+				addrAppMap.put(c.billing_address__c, c.name);
+		}
+
+		if (!addrAppMap.isEmpty())
+			for (Address__c a:trigger.new){
+				if (addrAppMap.get(a.id) != null)
+					a.bill_to_usage__c.addError('Address is used on lease ' + addrAppMap.get(a.id) +  '!  Update address on lease before removing bill to usage flag.');
+			}
+
+	}
+
     List<Account> aList = new List<Account>();
     aList = [select id from Account where id in :accountIdSet];
     Map<ID,Account> aMap = new Map<ID,Account>();

@@ -40,7 +40,7 @@
         <language>en_US</language>
         <protected>false</protected>
         <shortDescription>CAMS Endpoint</shortDescription>
-        <value>https://apiacc.dllgroup.com/exts/cams-risk-rating</value>
+        <value>https://apiacc.dllgroup.com/exts/cams-risk-rating/acc</value>
     </labels>
     <labels>
         <fullName>Conga_Quote_URL</fullName>

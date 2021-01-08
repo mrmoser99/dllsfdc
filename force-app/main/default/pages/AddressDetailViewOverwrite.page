@@ -6,5 +6,6 @@
           DataQualityEnforcedUsageData="{!EnforcedUsageData}" 
           EnableEnforcedUsage="false" 
           IsCalledFromDetailPageOverride="true"/>
-    
-    <apex:detail inlineEdit="true" relatedList="true" oncomplete="execute();" /> </apex:page>
+    <apex:pageMessages/>
+    <apex:detail inlineEdit="true" relatedList="true" oncomplete="execute();" /> 
+    </apex:page>

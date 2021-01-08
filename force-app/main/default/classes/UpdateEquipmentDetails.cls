@@ -5,6 +5,7 @@
  *  Change Log:
  * 
  *  5/7/2020 - added retry logic to prevent locking issues
+ *  2020-12-12 CKB - update CLS Trade Quote Amount for Application Equipment level
  * */
 global class UpdateEquipmentDetails {
     
@@ -21,8 +22,8 @@ global class UpdateEquipmentDetails {
         }
             
         // 1. Query application with Equipments for details to copy
-        List<genesis__Applications__c> applications = [Select Id, Name,Oracle_Trade_Up_Amount__c, 
-                                                                (Select Id, Name, genesis__Other_Financed_Fees__c, Oracle_Trade_Up_Amount__c
+        List<genesis__Applications__c> applications = [Select Id, Name,Oracle_Trade_Up_Amount__c,Trade_Up_From__c,CLS_Trade_Up_Quote_Amount__c, 
+                                                                (Select Id, Name, genesis__Other_Financed_Fees__c,Oracle_Trade_Up_Amount__c,CLS_Trade_Up_Amount__c,genesis__Warranty_Amount__c
                                                                 From genesis__Application_Equipments__r)
                                                             From genesis__Applications__c
                                                             Where Id = :applicationId];
@@ -34,14 +35,24 @@ global class UpdateEquipmentDetails {
         for(genesis__Applications__c application : applications) {
             // 3. looping through Equipments
             for(genesis__Application_Equipment__c equipment : application.genesis__Application_Equipments__r) {
-                if(Counter<TotalEquipments){
-                    TotalEquipmentTradeup += (equipment.Oracle_Trade_Up_Amount__c != null ? equipment.Oracle_Trade_Up_Amount__c : 0);
-                    equipment.genesis__Other_Financed_Fees__c = (application.Oracle_Trade_Up_Amount__c != null ? equipment.Oracle_Trade_Up_Amount__c : NULL) ;
-                    equipmentsToUpdate.add(equipment);
-                }
-                else if(Counter == TotalEquipments ){
-                         equipment.genesis__Other_Financed_Fees__c = (application.Oracle_Trade_Up_Amount__c != null ? (application.Oracle_Trade_Up_Amount__c - TotalEquipmentTradeup) : NULL);
-                         equipmentsToUpdate.add(equipment);
+                if(application.Trade_Up_From__c=='CL Lease'){
+                    if(Counter<TotalEquipments){
+                        TotalEquipmentTradeup += (equipment.CLS_Trade_Up_Amount__c != null ? equipment.CLS_Trade_Up_Amount__c : 0);
+                        equipment.genesis__Warranty_Amount__c = (application.CLS_Trade_Up_Quote_Amount__c != null ? equipment.CLS_Trade_Up_Amount__c : NULL) ;
+                        equipmentsToUpdate.add(equipment);
+                    }else if(Counter == TotalEquipments ){
+                        equipment.genesis__Warranty_Amount__c = (application.CLS_Trade_Up_Quote_Amount__c != null ? (application.CLS_Trade_Up_Quote_Amount__c - TotalEquipmentTradeup) : NULL);
+                        equipmentsToUpdate.add(equipment);
+                    }
+                }else{
+                    if(Counter<TotalEquipments){
+                        TotalEquipmentTradeup += (equipment.Oracle_Trade_Up_Amount__c != null ? equipment.Oracle_Trade_Up_Amount__c : 0);
+                        equipment.genesis__Other_Financed_Fees__c = (application.Oracle_Trade_Up_Amount__c != null ? equipment.Oracle_Trade_Up_Amount__c : NULL) ;
+                        equipmentsToUpdate.add(equipment);
+                    }else if(Counter == TotalEquipments ){
+                        equipment.genesis__Other_Financed_Fees__c = (application.Oracle_Trade_Up_Amount__c != null ? (application.Oracle_Trade_Up_Amount__c - TotalEquipmentTradeup) : NULL);
+                        equipmentsToUpdate.add(equipment);
+                    }
                 }
                 counter ++;
             }

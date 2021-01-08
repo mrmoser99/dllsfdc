@@ -9,6 +9,7 @@
 
     10/10/20 - Added logic to pull state from the asset level for Tax GL entry on Estimated Property Taxes Charges - 02388116
     11/18/20 - Modified logic to fix an issue raised in - 02466321  
+    12/10/20 - Adding asset level accounting for both GLs on Estimated Property Tax and Pass Thru Service Fee Charges - 02388116
 */
 trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before insert, before update) {
     
@@ -160,10 +161,13 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
             System.debug(Logginglevel.ERROR, '^^^ clleaseTxnSubType : ' + clleaseTxnSubType);
             if(clleaseTxnSubType == null)
                 clleaseTxnSubType = glEntry.CL_Lease_Transaction_Type__c;
-            if(!clleaseTxnSubType.containsIgnoreCase('TAX')) {
+            if(!(clleaseTxnSubType.containsIgnoreCase('TAX') || clleaseTxnSubType.containsIgnoreCase('Pass Through Service'))) {
                 movementCode = txnMovementCodesMap.get(clleaseTxnType);
 
-            } else if(clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
+            } else if((clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
+                || clleaseTxnSubType.containsIgnoreCase('Estimated Property Tax')
+                || clleaseTxnSubType.containsIgnoreCase('Sales Tax on Pass Through Service')
+                || clleaseTxnSubType.containsIgnoreCase('Pass Through Service'))
                 && contractsMap.get(glEntry.cllease__Contract__c) !=null
                 && contractsMap.get(glEntry.cllease__Contract__c).State__c != null){
                 movementCode = taxMovementCodesMap.get(glEntry.Destination_State__c);
@@ -231,7 +235,10 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                             }
                         }
 
-                    } else if(clLeaseTxnType == 'CHARGE' && clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
+                    } else if(clLeaseTxnType == 'CHARGE' && (clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
+                        || clleaseTxnSubType.containsIgnoreCase('Estimated Property Tax')
+                        || clleaseTxnSubType.containsIgnoreCase('Sales Tax on Pass Through Service')
+                        || clleaseTxnSubType.containsIgnoreCase('Pass Through Service'))            
                         && glBillAccountString !=null 
                         && glDebitAccountCodeString !=null
                         && glBillAccountString.containsIgnoreCase(glDebitAccountCodeString)) {
@@ -303,11 +310,14 @@ trigger GLTransactionDetailTrigger on cllease__GL_Transaction_Detail__c (before 
                             }
                         }
 
-                    } else if(clLeaseTxnType == 'CHARGE' && clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
+                    } else if(clLeaseTxnType == 'CHARGE' && (clleaseTxnSubType.containsIgnoreCase('Sales Tax on Estimated Property Tax')
+                        || clleaseTxnSubType.containsIgnoreCase('Estimated Property Tax')
+                        || clleaseTxnSubType.containsIgnoreCase('Sales Tax on Pass Through Service')
+                        || clleaseTxnSubType.containsIgnoreCase('Pass Through Service'))                     
                         && glBillAccountString !=null 
                         && glCreditAccountCodeString !=null
                         && glBillAccountString.containsIgnoreCase(glCreditAccountCodeString)) {
-                           glEntry.Movement_Code_Dr__c = movementCode.Movement_Code__c;
+                           glEntry.Movement_Code_Cr__c = movementCode.Movement_Code__c;
 
                     } else if(clLeaseTxnType == 'BILLING'
                         || clLeaseTxnType == 'CHARGE') {                    

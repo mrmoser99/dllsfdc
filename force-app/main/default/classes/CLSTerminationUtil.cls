@@ -234,7 +234,7 @@ public with sharing class CLSTerminationUtil {
 
         Date currentSysDate = cllease.SystemDateUtil.getCurrentSystemDate();
         cllease__Payment_Mode__c paymentMode    = [SELECT Id, Name FROM cllease__Payment_Mode__c WHERE Name = 'Invoice Credit' LIMIT 1];
-        clcommon__Payment_Mode__c clcpmtMode 	= [SELECT Id, Name FROM clcommon__Payment_Mode__c WHERE Name = 'Invoice Credit' LIMIT 1];
+        clcommon__Payment_Mode__c clcpmtMode    = [SELECT Id, Name FROM clcommon__Payment_Mode__c WHERE Name = 'Invoice Credit' LIMIT 1];
 
         List<String> disbTxnFieldAPINameList = new List<String>();
         if(quoteConfig != null) {

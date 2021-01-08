@@ -507,11 +507,6 @@
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>
-            <field>Credit__c</field>
-            <table>cllease__Lease_Account__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
             <field>cllease__Delinquency_Grace_Days__c</field>
             <table>cllease__Lease_Account__c</table>
         </columns>
@@ -523,11 +518,6 @@
         <columns>
             <checkedByDefault>false</checkedByDefault>
             <field>cllease__Delinquent_Amount__c</field>
-            <table>cllease__Lease_Account__c</table>
-        </columns>
-        <columns>
-            <checkedByDefault>false</checkedByDefault>
-            <field>Debit__c</field>
             <table>cllease__Lease_Account__c</table>
         </columns>
         <columns>
@@ -1702,6 +1692,16 @@
             <checkedByDefault>false</checkedByDefault>
             <field>cllease__VAT_Code__c</field>
             <table>cllease__Lease_Account__c.cllease__GL_Transaction_Details__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Debit__c</field>
+            <table>cllease__Lease_Account__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Credit__c</field>
+            <table>cllease__Lease_Account__c</table>
         </columns>
         <columns>
             <checkedByDefault>false</checkedByDefault>

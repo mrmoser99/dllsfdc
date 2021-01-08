@@ -173,6 +173,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>ApplicationCustomTriggerHandler</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ApplicationTriggerHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -269,6 +273,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>ByPassUtils</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>CAMSCall</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -286,10 +294,6 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CLLeaseTerminationQuoteProcessCtrl</apexClass>
-        <enabled>true</enabled>
-    </classAccesses>
-    <classAccesses>
-        <apexClass>CLLeaseTerminationQuoteProcessCtrlCopy</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -314,6 +318,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CLSTerminationUtil</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>CLSTerminationUtilCopy</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -509,6 +517,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>ExecuteBatchGardUpdate</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ExecuteBatchStatsReport</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -690,6 +702,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>FMZ_QuickActionController_Temp</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>FMZ_SubmitQuoteNewcoController</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1121,11 +1137,19 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>TestAssetUtility</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TestAsyncXgServicesAccount</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>TestAutoTradeUp</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>TestBatchGardUpdate</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1321,6 +1345,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>TestRateUtility</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>TestRecon</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1377,6 +1405,10 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>TradeUpAndVendorPointsTest</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>UpdateAddressHandler</apexClass>
         <enabled>true</enabled>
     </classAccesses>
@@ -1421,7 +1453,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>VertexUpfrontTaxCalculation_Copy</apexClass>
+        <apexClass>VertexUpfrontTaxCalculationCopy</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1433,7 +1465,7 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
-        <apexClass>VertexUtil_Copy</apexClass>
+        <apexClass>VertexUtilCopy</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1450,6 +1482,10 @@
     </classAccesses>
     <classAccesses>
         <apexClass>createAccountForCreditApproval</apexClass>
+        <enabled>true</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>initiatePoint</apexClass>
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
@@ -1811,14 +1847,14 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>Application_Fee__c.Escalation_Type__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>Application_Fee__c.Escalation_Value__c</field>
-        <readable>false</readable>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -10098,6 +10134,14 @@
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>Newco_Quote_History</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Newco_Quote_History_Aura_Wrapper</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>OFAC_Log__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
@@ -10234,6 +10278,10 @@
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>clcommon__Company__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>clcommon__ComponentStructure__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
@@ -10266,6 +10314,22 @@
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>clcommon__Party__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>clcommon__Points_Setup__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>clcommon__Points__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>clcommon__Program__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>clcommon__Template_Configuration__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
@@ -10288,6 +10352,10 @@
     <tabVisibilities>
         <tab>cllease__Contract_Fees__c</tab>
         <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>cllease__Day_Process__c</tab>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>cllease__Dealer_Funding_Detail__c</tab>
