@@ -8,6 +8,7 @@
  *    9/22/2020 - MRM changed flex date to commencment date
  *    12/2/2020 - MRM made document date on getXMLBills to utilize transaction date on due details
  *    12/9/2020 - CKB Vertex XML changes- New Tag FairMarketValue added and New Section added for TradeUp Amounts
+ *    1/15/2021 - CKB Vertex XML changes- Recalculation for FairMarketValue, ExtendedPrice and Cost
  **/
 public class VertexUtil { 
 
@@ -508,38 +509,21 @@ public class VertexUtil {
     *  UPFRONT XML QUOTE
     *******************************************************************************************************************************/
     public static Dom.Document getUpfrontXml(list<genesis__Application_Equipment__c> appEqpList) { 
-           
-
+         
+        
          /*-------------- Modified By: Tesh -------------------- */
         //1. get rate factor from Applications
-        Decimal appEqpListRate_Factor=[SELECT Id, Rate_Factor__c FROM genesis__Applications__c WHERE id =:appEqpList[0].genesis__Application__c LIMIT 1].Rate_Factor__c;
+        //Decimal appEqpListRate_Factor=[SELECT Id, Rate_Factor__c FROM genesis__Applications__c WHERE id =:appEqpList[0].genesis__Application__c LIMIT 1].Rate_Factor__c;
         
-        //Payment stream
-        Decimal totalSellingPrice = 0.0;
-        Decimal totalGrossReceivable;
-        Decimal totalrentAmount=0.0;
-        Decimal totalFeeamount=0.0;
-        Decimal tradeupAmount=0.0;
-    
-        List<genesis__Application_Pricing_Detail__c> appPricingDetails = [Select id, genesis__Application__c, genesis__Term__c, genesis__Payment_Amount_Derived__c from genesis__Application_Pricing_Detail__c where genesis__Application__c = :appEqpList[0].genesis__Application__c];
-        for(genesis__Application_Pricing_Detail__c payStr : appPricingDetails) {
-             totalrentAmount = totalrentAmount + (payStr.genesis__Term__c * payStr.genesis__Payment_Amount_Derived__c);
+        Decimal appEqpListRate_Factor=[select id,genesis__Rate_Factor__c from genesis__Application_Pricing_Detail__c where genesis__Application__c=:appEqpList[0].genesis__Application__c limit 1].genesis__Rate_Factor__c;
+        
+        Set<String> equipIds = new Set<String>();
+        for(genesis__Application_Equipment__c appEqupment : appEqpList){
+            equipIds.add(appEqupment.name);
         }
-        
-        //Application fee 
-        List<Application_Fee__c> aplliFeeList= [Select id, Application__c, Fee__r.clcommon__Fee_Type__c, Number_of_Payments__c, Amount__c from Application_Fee__c where Application__c = :appEqpList[0].genesis__Application__c AND Fee__r.clcommon__Fee_Type__c includes('Passthrough')];
-        for(Integer i=0; i<aplliFeeList.size(); i++) {
-    
-            totalFeeamount = totalFeeamount + (aplliFeeList[i].Number_of_Payments__c * aplliFeeList[i].Amount__c);
-    
-        }
-        
-        totalGrossReceivable=totalrentAmount+totalFeeamount;
-        
-        for(genesis__Application_Equipment__c appEquip : appEqpList) {
-           totalSellingPrice += appEquip.genesis__Estimated_Selling_Price__c;
-    
-        }
+        //Application fee with Passthrough
+        List<Application_Fee__c> aplliFeeList= [Select id, Application__c,Equipment__c,Equipment__r.name,Fee__r.clcommon__Fee_Type__c, Number_of_Payments__c, Amount__c from Application_Fee__c where Application__c = :appEqpList[0].genesis__Application__c AND Fee__r.clcommon__Fee_Type__c includes('Passthrough') 
+                                                and Equipment__r.name IN : equipIds];
         
         /*-------------------------------------------------------------------*/
         // Getting Vertex API Configuration from customerom settings & Validating
@@ -586,18 +570,43 @@ public class VertexUtil {
         Integer lengthOfContract;
         // Entering Application Equipment details    
         list<genesis__Application_Equipment__c> equpmentlist = new list<genesis__Application_Equipment__c>();
-        for(genesis__Application_Equipment__c appEqp : appEqpList) {
-             
-            // Calculating the Length of Contract from first payment date to maturity date
-            //startDate =appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
-            //system.debug('start date'+startDate) ;
-            //endDate   = appEqp.genesis__Application__r.genesis__Expected_Close_Date__c;
-            // end date going to check calculation
-            // DateTime currentSystemDate  =   cllease.SystemDateUtil.getCurrentSystemDate();
+        
+        /*********** 1. Without TradeUp ***************/
+        for(genesis__Application_Equipment__c appEquipment : appEqpList) {
             
-            Date appFirstPmtDate = appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
-            String pmtFrequency = appEqp.genesis__Application__r.genesis__Payment_Frequency__c;
-            Decimal term = appEqp.genesis__Application__r.genesis__Term__c;
+            /************Modified by CKB- 2021-01-15 *************/
+            Decimal totalFeeAmount = 0.00;
+            //Logic for Passthrough Fee
+            for(Integer i=0; i<aplliFeeList.size(); i++) {
+               if(aplliFeeList[i].Equipment__c!=null && appEquipment.id == aplliFeeList[i].Equipment__c ){
+                    totalFeeAmount = totalFeeamount + (aplliFeeList[i].Number_of_Payments__c * aplliFeeList[i].Amount__c);
+               }
+                    
+            }
+            
+            Decimal extendedPrice = 0.00;
+            Decimal rentAmountForAppEquip =0.00;
+            if(appEqpListRate_Factor!=null){
+               rentAmountForAppEquip = (appEquipment.genesis__Estimated_Selling_Price__c!=null?appEquipment.genesis__Estimated_Selling_Price__c:0.00) * appEqpListRate_Factor;
+               extendedPrice = cllease.ValueUtil.round(rentAmountForAppEquip, 2 , 'Nearest'); 
+            }else{
+                extendedPrice =0.00;
+            }
+            
+            String strExtendedPrice = String.valueof(extendedPrice);//Final Extended Price 
+            Decimal calFairMarketValue = rentAmountForAppEquip * (appEquipment.genesis__Application__r.genesis__Term__c!=null?appEquipment.genesis__Application__r.genesis__Term__c:0);
+            calFairMarketValue = calFairMarketValue + totalFeeAmount;
+            calFairMarketValue = cllease.ValueUtil.round(calFairMarketValue, 2 , 'Nearest');
+            String strFairMarketValue = String.valueof(calFairMarketValue); //Final FMV
+            
+            Decimal cost = appEquipment.genesis__Estimated_Selling_Price__c!=null?appEquipment.genesis__Estimated_Selling_Price__c:0.00; 
+            cost = cllease.ValueUtil.round(cost, 2 , 'Nearest');
+            String strCost = String.valueof(cost);// Final Cost
+            /*******************End Of my Logic ******************/ 
+             
+            Date appFirstPmtDate = appEquipment.genesis__Application__r.genesis__Expected_Start_Date__c;
+            String pmtFrequency = appEquipment.genesis__Application__r.genesis__Payment_Frequency__c;
+            Decimal term = appEquipment.genesis__Application__r.genesis__Term__c;
 
             endDate = cllease.DateUtil.getNextCycleDate(appFirstPmtDate,
                                                            appFirstPmtDate.day(),
@@ -607,7 +616,7 @@ public class VertexUtil {
             lengthOfContract = appFirstPmtDate.daysBetween(endDate);
             
 
-            lineItemId = (appEqp.id != null ? appEqp.id : 'VALUE IS BLANK');
+            lineItemId = (appEquipment.id != null ? appEquipment.id : 'VALUE IS BLANK');
             Dom.XmlNode lineItem = invoiceRequest.addChildElement('urn:LineItem', null, null);
             lineItem.setattribute('lineItemId', lineItemId);
             // Start: Customer Tag
@@ -616,15 +625,15 @@ public class VertexUtil {
             // Tax Exemption 
             Boolean isTaxExempted = false;
             // 1. Always check for Tax Exemption from Account , if not exempted check for equipment
-            if(appEqp.genesis__Application__c != null
-                && appEqp.genesis__Application__r.genesis__Account__c != null)  {
+            if(appEquipment.genesis__Application__c != null
+                && appEquipment.genesis__Application__r.genesis__Account__c != null)  {
                 // TODO: Needs to change Salesforce only support 3 levels for pulling values
-                isTaxExempted = appEqp.genesis__Application__r.genesis__Account__r.Tax_Exempt__c;
+                isTaxExempted = appEquipment.genesis__Application__r.genesis__Account__r.Tax_Exempt__c;
                 system.debug('AccountTax Exemption :'+ isTaxExempted);
             } 
             // 2. Check for Equipment's Tax Exempt only if Account is not Exempted
             if(isTaxExempted == false){
-                isTaxExempted = appEqp.Tax_Exempt__c;
+                isTaxExempted = appEquipment.Tax_Exempt__c;
                 system.debug('Equipment Tax Exemption: '+isTaxExempted);
             }
             
@@ -636,59 +645,34 @@ public class VertexUtil {
             }
 
             Dom.XmlNode destination = customer.addChildElement('urn:Destination', null, null);
-            String cityValue    =  (appEqp.Install_Address1__r.City__c != null ? appEqp.Install_Address1__r.City__c : 'VALUE IS BLANK');
+            String cityValue    =  (appEquipment.Install_Address1__r.City__c != null ? appEquipment.Install_Address1__r.City__c : 'VALUE IS BLANK');
             Dom.XmlNode city    = destination.addChildElement('urn:City',null,null);
             city.addTextNode(cityValue);
 
-            String mainDivisionValue = (appEqp.Install_Address1__r.State__c != null ? appEqp.Install_Address1__r.State__c : 'VALUE IS BLANK');
+            String mainDivisionValue = (appEquipment.Install_Address1__r.State__c != null ? appEquipment.Install_Address1__r.State__c : 'VALUE IS BLANK');
             Dom.XmlNode mainDivision = destination.addChildElement('urn:MainDivision',null,null);
             mainDivision.addTextNode(mainDivisionValue);
 
-            String zipCodeValue  = (appEqp.Install_Address1__r.Zip_Code__c != null ? appEqp.Install_Address1__r.Zip_Code__c : 'VALUE IS BLANK');
+            String zipCodeValue  = (appEquipment.Install_Address1__r.Zip_Code__c != null ? appEquipment.Install_Address1__r.Zip_Code__c : 'VALUE IS BLANK');
             Dom.XmlNode zipCode  = destination.addChildElement('urn:PostalCode',null,null);
             zipCode.addTextNode(zipCodeValue);
             // End: Customer Tag
 
             // Product name value is GARD__c value in application equipment
-            String productValue = (appEqp.GARD_Code__c != null ? appEqp.GARD_code__c : 'VALUE IS BLANK');
+            String productValue = (appEquipment.GARD_Code__c != null ? appEquipment.GARD_code__c : 'VALUE IS BLANK');
             lineItem.addChildElement('urn:Product',null,null).addTextNode(productValue);
             
-            // ExtendedPrice Tag
-            Decimal ddlAmount = (appEqp.genesis__Estimated_Selling_Price__c !=null ? appEqp.genesis__Estimated_Selling_Price__c : 0.00);
-            ddlAmount = cllease.ValueUtil.round(ddlAmount, 2 , 'Nearest');
-            /* Modified By Tesh--------------*/
-            
-            //The Fair Markert Value without the trade up portion of the rent
-            Decimal fairMartValue = (appEqp.genesis__Estimated_Selling_Price__c * totalGrossReceivable) / totalSellingPrice;
-            fairMartValue = cllease.ValueUtil.round(fairMartValue, 2 , 'Nearest'); 
-            String fairMarketvalue = String.valueof(fairMartValue);
-            
-             
-            //3. set the The extended Price value as a product of Rate_Factor__c * genesis__Estimated_Selling_Price__c
-            Decimal newExtendedPrice;
-            if(appEqpListRate_Factor!= null){
-               // newExtendedPrice=ddlAmount*tmpRate;
-                newExtendedPrice=ddlAmount*appEqpListRate_Factor;
-                newExtendedPrice= cllease.ValueUtil.round(newExtendedPrice, 2 , 'Nearest');
-            }else {
-                newExtendedPrice=0.00;
-            }
-            String strExtendedPrice = String.valueof(newExtendedPrice);           
-           
-
-            /*-----------------------------*/
-            String extdPrice = String.valueof(ddlAmount);
-             
-            lineItem.addChildElement('urn:FairMarketValue',null,null).addTextNode(fairMarketvalue);
+          
+            lineItem.addChildElement('urn:FairMarketValue',null,null).addTextNode(strFairMarketValue);
             lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(strExtendedPrice);
-            lineItem.addChildElement('urn:Cost',null,null).addTextNode(extdPrice);
+            lineItem.addChildElement('urn:Cost',null,null).addTextNode(strCost);
           
              
             // calculating Purchase Options flag details
-            if(appEqp.genesis__Application__r.Purchase_Option__c == 'Fair Market Value') {
+            if(appEquipment.genesis__Application__r.Purchase_Option__c == 'Fair Market Value') {
                 contrTypev  = 'FMV';
                 leaseTypev  = 'A';
-            } else if(appEqp.genesis__Application__r.Purchase_Option__c == 'One Dollar Buyout') {
+            } else if(appEquipment.genesis__Application__r.Purchase_Option__c == 'One Dollar Buyout') {
                 contrTypev  = 'CSC';
                 leaseTypev  = 'D';
             }
@@ -722,7 +706,7 @@ public class VertexUtil {
             Dom.XmlNode ffield9 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield9.setattribute('fieldId','9');
             ffield9.addTextNode('CLS-genesis__Application_Equipment__c');
-            assetNumber = (appEqp.Serial_Number__c != null ? appEqp.Serial_Number__c :'VALUE IS BLANK');
+            assetNumber = (appEquipment.Serial_Number__c != null ? appEquipment.Serial_Number__c :'VALUE IS BLANK');
             Dom.XmlNode ffield10 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield10.setattribute('fieldId','10');
             ffield10.addTextNode(assetNumber);
@@ -738,14 +722,14 @@ public class VertexUtil {
             Dom.XmlNode ffield14 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield14.setattribute('fieldId','14');
             ffield14.addTextNode('F');
-            String duetype = (appEqp.name != null ? appEqp.name : 'VALUE IS BLANK');
+            String duetype = (appEquipment.name != null ? appEquipment.name : 'VALUE IS BLANK');
             Dom.XmlNode ffield15 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield15.setattribute('fieldId','15');
-            ffield15.addTextNode(appEqp.Name);
+            ffield15.addTextNode(appEquipment.Name);
             Dom.XmlNode ffield16 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield16.setattribute('fieldId','16');
             ffield16.addTextNode('BOOKING');
-            AppliNumber = (appEqp.genesis__Application__r.Name != null ? appEqp.genesis__Application__r.Name : 'VALUE IS BLANK');
+            AppliNumber = (appEquipment.genesis__Application__r.Name != null ? appEquipment.genesis__Application__r.Name : 'VALUE IS BLANK');
             Dom.XmlNode ffield17 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield17.setattribute('fieldId','17');
             ffield17.addTextNode(AppliNumber);
@@ -756,14 +740,14 @@ public class VertexUtil {
 
             // Start: FlexibleNumericField Tag
             /*Integer LengthofAppContract ;
-            Date sdate=appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
+            Date sdate=appEquipment.genesis__Application__r.genesis__Expected_Start_Date__c;
             system.debug('starttttt date'+sdate); 
-            Date mdate=appEqp.genesis__Application__r.genesis__Expected_Close_Date__c; 
+            Date mdate=appEquipment.genesis__Application__r.genesis__Expected_Close_Date__c; 
             system.debug('Closeeee date'+sdate); 
             LengthofAppContract = sdate.daysBetween(Date.valueOf(mdate));
             System.debug('lengthhhhhhhh of contract'+LengthofAppContract) ;*/
 
-            Date sdate=appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
+            Date sdate=appEquipment.genesis__Application__r.genesis__Expected_Start_Date__c;
             
             Dom.XmlNode ffield21 = FFields.addChildElement('urn:FlexibleNumericField',null,null);
             ffield21.setattribute('fieldId','1');
@@ -789,7 +773,37 @@ public class VertexUtil {
             ffield31.addTextNode(appsdate);
             
         }
+        
+        /**************** 2. With TradeUp ****************/
         For(Integer i=0; i<appEqpList.size(); i++){
+            
+            /************Modified by CKB- 2021-01-15 *************/
+            Decimal extendedPrice = 0.00;
+            Decimal rentAmountForAppEquipWithTradeUp =0.00;
+            System.debug('######appEqpListRate_Factor ==' +appEqpListRate_Factor);
+            if(appEqpListRate_Factor!=null){
+                System.debug('######genesis__Other_Financed_Fees__c ==' +appEqpList[i].genesis__Other_Financed_Fees__c);
+                System.debug('######genesis__Warranty_Amount__c ==' +appEqpList[i].genesis__Warranty_Amount__c);
+                rentAmountForAppEquipWithTradeUp = (appEqpList[i].genesis__Other_Financed_Fees__c!=null?appEqpList[i].genesis__Other_Financed_Fees__c:0.00 
+                                                    + appEqpList[i].genesis__Warranty_Amount__c!=null?appEqpList[i].genesis__Warranty_Amount__c:0.00) * appEqpListRate_Factor;
+                System.debug('######rentAmountForAppEquipWithTradeUp ==' +rentAmountForAppEquipWithTradeUp);
+                extendedPrice = cllease.ValueUtil.round(rentAmountForAppEquipWithTradeUp, 2 , 'Nearest'); 
+            }else{
+                System.debug('######extendedPrice ==' +extendedPrice);
+                extendedPrice =0.00;
+            }
+            String strExtendedPrice = String.valueof(extendedPrice);//Final Extended Price 
+            
+            Decimal calFairMarketValue = rentAmountForAppEquipWithTradeUp * (appEqpList[i].genesis__Application__r.genesis__Term__c!=null?appEqpList[i].genesis__Application__r.genesis__Term__c:0);
+            calFairMarketValue = cllease.ValueUtil.round(calFairMarketValue, 2 , 'Nearest');
+            String strFairMarketValue = String.valueof(calFairMarketValue); //Final FMV
+            
+            Decimal cost = appEqpList[i].genesis__Other_Financed_Fees__c!=null?appEqpList[i].genesis__Other_Financed_Fees__c:0.00 + appEqpList[i].genesis__Warranty_Amount__c!=null?appEqpList[i].genesis__Warranty_Amount__c:0.00;
+            cost = cllease.ValueUtil.round(cost, 2 , 'Nearest');
+            String strCost = String.valueof(cost);// Final Cost
+            
+            /*******************End Of my Logic ******************/ 
+            
             Date appFirstPmtDate = appEqpList[i].genesis__Application__r.genesis__Expected_Start_Date__c;
             String pmtFrequency = appEqpList[i].genesis__Application__r.genesis__Payment_Frequency__c;
             Decimal term = appEqpList[i].genesis__Application__r.genesis__Term__c;
@@ -848,44 +862,10 @@ public class VertexUtil {
             String productValue = (appEqpList[i].GARD_Code__c != null ? appEqpList[i].GARD_code__c : 'VALUE IS BLANK');
             lineItem.addChildElement('urn:Product',null,null).addTextNode(productValue);
             
-            // ExtendedPrice Tag
-            Decimal ddlAmount = (appEqpList[i].genesis__Estimated_Selling_Price__c !=null ? appEqpList[i].genesis__Estimated_Selling_Price__c : 0.00);
-            //Decimal ddlCost=ddlAmount+tradeupAmount;           
-            Decimal ddlCost=appEqpList[i].Oracle_Trade_Up_Amount__c+ddlAmount;
-            ddlCost = cllease.ValueUtil.round(ddlCost, 2 , 'Nearest');
-            
-            /* Modified By Tesh--------------*/
-            
-            //The Fair Markert Value without the trade up portion of the rent
-            
-            
-            Decimal fairMartValue1 = (appEqpList[i].genesis__Estimated_Selling_Price__c * totalGrossReceivable) / totalSellingPrice;
-            //Decimal eqptradeUpAmount=(tradeupAmount+fairMartValue1);
-            Decimal eqptradeUpAmount=(appEqpList[i].Oracle_Trade_Up_Amount__c+fairMartValue1);
-            eqptradeUpAmount = cllease.ValueUtil.round(eqptradeUpAmount, 2 , 'Nearest'); 
-            String fairMarketvalue1 = String.valueof(eqptradeUpAmount);
-            
-             
-            //3. set the The extended Price value as a product of Rate_Factor__c * genesis__Estimated_Selling_Price__c
-            Decimal newExtendedPrice1;
-            if(appEqpListRate_Factor!= null){
-               // newExtendedPrice=ddlAmount*tmpRate;
-                //newExtendedPrice1=(ddlAmount*appEqpListRate_Factor)+tradeupAmount;
-                 newExtendedPrice1=appEqpList[i].Oracle_Trade_Up_Amount__c+(ddlAmount*appEqpListRate_Factor);
-                newExtendedPrice1= cllease.ValueUtil.round(newExtendedPrice1, 2 , 'Nearest');
-            }else {
-                newExtendedPrice1=0.00;
-            }
-            
-            String strExtendedPrice = String.valueof(newExtendedPrice1);           
-           
-
-            /*-----------------------------*/
-            String extdPrice = String.valueof(ddlCost);
-             
-            lineItem.addChildElement('urn:FairMarketValue',null,null).addTextNode(fairMarketvalue1);
+        
+            lineItem.addChildElement('urn:FairMarketValue',null,null).addTextNode(strFairMarketValue);
             lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(strExtendedPrice);
-            lineItem.addChildElement('urn:Cost',null,null).addTextNode(extdPrice);
+            lineItem.addChildElement('urn:Cost',null,null).addTextNode(strCost);
           
              
             // calculating Purchase Options flag details
@@ -1005,47 +985,22 @@ public class VertexUtil {
     *******************************************************************************************************************************/
     public static Dom.Document getUpfrontXmlBook(list<genesis__Application_Equipment__c> appEqpList) { 
         
-         /*-------------- Modified By: Tesh  Modified  Date: 10/29/2020 -------------------- */
-
+        /*-------------- Modified By: Tesh  Modified  Date: 10/29/2020 -------------------- */
+         
         //1. Get Rate Factor from Applications
-        Decimal appEqpListRate_Factor=[SELECT Id, Rate_Factor__c FROM genesis__Applications__c WHERE id =:appEqpList[0].genesis__Application__c LIMIT 1].Rate_Factor__c;
+        //Decimal appEqpListRate_Factor=[SELECT Id, Rate_Factor__c FROM genesis__Applications__c WHERE id =:appEqpList[0].genesis__Application__c LIMIT 1].Rate_Factor__c;
        
-         /*-------------------------------------------------------------------*/
-        //Payment stream
-        Decimal totalSellingPrice = 0.0;
-        Decimal totalGrossReceivable;
-        Decimal totalrentAmount=0.0;
-        Decimal totalFeeamount=0.0;
-        Decimal tradeupAmount=0.0;
-        List<genesis__Application_Pricing_Detail__c> appPricingDetails = [Select id, genesis__Application__c, genesis__Term__c, genesis__Payment_Amount_Derived__c from genesis__Application_Pricing_Detail__c where genesis__Application__c = :appEqpList[0].genesis__Application__c];
-        for(genesis__Application_Pricing_Detail__c payStr : appPricingDetails) {
-             totalrentAmount = totalrentAmount + (payStr.genesis__Term__c * payStr.genesis__Payment_Amount_Derived__c);
+        Decimal appEqpListRate_Factor=[select id,genesis__Rate_Factor__c from genesis__Application_Pricing_Detail__c where genesis__Application__c=:appEqpList[0].genesis__Application__c limit 1].genesis__Rate_Factor__c;
+        
+        Set<String> equipIds = new Set<String>();
+        for(genesis__Application_Equipment__c appEqupment : appEqpList){
+            equipIds.add(appEqupment.name);
         }
-        System.debug('totalrentAmount==' +totalrentAmount);
+        //Application fee with Passthrough
+        List<Application_Fee__c> aplliFeeList= [Select id, Application__c,Equipment__c,Equipment__r.name,Fee__r.clcommon__Fee_Type__c, Number_of_Payments__c, Amount__c from Application_Fee__c where Application__c = :appEqpList[0].genesis__Application__c AND Fee__r.clcommon__Fee_Type__c includes('Passthrough') 
+                                                and Equipment__r.name IN : equipIds];
         
-        //Application fee 
-        List<Application_Fee__c> aplliFeeList= [Select id, Application__c, Fee__r.clcommon__Fee_Type__c, Number_of_Payments__c, Amount__c from Application_Fee__c where Application__c = :appEqpList[0].genesis__Application__c AND Fee__r.clcommon__Fee_Type__c includes('Passthrough')];
-        for(Integer i=0; i<aplliFeeList.size(); i++) {
-    
-         totalFeeamount = totalFeeamount + (aplliFeeList[i].Number_of_Payments__c * aplliFeeList[i].Amount__c);
-    
-        }
-        System.debug('totalFeeamount==' +totalFeeamount);
-        totalGrossReceivable=totalrentAmount+totalFeeamount;
-        
-        /*for(genesis__Application_Equipment__c appEquip1 : appEqpList) {
-        tradeupAmount = tradeupAmount+appEquip1.Oracle_Trade_Up_Amount__c;  
-    }*/
-        
-        System.debug('totalGrossReceivable='+totalGrossReceivable);
-        for(genesis__Application_Equipment__c appEquip : appEqpList) {
-        totalSellingPrice += appEquip.genesis__Estimated_Selling_Price__c;
-    
-    }
-        System.debug('totalSellingPrice='+totalSellingPrice);
-    
-  
-    
+
         Decimal totalTax = 0;
         for(genesis__Application_Equipment__c appEqp : appEqpList) {
             System.debug('******************** tax amount is: ' + appEqp.genesis__Tax_Amount__c);
@@ -1104,24 +1059,57 @@ public class VertexUtil {
         Date startDate, endDate;
         Integer lengthOfContract;
         // Entering Application Equipment details    
-         list<genesis__Application_Equipment__c> equpmentlist = new list<genesis__Application_Equipment__c>();
-         for(genesis__Application_Equipment__c appEqp : appEqpList) {
-
-            if (appEqp.genesis__Tax_Amount__c == 0)
+        list<genesis__Application_Equipment__c> equpmentlist = new list<genesis__Application_Equipment__c>();
+        
+        /************** 1. Without TradeUp ***************/
+        for(genesis__Application_Equipment__c appEquipment : appEqpList) {
+            
+            /************Modified by CKB- 2021-01-15 *************/
+            Decimal totalFeeAmount = 0.00;
+            
+            //Logic for Passthrough Fee
+            for(Integer i=0; i<aplliFeeList.size(); i++) {
+                if(aplliFeeList[i].Equipment__c!=null && appEquipment.id == aplliFeeList[i].Equipment__c){
+                    totalFeeAmount = totalFeeamount + (aplliFeeList[i].Number_of_Payments__c * aplliFeeList[i].Amount__c);
+                }
+                   
+            }
+            
+            Decimal extendedPrice = 0.00;
+            Decimal rentAmountForAppEquip =0.00;
+            if(appEqpListRate_Factor!=null){
+               rentAmountForAppEquip = (appEquipment.genesis__Estimated_Selling_Price__c!=null?appEquipment.genesis__Estimated_Selling_Price__c:0.00) * appEqpListRate_Factor;
+               extendedPrice = cllease.ValueUtil.round(rentAmountForAppEquip, 2 , 'Nearest'); 
+            }else{
+                extendedPrice =0.00;
+            }
+            
+            String strExtendedPrice = String.valueof(extendedPrice);//Final Extended Price 
+            Decimal calFairMarketValue = rentAmountForAppEquip * (appEquipment.genesis__Application__r.genesis__Term__c!=null?appEquipment.genesis__Application__r.genesis__Term__c:0);
+            calFairMarketValue = calFairMarketValue + totalFeeAmount;
+            calFairMarketValue = cllease.ValueUtil.round(calFairMarketValue, 2 , 'Nearest');
+            String strFairMarketValue = String.valueof(calFairMarketValue); //Final FMV
+            
+            Decimal cost = appEquipment.genesis__Estimated_Selling_Price__c!=null?appEquipment.genesis__Estimated_Selling_Price__c:0.00; 
+            cost = cllease.ValueUtil.round(cost, 2 , 'Nearest');
+            String strCost = String.valueof(cost);// Final Cost
+            /*******************End Of my Logic ******************/ 
+            
+            if (appEquipment.genesis__Tax_Amount__c == 0)
                 continue;
              
             // Calculating the Length of Contract from first payment date to maturity date
-            //startDate =appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
+            //startDate =appEquipment.genesis__Application__r.genesis__Expected_Start_Date__c;
             //system.debug('start date'+startDate) ;
-            //endDate   = appEqp.genesis__Application__r.genesis__Expected_Close_Date__c;
+            //endDate   = appEquipment.genesis__Application__r.genesis__Expected_Close_Date__c;
             // end date going to check calculation
             // DateTime currentSystemDate  =   cllease.SystemDateUtil.getCurrentSystemDate();
-            System.debug('*****appFirstPAYEMNTDATE'+appEqp.genesis__Application__r.genesis__Expected_Start_Date__c);
-            Date appFirstPmtDate = appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
-            System.debug('****pmtFrequency********'+appEqp.genesis__Application__r.genesis__Payment_Frequency__c);
-            String pmtFrequency = appEqp.genesis__Application__r.genesis__Payment_Frequency__c;
-            System.debug('****genesisterm'+appEqp.genesis__Application__r.genesis__Term__c);
-            Decimal term = appEqp.genesis__Application__r.genesis__Term__c;
+            System.debug('*****appFirstPAYEMNTDATE'+appEquipment.genesis__Application__r.genesis__Expected_Start_Date__c);
+            Date appFirstPmtDate = appEquipment.genesis__Application__r.genesis__Expected_Start_Date__c;
+            System.debug('****pmtFrequency********'+appEquipment.genesis__Application__r.genesis__Payment_Frequency__c);
+            String pmtFrequency = appEquipment.genesis__Application__r.genesis__Payment_Frequency__c;
+            System.debug('****genesisterm'+appEquipment.genesis__Application__r.genesis__Term__c);
+            Decimal term = appEquipment.genesis__Application__r.genesis__Term__c;
 
             endDate = cllease.DateUtil.getNextCycleDate(appFirstPmtDate,
                                                            appFirstPmtDate.day(),
@@ -1131,7 +1119,7 @@ public class VertexUtil {
             lengthOfContract = appFirstPmtDate.daysBetween(endDate);
             system.debug('length in days'+lengthOfContract);
 
-            lineItemId = (appEqp.id != null ? appEqp.id : 'VALUE IS BLANK');
+            lineItemId = (appEquipment.id != null ? appEquipment.id : 'VALUE IS BLANK');
             Dom.XmlNode lineItem = invoiceRequest.addChildElement('urn:LineItem', null, null);
             lineItem.setattribute('lineItemId', lineItemId);
             // Start: Customer Tag
@@ -1140,15 +1128,15 @@ public class VertexUtil {
             // Tax Exemption 
             Boolean isTaxExempted = false;
             // 1. Always check for Tax Exemption from Account , if not exempted check for equipment
-            if(appEqp.genesis__Application__c != null
-                && appEqp.genesis__Application__r.genesis__Account__c != null)  {
+            if(appEquipment.genesis__Application__c != null
+                && appEquipment.genesis__Application__r.genesis__Account__c != null)  {
                 // TODO: Needs to change Salesforce only support 3 levels for pulling values
-                isTaxExempted = appEqp.genesis__Application__r.genesis__Account__r.Tax_Exempt__c;
+                isTaxExempted = appEquipment.genesis__Application__r.genesis__Account__r.Tax_Exempt__c;
                 system.debug('AccountTax Exemption :'+ isTaxExempted);
             } 
             // 2. Check for Equipment's Tax Exempt only if Account is not Exempted
             if(isTaxExempted == false){
-                isTaxExempted = appEqp.Tax_Exempt__c;
+                isTaxExempted = appEquipment.Tax_Exempt__c;
                 system.debug('Equipment Tax Exemption: '+isTaxExempted);
             }
             
@@ -1160,58 +1148,35 @@ public class VertexUtil {
             }
 
             Dom.XmlNode destination = customer.addChildElement('urn:Destination', null, null);
-            String cityValue    =  (appEqp.Install_Address1__r.City__c != null ? appEqp.Install_Address1__r.City__c : 'VALUE IS BLANK');
+            String cityValue    =  (appEquipment.Install_Address1__r.City__c != null ? appEquipment.Install_Address1__r.City__c : 'VALUE IS BLANK');
             Dom.XmlNode city    = destination.addChildElement('urn:City',null,null);
             city.addTextNode(cityValue);
 
-            String mainDivisionValue = (appEqp.Install_Address1__r.State__c != null ? appEqp.Install_Address1__r.State__c : 'VALUE IS BLANK');
+            String mainDivisionValue = (appEquipment.Install_Address1__r.State__c != null ? appEquipment.Install_Address1__r.State__c : 'VALUE IS BLANK');
             Dom.XmlNode mainDivision = destination.addChildElement('urn:MainDivision',null,null);
             mainDivision.addTextNode(mainDivisionValue);
 
-            String zipCodeValue  = (appEqp.Install_Address1__r.Zip_Code__c != null ? appEqp.Install_Address1__r.Zip_Code__c : 'VALUE IS BLANK');
+            String zipCodeValue  = (appEquipment.Install_Address1__r.Zip_Code__c != null ? appEquipment.Install_Address1__r.Zip_Code__c : 'VALUE IS BLANK');
             Dom.XmlNode zipCode  = destination.addChildElement('urn:PostalCode',null,null);
             zipCode.addTextNode(zipCodeValue);
             // End: Customer Tag
 
             // Product name value is GARD__c value in application equipment
-            String productValue = (appEqp.GARD_Code__c != null ? appEqp.GARD_code__c : 'VALUE IS BLANK');
+            String productValue = (appEquipment.GARD_Code__c != null ? appEquipment.GARD_code__c : 'VALUE IS BLANK');
             lineItem.addChildElement('urn:Product',null,null).addTextNode(productValue);
             
-            // ExtendedPrice Tag
-            Decimal ddlAmount = (appEqp.genesis__Estimated_Selling_Price__c !=null ? appEqp.genesis__Estimated_Selling_Price__c : 0.00);
-            ddlAmount = cllease.ValueUtil.round(ddlAmount, 2 , 'Nearest');
-            /* Modified By Tesh--------------*/
-      
-            //Fair Markert Value
-            Decimal fairMartValue = (appEqp.genesis__Estimated_Selling_Price__c * totalGrossReceivable) / totalSellingPrice;
-            fairMartValue = cllease.ValueUtil.round(fairMartValue, 2 , 'Nearest'); 
-            String fairMarketvalue = String.valueof(fairMartValue);
             
-      
-            //2. set the The extended Price value as a product of Rate_Factor__c * genesis__Estimated_Selling_Price__c
-            Decimal newExtendedPrice;
-            if(appEqpListRate_Factor!= null){
-               // newExtendedPrice=ddlAmount*tmpRate;
-                newExtendedPrice=ddlAmount*appEqpListRate_Factor;
-                newExtendedPrice= cllease.ValueUtil.round(newExtendedPrice, 2 , 'Nearest');
-            }else {
-                newExtendedPrice=0.00;
-            }
-            String strExtendedPrice = String.valueof(newExtendedPrice);         
-           /*-----------------------------*/
-           String extdPrice = String.valueof(ddlAmount);  
             
-            lineItem.addChildElement('urn:FairMarketValue',null,null).addTextNode(fairMarketvalue);
+            lineItem.addChildElement('urn:FairMarketValue',null,null).addTextNode(strFairMarketValue);
             lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(strExtendedPrice);
-            //Tesh commented lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(extdPrice);
-            lineItem.addChildElement('urn:Cost',null,null).addTextNode(extdPrice);
-            lineItem.addChildElement('urn:InputTotalTax',null,null).addTextNode(string.valueOf(appEqp.genesis__Tax_Amount__c));
+            lineItem.addChildElement('urn:Cost',null,null).addTextNode(strCost);
+            lineItem.addChildElement('urn:InputTotalTax',null,null).addTextNode(string.valueOf(appEquipment.genesis__Tax_Amount__c));
 
             // calculating Purchase Options flag details
-            if(appEqp.genesis__Application__r.Purchase_Option__c == 'Fair Market Value') {
+            if(appEquipment.genesis__Application__r.Purchase_Option__c == 'Fair Market Value') {
                 contrTypev  = 'FMV';
                 leaseTypev  = 'A';
-            } else if(appEqp.genesis__Application__r.Purchase_Option__c == 'One Dollar Buyout') {
+            } else if(appEquipment.genesis__Application__r.Purchase_Option__c == 'One Dollar Buyout') {
                 contrTypev  = 'CSC';
                 leaseTypev  = 'D';
             }
@@ -1245,7 +1210,7 @@ public class VertexUtil {
             Dom.XmlNode ffield9 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield9.setattribute('fieldId','9');
             ffield9.addTextNode('CLS-genesis__Application_Equipment__c');
-            assetNumber = (appEqp.Serial_Number__c != null ? appEqp.Serial_Number__c :'VALUE IS BLANK');
+            assetNumber = (appEquipment.Serial_Number__c != null ? appEquipment.Serial_Number__c :'VALUE IS BLANK');
             Dom.XmlNode ffield10 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield10.setattribute('fieldId','10');
             ffield10.addTextNode(assetNumber);
@@ -1261,17 +1226,17 @@ public class VertexUtil {
             Dom.XmlNode ffield14 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield14.setattribute('fieldId','14');
             ffield14.addTextNode('F');
-            String duetype = (appEqp.name != null ? appEqp.name : 'VALUE IS BLANK');
+            String duetype = (appEquipment.name != null ? appEquipment.name : 'VALUE IS BLANK');
             Dom.XmlNode ffield15 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield15.setattribute('fieldId','15');
-            ffield15.addTextNode(appEqp.Name);
+            ffield15.addTextNode(appEquipment.Name);
             Dom.XmlNode ffield16 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield16.setattribute('fieldId','16');
             ffield16.addTextNode('BOOKING');
-            AppliNumber = (appEqp.genesis__Application__r.Name != null ? appEqp.genesis__Application__r.Name : 'VALUE IS BLANK');
+            AppliNumber = (appEquipment.genesis__Application__r.Name != null ? appEquipment.genesis__Application__r.Name : 'VALUE IS BLANK');
             Dom.XmlNode ffield17 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield17.setattribute('fieldId','17');
-            ffield17.addTextNode(appEqp.genesis__Application__r.Lease_Number__r.name);
+            ffield17.addTextNode(appEquipment.genesis__Application__r.Lease_Number__r.name);
             Dom.XmlNode ffield18 = FFields.addChildElement('urn:FlexibleCodeField',null,null);
             ffield18.setattribute('fieldId','18');
             ffield18.addTextNode('0');
@@ -1286,7 +1251,7 @@ public class VertexUtil {
             LengthofAppContract = sdate.daysBetween(Date.valueOf(mdate));
             System.debug('lengthhhhhhhh of contract'+LengthofAppContract) ;*/
 
-            Date sdate=appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
+            Date sdate=appEquipment.genesis__Application__r.genesis__Expected_Start_Date__c;
             
             Dom.XmlNode ffield21 = FFields.addChildElement('urn:FlexibleNumericField',null,null);
             ffield21.setattribute('fieldId','1');
@@ -1312,16 +1277,37 @@ public class VertexUtil {
             ffield31.addTextNode(appsdate);          
               
         } 
+        
+        /****************** 2. With TradeUp ******************/
         For(Integer i=0; i<appEqpList.size(); i++){
-             if (appEqpList[i].genesis__Tax_Amount__c == 0)
+            
+            /************Modified by CKB- 2021-01-15 *************/
+            Decimal extendedPrice = 0.00;
+            Decimal rentAmountForAppEquipWithTradeUp =0.00;
+            if(appEqpListRate_Factor!=null){
+                rentAmountForAppEquipWithTradeUp = (appEqpList[i].genesis__Other_Financed_Fees__c!=null?appEqpList[i].genesis__Other_Financed_Fees__c:0.00 
+                                                    + appEqpList[i].genesis__Warranty_Amount__c!=null?appEqpList[i].genesis__Warranty_Amount__c:0.00) * appEqpListRate_Factor;
+                extendedPrice = cllease.ValueUtil.round(rentAmountForAppEquipWithTradeUp, 2 , 'Nearest'); 
+            }else{
+                extendedPrice =0.00;
+            }
+            String strExtendedPrice = String.valueof(extendedPrice);//Final Extended Price 
+            
+            Decimal calFairMarketValue = rentAmountForAppEquipWithTradeUp * (appEqpList[i].genesis__Application__r.genesis__Term__c!=null?appEqpList[i].genesis__Application__r.genesis__Term__c:0);
+            calFairMarketValue = cllease.ValueUtil.round(calFairMarketValue, 2 , 'Nearest');
+            String strFairMarketValue = String.valueof(calFairMarketValue); //Final FMV
+            
+            Decimal cost = appEqpList[i].genesis__Other_Financed_Fees__c!=null?appEqpList[i].genesis__Other_Financed_Fees__c:0.00 + appEqpList[i].genesis__Warranty_Amount__c!=null?appEqpList[i].genesis__Warranty_Amount__c:0.00;
+            cost = cllease.ValueUtil.round(cost, 2 , 'Nearest');
+            String strCost = String.valueof(cost);// Final Cost
+            
+            /*******************End Of my Logic ******************/ 
+            
+            
+            if (appEqpList[i].genesis__Tax_Amount__c == 0)
                  continue;
              
-            // Calculating the Length of Contract from first payment date to maturity date
-            //startDate =appEqp.genesis__Application__r.genesis__Expected_Start_Date__c;
-            //system.debug('start date'+startDate) ;
-            //endDate   = appEqp.genesis__Application__r.genesis__Expected_Close_Date__c;
-            // end date going to check calculation
-            // DateTime currentSystemDate  =   cllease.SystemDateUtil.getCurrentSystemDate();
+             
             Date appFirstPmtDate = appEqpList[i].genesis__Application__r.genesis__Expected_Start_Date__c;
             String pmtFrequency = appEqpList[i].genesis__Application__r.genesis__Payment_Frequency__c;
             Decimal term = appEqpList[i].genesis__Application__r.genesis__Term__c;
@@ -1380,41 +1366,10 @@ public class VertexUtil {
             String productValue = (appEqpList[i].GARD_Code__c != null ? appEqpList[i].GARD_code__c : 'VALUE IS BLANK');
             lineItem.addChildElement('urn:Product',null,null).addTextNode(productValue);
             
-            // ExtendedPrice Tag
-            Decimal ddlAmount1 = (appEqpList[i].genesis__Estimated_Selling_Price__c !=null ? appEqpList[i].genesis__Estimated_Selling_Price__c : 0.00);
-            //Decimal ddCost=tradeupAmount+ddlAmount1;
-            Decimal ddCost= appEqpList[i].Oracle_Trade_Up_Amount__c+ddlAmount1;
-           
-            ddCost = cllease.ValueUtil.round(ddCost, 2 , 'Nearest');
-            
-            /* Modified By Tesh--------------*/
-      
-            //Fair Markert Value
-            Decimal fairMartValue1 = (appEqpList[i].genesis__Estimated_Selling_Price__c * totalGrossReceivable) / totalSellingPrice;
-            //Decimal tradeFairMarValue=(fairMartValue1+tradeupAmount);
-            Decimal tradeFairMarValue=(appEqpList[i].Oracle_Trade_Up_Amount__c + fairMartValue1);
-            tradeFairMarValue = cllease.ValueUtil.round(tradeFairMarValue, 2 , 'Nearest'); 
-            String FairWithTradeMarketvalue = String.valueof(tradeFairMarValue);
-            
-      
-            //2. set the The extended Price value as a product of Rate_Factor__c * genesis__Estimated_Selling_Price__c
-            Decimal newExtendedPrice;
-            if(appEqpListRate_Factor!= null){
-                //newExtendedPrice=ddlAmount*tmpRate;
-                //newExtendedPrice=(ddlAmount1*appEqpListRate_Factor)+tradeupAmount;
-                newExtendedPrice=appEqpList[i].Oracle_Trade_Up_Amount__c + (ddlAmount1*appEqpListRate_Factor);
-                newExtendedPrice= cllease.ValueUtil.round(newExtendedPrice, 2 , 'Nearest');
-            }else {
-                newExtendedPrice=0.00;
-            }
-            String strExtendedPrice = String.valueof(newExtendedPrice);         
-            /*-----------------------------*/
-            String extdPrice = String.valueof(ddCost);  
-            
-            lineItem.addChildElement('urn:FairMarketValue',null,null).addTextNode(FairWithTradeMarketvalue);
+
+            lineItem.addChildElement('urn:FairMarketValue',null,null).addTextNode(strFairMarketValue);
             lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(strExtendedPrice);
-            //Tesh commented lineItem.addChildElement('urn:ExtendedPrice',null,null).addTextNode(extdPrice);
-            lineItem.addChildElement('urn:Cost',null,null).addTextNode(extdPrice);
+            lineItem.addChildElement('urn:Cost',null,null).addTextNode(strCost);
             lineItem.addChildElement('urn:InputTotalTax',null,null).addTextNode(string.valueOf(appEqpList[i].genesis__Tax_Amount__c));
 
             // calculating Purchase Options flag details

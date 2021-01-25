@@ -83,13 +83,22 @@ global without sharing class FMZ_QQ_ConvertToApplicationController {
             Oracle_Trade_up_Quote_Expiration_Date__c
             FROM genesis__Quick_Quotes__c
             WHERE Id =: app.genesis__Quick_Quote__c];
+        
+        cllease__Termination_Quote_Header__c tq;
+        if (qqs[0].oracle_trade_up_quote_number__c != null)
+            if (qqs[0].Oracle_Trade_up_Quote_Number__c.startsWith('QTE'))
+                tq = [select id from cllease__Termination_Quote_Header__c where name = :qqs[0].Oracle_Trade_up_Quote_Number__c];
 
         if(qqs.size() > 0){
           app.Trade_Up_Quote__c = true;
           app.Oracle_Trade_Up_Amount__c = qqs[0].Oracle_Trade_Up_Quote_Amount__c != null ? qqs[0].Oracle_Trade_Up_Quote_Amount__c : 0;
           app.Net_Trade_Up_Amount__c = qqs[0].Oracle_Trade_Up_Quote_Amount__c != null ? qqs[0].Oracle_Trade_Up_Quote_Amount__c : 0;
           app.Oracle_Trade_up_Lease_Number__c = qqs[0].Oracle_Trade_up_Lease_Number__c;
+          app.cls_Trade_up_Lease_Number__c = qqs[0].Oracle_Trade_up_Lease_Number__c;
           app.Oracle_Trade_up_Quote_Number__c = qqs[0].Oracle_Trade_up_Quote_Number__c;
+          if (qqs[0].oracle_trade_up_quote_number__c != null)
+            if (qqs[0].Oracle_Trade_Up_Quote_Number__c.startswith('QTE'))
+                app.cls_Trade_up_Quote_Number__c = tq.id;
           app.Oracle_Trade_up_Quote_Expiration_Date__c = qqs[0].Oracle_Trade_up_Quote_Expiration_Date__c;
           
 
@@ -208,9 +217,11 @@ global without sharing class FMZ_QQ_ConvertToApplicationController {
             else{
                 String appId = [SELECT Id, genesis__Application__c FROM genesis__Quick_Quotes__c WHERE Id =: quickQuoteId].genesis__Application__c;
                 defaultAppValues(appId);
+                system.debug('app id is: ' + appId);
                 response.put(RESPONSE_KEYWORD_STATUS, appId);
             }
         } catch(Exception error){
+            system.debug('error is :' + string.valueOf(error));
             response.put(RESPONSE_KEYWORD_STATUS, STATUS_ERROR);
             response.put(RESPONSE_KEYWORD_MESSAGE, error.getMessage());
         }

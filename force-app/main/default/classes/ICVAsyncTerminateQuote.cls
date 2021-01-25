@@ -21,7 +21,7 @@ public class ICVAsyncTerminateQuote implements Queueable, Database.AllowsCallout
         cllease__Termination_Quote_Header__c h = [select id
                                                 from cllease__Termination_Quote_Header__c 
                                                 where name = :tradeUpQuoteName];
-        h.cllease__Status__c = 'Accepted';
+        h.cllease__Status__c = 'ACCEPTED';
 
         update h;
 

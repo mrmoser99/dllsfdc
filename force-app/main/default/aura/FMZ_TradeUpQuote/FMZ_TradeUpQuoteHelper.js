@@ -296,6 +296,7 @@
 
             else {  //else number ===1
               if (component.get('v.fromNewco') != true){ 
+                
                 component.set("v.quoteData2", data);
                 component.set("v.quoteId2", data.Id);
                 component.set("v.remainingLeasePayments2",data.Remaining_Rental_Payments__c);
@@ -310,6 +311,8 @@
                 component.set("v.expirationDate2", data.Quote_Validity_Date__c);
               }
               else{
+                console.log('hello daddy');
+                console.log('1data is:' + JSON.stringify(data));
                 component.set("v.quoteData2", data);
                 component.set("v.quoteId2", data.Id);
                 component.set("v.remainingLeasePayments2",data.QUOTE_UNBILLED_RECEIVABLE__c);

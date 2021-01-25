@@ -7,6 +7,7 @@
 
     3/27/2020 - MRM fixed cloud lending upfront tax call
     5/7/2020 - MRM added retry logic
+    1/10/2021 - CKB- Two fields added in Application Equipment Query -genesis__Other_Financed_Fees__c,genesis__Warranty_Amount__c
 */
 
 global class VertexUpfrontTaxCalculation {
@@ -34,6 +35,8 @@ global class VertexUpfrontTaxCalculation {
                                     Serial_Number__c,
                                     genesis__Tax_Amount__c,
                                     Oracle_Trade_Up_Amount__c,
+                                    genesis__Other_Financed_Fees__c,
+                                    genesis__Warranty_Amount__c,
                                     genesis__Estimated_Selling_Price__c,
                                     Install_Address1__c,Install_Address1__r.City__c,
                                     Install_Address1__r.State__c, 
@@ -46,6 +49,9 @@ global class VertexUpfrontTaxCalculation {
                                     genesis__Application__r.genesis__Expected_First_Payment_Date__c,
                                     genesis__Application__r.genesis__Payment_Frequency__c,
                                     genesis__Application__r.genesis__Term__c,
+                                    genesis__Application__r.genesis__Other_Financed_Fees__c,
+                                    genesis__Application__r.genesis__Warranty_Amount__c,
+                                    genesis__Application__r.Total_Equipment_Selling_Price__c,
                                     genesis__Application__r.Purchase_Option__c,
                                     genesis__Application__r.genesis__Account__r.Tax_Exempt__c,
                                     genesis__Application_Equipment__c.Tax_Exempt__c,
@@ -246,6 +252,8 @@ global class VertexUpfrontTaxCalculation {
                                    Serial_Number__c,
                                    genesis__Tax_Amount__c,
                                    Oracle_Trade_Up_Amount__c,
+                                   genesis__Other_Financed_Fees__c,
+                                   genesis__Warranty_Amount__c,
                                    genesis__Estimated_Selling_Price__c,
                                    Install_Address1__c,Install_Address1__r.City__c,
                                    Install_Address1__r.State__c, 
@@ -259,6 +267,9 @@ global class VertexUpfrontTaxCalculation {
                                    genesis__Application__r.genesis__Expected_First_Payment_Date__c,
                                    genesis__Application__r.genesis__Payment_Frequency__c,
                                    genesis__Application__r.genesis__Term__c,
+                                   genesis__Application__r.genesis__Other_Financed_Fees__c,
+                                   genesis__Application__r.genesis__Warranty_Amount__c,
+                                   genesis__Application__r.Total_Equipment_Selling_Price__c,
                                    genesis__Application__r.Purchase_Option__c,
                                    genesis__Application__r.genesis__Account__r.Tax_Exempt__c,
                                    genesis__Application_Equipment__c.Tax_Exempt__c,

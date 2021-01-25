@@ -8,4 +8,19 @@
 //RateUtility.getProgram('125760-0003');
 //    Id batchJobId= Database.executeBatch(new MarksBatchIterable(), 1); //Btch size=1
      
-clleaseterminationquoteservices.createterminationquotes('a6J3u000000g9LS');
+     
+//clleaseterminationquoteservices.processTerminationquote('a765C000000fkqO');
+
+ //system.debug('Terminating lease for quote: ' + tradeUpQuoteName);
+
+        //cllease__Termination_Quote_Header__c h = [select id
+        //                                        from cllease__Termination_Quote_Header__c 
+        //                                        where name = 'QTE-0000000779'];
+        //h.cllease__Status__c = 'ACCEPTED';
+
+       // update h;
+
+       // CLLeaseTerminationQuoteServices.processTerminationQuote(h.id);
+
+        ICVAsyncTerminateQuote job = new ICVAsyncTerminateQuote('QTE-0000000791');
+        System.enqueueJob(job);
